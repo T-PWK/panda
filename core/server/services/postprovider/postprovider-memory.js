@@ -44,6 +44,7 @@ PostProvider.prototype.dummyData = [
 ];
 
 PostProvider.prototype.init = function () {
+    console.info('initializing PostProvider memory')
     return when();
 }
 

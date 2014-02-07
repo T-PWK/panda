@@ -3,7 +3,7 @@
 var mongoose    = require('mongoose'),
     moment      = require('moment'),
     when        = require('when'),
-    Post        = require('../../models/post');
+    Post        = require('./post-model');
 
 var PostProvider = module.exports = function () {
     this.db = mongoose.connection;

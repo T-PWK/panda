@@ -1,10 +1,9 @@
-var when    = require('when'),
-    cfg     = require('nconf');
+var when            = require('when'),
+    cfg             = require('nconf'),
+    PostProvider    = require('./services/postprovider'); 
 
-function init () {
-    //console.info(cfg.get([cfg.get('NODE_ENV'), 'database:type'].join(':')))
-    // TODO: poroviders initialization ...
-    return when();
-}
+var postProvider = module.exports.postProvider = new PostProvider()
 
-module.exports.init = init;
+module.exports.init = function () {
+    return postProvider.init();
+};

@@ -1,4 +1,4 @@
 var mongoose    = require('mongoose'),
-    postSchema  = require('../schemas/post');
+    postSchema  = require('./post-schema');
 
 module.exports = mongoose.model('Post', postSchema);
