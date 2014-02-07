@@ -1,0 +1,40 @@
+{
+  "name": "panda",
+  "version": "0.0.1",
+  "description": "Simple blogging application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/T-PWK/panda.git"
+  },
+  "keywords": [
+    "panda",
+    "blog",
+    "cms"
+  ],
+  "author": {
+    "name": "Tom Pawlak",
+    "url": "http://blog.tompawlak.org/",
+    "email": "tompwk@gmail.com"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://blog.tompawlak.org/p/mit.html"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/T-PWK/panda/issues"
+  },
+  "dependencies": {
+    "colors": "~0.6.2",
+    "express": "~3.4.8",
+    "when": "~2.8.0",
+    "underscore.string": "~2.3.3",
+    "moment": "~2.5.1",
+    "nconf": "~0.6.9"
+  }
+}

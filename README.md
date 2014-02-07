@@ -1,4 +1,4 @@
-panda
+Panda
 =====
 
 Simple blogging application
