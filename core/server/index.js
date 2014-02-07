@@ -3,6 +3,7 @@ var express     = require('express'),
     colors      = require('colors'),
     path        = require('path')
     cfg         = require('nconf'),
+    format      = require('util').format,
     routes      = require('./routes'),
     middleware  = require('./middleware');
 
@@ -12,7 +13,6 @@ var theme = 'casper';
 function serverStartupInfo () {
 
     // TODO:
-    // - update configuration - set port, url and host
     // - use configuration values for server startup
 
     console.log(
@@ -21,7 +21,13 @@ function serverStartupInfo () {
     );
 
     if(cfg.get('is:development')) {
-        console.log(("Listening on :" + (process.env.PORT || 3000)).grey);
+        console.log(format(
+            "Listening on %s:%s", cfg.get('server:host'), cfg.get('server:port')).grey
+        );
+    }
+
+    if(cfg.get('is:production')) {
+        console.log(format("Panda application is available on %s", cfg.get('url')).grey);
     }
 
     // ensure server exists correctly on Ctrl+C
@@ -34,9 +40,7 @@ function serverStartupInfo () {
 function setup (app) {
     when().then(function () {
         // ### Express Initialisation ###
-
-        app.set('port', process.env.PORT || 3000);
-        app.set('views', path.join(__dirname, '../../content/themes', theme));
+        app.set('views', cfg.get('theme:viewPath'));
 
         // Set the view engine
         app.set('view engine', 'jade');
@@ -50,9 +54,11 @@ function setup (app) {
         routes.frontend(app);
 
         // ## Server Startup
-
-        app.listen(app.get('port'), serverStartupInfo);
-
+        app.listen(
+            cfg.get('server:port'), 
+            cfg.get('server:host'), 
+            serverStartupInfo
+        );
     }).catch(function (err) {
         console.error(err.toString().red)
         throw err;

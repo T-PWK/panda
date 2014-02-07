@@ -1,9 +1,7 @@
-var express = require('express'),
-    path    = require('path'),
-    cfg     = require('nconf');
-
-// var theme = 'taotao'; // TODO: move it to configuraiton
-var theme = 'casper'; // TODO: move it to configuraiton
+var express     = require('express'),
+    path        = require('path'),
+    cfg         = require('nconf')
+    tplHelper   = require('../helpers/templatehelper');;
 
 function setup (app) {
     // Set the favicon
@@ -22,16 +20,15 @@ function setup (app) {
     app.use(app.router);
 
     // Set theme static files
-    app.use(express.static(path.join(__dirname, '../../../content/themes', theme)));
+    app.use(express.static(cfg.get('theme:staticPath')));
 
     // Set error handler for development mode only
     if (cfg.get('is:development')) {
-      app.use(express.errorHandler());
+        app.use(express.errorHandler());
     }
 
     // Set the template helper component
-    app.locals.helper = require('../helpers/templatehelper');
-    app.locals.pretty = true;
+    tplHelper.init(app);
 }
 
 module.exports = setup;
