@@ -13,8 +13,9 @@ block content
       article.post
         header.post-header
           span.post-meta
-            time(datetime=helper.date(post, "YYYY-MM-DD"))=helper.date(post, "DD MMM YYYY")
-            |  on node.js javascript
-          h2.post-title: a(href=helper.url(post))=post.title
+            time(datetime=tpl.date(post))=tpl.date(post, "DD MMM YYYY")
+            if post.labels.length
+              |  on #{tpl.labels(post)}
+          h2.post-title: a(href=tpl.url(post))=post.title
         section.post-excerpt
-          p #{post.title} (excerpt) &hellip;
+          p !{post.excerpt}&hellip;

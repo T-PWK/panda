@@ -16,14 +16,14 @@ html
         link(rel="shortcut icon", href="/favicon.ico")
 
         //- Styles'n'Scripts
-        link(rel="stylesheet", type="text/css", href="assets/css/screen.css")
+        link(rel="stylesheet", type="text/css", href="/css/screen.css")
         link(rel="stylesheet", type="text/css", href="//fonts.googleapis.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400")
 
         //- Platform specific data (including plugin data) TODO
         meta(name="generator", content="Panda 0.0.1")
         link(rel="alternate", type="application/rss+xml", title="Panda", href="/rss/")
         link(rel="canonical", href="http://127.0.0.1:3000/")
-    body
+    body(class=bodyClass)
         //- Everything else gets inserted here
         block content
         footer.site-footer
