@@ -20,8 +20,8 @@ function init () {
     cfg.defaults({
         theme: {
             name: 'casper', 
-            viewsPath: path(themesRoot, 'casper'),
-            staticPath: path(themesRoot, defaultTheme, 'assets')
+            viewsPath: path.join(themesRoot, 'casper'),
+            staticPath: path.join(themesRoot, defaultTheme, 'assets')
         },
         url: 'http://127.0.0.1',
         server: { host: '127.0.0.1', port: 3000 },
