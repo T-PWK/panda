@@ -7,9 +7,6 @@ var express     = require('express'),
     routes      = require('./routes'),
     middleware  = require('./middleware');
 
-// var theme = 'taotao';
-var theme = 'casper';
-
 function serverStartupInfo () {
 
     // TODO:
@@ -40,7 +37,7 @@ function serverStartupInfo () {
 function setup (app) {
     when().then(function () {
         // ### Express Initialisation ###
-        app.set('views', cfg.get('theme:viewPath'));
+        app.set('views', cfg.get('theme:viewsPath'));
 
         // Set the view engine
         app.set('view engine', 'jade');
