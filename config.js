@@ -4,7 +4,7 @@ var config = module.exports = {
     // ### Environment ###
     production: {
         theme: 'casper',
-        url: 'http://panda-blog.herokuapp.com',
+        url: process.env.APP_URL,
         database: {
             type: 'mongo',
             connection: {
