@@ -4,7 +4,7 @@ var config = module.exports = {
     // ### Environment ###
     production: {
         theme: 'casper',
-        url: 'http://panda-blog.herokuapp.com/',
+        url: 'http://panda-blog.herokuapp.com',
         database: {
             type: 'mongo',
             connection: {
@@ -12,7 +12,7 @@ var config = module.exports = {
             }
         },
         server: {
-            host: '127.0.0.1',
+            host: '0.0.0.0',
             port: process.env.PORT
         }
     }
