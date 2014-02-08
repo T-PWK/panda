@@ -8,7 +8,9 @@ var postSchema = mongoose.Schema({
     scheduled: { type: Date, default: Date.now },
     labels: { type: [String] },
     geo: { type: [Number] },
-    hidden: { type: Boolean, default:false }
+    hidden: { type: Boolean, default:false },
+    content: String,
+    excerpt: String
 });
 
 module.exports = postSchema;

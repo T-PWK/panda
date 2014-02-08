@@ -3,6 +3,7 @@
 var mongoose    = require('mongoose'),
     moment      = require('moment'),
     when        = require('when'),
+    cfg         = require('nconf'),
     Post        = require('./post-model');
 
 var PostProvider = module.exports = function () {
@@ -12,15 +13,15 @@ var PostProvider = module.exports = function () {
 PostProvider.prototype.init = function () {
     var deferred = when.defer();
 
+    mongoose.connect(cfg.get('database:connection:uri'));
+
     this.db.once('open', function () {
-        deferred.resolve();
+        deferred.resolve(); 
     });
 
     this.db.once('error', function (err) {
         deferred.reject(err);
     });
-
-    mongoose.connect(process.env.MONGOLAB_URI); //TODO: config
 
     return deferred.promise;
 }

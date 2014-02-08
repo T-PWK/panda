@@ -1,9 +1,12 @@
 var when            = require('when'),
     cfg             = require('nconf'),
-    PostProvider    = require('./services/postprovider'); 
+    PostProvider    = require('./services/postprovider'),
+    postProvider    = new PostProvider();
 
-var postProvider = module.exports.postProvider = new PostProvider()
+module.exports = {
+    postProvider: postProvider,
 
-module.exports.init = function () {
-    return postProvider.init();
+    init: function (argument) {
+        return postProvider.init();
+    }
 };
