@@ -1,6 +1,7 @@
 var express     = require('express'),
     path        = require('path'),
     cfg         = require('nconf')
+    
     tplHelper   = require('../helpers/templatehelper');;
 
 function setup (app) {
