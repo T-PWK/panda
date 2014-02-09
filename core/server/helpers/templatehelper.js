@@ -1,29 +1,52 @@
-var _s      = require('underscore.string'),
-    format  = require('util').format,
+var format  = require('util').format,
     moment  = require('moment')
     cfg     = require('nconf');
 
-var TemplateHelper = module.exports = function () {};
 
-TemplateHelper.prototype = {
-    url: function (post) {
-        return format(
-            '/%s/%s/%s.html', 
-            post.scheduled.getFullYear(), 
-            _s.lpad(post.scheduled.getMonth() + 1, 2, '0'), 
-            post.slug
-        );
-    },
-    date: function (post, format) {
-        return post.scheduled
-            ? moment(post.scheduled).format(format || "YYYY-MM-DD")
-            : '';
-    },
-    labels: function (post, join) {
-        return post.labels.join(join || ', ');
+function urlFormat (post) {
+    var output = '',
+        tags = {
+            ':year':   function () { return moment(post.published_at).format('YYYY'); },
+            ':month':  function () { return moment(post.published_at).format('MM'); },
+            ':day':    function () { return moment(post.published_at).format('DD'); },
+            ':slug':   function () { return post.slug; },
+            ':id':     function () { return post.id; }
+        };
+
+    if (post.page === 1) {
+        output += '/:slug/';
+    } else {
+        output += cfg.get('app:urlformat');
     }
-}
 
-module.exports.init = function (app) {
-    app.locals.tpl = new TemplateHelper(); 
+    console.info(':dayd' in tags)
+
+    // replace tags like :slug or :year with actual values
+    output = output.replace(/(:[a-z]+)/g, function (match) {
+        if (match in tags) {
+            console.info(match)
+            return tags[match]();
+        }
+    });
+
+    return output;
 };
+
+function dateFormat (post, format) {
+    return post.scheduled
+        ? moment(post.scheduled).format(format || "YYYY-MM-DD")
+        : '';
+};
+
+function labelsFormat (post, join) {
+    return post.labels.join(join || ', ');
+};
+
+function init (app) {
+    app.locals.tpl = exports;
+};
+
+module.exports.init   = init;
+module.exports.url    = urlFormat;
+module.exports.labels = labelsFormat;
+module.exports.date   = dateFormat;
