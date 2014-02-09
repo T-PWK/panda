@@ -3,14 +3,13 @@ extends layout
 block content
     main.content(role="main")
         article.post
+
             header.post-header
                 a.blog-logo(href=blog.url)
                     if blog.logo
                         img(src=blog.log, alt="Blog Logo")
                     else
                         span.blog-title=blog.title
-
-            //- stuff from post {{#post}}
 
             span.post-meta
                 time(datetime=tpl.date(post)) #{tpl.date(post, 'DD MMM YYYY')}
@@ -29,6 +28,7 @@ block content
 
                 section.share
                     h4 Share this post
+
                     a.icon-twitter(href='http://twitter.com/share?text={{encode title}}&url={{url absolute="true"}}', onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;")
                         span.hidden Twitter
 

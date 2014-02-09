@@ -1,21 +1,21 @@
 extends layout
 
 block content
-  header.site-head(style=blog.cover ? "background-image: url("+blog.cover+")" : undefined)
-    .vertical
-      .site-head-content.inner
-        if blog.logo
-          a.blog-logo(href=blog.logo): img(alt="Blog Logo", src=blog.logo)
-        h1.blog-title=blog.title
-        h2.blog-description=blog.description
-  main.content(role="main")
-    each post in posts
-      article.post
-        header.post-header
-          span.post-meta
-            time(datetime=tpl.date(post))=tpl.date(post, "DD MMM YYYY")
-            if post.labels.length
-              |  on #{tpl.labels(post)}
-          h2.post-title: a(href=tpl.url(post))=post.title
-        section.post-excerpt
-          p !{post.excerpt}&hellip;
+    header.site-head(style=blog.cover ? "background-image: url("+blog.cover+")" : undefined)
+        .vertical
+            .site-head-content.inner
+                if blog.logo
+                    a.blog-logo(href=blog.logo): img(alt="Blog Logo", src=blog.logo)
+                h1.blog-title=blog.title
+                h2.blog-description=blog.description
+    main.content(role="main")
+        each post in posts
+            article.post
+                header.post-header
+                    span.post-meta
+                        time(datetime=tpl.date(post))=tpl.date(post, "DD MMM YYYY")
+                        if post.labels.length
+                            |  on #{tpl.labels(post)}
+                    h2.post-title: a(href=tpl.url(post))=post.title
+                section.post-excerpt
+                    p !{post.excerpt}&hellip;
