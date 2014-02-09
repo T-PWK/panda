@@ -10,7 +10,11 @@ var postSchema = mongoose.Schema({
     geo: { type: [Number] },
     hidden: { type: Boolean, default:false },
     content: String,
-    excerpt: String
+    excerpt: String,
+    counter: {
+        view: { type: Number, default: 0 },
+        edit: { type: Number, default: 0 }
+    }
 });
 
 module.exports = postSchema;

@@ -92,6 +92,19 @@ PostProvider.prototype.findByMonth = function (year, month) {
     return when(this.sort(items));
 }
 
+PostProvider.prototype.findByDay = function (year, month, day) {
+    // JavaScript Date uses 0-based month index
+    month--;
+
+    var items = this.dummyData.filter(function (item) {
+        return item.scheduled.getFullYear() === year 
+            && item.scheduled.getMonth() === month
+            && item.scheduled.getDate() === day;
+    });
+    
+    return when(this.sort(items));
+}
+
 PostProvider.prototype.sort = function (posts) {
     posts = posts.slice(0);
     posts.sort(this.sortByDate)
