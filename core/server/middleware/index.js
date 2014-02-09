@@ -21,7 +21,7 @@ function setup (app) {
     app.use(app.router);
 
     // Set theme static files
-    app.use(express.static(cfg.get('theme:staticPath')));
+    app.use('/assets', express.static(cfg.get('theme:staticPath')));
 
     // Set error handler for development mode only
     if (cfg.get('is:development')) {
