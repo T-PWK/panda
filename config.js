@@ -2,6 +2,11 @@
 
 var config = module.exports = {
     // ### Environment ###
+    development: {
+        app: {
+            urlFormat: "/:slug"
+        }
+    },
     production: {
         theme: 'casper',
         url: process.env.APP_URL,
