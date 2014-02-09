@@ -1,0 +1,17 @@
+{
+    "theme": {
+        "name": "casper"
+    },
+    "app": {
+        "url": "http://127.0.0.1",
+        "urlformat": "/:slug"
+    },
+    "url": "http://127.0.0.1",
+    "server": { 
+        "host": "127.0.0.1", 
+        "port": 3000 
+    },
+    "database": { 
+        "type": "memory" 
+    }
+}
