@@ -2,7 +2,7 @@ var format  = require('util').format,
     moment  = require('moment')
     cfg     = require('nconf');
 
-function urlFormat (post) {
+function urlFormat (post, absolute) {
     var output = post.page ? '/:slug/' : cfg.get('app:urlFormat'),
         tags = {
             ':year':   function () { return moment(post.published_at).format('YYYY'); },
@@ -19,7 +19,7 @@ function urlFormat (post) {
         }
     });
 
-    return output;
+    return absolute ? cfg.get('url') + output : output;
 };
 
 function dateFormat (post, format) {
@@ -36,6 +36,10 @@ function metaTitle (blog, post) {
     return "";
 }
 
+function encode (text) {
+    return encodeURIComponent(text);
+}
+
 function init (app) {
     app.locals.tpl = module.exports;
 };
@@ -45,5 +49,6 @@ module.exports = {
     url: urlFormat,
     labels: labelsFormat,
     date: dateFormat,
+    encode: encode,
     metaTitle: metaTitle
 }
