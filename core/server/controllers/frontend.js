@@ -1,19 +1,20 @@
-var provider    = require('../providers').postProvider
-    cfg         = require('nconf');
-
-var blog = {
-    cover: null,
-    logo: null,
-    url: 'http://127.0.0.1:3000',
-    title: "Tom's Blog",
-    description: 'To code, or not to code ...',
-    meta_title: 'Blog metatitle'
-}
+var provider      = require('../providers').postProvider
+    cfg           = require('nconf')
+    Blog          = require('../models/blog');
+    
+var blog = new Blog({
+    metaTitle:      cfg.get('app:defaultMetaTitle'),
+    metaDesc:       cfg.get('app:defaultMetaDesc'),
+    metaKeywords:   cfg.get('app:defaultKeywords'),
+    title:          cfg.get('app:title'),
+    description:    cfg.get('app:description'),
+    url:            cfg.get('url')
+});
 
 exports.index = function(req, res) {
     provider.findAll().then(function (posts) {
         res.render('index', { 
-            blog: blog, 
+            blog: blog,
             posts: posts,
             bodyClass: undefined
         });
@@ -26,7 +27,7 @@ exports.year = function (req, res) {
     var year = +req.params.year;
     provider.findByYear(year).then(function (posts) {
         res.render('index', { 
-            blog: blog, 
+            blog: blog,
             posts: posts, 
             year: year,
             bodyClass: undefined
@@ -40,7 +41,7 @@ exports.month = function (req, res) {
 
     provider.findByMonth(year, month).then(function (posts) {
         res.render('index', { 
-            blog: blog, 
+            blog: blog,
             posts: posts, 
             year: year, 
             month: month,
@@ -56,7 +57,7 @@ exports.day = function (req, res) {
 
     provider.findByDay(year, month, day).then(function (posts) {
         res.render('index', { 
-            blog: blog, 
+            blog: blog,
             posts: posts, 
             year: year, 
             month: month,
@@ -69,7 +70,7 @@ exports.day = function (req, res) {
 exports.post = function (req, res) {
     provider.findBySlug(req.params.slug).then(function (post) {
         res.render('post', { 
-            blog: blog, 
+            blog: blog,
             post: post,
             bodyClass: 'post-template'
         });
