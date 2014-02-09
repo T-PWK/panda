@@ -4,7 +4,7 @@ var format  = require('util').format,
 
 
 function urlFormat (post) {
-    var output = '',
+    var output = post.page ? '/:slug/' : cfg.get('app:urlformat'),
         tags = {
             ':year':   function () { return moment(post.published_at).format('YYYY'); },
             ':month':  function () { return moment(post.published_at).format('MM'); },
@@ -13,18 +13,9 @@ function urlFormat (post) {
             ':id':     function () { return post.id; }
         };
 
-    if (post.page === 1) {
-        output += '/:slug/';
-    } else {
-        output += cfg.get('app:urlformat');
-    }
-
-    console.info(':dayd' in tags)
-
     // replace tags like :slug or :year with actual values
     output = output.replace(/(:[a-z]+)/g, function (match) {
         if (match in tags) {
-            console.info(match)
             return tags[match]();
         }
     });
