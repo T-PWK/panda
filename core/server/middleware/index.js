@@ -9,15 +9,19 @@ function setup (app) {
     app.use(express.favicon('core/shared/panda.ico'));
 
     // Set the requests logger
-    if(cfg.get('is:development')) {
+    if (cfg.get('is:development')) {
         app.use(express.logger('dev'));
     } else {
         app.use(express.logger())
     }
 
-    app.use(express.json());
-    app.use(express.urlencoded());
-    app.use(express.methodOverride());
+    if (cfg.get('app:httpCompression')) {
+        app.use(express.compress());
+    }
+
+    // app.use(express.json());
+    // app.use(express.urlencoded());
+    // app.use(express.methodOverride());
     app.use(app.router);
 
     // Set theme static files
