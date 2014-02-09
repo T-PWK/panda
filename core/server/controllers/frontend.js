@@ -1,4 +1,6 @@
-var provider = require('../providers').postProvider;
+var provider    = require('../providers').postProvider
+    cfg         = require('nconf');
+
 var blog = {
     cover: null,
     logo: null,
@@ -23,7 +25,7 @@ exports.index = function(req, res) {
 exports.year = function (req, res) {
     var year = +req.params.year;
     provider.findByYear(year).then(function (posts) {
-        res.render('year', { 
+        res.render('index', { 
             blog: blog, 
             posts: posts, 
             year: year,
@@ -37,11 +39,28 @@ exports.month = function (req, res) {
         month = +req.params.month;
 
     provider.findByMonth(year, month).then(function (posts) {
-        res.render('month', { 
+        res.render('index', { 
             blog: blog, 
             posts: posts, 
             year: year, 
             month: month,
+            bodyClass: undefined
+        });
+    });
+};
+
+exports.day = function (req, res) {
+    var year  = +req.params.year,
+        month = +req.params.month,
+        day   = +req.params.day;
+
+    provider.findByDay(year, month, day).then(function (posts) {
+        res.render('index', { 
+            blog: blog, 
+            posts: posts, 
+            year: year, 
+            month: month,
+            day: day,
             bodyClass: undefined
         });
     });
@@ -57,6 +76,11 @@ exports.post = function (req, res) {
     });
 }
 
+exports.formatParam = function (req, res, next, format) {
+    if (['html', 'json'].indexOf(format) >= 0) next();
+    else next('route');
+}
+
 exports.yearParam = function (req, res, next, year) {
     if (year.match(/^\d{4}$/)) next();
     else next('route');
@@ -64,5 +88,10 @@ exports.yearParam = function (req, res, next, year) {
 
 exports.monthParam = function (req, res, next, month) {
     if (month.match(/^\d{2}$/) && +month > 0 && +month < 13) next();
+    else next('route');
+}
+
+exports.dayParam = function (req, res, next, day) {
+    if (day.match(/^\d{2}$/) && +day > 0 && +day < 32) next();
     else next('route');
 }
