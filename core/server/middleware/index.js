@@ -33,7 +33,7 @@ function setup (app) {
     }
 
     // Set the template helper component
-    tplHelper.init(app);
+    tplHelper(app);
 }
 
 module.exports = setup;
