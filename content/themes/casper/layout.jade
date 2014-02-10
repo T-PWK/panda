@@ -23,9 +23,12 @@ html
         meta(name="generator", content="Panda 0.0.1")
         link(rel="alternate", type="application/rss+xml", title="Panda", href="/rss/")
         link(rel="canonical", href="http://127.0.0.1:3000/")
+
     body(class=bodyClass)
+
         //- Everything else gets inserted here
         block content
+
         footer.site-footer
             a.subscribe.icon-feed(href="{{@blog.url}}/rss/"): span.tooltip Subscribe!
             .inner
@@ -34,9 +37,10 @@ html
                     a(href="{{@blog.url}}/") #{blog.title}
                     |  &copy; 2014 &bull; All rights reserved.
                 section.poweredby
-                    | Theme supplied by 
+                    | Responsive Theme powered by 
                     a.icon-ghost(href="http://ghost.org")
                         | Ghost
+
         //- Ghost outputs important scripts and data with this tag
         //- {{ghost_foot}} - not implemented yet
 

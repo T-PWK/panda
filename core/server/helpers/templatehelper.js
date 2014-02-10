@@ -1,6 +1,7 @@
 var format  = require('util').format,
-    moment  = require('moment')
-    cfg     = require('nconf');
+    moment  = require('moment'),
+    cfg     = require('nconf'),
+    _       = require('underscore');
 
 function urlFormat (post, absolute) {
     var output = post.page ? '/:slug/' : cfg.get('app:urlFormat'),
@@ -22,6 +23,12 @@ function urlFormat (post, absolute) {
     return absolute ? cfg.get('url') + output : output;
 };
 
+function pageurl (page) {
+    return page == 1 
+        ? '/' 
+        : cfg.get('app:pageUrlFormat').replace(':page', page);
+}
+
 function dateFormat (post, format) {
     return post.scheduled
         ? moment(post.scheduled).format(format || "YYYY-MM-DD")
@@ -41,14 +48,14 @@ function encode (text) {
 }
 
 function init (app) {
-    app.locals.tpl = module.exports;
+    _.extend(app.locals, {
+        $url: urlFormat,
+        $pageurl: pageurl,
+        $labels: labelsFormat,
+        $date: dateFormat,
+        $encode: encode,
+        $metaTitle: metaTitle
+    })
 };
 
-module.exports = {
-    init: init,
-    url: urlFormat,
-    labels: labelsFormat,
-    date: dateFormat,
-    encode: encode,
-    metaTitle: metaTitle
-}
+module.exports = init;

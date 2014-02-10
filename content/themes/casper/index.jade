@@ -13,15 +13,18 @@ block content
             article.post
                 header.post-header
                     span.post-meta
-                        time(datetime=tpl.date(post))=tpl.date(post, "DD MMM YYYY")
+                        time(datetime=$date(post))=$date(post, "DD MMM YYYY")
                         if post.labels.length
-                            |  on #{tpl.labels(post)}
-                    h2.post-title: a(href=tpl.url(post))=post.title
+                            |  on #{$labels(post)}
+                    h2.post-title: a(href=$url(post))=post.title
                 section.post-excerpt
                     p !{post.excerpt}&hellip;
 
+        if pagination
             nav.pagination(role="navigation")
-                a.newer-posts(href="/")&larr; Newer Posts
+                if pagination.newer
+                    a.newer-posts(href=$pageurl(pagination.newer.page))&larr; Newer Posts
                 span.page-number
-                    | Page 1 of 2
-                a.older-posts(href="/") Older Posts &rarr;
+                    | Page #{pagination.page} of #{pagination.pages}
+                if pagination.older
+                    a.older-posts(href=$pageurl(pagination.older.page)) Older Posts &rarr;
