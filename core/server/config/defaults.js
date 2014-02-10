@@ -3,7 +3,7 @@ module.exports = {
         name: "casper"
     },
     app: {
-        // Default URL contains year, month, day, slug and format
+        // Default URL contains year, month, day and slug
         urlFormat: "/:year/:month/:day/:slug.html",
         httpCompression: true,
         
@@ -13,7 +13,11 @@ module.exports = {
         defaultKeywords: [],
 
         title: "Panda",
-        description: "Simple blogging platform."
+        description: "Simple blogging platform.",
+
+        // # Pagination
+        postsPerPage: 6,
+        pageUrlFormat: "/page/:page"
     },
     url: "http://127.0.0.1:3000",
     server: { 
