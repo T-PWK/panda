@@ -12,6 +12,9 @@ module.exports = function (server) {
     server.get('/:year/:month', frontend.month);
     server.get('/:year/:month/:day', frontend.day);
 
+    // Pagination
+    server.get('/page/:page', frontend.index);
+
     // Posts
     server.get(cfg.get('app:urlFormat'), frontend.post);
 }
