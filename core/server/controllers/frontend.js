@@ -1,5 +1,6 @@
 var provider      = require('../providers').postProvider
     cfg           = require('nconf')
+    pagination    = require('../helpers/pagination'),
     Blog          = require('../models/blog');
     
 var blog = new Blog({
@@ -8,14 +9,18 @@ var blog = new Blog({
     metaKeywords:   cfg.get('app:defaultKeywords'),
     title:          cfg.get('app:title'),
     description:    cfg.get('app:description'),
-    url:            cfg.get('url')
+    url:            cfg.get('url'),
+    cover: '/assets/img/Baby-Panda-Wallpaper.jpg'
 });
 
 exports.index = function(req, res) {
+    var page = req.params.page || 1;
+
     provider.findAll().then(function (posts) {
         res.render('index', { 
             blog: blog,
             posts: posts,
+            pagination: pagination(posts, +page),
             bodyClass: undefined
         });
     }, function (err) {
@@ -75,6 +80,11 @@ exports.post = function (req, res) {
             bodyClass: 'post-template'
         });
     });
+}
+
+exports.pageParam = function (req, res, next, page) {
+    if (page.match(/^\d+$/)) next();
+    else next('route');
 }
 
 exports.formatParam = function (req, res, next, format) {
