@@ -7,14 +7,13 @@ module.exports = function (server) {
     server.param('day', frontend.dayParam);
     server.param('format', frontend.formatParam);
 
-    server.get('/', frontend.index);
+    server.get('/', frontend.index);                        // Main page
+    server.get(cfg.get('app:urlFormat'), frontend.post);    // Post page
+    server.get('/page/:page', frontend.index);              // Pagination
+
+    server.get('/search/label/:label', frontend.searchByLabel);
+
     server.get('/:year', frontend.year);
     server.get('/:year/:month', frontend.month);
     server.get('/:year/:month/:day', frontend.day);
-
-    // Pagination
-    server.get('/page/:page', frontend.index);
-
-    // Posts
-    server.get(cfg.get('app:urlFormat'), frontend.post);
 }
