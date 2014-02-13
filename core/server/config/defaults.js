@@ -17,7 +17,9 @@ module.exports = {
 
         // # Pagination
         postsPerPage: 6,
-        pageUrlFormat: "/page/:page"
+        pageUrlFormat: "/page/:page",
+
+        copyright: "Content © 2013"
     },
     url: "http://127.0.0.1:3000",
     server: { 
