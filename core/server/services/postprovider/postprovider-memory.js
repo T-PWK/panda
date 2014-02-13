@@ -105,6 +105,20 @@ PostProvider.prototype.findByDay = function (year, month, day) {
     return when(this.sort(items));
 }
 
+PostProvider.prototype.findByLabel = function (label) {
+    if (!label) return when([]);
+
+    var date = new Date(),
+        items = this.dummyData.filter(function (item) {
+            return item.labels 
+                && item.labels.indexOf(label) >= 0
+                && item.scheduled
+                && item.scheduled <= date
+        })
+
+    return when(this.sort(items));
+}
+
 PostProvider.prototype.sort = function (posts) {
     posts = posts.slice(0);
     posts.sort(this.sortByDate)

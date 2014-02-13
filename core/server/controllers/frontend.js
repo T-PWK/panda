@@ -82,6 +82,15 @@ exports.post = function (req, res) {
     });
 }
 
+exports.searchByLabel = function (req, res) {
+    provider.findByLabel(req.params.label).then(function (posts) {
+        res.render('index', {
+            blog: blog,
+            posts: posts
+        });
+    })
+}
+
 exports.pageParam = function (req, res, next, page) {
     if (page.match(/^\d+$/)) next();
     else next('route');
