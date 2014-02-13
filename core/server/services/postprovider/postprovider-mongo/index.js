@@ -7,24 +7,11 @@ var mongoose    = require('mongoose'),
     Post        = require('./post-model');
 
 var PostProvider = module.exports = function () {
+    this.type = 'mongo';
     this.db = mongoose.connection;
 }
 
-PostProvider.prototype.init = function () {
-    var deferred = when.defer();
-
-    mongoose.connect(cfg.get('database:connection:uri'));
-
-    this.db.once('open', function () {
-        deferred.resolve(); 
-    });
-
-    this.db.once('error', function (err) {
-        deferred.reject(err);
-    });
-
-    return deferred.promise;
-}
+PostProvider.prototype.init = function () {}
 
 PostProvider.prototype.findAll = function () {
     return Post
