@@ -1,7 +1,9 @@
-var frontend = require('./frontend');
+var frontend = require('./frontend'),
+    rss      = require('./rss');
 
 module.exports = {
-    frontend: frontend
+    frontend: frontend,
+    rss:      rss
 }
 
 
