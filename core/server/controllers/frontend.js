@@ -83,11 +83,13 @@ exports.post = function (req, res) {
 }
 
 exports.searchByLabel = function (req, res) {
-    provider.findByLabel(req.params.label).then(function (posts) {
-        res.render('index', {
-            blog: blog,
-            posts: posts
-        });
+    provider
+        .findByLabel(req.params.label)
+        .then(function (posts) {
+            res.render('index', {
+                blog: blog,
+                posts: posts
+            });
     })
 }
 
