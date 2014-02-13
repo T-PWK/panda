@@ -1,8 +1,7 @@
 var express     = require('express'),
     path        = require('path'),
-    cfg         = require('nconf')
-    
-    tplHelper   = require('../helpers/templatehelper');;
+    cfg         = require('nconf'),
+    tplHelper   = require('../helpers/templatehelper');
 
 function setup (app) {
     // Set the favicon
