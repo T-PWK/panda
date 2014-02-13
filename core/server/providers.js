@@ -1,12 +1,34 @@
 var when            = require('when'),
+    mongoose        = require('mongoose'),
     cfg             = require('nconf'),
     PostProvider    = require('./services/postprovider'),
     postProvider    = new PostProvider();
 
-module.exports = {
-    postProvider: postProvider,
+function initMongoDB () {
+    var deferred    = when.defer(),
+        db          = mongoose.connection;
 
-    init: function (argument) {
-        return postProvider.init();
-    }
+    mongoose.connect(cfg.get('database:connection:uri'));
+
+    db.once('open', function () {
+        deferred.resolve(); 
+    });
+
+    db.once('error', function (err) {
+        deferred.reject(err);
+    });
+
+    return deferred.promise;
+}
+
+module.exports = {
+    postProvider: postProvider
 };
+
+module.exports.init = function () {
+    var promise = ('mongo' === postProvider.type)
+        ? when(initMongoDB())
+        : when();
+
+    return promise.then(postProvider.init());
+}
