@@ -1,41 +1,46 @@
-var provider      = require('../providers').postProvider
-    cfg           = require('nconf')
+var cfg           = require('nconf'),
+    when          = require('when'),
+    provider      = require('../providers').postProvider,
     pagination    = require('../helpers/pagination'),
-    Blog          = require('../models/blog');
+    Application   = require('../models/application'),
+    limit         = cfg.get('app:postsPerPage')
     
-var blog = new Blog({
+var application = new Application({
     metaTitle:      cfg.get('app:defaultMetaTitle'),
     metaDesc:       cfg.get('app:defaultMetaDesc'),
     metaKeywords:   cfg.get('app:defaultKeywords'),
     title:          cfg.get('app:title'),
     description:    cfg.get('app:description'),
     url:            cfg.get('url'),
-    cover: '/assets/img/Baby-Panda-Wallpaper.jpg'
+    cover:          '/assets/img/Baby-Panda-Wallpaper.jpg'
 });
 
 exports.index = function(req, res) {
-    var page = req.params.page || 1;
+    var page = req.params.page || 1, skip = limit * (page - 1);
 
-    provider.findAll().then(function (posts) {
-        res.render('index', { 
-            blog: blog,
-            posts: posts,
-            pagination: pagination(posts, +page),
-            bodyClass: undefined
-        });
-    }, function (err) {
+    when.join(
+        provider.findAll({ limit:limit, skip:skip }),
+        provider.countAll()
+    )
+    .then(function (results) {
+        res.render('index', {
+            app: application,
+            posts: results[0],
+            pagination: pagination(req, results[1])
+        })
+    })
+    .catch(function (err) {
         res.send(500, err);
-    });
+    })
 };
 
 exports.year = function (req, res) {
     var year = +req.params.year;
     provider.findByYear(year).then(function (posts) {
         res.render('index', { 
-            blog: blog,
+            app: application,
             posts: posts, 
-            year: year,
-            bodyClass: undefined
+            year: year
         });
     });
 };
@@ -46,11 +51,10 @@ exports.month = function (req, res) {
 
     provider.findByMonth(year, month).then(function (posts) {
         res.render('index', { 
-            blog: blog,
+            app: application,
             posts: posts, 
             year: year, 
-            month: month,
-            bodyClass: undefined
+            month: month
         });
     });
 };
@@ -62,12 +66,11 @@ exports.day = function (req, res) {
 
     provider.findByDay(year, month, day).then(function (posts) {
         res.render('index', { 
-            blog: blog,
+            app: application,
             posts: posts, 
             year: year, 
             month: month,
-            day: day,
-            bodyClass: undefined
+            day: day
         });
     });
 };
@@ -75,9 +78,8 @@ exports.day = function (req, res) {
 exports.post = function (req, res) {
     provider.findBySlug(req.params.slug).then(function (post) {
         res.render('post', { 
-            blog: blog,
-            post: post,
-            bodyClass: 'post-template'
+            app: application,
+            post: post
         });
     });
 }
