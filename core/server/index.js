@@ -38,17 +38,17 @@ function setup (app) {
     when().then(function () {
         // ### Express Initialisation ###
         app.set('views', cfg.get('theme:viewsPath'));
+        app.set('admin views', path.join(__dirname, 'views'));
 
         // Set the view engine
         app.set('view engine', 'jade');
 
         // ## Express Middleware Setup
-        middleware(app)
+        middleware(app);
 
         // ## Routing
-
-        // Set up Frontent routes
-        routes.frontend(app);
+        routes.rss(app);      // Set up RSS routes
+        routes.frontend(app); // Set up Frontent routes
 
         // ## Server Startup
         app.listen(
