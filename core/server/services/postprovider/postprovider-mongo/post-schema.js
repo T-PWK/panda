@@ -2,10 +2,10 @@ var mongoose = require('mongoose');
 
 var postSchema = mongoose.Schema({
     // # Content properties
-    slug: { type: String, required: true },
-    title: { type: String, required: true },
+    slug: { type: String, required: true, trim: true },
+    title: { type: String, required: true, lowercase: true, trim: true },
     content: String,
-    excerpt: String,
+    teaser: String,
     labels: { type: [String] },
 
     // # Metadata
@@ -13,14 +13,14 @@ var postSchema = mongoose.Schema({
     metaDescription: String,
 
     // # Dates
-    created: { type: Date, required: true, default: Date.now },
-    updated: { type: Date, required: true, default: Date.now },
+    createdAt: { type: Date, required: true, default: Date.now },
+    updatedAt: { type: Date, required: true, default: Date.now },
     scheduled: { type: Date, default: Date.now },
     
     // # Additional properties
     geo: { type: [Number] },
-    hidden: { type: Boolean, default:false },
-    page: Boolean,
+    published: { type: Boolean, required: true, default: false },
+    page: { type: Boolean, default: false },
 
     // # Conters
     counter: {
@@ -28,5 +28,12 @@ var postSchema = mongoose.Schema({
         edit: { type: Number, default: 0 }
     }
 });
+
+postSchema.pre('save', function (next) {
+    this.updatedAt = new Date();
+    next();
+})
+
+
 
 module.exports = postSchema;
