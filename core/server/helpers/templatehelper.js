@@ -1,7 +1,9 @@
-var format  = require('util').format,
-    moment  = require('moment'),
-    cfg     = require('nconf'),
-    _       = require('underscore');
+var format        = require('util').format,
+    moment        = require('moment'),
+    cfg           = require('nconf'),
+    _             = require('underscore')
+    pgnUrl        = cfg.get('app:pageUrlFormat'),
+    pgnRegexp     = new RegExp(pgnUrl.replace(/\//g, '\\/').replace(':page', '\\d+'));
 
 function urlFormat (post, absolute) {
     var output = post.page ? '/:slug/' : cfg.get('app:urlFormat'),
@@ -23,10 +25,13 @@ function urlFormat (post, absolute) {
     return absolute ? cfg.get('url') + output : output;
 };
 
-function pageurl (page) {
-    return page == 1 
-        ? '/' 
-        : cfg.get('app:pageUrlFormat').replace(':page', page);
+function pageurl (pgn, type) {
+    var page = 'newer' === type ? pgn.newer : pgn.older,
+        ctx = pgn.context.replace(pgnRegexp, '');
+
+    if ('/' === ctx) ctx = '';
+
+    return 1 === page ? '/' : ctx + pgnUrl.replace(':page', page);
 }
 
 function dateFormat (post, format) {
@@ -47,6 +52,10 @@ function encode (text) {
     return encodeURIComponent(text);
 }
 
+function bodyClass (post) {
+    return post ? 'post-template' : undefined;
+}
+
 function init (app) {
     _.extend(app.locals, {
         $url: urlFormat,
@@ -54,7 +63,8 @@ function init (app) {
         $labels: labelsFormat,
         $date: dateFormat,
         $encode: encode,
-        $metaTitle: metaTitle
+        $metaTitle: metaTitle,
+        $bodyClass: bodyClass
     })
 };
 
