@@ -9,7 +9,7 @@ function setup (app) {
     app.use(express.favicon('core/shared/panda.ico'));
 
     // Set the requests logger
-    if (cfg.get('is:development')) {
+    if (cfg.get('development')) {
         app.use(express.logger('dev'));
     } else {
         app.use(express.logger())
@@ -28,7 +28,7 @@ function setup (app) {
     app.use('/assets', express.static(cfg.get('theme:staticPath')));
 
     // Set error handler for development mode only
-    if (cfg.get('is:development')) {
+    if (cfg.get('development')) {
         app.use(express.errorHandler());
     }
 
