@@ -12,7 +12,7 @@ var application = new Application({
     title:          cfg.get('app:title'),
     description:    cfg.get('app:description'),
     url:            cfg.get('url'),
-    cover:          '/assets/img/Baby-Panda-Wallpaper.jpg'
+    cover:          '/assets/img/header.jpg'
 });
 
 exports.index = function(req, res) {
