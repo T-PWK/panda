@@ -47,15 +47,29 @@ function encode (text) {
     return encodeURIComponent(text);
 }
 
+function bodyClass (posts) {
+    return "post-template";
+}
+
+function postClass (post) {
+    return "";
+}
+
 function init (app) {
-    _.extend(app.locals, {
-        $url: urlFormat,
-        $pageurl: pageurl,
-        $labels: labelsFormat,
-        $date: dateFormat,
-        $encode: encode,
-        $metaTitle: metaTitle
-    })
+    _.extend(
+        app.locals, 
+        {
+            $url: urlFormat,
+            $pageurl: pageurl,
+            $labels: labelsFormat,
+            $date: dateFormat,
+            $encode: encode,
+            $metaTitle: metaTitle,
+            $bodyClass: bodyClass,
+            $postClass: postClass
+        }, 
+        cfg.get('view')
+    );
 };
 
 module.exports = init;
