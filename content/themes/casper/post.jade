@@ -5,11 +5,11 @@ block content
         article.post
 
             header.post-header
-                a.blog-logo(href=blog.url)
-                    if blog.logo
-                        img(src=blog.log, alt="Blog Logo")
+                a.blog-logo(href=app.url)
+                    if app.logo
+                        img(src=app.log, alt="Blog Logo")
                     else
-                        span.blog-title=blog.title
+                        span.blog-title=app.title
 
             span.post-meta
                 time(datetime=$date(post)) #{$date(post, 'DD MMM YYYY')}
@@ -23,8 +23,11 @@ block content
             footer.post-footer
 
                 section.author
-                    h4= post.author.name
-                    p= post.author.bio
+                    if post.author
+                        h4= post.author.name
+
+                        if post.author.bio
+                            p= post.author.bio
 
                 section.share
                     h4 Share this post
