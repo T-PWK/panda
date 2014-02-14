@@ -31,7 +31,7 @@ function postUrl (post, absolute) {
 /*
  * Builds pagination URL
  */
-function paginationUrl (pgn, type) {
+function pageUrl (pgn, type) {
     var page = 'newer' === type ? pgn.newer : pgn.older,
         ctx = pgn.context.replace(pgnRegexp, '');
 
@@ -62,34 +62,65 @@ function encode (text) {
 }
 
 function bodyClass () {
-    return "post-template";
+    var foo = undefined;
+    console.info(+foo > 1)
+    if ('/' === this.locals.context) return 'home-template';
+    if (this.req.params.page > 1) return 'archive-template';
 }
 
 function postClass (post) {
     return "";
 }
 
+/*
+ * Generates an asset URL.
+ * It assumes that 'this' is current application
+ */
+function assets (asset) {
+    return '/assets' + ('/' === asset[0] ? '' : '/') + asset + '?v=ad2e223fd'
+}
+
 function initRequest (req, res, next) {
-    console.info('init requst')
+    // Set default response local variables
+    res.locals({
+        context: req.path
+    })
+
+    Object.defineProperties(res.locals, {
+        "bodyClass": {
+            enumerable: true,
+            get: bodyClass.bind(res)
+        }
+    })
+
     next();
 }
 
 function init (app) {
-    _.extend(
-        app.locals, 
-        {
-            $url: postUrl,
-            $pageUrl: paginationUrl,
-            $labels: labelsFormat,
-            $date: dateFormat,
-            $encode: encode,
-            $metaTitle: metaTitle,
-            $bodyClass: bodyClass,
-            $postClass: postClass
-        }, 
-        cfg.get('view')
-    );
-    
+
+    // Set default application local variables as well as template helper functions
+    app.locals({
+        metaTitle:      cfg.get('app:defaultMetaTitle') || cfg.get('app:title'),
+        metaDesc:       cfg.get('app:defaultMetaDesc') || cfg.get('app:description'),
+        metaKeywords:   cfg.get('app:defaultKeywords'),
+        title:          cfg.get('app:title'),
+        description:    cfg.get('app:description'),
+        url:            cfg.get('url'),
+        cover:          '/assets/img/header.jpg',
+        $url:           postUrl,
+        $pageUrl:       pageUrl,
+        $labels:        labelsFormat,
+        $date:          dateFormat,
+        $encode:        encode,
+        $metaTitle:     metaTitle,
+        $postClass:     postClass,
+        $assets:        assets.bind(app)
+    })
+
+    // Update application locals with view settings like debug or pretty formatting
+    app.locals(cfg.get('view'));
+
+    // Initialize reqest / response specific variables
     app.use(initRequest);
 };
 

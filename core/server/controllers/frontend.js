@@ -2,19 +2,8 @@ var cfg           = require('nconf'),
     when          = require('when'),
     provider      = require('../providers').postProvider,
     pagination    = require('../helpers/pagination'),
-    Application   = require('../models/application'),
     limit         = cfg.get('app:postsPerPage')
     
-var application = new Application({
-    metaTitle:      cfg.get('app:defaultMetaTitle'),
-    metaDesc:       cfg.get('app:defaultMetaDesc'),
-    metaKeywords:   cfg.get('app:defaultKeywords'),
-    title:          cfg.get('app:title'),
-    description:    cfg.get('app:description'),
-    url:            cfg.get('url'),
-    cover:          '/assets/img/header.jpg'
-});
-
 exports.index = function(req, res) {
     var page = req.params.page || 1, skip = limit * (page - 1);
 
@@ -23,11 +12,11 @@ exports.index = function(req, res) {
         provider.countAll()
     )
     .then(function (results) {
-        res.render('index', {
-            app: application,
+        res.locals({
             posts: results[0],
             pagination: pagination(req, results[1])
         })
+        res.render('index');
     })
     .catch(function (err) {
         res.send(500, err);
