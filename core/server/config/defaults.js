@@ -2,6 +2,10 @@ module.exports = {
     theme: {
         name: "casper"
     },
+    view: {
+        pretty: false,  // true for pretty HTML formatting
+        debug:  false   // true for view engine console debug
+    },
     app: {
         // Default URL contains year, month, day and slug
         urlFormat: "/:year/:month/:day/:slug.html",
