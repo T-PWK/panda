@@ -22,18 +22,20 @@ function setup (app) {
     // app.use(express.json());
     // app.use(express.urlencoded());
     // app.use(express.methodOverride());
-    app.use(app.router);
 
     // Set theme static files
     app.use('/assets', express.static(cfg.get('theme:staticPath')));
+
+    // Set the template helper component
+    tplHelper(app);
+
+    // Set the router
+    app.use(app.router);
 
     // Set error handler for development mode only
     if (cfg.get('development')) {
         app.use(express.errorHandler());
     }
-
-    // Set the template helper component
-    tplHelper(app);
 }
 
 module.exports = setup;

@@ -3,8 +3,11 @@ var format  = require('util').format,
     cfg     = require('nconf'),
     _       = require('underscore');
 
-function urlFormat (post, absolute) {
-    var output = post.page ? '/:slug/' : cfg.get('app:urlFormat'),
+/*
+ * Builds post or static page URL
+ */
+function postUrl (post, absolute) {
+    var output = post.page ? '/:slug' : cfg.get('app:urlFormat'),
         tags = {
             ':year':   function () { return moment(post.published_at).format('YYYY'); },
             ':month':  function () { return moment(post.published_at).format('MM'); },
@@ -23,12 +26,18 @@ function urlFormat (post, absolute) {
     return absolute ? cfg.get('url') + output : output;
 };
 
-function pageurl (page) {
+/*
+ * Builds pagination URL
+ */
+function paginationUrl (page) {
     return page == 1 
         ? '/' 
         : cfg.get('app:pageUrlFormat').replace(':page', page);
 }
 
+/*
+ * Formats scheduled date for the given post and date format
+ */
 function dateFormat (post, format) {
     return post.scheduled
         ? moment(post.scheduled).format(format || "YYYY-MM-DD")
@@ -47,7 +56,7 @@ function encode (text) {
     return encodeURIComponent(text);
 }
 
-function bodyClass (posts) {
+function bodyClass () {
     return "post-template";
 }
 
@@ -55,12 +64,17 @@ function postClass (post) {
     return "";
 }
 
+function initRequest (req, res, next) {
+    console.info('init requst')
+    next();
+}
+
 function init (app) {
     _.extend(
         app.locals, 
         {
-            $url: urlFormat,
-            $pageurl: pageurl,
+            $url: postUrl,
+            $pageUrl: paginationUrl,
             $labels: labelsFormat,
             $date: dateFormat,
             $encode: encode,
@@ -70,6 +84,8 @@ function init (app) {
         }, 
         cfg.get('view')
     );
+    
+    app.use(initRequest);
 };
 
 module.exports = init;
