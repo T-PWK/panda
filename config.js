@@ -8,7 +8,6 @@ var config = module.exports = {
         }
     },
     production: {
-        theme: 'casper',
         url: process.env.APP_URL,
         database: {
             type: 'mongo',
