@@ -1,13 +1,13 @@
 extends layout
 
 block content
-    header.site-head(style=app.cover ? "background-image: url("+app.cover+")" : undefined)
+    header.site-head(style=cover ? "background-image: url("+cover+")" : undefined)
         .vertical
             .site-head-content.inner
-                if app.logo
-                    a.blog-logo(href=app.logo): img(alt="Blog Logo", src=app.logo)
-                h1.blog-title=app.title
-                h2.blog-description=app.description
+                if logo
+                    a.blog-logo(href=logo): img(alt="Blog Logo", src=logo)
+                h1.blog-title=title
+                h2.blog-description=description
     main.content(role="main")
         each post in posts
             article.post
