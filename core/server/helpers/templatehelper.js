@@ -5,8 +5,11 @@ var format        = require('util').format,
     pgnUrl        = cfg.get('app:pageUrlFormat'),
     pgnRegexp     = new RegExp(pgnUrl.replace(/\//g, '\\/').replace(':page', '\\d+'));
 
-function urlFormat (post, absolute) {
-    var output = post.page ? '/:slug/' : cfg.get('app:urlFormat'),
+/*
+ * Builds post or static page URL
+ */
+function postUrl (post, absolute) {
+    var output = post.page ? '/:slug' : cfg.get('app:urlFormat'),
         tags = {
             ':year':   function () { return moment(post.published_at).format('YYYY'); },
             ':month':  function () { return moment(post.published_at).format('MM'); },
@@ -25,7 +28,10 @@ function urlFormat (post, absolute) {
     return absolute ? cfg.get('url') + output : output;
 };
 
-function pageurl (pgn, type) {
+/*
+ * Builds pagination URL
+ */
+function paginationUrl (pgn, type) {
     var page = 'newer' === type ? pgn.newer : pgn.older,
         ctx = pgn.context.replace(pgnRegexp, '');
 
@@ -34,6 +40,9 @@ function pageurl (pgn, type) {
     return 1 === page ? '/' : ctx + pgnUrl.replace(':page', page);
 }
 
+/*
+ * Formats scheduled date for the given post and date format
+ */
 function dateFormat (post, format) {
     return post.scheduled
         ? moment(post.scheduled).format(format || "YYYY-MM-DD")
@@ -52,20 +61,36 @@ function encode (text) {
     return encodeURIComponent(text);
 }
 
-function bodyClass (post) {
-    return post ? 'post-template' : undefined;
+function bodyClass () {
+    return "post-template";
+}
+
+function postClass (post) {
+    return "";
+}
+
+function initRequest (req, res, next) {
+    console.info('init requst')
+    next();
 }
 
 function init (app) {
-    _.extend(app.locals, {
-        $url: urlFormat,
-        $pageurl: pageurl,
-        $labels: labelsFormat,
-        $date: dateFormat,
-        $encode: encode,
-        $metaTitle: metaTitle,
-        $bodyClass: bodyClass
-    })
+    _.extend(
+        app.locals, 
+        {
+            $url: postUrl,
+            $pageUrl: paginationUrl,
+            $labels: labelsFormat,
+            $date: dateFormat,
+            $encode: encode,
+            $metaTitle: metaTitle,
+            $bodyClass: bodyClass,
+            $postClass: postClass
+        }, 
+        cfg.get('view')
+    );
+    
+    app.use(initRequest);
 };
 
 module.exports = init;

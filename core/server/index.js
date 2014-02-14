@@ -17,13 +17,13 @@ function serverStartupInfo () {
         "\nCtrl+C to shut down".grey
     );
 
-    if(cfg.get('is:development')) {
+    if(cfg.get('development')) {
         console.log(format(
             "Listening on %s:%s", cfg.get('server:host'), cfg.get('server:port')).grey
         );
     }
 
-    if(cfg.get('is:production')) {
+    if(cfg.get('production')) {
         console.log(format("Panda application is available on %s", cfg.get('url')).grey);
     }
 
