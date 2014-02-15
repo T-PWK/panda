@@ -10,7 +10,7 @@ var config = module.exports = {
     production: {
         url: process.env.APP_URL,
         database: {
-            type: 'mongo',
+            type: 'memory',
             connection: {
                 uri: process.env.MONGOLAB_URI
             }
