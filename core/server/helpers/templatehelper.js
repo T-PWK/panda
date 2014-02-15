@@ -1,5 +1,4 @@
-var format        = require('util').format,
-    moment        = require('moment'),
+var moment        = require('moment'),
     cfg           = require('nconf'),
     _s            = require('underscore.string'),
     pgnUrl        = cfg.get('app:pageUrlFormat'),
