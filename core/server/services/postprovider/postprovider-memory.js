@@ -11,7 +11,7 @@ var when        = require('when'),
 var PostProvider = module.exports = function () {
     this.type = 'memory';
     this.dummyData = [];
-}
+};
 
 PostProvider.prototype.init = function () {
     var that = this,
@@ -27,24 +27,28 @@ PostProvider.prototype.init = function () {
             return data
         })
         .then(convertDateProperties);
-}
+};
 
 PostProvider.prototype.countAll = function () {
     return when(this.dummyData.length);
-}
+};
 
 PostProvider.prototype.findAll = function (opts) {
     opts = opts || {};
 
-    var start = opts.skip || 0, 
-        end = (opts.limit) ? start + opts.limit : this.dummyData.length - 1;
+    var now = new Date(), 
+        items = this.dummyData.filter(function (item) {
+            return !item.page && item.scheduled < now;
+        }),
+        start = opts.skip || 0, 
+        end = (opts.limit) ? start + opts.limit : items.length - 1;
 
-    return when(this.sort(this.dummyData).slice(start, end));
+    return when(this.sort(items).slice(start, end));
 };
 
 PostProvider.prototype.findBySlug = function (slug) {
     var items = this.dummyData.filter(function (item) {
-        return item.slug === slug;
+        return item.slug === slug && item.scheduled <= new Date();
     });
 
     return when(items[0]);
@@ -56,7 +60,7 @@ PostProvider.prototype.findByYear = function (year) {
     });
 
     return when(this.sort(items));
-}
+};
 
 PostProvider.prototype.findByMonth = function (year, month) {
     // JavaScript Date uses 0-based month index
@@ -68,7 +72,7 @@ PostProvider.prototype.findByMonth = function (year, month) {
     });
     
     return when(this.sort(items));
-}
+};
 
 PostProvider.prototype.findByDay = function (year, month, day) {
     // JavaScript Date uses 0-based month index
@@ -81,7 +85,7 @@ PostProvider.prototype.findByDay = function (year, month, day) {
     });
     
     return when(this.sort(items));
-}
+};
 
 PostProvider.prototype.findByLabel = function (label) {
     if (!label) return when([]);
@@ -95,25 +99,25 @@ PostProvider.prototype.findByLabel = function (label) {
         })
 
     return when(this.sort(items));
-}
+};
 
 PostProvider.prototype.sort = function (posts) {
     posts = posts.slice(0);
     posts.sort(this.sortByDate)
 
     return posts;
-}
+};
 
 PostProvider.prototype.sortByDate = function (a, b) {
     if (a.scheduled > b.scheduled) return -1;
     if (a.scheduled < b.scheduled) return 1;
     return 0;
-}
+};
 
 function convertDateProperties (values) {
-     values.forEach(function (item) {
+    values.forEach(function (item) {
         dateProps.forEach(function (prop) {
             if (this[prop]) this[prop] = new Date(this[prop])
-        }, item)
-    })
-}
+        }, item);
+    });
+};
