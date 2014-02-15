@@ -80,26 +80,34 @@ function encode (text) {
     return encodeURIComponent(text);
 }
 
+function labelToClass (post) {
+    return (post.labels || []).map(function (label) {
+        return 'tag-' + _s.slugify(label)
+    })
+}
+
 function bodyClass () {
     if ('/' === this.locals.context) return 'home-template';
     if (+this.req.params.page) return 'archive-template';
     
     var post = this.locals.post;
     if (post) {
-        var bodyClass = ['post-template'];
+        var bodyClass = labelToClass(post);
+        bodyClass.push('post-template');
         
         if (post.page) bodyClass.push('page');
-
-        (post.labels || []).forEach(function (label) {
-            bodyClass.push('tag-' + _s.slugify(label));
-        })
 
         return bodyClass;
     }
 }
 
 function postClass (post) {
-    return "";
+    post = post || this.locals.post;
+
+    var postClass = labelToClass(post);
+    postClass.push('post');
+    
+    return postClass;
 }
 
 /*
@@ -115,6 +123,7 @@ function initRequest (req, res, next) {
     res.locals({
         context:    req.path,
         metaTitle:  metaTitle,
+        $postClass: postClass.bind(res),
         $url:       postUrl.bind(res),
         $pageUrl:   pageUrl.bind(res),
         $labels:    labelsFormat.bind(res)
