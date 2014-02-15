@@ -69,7 +69,7 @@ exports.post = function (req, res) {
             if (!post) return res.send(404);
 
             res.locals.post = post;
-            res.render('post');
+            res.render(post.page ? 'page' : 'post');
         });
 }
 
