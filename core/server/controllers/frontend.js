@@ -15,7 +15,7 @@ exports.index = function(req, res) {
         res.locals({
             posts: results[0],
             pagination: pagination(req, results[1])
-        })
+        });
         res.render('index');
     })
     .catch(function (err) {
@@ -27,7 +27,6 @@ exports.year = function (req, res) {
     var year = +req.params.year;
     provider.findByYear(year).then(function (posts) {
         res.render('index', { 
-            app: application,
             posts: posts, 
             year: year
         });
@@ -40,7 +39,6 @@ exports.month = function (req, res) {
 
     provider.findByMonth(year, month).then(function (posts) {
         res.render('index', { 
-            app: application,
             posts: posts, 
             year: year, 
             month: month
@@ -55,7 +53,6 @@ exports.day = function (req, res) {
 
     provider.findByDay(year, month, day).then(function (posts) {
         res.render('index', { 
-            app: application,
             posts: posts, 
             year: year, 
             month: month,
@@ -65,22 +62,23 @@ exports.day = function (req, res) {
 };
 
 exports.post = function (req, res) {
-    provider.findBySlug(req.params.slug).then(function (post) {
-        res.render('post', { 
-            app: application,
-            post: post
+    provider
+        .findBySlug(req.params.slug)
+        .then(function (post) {
+
+            if (!post) return res.send(404);
+
+            res.locals.post = post;
+            res.render('post');
         });
-    });
 }
 
 exports.searchByLabel = function (req, res) {
     provider
         .findByLabel(req.params.label)
         .then(function (posts) {
-            res.render('index', {
-                blog: blog,
-                posts: posts
-            });
+            res.locals.posts = posts;
+            res.render('index');
     })
 }
 
