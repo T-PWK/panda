@@ -74,15 +74,12 @@
     "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
     "content": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor</p>",
     "labels":["node.js","javascript"],
-<<<<<<< HEAD
     "author": {
         "name": "Author Name",
         "email": "author@author-email.com",
         "bio": ""
-    }
-=======
+    },
     "featured": true
->>>>>>> eb4369b0bea372e4abdbc0b4795d87e933f1cc75
 },{
     "title":"The Spirits of the Heat",
     "slug":"spirits-of-heat",
