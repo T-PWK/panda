@@ -23,8 +23,8 @@ block content
         if pagination
             nav.pagination(role="navigation")
                 if pagination.newer
-                    a.newer-posts(href=$pageurl(pagination, 'newer')) &larr; Newer Posts
+                    a.newer-posts(href=$pageUrl(true)) &larr; Newer Posts
                 span.page-number
                     | Page #{pagination.page} of #{pagination.pages}
                 if pagination.older
-                    a.older-posts(href=$pageurl(pagination, 'older')) Older Posts &rarr;
+                    a.older-posts(href=$pageUrl(false)) Older Posts &rarr;

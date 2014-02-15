@@ -3,13 +3,13 @@ rss(version="2.0")
     channel
         title
             :cdata
-                !{app.title}
+                !{title}
         description
             :cdata
-                !{app.description}
-        link= app.url
+                !{description}
+        link= url
         language en
-        copyright= app.copyright
+        copyright= copyright
         generator Panda 0.0.1
         each post in posts
             item

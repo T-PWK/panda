@@ -5,16 +5,16 @@ block content
         article.post
 
             header.post-header
-                a.blog-logo(href=app.url)
-                    if app.logo
-                        img(src=app.log, alt="Blog Logo")
+                a.blog-logo(href=url)
+                    if logo
+                        img(src=logo, alt="Blog Logo")
                     else
-                        span.blog-title=app.title
+                        span.blog-title=title
 
             span.post-meta
                 time(datetime=$date(post)) #{$date(post, 'DD MMM YYYY')}
                 if post.labels.length
-                    |  on #{$labels(post, ' | ')} 
+                    |  on #{$labels(' | ')} 
 
             h1.post-title=post.title
 
@@ -32,11 +32,11 @@ block content
                 section.share
                     h4 Share this post
 
-                    a.icon-twitter(href='http://twitter.com/share?text='+$encode(post.title)+'&url='+$url(post, true), onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;")
+                    a.icon-twitter(href='http://twitter.com/share?text='+$encode(post.title)+'&url='+$url(true), onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;")
                         span.hidden Twitter
 
-                    a.icon-facebook(href='https://www.facebook.com/sharer/sharer.php?u='+$url(post, true), onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;")
+                    a.icon-facebook(href='https://www.facebook.com/sharer/sharer.php?u='+$url(true), onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;")
                         span.hidden Facebook
 
-                    a.icon-google-plus(href='https://plus.google.com/share?url='+$url(post, true), onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;")
+                    a.icon-google-plus(href='https://plus.google.com/share?url='+$url(true), onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;")
                         span.hidden Google+

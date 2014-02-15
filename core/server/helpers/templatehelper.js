@@ -1,7 +1,7 @@
 var format        = require('util').format,
     moment        = require('moment'),
     cfg           = require('nconf'),
-    _             = require('underscore')
+    _s            = require('underscore.string'),
     pgnUrl        = cfg.get('app:pageUrlFormat'),
     pgnRegexp     = new RegExp(pgnUrl.replace(/\//g, '\\/').replace(':page', '\\d+'));
 
@@ -9,6 +9,11 @@ var format        = require('util').format,
  * Builds post or static page URL
  */
 function postUrl (post, absolute) {
+    if (arguments.length < 2 && 'boolean' === typeof post) {
+        absolute = post;
+        post = this.locals.post;  
+    }
+
     var output = post.page ? '/:slug' : cfg.get('app:urlFormat'),
         tags = {
             ':year':   function () { return moment(post.published_at).format('YYYY'); },
@@ -30,10 +35,12 @@ function postUrl (post, absolute) {
 
 /*
  * Builds pagination URL
+ * It assumes that 'this' is current response
  */
-function pageUrl (pgn, type) {
-    var page = 'newer' === type ? pgn.newer : pgn.older,
-        ctx = pgn.context.replace(pgnRegexp, '');
+function pageUrl (newer) {
+    var pagination = this.locals.pagination,
+        page = newer ? pagination.newer : pagination.older,
+        ctx = this.locals.context.replace(pgnRegexp, '');
 
     if ('/' === ctx) ctx = '';
 
@@ -50,11 +57,24 @@ function dateFormat (post, format) {
 };
 
 function labelsFormat (post, join) {
+    if(2 > arguments.length && 'string' === typeof post) {
+        join = post;
+        post = this.locals.post;
+    }
+
     return post.labels.join(join || ', ');
 };
 
-function metaTitle (blog, post) {
-    return "";
+function metaTitle () {
+    return cfg.get('app:defaultMetaTitle') || cfg.get('app:title');
+}
+
+function metaDescription () {
+    return cfg.get('app:defaultMetaDesc') || cfg.get('app:description');
+}
+
+function metaKeywords () {
+    return cfg.get('app:defaultKeywords');
 }
 
 function encode (text) {
@@ -62,10 +82,21 @@ function encode (text) {
 }
 
 function bodyClass () {
-    var foo = undefined;
-    console.info(+foo > 1)
     if ('/' === this.locals.context) return 'home-template';
-    if (this.req.params.page > 1) return 'archive-template';
+    if (+this.req.params.page) return 'archive-template';
+    
+    var post = this.locals.post;
+    if (post) {
+        var bodyClass = ['post-template'];
+        
+        if (post.page) bodyClass.push('page');
+
+        (post.labels || []).forEach(function (label) {
+            bodyClass.push('tag-' + _s.slugify(label));
+        })
+
+        return bodyClass;
+    }
 }
 
 function postClass (post) {
@@ -83,14 +114,18 @@ function assets (asset) {
 function initRequest (req, res, next) {
     // Set default response local variables
     res.locals({
-        context: req.path
+        context:    req.path,
+        metaTitle:  metaTitle,
+        $url:       postUrl.bind(res),
+        $pageUrl:   pageUrl.bind(res),
+        $labels:    labelsFormat.bind(res)
     })
 
     Object.defineProperties(res.locals, {
-        "bodyClass": {
-            enumerable: true,
-            get: bodyClass.bind(res)
-        }
+        "bodyClass": { enumerable: true, get: bodyClass.bind(res) },
+        "metaTitle": { enumerable: true, get: metaTitle.bind(res) },
+        "metaDescription": { enumerable: true, get: metaDescription.bind(res) },
+        "metaKeywords":  { enumerable: true, get: metaKeywords.bind(res) }
     })
 
     next();
@@ -100,19 +135,13 @@ function init (app) {
 
     // Set default application local variables as well as template helper functions
     app.locals({
-        metaTitle:      cfg.get('app:defaultMetaTitle') || cfg.get('app:title'),
-        metaDesc:       cfg.get('app:defaultMetaDesc') || cfg.get('app:description'),
-        metaKeywords:   cfg.get('app:defaultKeywords'),
         title:          cfg.get('app:title'),
         description:    cfg.get('app:description'),
         url:            cfg.get('url'),
+        copyright:      cfg.get('app:copyright'),
         cover:          '/assets/img/header.jpg',
-        $url:           postUrl,
-        $pageUrl:       pageUrl,
-        $labels:        labelsFormat,
         $date:          dateFormat,
         $encode:        encode,
-        $metaTitle:     metaTitle,
         $postClass:     postClass,
         $assets:        assets.bind(app)
     })
