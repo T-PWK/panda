@@ -148,6 +148,7 @@ function init (app) {
         url:            cfg.get('url'),
         copyright:      cfg.get('app:copyright'),
         cover:          '/assets/img/header.jpg',
+        now:            moment(),
         $date:          dateFormat,
         $encode:        encode,
         $postClass:     postClass,
