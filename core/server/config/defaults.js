@@ -17,13 +17,13 @@ module.exports = {
         defaultKeywords: [],
 
         title: "Panda",
-        description: "Simple blogging platform.",
+        description: "Yet another blogging platform.",
 
         // # Pagination
         postsPerPage: 6,
         pageUrlFormat: "/page/:page",
 
-        copyright: "Content © 2013"
+        copyright: "Content © 2014"
     },
     url: "http://127.0.0.1:3000",
     server: { 
