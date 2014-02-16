@@ -12,9 +12,8 @@ module.exports = {
         httpCompression: true,
         
         // Default Metadata
-        defaultMetaTitle: "",
-        defaultMetaDesc: "",
-        defaultKeywords: [],
+        defaultMetaTitle: "Panda",
+        defaultMetaDesc: "Yet another blogging platform",
 
         title: "Panda",
         description: "Yet another blogging platform.",
@@ -22,6 +21,7 @@ module.exports = {
         // # Pagination
         postsPerPage: 6,
         pageUrlFormat: "/page/:page",
+        pageUrlRegExp: "/page/\\d+",
 
         copyright: "Content © 2014"
     },
