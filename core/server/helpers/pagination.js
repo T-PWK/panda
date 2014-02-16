@@ -1,9 +1,7 @@
-var cfg = require('nconf');
+var postsPerPage = require('nconf').get('app:postsPerPage')
 
 module.exports = function (req, posts) {
-
-    var howMany = cfg.get('app:postsPerPage'),
-        pages = Math.ceil(posts / howMany),
+    var pages = Math.ceil(posts / postsPerPage),
         page = +req.params.page || 1;
 
     return {
