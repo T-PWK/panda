@@ -2,7 +2,7 @@ var moment        = require('moment'),
     cfg           = require('nconf'),
     _s            = require('underscore.string'),
     pgnUrl        = cfg.get('app:pageUrlFormat'),
-    pgnRegexp     = new RegExp(pgnUrl.replace(/\//g, '\\/').replace(':page', '\\d+'));
+    pgnRegexp     = new RegExp(cfg.get('app:pageUrlRegExp'));
 
 /*
  * Builds post or static page URL
