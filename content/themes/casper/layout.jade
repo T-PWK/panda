@@ -21,8 +21,8 @@ html
 
         //- Platform specific data (including plugin data) TODO
         meta(name="generator", content="Panda 0.0.1")
-        link(rel="alternate", type="application/rss+xml", title="Panda", href="/rss/")
-        link(rel="canonical", href="http://127.0.0.1:3000/")
+        link(rel="alternate", type="application/rss+xml", title="Panda", href="/rss")
+        link(rel="canonical", href="http://127.0.0.1:3000")
 
     body(class=bodyClass)
 
@@ -48,6 +48,8 @@ html
                 .fluid-width-video-wrapper{width:100%;position:relative;padding:0;}.fluid-width-video-wrapper iframe,.fluid-width-video-wrapper object,.fluid-width-video-wrapper embed {position:absolute;top:0;left:0;width:100%;height:100%;}
 
         //- The main JavaScript file for Casper
+        script(type="text/javascript", src="//code.jquery.com/jquery-2.1.0.min.js")
         script(type="text/javascript", src=$assets("/js/jquery.fitvids.js"))
         script(type="text/javascript", src=$assets("/js/index.js"))
+
 
