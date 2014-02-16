@@ -6,6 +6,7 @@ module.exports = function (server) {
     server.param('month', frontend.monthParam);
     server.param('day', frontend.dayParam);
     server.param('format', frontend.formatParam);
+    server.param('page', frontend.pageParam);
 
     server.get('/', frontend.index);                        // Main page
     server.get(cfg.get('app:urlFormat'), frontend.post);    // Post page
