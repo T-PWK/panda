@@ -1,8 +1,9 @@
-var cfg           = require('nconf'),
-    when          = require('when'),
-    provider      = require('../providers').postProvider,
-    pagination    = require('../helpers/pagination'),
-    limit         = cfg.get('app:postsPerPage')
+var cfg              = require('nconf'),
+    when             = require('when'),
+    provider         = require('../providers').postProvider,
+    pagination       = require('../helpers/pagination'),
+    limit            = cfg.get('app:postsPerPage'),
+    paginationRegexp = new RegExp(cfg.get('app:pageUrlRegExp'))
     
 exports.index = function(req, res) {
     var page = req.params.page || 1, skip = limit * (page - 1);
@@ -83,8 +84,14 @@ exports.searchByLabel = function (req, res) {
 }
 
 exports.pageParam = function (req, res, next, page) {
-    if (page.match(/^\d+$/)) next();
-    else next('route');
+    if (!page.match(/^\d+$/)) next('route');
+    if (+page > 1) next();
+    else {
+        // Redirect to URL with no pagination if page 1 is used e.g. /page/1
+        var path = req.path.replace(paginationRegexp, '');
+        path = ('' === path) ? '/' : path; 
+        res.redirect(path)
+    };
 }
 
 exports.formatParam = function (req, res, next, format) {
