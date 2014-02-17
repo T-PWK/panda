@@ -62,15 +62,20 @@ exports.day = function (req, res) {
     });
 };
 
-exports.post = function (req, res) {
+exports.post = function (req, res, next) {
     provider
         .findBySlug(req.params.slug)
         .then(function (post) {
 
-            if (!post) return res.send(404);
+            // if there is no post with the given slug, check if there is no other route
+            // which could handle that request e.g. /:year
+            if (!post) return next('route');
 
             res.locals.post = post;
             res.render(post.page ? 'page' : 'post');
+        })
+        .catch(function (error) {
+            res.send(500);
         });
 }
 
