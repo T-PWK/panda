@@ -29,21 +29,29 @@ PostProvider.prototype.init = function () {
         .then(convertDateProperties);
 };
 
-PostProvider.prototype.countAll = function () {
-    return when(this.dummyData.length);
-};
-
-PostProvider.prototype.findAll = function (opts) {
+PostProvider.prototype.select = function(opts) {
     opts = opts || {};
 
-    var now = new Date(), 
+    var now = new Date(),
+        // JavaScript Date uses 0-based month index
+        month = (opts.month || 1) - 1,
         items = this.dummyData.filter(function (item) {
-            return !item.page && item.scheduled < now;
-        }),
-        start = opts.skip || 0, 
-        end = (opts.limit) ? start + opts.limit : items.length - 1;
+            return !item.page
+                && item.scheduled <= now
+                && (opts.year ? item.scheduled.getFullYear() === opts.year : true)
+                && (opts.month ? item.scheduled.getMonth() === month : true)
+                && (opts.day ? item.scheduled.getDate() === opts.day : true)
+        });
 
-    return when(this.sort(items).slice(start, end));
+    return items;
+}
+
+PostProvider.prototype.count = function (opts) {
+    return when(this.select(opts).length);
+}
+
+PostProvider.prototype.findAll = function (opts) {
+    return this.sliceAndSort(this.select(), opts)
 };
 
 PostProvider.prototype.findBySlug = function (slug) {
@@ -54,62 +62,40 @@ PostProvider.prototype.findBySlug = function (slug) {
     return when(items[0]);
 };
 
-PostProvider.prototype.findByYear = function (year) {
-    var now = new Date(),
-        items = this.dummyData.filter(function (item) {
-            return !item.page
-                && item.scheduled.getFullYear() === year 
-                && item.scheduled <= now;
-        });
-
-    return when(this.sort(items));
+PostProvider.prototype.findByYear = function (opts) {
+    return this.sliceAndSort(this.select(opts), opts)
 };
 
-PostProvider.prototype.findByMonth = function (year, month) {
-    // JavaScript Date uses 0-based month index
-    month--;
-
-    var now = new Date(),
-        items = this.dummyData.filter(function (item) {
-            return !item.page
-                && item.scheduled.getFullYear() === year 
-                && item.scheduled.getMonth() === month
-                && item.scheduled <= now;
-        });
-    
-    return when(this.sort(items));
+PostProvider.prototype.findByMonth = function (opts) {
+    return this.sliceAndSort(this.select(opts), opts)
 };
 
-PostProvider.prototype.findByDay = function (year, month, day) {
-    // JavaScript Date uses 0-based month index
-    month--;
-
-    var now = new Date(),
-        items = this.dummyData.filter(function (item) {
-            return !item.page
-                && item.scheduled.getFullYear() === year 
-                && item.scheduled.getMonth() === month
-                && item.scheduled.getDate() === day
-                && item.scheduled <= now;
-        });
-
-    return when(this.sort(items));
+PostProvider.prototype.findByDay = function (opts) {
+    return this.sliceAndSort(this.select(opts), opts);
 };
 
-PostProvider.prototype.findByLabel = function (label) {
-    if (!label) return when([]);
+PostProvider.prototype.findByLabel = function (opts) {
+    if (!opts.label) return when([]);
 
     var now = new Date(),
         items = this.dummyData.filter(function (item) {
             return !item.page
                 && item.labels 
-                && item.labels.indexOf(label) >= 0
-                && item.scheduled
+                && item.labels.indexOf(opts.label) >= 0
                 && item.scheduled <= now;
         })
 
-    return when(this.sort(items));
+    return this.sliceAndSort(posts, opts);
 };
+
+PostProvider.prototype.sliceAndSort = function(items, opts) {
+    opts = opts || {};
+
+    var start = opts.skip || 0, 
+        end = (opts.limit) ? start + opts.limit : items.length - 1;
+
+    return when(this.sort(items).slice(start, end));
+}
 
 PostProvider.prototype.sort = function (posts) {
     posts = posts.slice(0);
