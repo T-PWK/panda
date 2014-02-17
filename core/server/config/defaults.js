@@ -22,8 +22,7 @@ module.exports = {
         postsPerPage: 6,
         pageUrlFormat: "/page/:page",
         pageUrlRegExp: "/page/\\d+",
-
-        copyright: "Content © 2014"
+        copyright: "All content copyright <a href=\":url\">:title</a> &copy; :year &bull; All rights reserved."
     },
     url: "http://127.0.0.1:3000",
     server: { 

@@ -106,6 +106,18 @@ function postClass (post) {
     return postClass;
 }
 
+function copyright () {
+    var res = this,
+        tags = {
+            ':year' : function () { return res.locals.now.format('YYYY'); },
+            ':url'  : function () { return res.app.locals.url; },
+            ':title': function () { return res.app.locals.title; }
+        };
+    return cfg.get('app:copyright').replace(/(:[a-z]+)/g, function (match) {
+        if (match in tags) return tags[match]();
+    })
+}
+
 /*
  * Generates an asset URL.
  * It assumes that 'this' is current application
@@ -118,6 +130,7 @@ function initRequest (req, res, next) {
     // Set default response local variables
     res.locals({
         context:    req.path,
+        now:        moment(),
         $postClass: postClass.bind(res),
         $url:       postUrl.bind(res),
         $pageUrl:   pageUrl.bind(res),
@@ -127,7 +140,8 @@ function initRequest (req, res, next) {
     Object.defineProperties(res.locals, {
         "bodyClass": { enumerable: true, get: bodyClass.bind(res) },
         "metaTitle": { enumerable: true, get: metaTitle.bind(res) },
-        "metaDescription": { enumerable: true, get: metaDescription.bind(res) }
+        "metaDescription": { enumerable: true, get: metaDescription.bind(res) },
+        "copyright": { enumerable: true, get: copyright.bind(res) }
     })
 
     next();
@@ -142,7 +156,6 @@ function init (app) {
         url:            cfg.get('url'),
         copyright:      cfg.get('app:copyright'),
         cover:          '/assets/img/header.jpg',
-        now:            moment(),
         $date:          dateFormat,
         $encode:        encode,
         $postClass:     postClass,

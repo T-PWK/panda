@@ -32,10 +32,7 @@ html
         footer.site-footer
             a.subscribe.icon-feed(href="#{url}/rss"): span.tooltip Subscribe!
             .inner
-                section.copyright 
-                    | All content copyright 
-                    a(href=url)= title
-                    |  &copy; #{now.year()} &bull; All rights reserved.
+                section.copyright!= copyright
                 section.poweredby
                     | Responsive Theme powered by 
                     a.icon-ghost(href="http://ghost.org") Ghost
