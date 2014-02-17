@@ -41,9 +41,9 @@ function pageUrl (newer) {
         page = newer ? pagination.newer : pagination.older,
         ctx = this.locals.context.replace(pgnRegexp, '');
 
-    if ('/' === ctx) ctx = '';
-
-    return 1 === page ? '/' : ctx + pgnUrl.replace(':page', page);
+    return 1 === page
+        ? ('' === ctx ? '/' : ctx)
+        : ('/' === ctx ? '' : ctx) + pgnUrl.replace(':page', page);
 }
 
 /*
