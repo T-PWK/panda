@@ -72,10 +72,6 @@ function metaDescription () {
     return cfg.get('app:defaultMetaDesc') || cfg.get('app:description');
 }
 
-function metaKeywords () {
-    return cfg.get('app:defaultKeywords');
-}
-
 function encode (text) {
     return encodeURIComponent(text);
 }
@@ -122,7 +118,6 @@ function initRequest (req, res, next) {
     // Set default response local variables
     res.locals({
         context:    req.path,
-        metaTitle:  metaTitle,
         $postClass: postClass.bind(res),
         $url:       postUrl.bind(res),
         $pageUrl:   pageUrl.bind(res),
@@ -132,8 +127,7 @@ function initRequest (req, res, next) {
     Object.defineProperties(res.locals, {
         "bodyClass": { enumerable: true, get: bodyClass.bind(res) },
         "metaTitle": { enumerable: true, get: metaTitle.bind(res) },
-        "metaDescription": { enumerable: true, get: metaDescription.bind(res) },
-        "metaKeywords":  { enumerable: true, get: metaKeywords.bind(res) }
+        "metaDescription": { enumerable: true, get: metaDescription.bind(res) }
     })
 
     next();
