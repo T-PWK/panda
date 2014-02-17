@@ -15,6 +15,9 @@ module.exports = function (server) {
     server.get('/search/label/:label', frontend.searchByLabel);
 
     server.get('/:year', frontend.year);
+    server.get('/:year/page/:page', frontend.year);
     server.get('/:year/:month', frontend.month);
+    server.get('/:year/:month/page/:page', frontend.month);
     server.get('/:year/:month/:day', frontend.day);
+    server.get('/:year/:month/:day/page/:page', frontend.day);
 }

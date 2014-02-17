@@ -10,7 +10,7 @@ exports.index = function(req, res) {
 
     when.join(
         provider.findAll({ limit:limit, skip:skip }),
-        provider.countAll()
+        provider.count()
     )
     .then(function (results) {
         res.locals({
@@ -25,40 +25,58 @@ exports.index = function(req, res) {
 };
 
 exports.year = function (req, res) {
-    var year = +req.params.year;
-    provider.findByYear(year).then(function (posts) {
-        res.render('index', { 
-            posts: posts, 
-            year: year
+    var page = req.params.page || 1, skip = limit * (page - 1), year = +req.params.year;
+
+    when.join(
+        provider.findByYear({ year: year, skip:skip, limit:limit }),
+        provider.count({ year: year })
+    )
+    .then(function (results) {
+        res.locals({
+            posts: results[0],
+            year: year,
+            pagination: pagination(req, results[1])
         });
+        res.render('index');
     });
 };
 
 exports.month = function (req, res) {
-    var year  = +req.params.year,
-        month = +req.params.month;
+    var page = req.params.page || 1, skip = limit * (page - 1), 
+        year = +req.params.year, month = +req.params.month;
 
-    provider.findByMonth(year, month).then(function (posts) {
-        res.render('index', { 
-            posts: posts, 
-            year: year, 
-            month: month
+    when.join(
+        provider.findByMonth({ month:month, year: year, skip:skip, limit:limit }),
+        provider.count({ month:month, year: year })
+    )
+    .then(function (results) {
+        res.locals({
+            posts: results[0],
+            year: year,
+            month: month,
+            pagination: pagination(req, results[1])
         });
+        res.render('index');
     });
 };
 
 exports.day = function (req, res) {
-    var year  = +req.params.year,
-        month = +req.params.month,
-        day   = +req.params.day;
+    var page = req.params.page || 1, skip = limit * (page - 1), year = +req.params.year,
+        month = +req.params.month, day = +req.params.day;
 
-    provider.findByDay(year, month, day).then(function (posts) {
-        res.render('index', { 
-            posts: posts, 
-            year: year, 
+    when.join(
+        provider.findByDay({ day:day, month:month, year: year, skip:skip, limit:limit }),
+        provider.count({ day:day, month:month, year: year })
+    )
+    .then(function (results) {
+        res.locals({
+            posts: results[0],
+            year: year,
             month: month,
-            day: day
+            day: day,
+            pagination: pagination(req, results[1])
         });
+        res.render('index');
     });
 };
 
