@@ -55,9 +55,12 @@ PostProvider.prototype.findBySlug = function (slug) {
 };
 
 PostProvider.prototype.findByYear = function (year) {
-    var items = this.dummyData.filter(function (item) {
-        return item.scheduled.getFullYear() === year;
-    });
+    var now = new Date(),
+        items = this.dummyData.filter(function (item) {
+            return !item.page
+                && item.scheduled.getFullYear() === year 
+                && item.scheduled <= now;
+        });
 
     return when(this.sort(items));
 };
@@ -66,10 +69,13 @@ PostProvider.prototype.findByMonth = function (year, month) {
     // JavaScript Date uses 0-based month index
     month--;
 
-    var items = this.dummyData.filter(function (item) {
-        return item.scheduled.getFullYear() === year 
-            && item.scheduled.getMonth() === month;
-    });
+    var now = new Date(),
+        items = this.dummyData.filter(function (item) {
+            return !item.page
+                && item.scheduled.getFullYear() === year 
+                && item.scheduled.getMonth() === month
+                && item.scheduled <= now;
+        });
     
     return when(this.sort(items));
 };
@@ -78,24 +84,28 @@ PostProvider.prototype.findByDay = function (year, month, day) {
     // JavaScript Date uses 0-based month index
     month--;
 
-    var items = this.dummyData.filter(function (item) {
-        return item.scheduled.getFullYear() === year 
-            && item.scheduled.getMonth() === month
-            && item.scheduled.getDate() === day;
-    });
-    
+    var now = new Date(),
+        items = this.dummyData.filter(function (item) {
+            return !item.page
+                && item.scheduled.getFullYear() === year 
+                && item.scheduled.getMonth() === month
+                && item.scheduled.getDate() === day
+                && item.scheduled <= now;
+        });
+
     return when(this.sort(items));
 };
 
 PostProvider.prototype.findByLabel = function (label) {
     if (!label) return when([]);
 
-    var date = new Date(),
+    var now = new Date(),
         items = this.dummyData.filter(function (item) {
-            return item.labels 
+            return !item.page
+                && item.labels 
                 && item.labels.indexOf(label) >= 0
                 && item.scheduled
-                && item.scheduled <= date
+                && item.scheduled <= now;
         })
 
     return when(this.sort(items));
