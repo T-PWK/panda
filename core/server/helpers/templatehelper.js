@@ -49,10 +49,23 @@ function pageUrl (newer) {
 /*
  * Formats scheduled date for the given post and date format
  */
-function dateFormat (post, format) {
-    return post.scheduled
-        ? moment(post.scheduled).format(format || "YYYY-MM-DD")
-        : '';
+function dateFormat (post, opts) {
+    if (!post.scheduled) return '';
+
+    opts = opts || { format: "YYYY-MM-DD" }
+
+    if ('string' === typeof opts) {
+        opts = { format: opts };
+    }
+
+    var date = moment(post.scheduled);
+
+    if (opts.timeago) {
+        return date.fromNow();
+    }
+    if (opts.format) {
+        return date.format(opts.format);
+    }
 };
 
 function labelsFormat (post, join) {
@@ -76,8 +89,8 @@ function encode (text) {
     return encodeURIComponent(text);
 }
 
-function labelToClass (post) {
-    return (post.labels || []).map(function (label) {
+function labelToClass (labels) {
+    return (labels || []).map(function (label) {
         return 'tag-' + _s.slugify(label)
     })
 }
@@ -88,7 +101,7 @@ function bodyClass () {
     
     var post = this.locals.post;
     if (post) {
-        var bodyClass = labelToClass(post);
+        var bodyClass = labelToClass(post.labels);
         bodyClass.push('post-template');
         
         if (post.page) bodyClass.push('page');
@@ -97,12 +110,15 @@ function bodyClass () {
     }
 }
 
-function postClass (post) {
+function buildPostClass (post) {
     post = post || this.locals.post;
 
-    var postClass = labelToClass(post);
-    postClass.push('post');
-    
+    var postClass = ['post'];
+
+    if(post) {
+        Array.prototype.push.apply(postClass, labelToClass(post.labels));
+    }
+
     return postClass;
 }
 
@@ -131,18 +147,25 @@ function initRequest (req, res, next) {
     res.locals({
         context:    req.path,
         now:        moment(),
-        $postClass: postClass.bind(res),
+        $postClass: buildPostClass.bind(res),
         $url:       postUrl.bind(res),
         $pageUrl:   pageUrl.bind(res),
         $labels:    labelsFormat.bind(res)
     })
 
+    try {
+
+
     Object.defineProperties(res.locals, {
         "bodyClass": { enumerable: true, get: bodyClass.bind(res) },
         "metaTitle": { enumerable: true, get: metaTitle.bind(res) },
         "metaDescription": { enumerable: true, get: metaDescription.bind(res) },
-        "copyright": { enumerable: true, get: copyright.bind(res) }
+        "copyright": { enumerable: true, get: copyright.bind(res) },
+        "postClass": { enumerable: true, get: buildPostClass.bind(res) }
     })
+} catch(err) {
+    console.error(err)
+}
 
     next();
 }
@@ -155,10 +178,9 @@ function init (app) {
         description:    cfg.get('app:description'),
         url:            cfg.get('url'),
         copyright:      cfg.get('app:copyright'),
-        cover:          '/assets/img/header.jpg',
+        cover:          cfg.get('theme:cover'),
         $date:          dateFormat,
         $encode:        encode,
-        $postClass:     postClass,
         $assets:        assets.bind(app)
     })
 
