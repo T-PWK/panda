@@ -5,7 +5,8 @@ var moment        = require('moment'),
     pgnRegexp     = new RegExp(cfg.get('app:pageUrlRegExp'));
 
 /*
- * Builds post or static page URL
+ * Builds post or static page URL.
+ * It is assumed that 'this' is the current resonse
  */
 function postUrl (post, absolute) {
     if (arguments.length < 2 && 'boolean' === typeof post) {
@@ -95,15 +96,20 @@ function labelToClass (labels) {
     })
 }
 
-function bodyClass () {
+function buildBodyClass () {
+    // Main page template
     if ('/' === this.locals.context) return 'home-template';
+
+    // Any pagination template
     if (+this.req.params.page) return 'archive-template';
     
+    // Post or static page template (when res.locals.post is present)
     var post = this.locals.post;
     if (post) {
         var bodyClass = labelToClass(post.labels);
         bodyClass.push('post-template');
         
+        // If post is actually a static page
         if (post.page) bodyClass.push('page');
 
         return bodyClass;
@@ -123,11 +129,11 @@ function buildPostClass (post) {
 }
 
 function copyright () {
-    var res = this,
+    var app = this,
         tags = {
-            ':year' : function () { return res.locals.now.format('YYYY'); },
-            ':url'  : function () { return res.app.locals.url; },
-            ':title': function () { return res.app.locals.title; }
+            ':year' : function () { return moment().format('YYYY'); },
+            ':url'  : function () { return app.locals.url; },
+            ':title': function () { return app.locals.title; }
         };
     return cfg.get('app:copyright').replace(/(:[a-z]+)/g, function (match) {
         if (match in tags) return tags[match]();
@@ -153,28 +159,20 @@ function initRequest (req, res, next) {
         $labels:    labelsFormat.bind(res)
     })
 
-    try {
-
-
     Object.defineProperties(res.locals, {
-        "bodyClass": { enumerable: true, get: bodyClass.bind(res) },
+        "bodyClass": { enumerable: true, get: buildBodyClass.bind(res) },
+        "postClass": { enumerable: true, get: buildPostClass.bind(res) },
         "metaTitle": { enumerable: true, get: metaTitle.bind(res) },
-        "metaDescription": { enumerable: true, get: metaDescription.bind(res) },
-        "copyright": { enumerable: true, get: copyright.bind(res) },
-        "postClass": { enumerable: true, get: buildPostClass.bind(res) }
+        "metaDescription": { enumerable: true, get: metaDescription.bind(res) }
     })
-} catch(err) {
-    console.error(err)
-}
 
     next();
 }
 
 function init (app) {
-
     // Set default application local variables as well as template helper functions
     app.locals({
-        title:          cfg.get('app:title'),
+        // title:          cfg.get('app:title'),
         description:    cfg.get('app:description'),
         url:            cfg.get('url'),
         copyright:      cfg.get('app:copyright'),
@@ -182,6 +180,11 @@ function init (app) {
         $date:          dateFormat,
         $encode:        encode,
         $assets:        assets.bind(app)
+    })
+
+    Object.defineProperties(app.locals, {
+        title: { enumerable:true, value:cfg.get('app:title') },
+        "copyright": { enumerable:true, get: copyright.bind(app) }
     })
 
     // Update application locals with view settings like debug or pretty formatting
