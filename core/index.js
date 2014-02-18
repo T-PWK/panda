@@ -5,14 +5,18 @@ var colors  = require('colors'),
     when    = require('when');
 
 function startPanda (app) {
-    when().then(function () {
+    when()
+    .then(function () {
         return require('./server/config').init();
-    }).then(function () {
+    })
+    .then(function () {
         return require('./server/providers').init();
-    }).then(function () {
+    })
+    .then(function () {
         var panda = require('./server');
         panda(app);
-    }).catch(function (err) {
+    })
+    .catch(function (err) {
         console.log(("Panda server initialization error " + err).red);
     })
 }
