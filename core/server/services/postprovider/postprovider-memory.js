@@ -15,7 +15,7 @@ var PostProvider = module.exports = function () {
 
 PostProvider.prototype.init = function () {
     var that = this,
-        file = path.join(__dirname, '../../../../content/data', 'posts.json'),
+        file = path.join(cfg.get('paths:data'), 'posts.json'),
         loadData = nodefn.call(fs.readFile, file);
 
     return loadData

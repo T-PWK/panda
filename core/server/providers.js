@@ -30,7 +30,5 @@ module.exports.init = function () {
         ? when(initMongoDB())
         : when();
 
-    
-
     return promise.then(postProvider.init.bind(postProvider));
 }
