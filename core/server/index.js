@@ -37,7 +37,7 @@ function serverStartupInfo () {
 function setup (app) {
     when().then(function () {
         // ### Express Initialisation ###
-        app.set('views', cfg.get('theme:viewsPath'));
+        app.set('views', cfg.get('theme:paths:views'));
         app.set('admin views', path.join(__dirname, 'views'));
 
         // Set the view engine

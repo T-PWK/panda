@@ -3,7 +3,9 @@ var when            = require('when'),
     config          = require('../../../config'),
     path            = require('path'),
     appRoot         = path.resolve(__dirname, '../../..'),
-    themesRoot      = path.resolve(appRoot, 'content/themes');
+    adminViews      = path.resolve(appRoot, 'core/server/views'),
+    themesRoot      = path.resolve(appRoot, 'content/themes'),
+    dataRoot        = path.resolve(appRoot, 'content/data');
 
 function init () {
 
@@ -26,6 +28,7 @@ function init () {
 
     updateFlags();
     updatePaths();
+    updateThemePaths();
 
     // console.info(require('util').inspect(cfg, {depth: 5}))
 
@@ -33,10 +36,16 @@ function init () {
 }
 
 function updatePaths () {
+    cfg.set('paths:data', dataRoot);
+    cfg.set('paths:themes', themesRoot);
+    cfg.set('paths:adminViews', adminViews);
+}
+
+function updateThemePaths () {
     var themeName = cfg.get('theme:name');
 
-    cfg.set('theme:viewsPath', path.resolve(themesRoot, themeName));
-    cfg.set('theme:staticPath', path.resolve(themesRoot, themeName, 'assets'));
+    cfg.set('theme:paths:views', path.resolve(themesRoot, themeName));
+    cfg.set('theme:paths:static', path.resolve(themesRoot, themeName, 'assets'));
 }
 
 function updateFlags () {

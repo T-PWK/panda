@@ -23,7 +23,7 @@ function setup (app) {
     // app.use(express.methodOverride());
 
     // Set theme static files
-    app.use('/assets', express.static(cfg.get('theme:staticPath')));
+    app.use('/assets', express.static(cfg.get('theme:paths:static')));
 
     // Set the template helper component
     tplHelper(app);
