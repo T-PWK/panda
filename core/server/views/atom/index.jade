@@ -1,0 +1,16 @@
+doctype xml
+feed(xmlns="http://www.w3.org/2005/Atom")
+    id #{url}/
+    title= title
+    link(href="#{url}/")
+    link(href="#{url}#{context}", rel="self")
+    updated= $date(updated, 'iso')
+    generator(version="0.0.1") Panda
+
+    each post in posts
+        entry
+            id= $url(post, true)
+            title= post.title
+            updated= $date(post.updatedAt, 'iso')
+            author
+                name= post.author.name
