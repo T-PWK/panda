@@ -16,9 +16,9 @@ function postUrl (post, absolute) {
 
     var output = post.page ? '/:slug' : cfg.get('app:urlFormat'),
         tags = {
-            ':year':   function () { return moment(post.published_at).format('YYYY'); },
-            ':month':  function () { return moment(post.published_at).format('MM'); },
-            ':day':    function () { return moment(post.published_at).format('DD'); },
+            ':year':   function () { return moment(post.publishedAt).format('YYYY'); },
+            ':month':  function () { return moment(post.publishedAt).format('MM'); },
+            ':day':    function () { return moment(post.publishedAt).format('DD'); },
             ':slug':   function () { return post.slug; },
             ':id':     function () { return post.id; }
         };
@@ -48,10 +48,10 @@ function pageUrl (newer) {
 }
 
 /*
- * Formats scheduled date for the given post and date format
+ * Formats published date for the given post and date format
  */
 function dateFormat (post, opts) {
-    if (!post.scheduled) return '';
+    if (!post && !post.publishedAt) return '';
 
     opts = opts || { format: "YYYY-MM-DD" }
 
@@ -59,7 +59,7 @@ function dateFormat (post, opts) {
         opts = { format: opts };
     }
 
-    var date = moment(post.scheduled);
+    var date = moment(post.publishedAt);
 
     if (opts.timeago) {
         return date.fromNow();
@@ -140,6 +140,10 @@ function copyright () {
     })
 }
 
+function author () {
+    return this.locals.post && this.locals.post.author;
+}
+
 /*
  * Generates an asset URL.
  * It assumes that 'this' is current application
@@ -150,20 +154,19 @@ function assets (asset) {
 
 function initRequest (req, res, next) {
     // Set default response local variables
-    res.locals({
-        context:    req.path,
-        now:        moment(),
-        $postClass: buildPostClass.bind(res),
-        $url:       postUrl.bind(res),
-        $pageUrl:   pageUrl.bind(res),
-        $labels:    labelsFormat.bind(res)
-    })
-
     Object.defineProperties(res.locals, {
-        "bodyClass": { enumerable: true, get: buildBodyClass.bind(res) },
-        "postClass": { enumerable: true, get: buildPostClass.bind(res) },
-        "metaTitle": { enumerable: true, get: metaTitle.bind(res) },
-        "metaDescription": { enumerable: true, get: metaDescription.bind(res) }
+
+        context:    { enumerable: true, value: req.path },
+        now:        { enumerable: true, value: moment() },
+        $postClass: { enumerable: true, value: buildPostClass.bind(res) },
+        $url:       { enumerable: true, value: postUrl.bind(res) },
+        $pageUrl:   { enumerable: true, value: pageUrl.bind(res) },
+        $labels:    { enumerable: true, value: labelsFormat.bind(res) },
+        bodyClass: { enumerable: true, get: buildBodyClass.bind(res) },
+        postClass: { enumerable: true, get: buildPostClass.bind(res) },
+        metaTitle: { enumerable: true, get: metaTitle.bind(res) },
+        metaDescription: { enumerable: true, get: metaDescription.bind(res) },
+        author: { enumerable: true, get: author.bind(res) }
     })
 
     next();
@@ -171,24 +174,20 @@ function initRequest (req, res, next) {
 
 function init (app) {
     // Set default application local variables as well as template helper functions
-    app.locals({
-        // title:          cfg.get('app:title'),
-        description:    cfg.get('app:description'),
-        url:            cfg.get('url'),
-        copyright:      cfg.get('app:copyright'),
-        cover:          cfg.get('theme:cover'),
-        $date:          dateFormat,
-        $encode:        encode,
-        $assets:        assets.bind(app)
-    })
-
     Object.defineProperties(app.locals, {
-        title: { enumerable:true, value:cfg.get('app:title') },
-        "copyright": { enumerable:true, get: copyright.bind(app) }
-    })
+        title: { enumerable:true, value: cfg.get('app:title') },
+        description: { enumerable: true, value: cfg.get('app:description') },
+        url: { enumerable: true, value: cfg.get('url') },
+        cover: { enumerable: true, value: cfg.get('theme:cover') },
+        copyright: { enumerable:true, get: copyright.bind(app) },
+        $date: { enumerable:true, value: dateFormat },
+        $encode: { enumerable:true, value: encode },
+        $assets: { enumerable:true, value: assets.bind(app) },
 
-    // Update application locals with view settings like debug or pretty formatting
-    app.locals(cfg.get('view'));
+        // Update application locals with view settings like debug or pretty formatting
+        pretty: { enumerable:true, value: cfg.get('view:pretty') },
+        debug: { enumerable:true, value: cfg.get('view:debug') }
+    })
 
     // Initialize reqest / response specific variables
     app.use(initRequest);
