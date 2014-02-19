@@ -12,7 +12,7 @@ block content
                         span.blog-title=title
 
             span.post-meta
-                time(datetime=$date(post)) #{$date(post, 'DD MMM YYYY')}
+                time(datetime=$date(post, 'iso')) #{$date(post, 'DD MMM YYYY')}
                 if post.labels.length
                     |  on #{$labels(' | ')} 
 

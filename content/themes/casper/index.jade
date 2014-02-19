@@ -6,20 +6,25 @@ block content
             .site-head-content.inner
                 if logo
                     a.blog-logo(href=logo): img(alt="Blog Logo", src=logo)
-                h1.blog-title=title
-                h2.blog-description=description
+                h1.blog-title= title
+                h2.blog-description= description
+
     main.content(role="main")
+
+        //- ### Pagination
         each post in posts
             article.post
                 header.post-header
                     span.post-meta
-                        time(datetime=$date(post))=$date(post, "DD MMM YYYY")
+                        time(datetime= $date(post, 'iso'))= $date(post, "DD MMM YYYY")
                         if post.labels.length
                             |  on #{$labels(post)}
-                    h2.post-title: a(href=$url(post))=post.title
+
+                    h2.post-title: a(href= $url(post))= post.title
                 section.post-excerpt
                     p !{post.teaser}&hellip;
 
+        //- ### Pagination
         if pagination
             nav.pagination(role="navigation")
                 if pagination.newer
