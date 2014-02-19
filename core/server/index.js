@@ -47,7 +47,7 @@ function setup (app) {
         middleware(app);
 
         // ## Routing
-        routes.rss(app);      // Set up RSS routes
+        routes.feeds(app);    // Set up RSS routes
         routes.frontend(app); // Set up Frontent routes
 
         // ## Server Startup

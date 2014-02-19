@@ -1,9 +1,9 @@
 var frontend = require('./frontend'),
-    rss      = require('./rss');
+    feeds    = require('./feeds');
 
 module.exports = {
     frontend: frontend,
-    rss:      rss
+    feeds:    feeds
 }
 
 
