@@ -6,27 +6,29 @@ var when        = require('when'),
     fs          = require('fs'),
     path        = require('path'),
     moment      = require('moment'),
-    dateProps   = ['scheduled', 'created', 'updated'];
+    dateProps   = ['publishedAt', 'createdAt', 'updatedAt'];
 
 var PostProvider = module.exports = function () {
     this.type = 'memory';
     this.dummyData = [];
+    this.users;
 };
 
 PostProvider.prototype.init = function () {
-    var that = this,
-        file = path.join(cfg.get('paths:data'), 'posts.json'),
-        loadData = nodefn.call(fs.readFile, file);
+    var that        = this,
+        dataFile    = path.join(cfg.get('paths:data'), 'posts.json'),
+        usersFile   = path.join(cfg.get('paths:data'), 'users.json'),
+        loadData    = nodefn.call(fs.readFile, dataFile),
+        loadUsers   = nodefn.call(fs.readFile, usersFile);
 
-    return loadData
+    return when
+        .join(loadData, loadUsers)
         .then(function (data) {
-            return JSON.parse(data);
+            that.dummyData = JSON.parse(data[0]);
+            that.users = JSON.parse(data[1])
         })
-        .then(function (data) {
-            that.dummyData = data;
-            return data
-        })
-        .then(convertDateProperties);
+        .then(convertDateProperties.bind(that))
+        .then(updateAuthorInfo.bind(that));
 };
 
 PostProvider.prototype.select = function(opts) {
@@ -37,10 +39,10 @@ PostProvider.prototype.select = function(opts) {
         month = (opts.month || 1) - 1,
         items = this.dummyData.filter(function (item) {
             return !item.page
-                && item.scheduled <= now
-                && (opts.year ? item.scheduled.getFullYear() === opts.year : true)
-                && (opts.month ? item.scheduled.getMonth() === month : true)
-                && (opts.day ? item.scheduled.getDate() === opts.day : true)
+                && item.publishedAt <= now
+                && (opts.year ? item.publishedAt.getFullYear() === opts.year : true)
+                && (opts.month ? item.publishedAt.getMonth() === month : true)
+                && (opts.day ? item.publishedAt.getDate() === opts.day : true)
         });
 
     return items;
@@ -56,7 +58,7 @@ PostProvider.prototype.findAll = function (opts) {
 
 PostProvider.prototype.findBySlug = function (slug) {
     var items = this.dummyData.filter(function (item) {
-        return item.slug === slug && item.scheduled <= new Date();
+        return item.slug === slug && item.publishedAt <= new Date();
     });
 
     return when(items[0]);
@@ -82,7 +84,7 @@ PostProvider.prototype.findByLabel = function (opts) {
             return !item.page
                 && item.labels 
                 && item.labels.indexOf(opts.label) >= 0
-                && item.scheduled <= now;
+                && item.publishedAt <= now;
         })
 
     return this.sliceAndSort(posts, opts);
@@ -105,15 +107,21 @@ PostProvider.prototype.sort = function (posts) {
 };
 
 PostProvider.prototype.sortByDate = function (a, b) {
-    if (a.scheduled > b.scheduled) return -1;
-    if (a.scheduled < b.scheduled) return 1;
+    if (a.publishedAt > b.publishedAt) return -1;
+    if (a.publishedAt < b.publishedAt) return 1;
     return 0;
 };
 
-function convertDateProperties (values) {
-    values.forEach(function (item) {
+function convertDateProperties () {
+    this.dummyData.forEach(function (post) {
         dateProps.forEach(function (prop) {
             if (this[prop]) this[prop] = new Date(this[prop])
-        }, item);
+        }, post);
     });
+};
+
+function updateAuthorInfo () {
+    this.dummyData.forEach(function (post) {
+        post.author = this.users[post._authorId];
+    }, this)
 };
