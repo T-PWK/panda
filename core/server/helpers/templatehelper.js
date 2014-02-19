@@ -1,4 +1,5 @@
 var moment        = require('moment'),
+    util          = require('util'),
     cfg           = require('nconf'),
     _s            = require('underscore.string'),
     pgnUrl        = cfg.get('app:pageUrlFormat'),
@@ -48,24 +49,21 @@ function pageUrl (newer) {
 }
 
 /*
- * Formats published date for the given post and date format
+ * Formats given date. If the given date is a post then 'publishedAt' date is taken for formatting.
  */
-function dateFormat (post, opts) {
-    if (!post && !post.publishedAt) return '';
+function dateFormat (post, format) {
+    var date = util.isDate(post) ? post : post.publishedAt;
+    format = format || "YYYY-MM-DD";
 
-    opts = opts || { format: "YYYY-MM-DD" }
+    if (!date) return '';
 
-    if ('string' === typeof opts) {
-        opts = { format: opts };
-    }
+    var mdate = moment(date);
 
-    var date = moment(post.publishedAt);
-
-    if (opts.timeago) {
-        return date.fromNow();
-    }
-    if (opts.format) {
-        return date.format(opts.format);
+    switch (format) {
+        case 'timeago': return mdate.fromNow();
+        case 'utc': return mdate.utc();
+        case 'iso': return mdate.toISOString();
+        default: return mdate.format(format)
     }
 };
 
@@ -154,8 +152,8 @@ function assets (asset) {
 
 function initRequest (req, res, next) {
     // Set default response local variables
-    Object.defineProperties(res.locals, {
 
+    Object.defineProperties(res.locals, {
         context:    { enumerable: true, value: req.path },
         now:        { enumerable: true, value: moment() },
         $postClass: { enumerable: true, value: buildPostClass.bind(res) },
