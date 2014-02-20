@@ -52,8 +52,16 @@ function pageUrl (newer) {
  * Formats given date. If the given date is a post then 'publishedAt' date is taken for formatting.
  */
 function dateFormat (post, format) {
-    var date = util.isDate(post) ? post : post.publishedAt;
-    format = format || "YYYY-MM-DD";
+    if (arguments.length < 2 && 'string' === typeof post) {
+        if('string' === typeof post) {
+            format = post;
+            post = this.locals.post;
+        } else {
+            format = "YYYY-MM-DD";
+        }
+    }
+
+    var date = util.isDate(post) || moment.isMoment(post) ? post : post && post.publishedAt;
 
     if (!date) return '';
 
@@ -160,11 +168,12 @@ function initRequest (req, res, next) {
         $url:       { enumerable: true, value: postUrl.bind(res) },
         $pageUrl:   { enumerable: true, value: pageUrl.bind(res) },
         $labels:    { enumerable: true, value: labelsFormat.bind(res) },
-        bodyClass: { enumerable: true, get: buildBodyClass.bind(res) },
-        postClass: { enumerable: true, get: buildPostClass.bind(res) },
-        metaTitle: { enumerable: true, get: metaTitle.bind(res) },
+        $date:      { enumerable: true, value: dateFormat.bind(res) },
+        bodyClass:  { enumerable: true, get: buildBodyClass.bind(res) },
+        postClass:  { enumerable: true, get: buildPostClass.bind(res) },
+        metaTitle:  { enumerable: true, get: metaTitle.bind(res) },
         metaDescription: { enumerable: true, get: metaDescription.bind(res) },
-        author: { enumerable: true, get: author.bind(res) }
+        author:     { enumerable: true, get: author.bind(res) }
     })
 
     next();
@@ -178,7 +187,6 @@ function init (app) {
         url: { enumerable: true, value: cfg.get('url') },
         cover: { enumerable: true, value: cfg.get('theme:cover') },
         copyright: { enumerable:true, get: copyright.bind(app) },
-        $date: { enumerable:true, value: dateFormat },
         $encode: { enumerable:true, value: encode },
         $assets: { enumerable:true, value: assets.bind(app) },
 
