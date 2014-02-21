@@ -1,9 +1,11 @@
-var frontend = require('./frontend'),
-    feeds    = require('./feeds');
+var frontend    = require('./frontend'),
+    feeds       = require('./feeds'),
+    redirects   = require('./redirects');
 
 module.exports = {
-    frontend: frontend,
-    feeds:    feeds
+    frontend:   frontend,
+    feeds:      feeds,
+    redirects:  redirects
 }
 
 

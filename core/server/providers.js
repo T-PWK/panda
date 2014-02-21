@@ -2,6 +2,8 @@ var when            = require('when'),
     mongoose        = require('mongoose'),
     cfg             = require('nconf'),
     PostProvider    = require('./services/postprovider'),
+    ConfigProvider  = require('./services/configprovider'),
+    configProvider  = new ConfigProvider(),
     postProvider    = new PostProvider();
 
 function initMongoDB () {
@@ -22,13 +24,17 @@ function initMongoDB () {
 }
 
 module.exports = {
-    postProvider: postProvider
+    postProvider: postProvider,
+    configProvider: configProvider
 };
 
 module.exports.init = function () {
-    var promise = ('mongo' === postProvider.type)
-        ? when(initMongoDB())
-        : when();
-
-    return promise.then(postProvider.init.bind(postProvider));
+    var promise = ('mongo' === cfg.get('database:type'))
+            ? when(initMongoDB())
+            : when();
+        
+    return promise
+        .then(function () {
+            return when.join(postProvider.init(), configProvider.init());
+        });
 }
