@@ -7,7 +7,6 @@ var mongoose    = require('mongoose'),
     Post        = require('./post-model');
 
 var PostProvider = module.exports = function () {
-    this.type = 'mongo';
     this.db = mongoose.connection;
 }
 

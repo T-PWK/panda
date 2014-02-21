@@ -9,7 +9,6 @@ var when        = require('when'),
     dateProps   = ['publishedAt', 'createdAt', 'updatedAt'];
 
 var PostProvider = module.exports = function () {
-    this.type = 'memory';
     this.dummyData = [];
     this.users;
 };
