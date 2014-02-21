@@ -21,13 +21,16 @@ PostProvider.prototype.init = function () {
         loadUsers   = nodefn.call(fs.readFile, usersFile);
 
     return when
-        .join(loadData, loadUsers)
-        .then(function (data) {
-            that.dummyData = JSON.parse(data[0]);
-            that.users = JSON.parse(data[1])
+        .join(loadData, loadUsers) // load data files
+        .then(function (values) {  // parse each file to JSON
+            return when.map(values, JSON.parse);
         })
-        .then(convertDateProperties.bind(that))
-        .then(updateAuthorInfo.bind(that));
+        .spread(function (posts, users) { // set internal properties
+            that.dummyData = posts;
+            that.users = users;
+        })
+        .then(convertDateProperties.bind(that)) // convert date properties
+        .then(updateAuthorInfo.bind(that));     // update users (authors)
 };
 
 PostProvider.prototype.select = function(opts) {
