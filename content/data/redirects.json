@@ -1,6 +1,13 @@
 {
-    "/2014/02/measure-execution-time-nodejs-javascript.html": {
+    "/welcome-to-panda.html": {
         "to": "/welcome-to-panda", 
         "permanent": true
+    },
+    "/about.html": {
+        "to": "/about", 
+        "permanent": true
+    },
+    "/lorem-ipsum-dolor-sit-amet.html": {
+        "to": "/lorem-ipsum-dolor-sit-amet"
     }
 }

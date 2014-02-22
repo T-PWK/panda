@@ -39,7 +39,7 @@
     "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
     "content": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor</p>",
     "labels":[],
-    "_authorId": "_1"
+    "_authorId": "_2"
 },{
     "title":"Men of Tale",
     "slug":"men-of-tale",
@@ -59,7 +59,7 @@
     "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
     "content": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor</p>",
     "labels":["node.js","javascript"],
-    "_authorId": "_1",
+    "_authorId": "_2",
     "featured": true
 },{
     "title":"The Spirits of the Heat",
@@ -80,7 +80,7 @@
     "teaser":"You're live! Nice. We've put together a little post to introduce you to the Ghost editor and get you started. You can manage your content by signing in to the admin area at &lt;your blog URL&gt;/ghost/. When you arrive, you can select this post from a list",
     "labels":["Getting Started"],
     "content": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor</p>",
-    "_authorId": "_1"
+    "_authorId": "_2"
 },{
     "title":"The Captive's Theft",
     "slug":"captives-theft",
@@ -230,5 +230,5 @@
     "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
     "content": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor</p>",
     "labels":["node.js","javascript"],
-    "_authorId": "_1"
+    "_authorId": "_2"
 }]

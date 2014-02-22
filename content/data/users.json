@@ -1,8 +1,15 @@
 {
     "_1": {
-        "name": "Author Name",
+        "name": "Joel L. Campbell",
         "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Odio, quidem, iusto enim error facere minima autem ipsa nisi nihil magnam a ipsum veritatis explicabo quos laboriosam perferendis.",
         "website": "http://127.0.0.1:3000",
-        "image": "/assets/img/Male-Face-A3-icon.png"
+        "image": "/assets/img/Male-Face-A3-icon.png",
+        "lead": true
+    },
+    "_2": {
+        "name": "Rodney L. Yoho",
+        "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Odio, quidem, iusto enim error facere minima autem ipsa nisi nihil magnam a ipsum veritatis explicabo quos laboriosam perferendis.",
+        "website": "http://127.0.0.1:3000",
+        "image": "/assets/img/Male-Face-H2-icon.png"
     }
 }
