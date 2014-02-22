@@ -3,8 +3,10 @@ var when            = require('when'),
     cfg             = require('nconf'),
     PostProvider    = require('./services/postprovider'),
     ConfigProvider  = require('./services/configprovider'),
+    UserProvider    = require('./services/userprovider'),
     configProvider  = new ConfigProvider(),
-    postProvider    = new PostProvider();
+    postProvider    = new PostProvider(),
+    userProvider    = new UserProvider();
 
 function initMongoDB () {
     var deferred    = when.defer(),
@@ -25,7 +27,8 @@ function initMongoDB () {
 
 module.exports = {
     postProvider: postProvider,
-    configProvider: configProvider
+    configProvider: configProvider,
+    userProvider: userProvider
 };
 
 module.exports.init = function () {
@@ -35,6 +38,10 @@ module.exports.init = function () {
         
     return promise
         .then(function () {
-            return when.join(postProvider.init(), configProvider.init());
+            return when.join(
+                postProvider.init(), 
+                configProvider.init(),
+                userProvider.init()
+            );
         });
 }

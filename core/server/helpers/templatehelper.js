@@ -150,6 +150,10 @@ function author () {
     return this.locals.post && this.locals.post.author;
 }
 
+function ifCheck (value, element, checkValue) {
+    return element === checkValue ? value : undefined;
+}
+
 /*
  * Generates an asset URL.
  * It assumes that 'this' is current application
@@ -182,17 +186,18 @@ function initRequest (req, res, next) {
 function init (app) {
     // Set default application local variables as well as template helper functions
     Object.defineProperties(app.locals, {
-        title: { enumerable:true, value: cfg.get('app:title') },
+        title:       { enumerable: true, value: cfg.get('app:title') },
         description: { enumerable: true, value: cfg.get('app:description') },
-        url: { enumerable: true, value: cfg.get('url') },
-        cover: { enumerable: true, value: cfg.get('theme:cover') },
-        copyright: { enumerable:true, get: copyright.bind(app) },
-        $encode: { enumerable:true, value: encode },
-        $assets: { enumerable:true, value: assets.bind(app) },
+        url:         { enumerable: true, value: cfg.get('url') },
+        cover:       { enumerable: true, value: cfg.get('theme:cover') },
+        copyright:   { enumerable: true, get: copyright.bind(app) },
+        $encode:     { enumerable: true, value: encode },
+        $assets:     { enumerable: true, value: assets.bind(app) },
+        $if:         { enumerable: true, value: ifCheck },
 
         // Update application locals with view settings like debug or pretty formatting
-        pretty: { enumerable:true, value: cfg.get('view:pretty') },
-        debug: { enumerable:true, value: cfg.get('view:debug') }
+        pretty:      { enumerable: true, value: cfg.get('view:pretty') },
+        debug:       { enumerable: true, value: cfg.get('view:debug') }
     })
 
     // Initialize reqest / response specific variables

@@ -24,6 +24,7 @@ function setup (app) {
 
     // Set theme static files
     app.use('/assets', express.static(cfg.get('theme:paths:static')));
+    app.use('/shared', express.static(cfg.get('paths:sharedStatic')));
 
     // Set the template helper component
     tplHelper(app);
