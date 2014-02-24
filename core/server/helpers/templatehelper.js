@@ -34,6 +34,10 @@ function postUrl (post, absolute) {
     return absolute ? cfg.get('url') + output : output;
 };
 
+function labelUrl (label, absolute) {
+    return (absolute ? cfg.get('url') : '') + '/search/label/'+label;
+}
+
 /*
  * Builds pagination URL
  * It assumes that 'this' is current response
@@ -52,7 +56,7 @@ function pageUrl (newer) {
  * Formats given date. If the given date is a post then 'publishedAt' date is taken for formatting.
  */
 function dateFormat (post, format) {
-    if (arguments.length < 2 && 'string' === typeof post) {
+    if (arguments.length < 2) {
         if('string' === typeof post) {
             format = post;
             post = this.locals.post;
@@ -194,6 +198,7 @@ function init (app) {
         $encode:     { enumerable: true, value: encode },
         $assets:     { enumerable: true, value: assets.bind(app) },
         $if:         { enumerable: true, value: ifCheck },
+        $labelUrl:   { enumerable: true, value: labelUrl },
 
         // Update application locals with view settings like debug or pretty formatting
         pretty:      { enumerable: true, value: cfg.get('view:pretty') },
