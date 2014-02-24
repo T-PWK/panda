@@ -44,4 +44,4 @@ module.exports.init = function () {
                 userProvider.init()
             );
         });
-}
+};

@@ -87,3 +87,11 @@ PostProvider.prototype.findByDay = function (year, month, day) {
             .sort('-scheduled')
             .exec()
 }
+
+PostProvider.prototype.getArchiveInfo = function (opts) {
+    return [];
+}; 
+
+PostProvider.prototype.getLabelsInfo = function (opts) {
+    return [];
+}
