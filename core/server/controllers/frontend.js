@@ -4,7 +4,19 @@ var cfg              = require('nconf'),
     pagination       = require('../helpers/pagination'),
     limit            = cfg.get('app:postsPerPage'),
     paginationRegexp = new RegExp(cfg.get('app:pageUrlRegExp'))
-    
+
+exports.middleware = function (req, res, next) {
+    when.join(
+        provider.getLabelsInfo(),
+        provider.getArchiveInfo()
+    )
+    .spread(function (labels, archives) {
+        res.locals.labels = labels;
+        res.locals.archives = archives;
+    })
+    .then(next);
+}
+
 exports.index = function(req, res) {
     var page = req.params.page || 1, skip = limit * (page - 1);
 
@@ -12,15 +24,14 @@ exports.index = function(req, res) {
         provider.findAll({ limit:limit, skip:skip }),
         provider.count()
     )
-    .then(function (results) {
-        res.locals({
-            posts: results[0],
-            pagination: pagination(req, results[1])
-        });
+    .spread(function (posts, count, labels, archives) {
+        res.locals.posts = posts;
+        res.locals.pagination = pagination(req, count);
+
         res.render('index');
     })
     .catch(function (err) {
-        res.send(500, err);
+        res.send(500, err.toString());
     })
 };
 
@@ -32,11 +43,10 @@ exports.year = function (req, res) {
         provider.count({ year: year })
     )
     .then(function (results) {
-        res.locals({
-            posts: results[0],
-            year: year,
-            pagination: pagination(req, results[1])
-        });
+        res.locals.posts = results[0];
+        res.locals.year = year;
+        res.locals.pagination = pagination(req, results[1]);
+
         res.render('index');
     });
 };
@@ -50,12 +60,11 @@ exports.month = function (req, res) {
         provider.count({ month:month, year: year })
     )
     .then(function (results) {
-        res.locals({
-            posts: results[0],
-            year: year,
-            month: month,
-            pagination: pagination(req, results[1])
-        });
+        res.locals.posts = results[0];
+        res.locals.year = year;
+        res.locals.month = month;
+        res.locals.pagination = pagination(req, results[1]);
+
         res.render('index');
     });
 };
@@ -69,13 +78,12 @@ exports.day = function (req, res) {
         provider.count({ day:day, month:month, year: year })
     )
     .then(function (results) {
-        res.locals({
-            posts: results[0],
-            year: year,
-            month: month,
-            day: day,
-            pagination: pagination(req, results[1])
-        });
+        res.locals.posts = results[0];
+        res.locals.year = year;
+        res.locals.month = month;
+        res.locals.day = day;
+        res.locals.pagination = pagination(req, results[1]);
+
         res.render('index');
     });
 };
@@ -84,12 +92,12 @@ exports.post = function (req, res, next) {
     provider
         .findBySlug(req.params.slug)
         .then(function (post) {
-
             // if there is no post with the given slug, check if there is no other route
             // which could handle that request e.g. /:year
             if (!post) return next('route');
 
             res.locals.post = post;
+
             res.render(post.page ? 'page' : 'post');
         })
         .catch(function (error) {
@@ -98,11 +106,17 @@ exports.post = function (req, res, next) {
 }
 
 exports.searchByLabel = function (req, res) {
-    provider
-        .findByLabel(req.params.label)
-        .then(function (posts) {
-            res.locals.posts = posts;
-            res.render('index');
+    var page = req.params.page || 1, skip = limit * (page - 1);
+
+    when.join(
+        provider.findByLabel({ label:req.params.label, skip:skip, limit:limit }),
+        provider.count({ label: req.params.label })
+    )
+    .spread(function (posts, count) {
+        res.locals.posts = posts;
+        res.locals.pagination = pagination(req, count)
+        
+        res.render('index');
     })
 }
 

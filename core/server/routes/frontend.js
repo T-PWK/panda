@@ -8,16 +8,17 @@ module.exports = function (server) {
     server.param('format', frontend.formatParam);
     server.param('page', frontend.pageParam);
 
-    server.get('/', frontend.index);                        // Main page
-    server.get(cfg.get('app:urlFormat'), frontend.post);    // Post page
-    server.get('/page/:page', frontend.index);              // Pagination
+    server.get('/', frontend.middleware, frontend.index);                        // Main page
+    server.get(cfg.get('app:urlFormat'), frontend.middleware, frontend.post);    // Post page
+    server.get('/page/:page', frontend.middleware, frontend.index);              // Pagination
 
-    server.get('/search/label/:label', frontend.searchByLabel);
+    server.get('/search/label/:label', frontend.middleware, frontend.searchByLabel);
+    server.get('/search/label/:label/page/:page', frontend.middleware, frontend.searchByLabel);
 
-    server.get('/:year', frontend.year);
-    server.get('/:year/page/:page', frontend.year);
-    server.get('/:year/:month', frontend.month);
-    server.get('/:year/:month/page/:page', frontend.month);
-    server.get('/:year/:month/:day', frontend.day);
-    server.get('/:year/:month/:day/page/:page', frontend.day);
+    server.get('/:year', frontend.middleware, frontend.year);
+    server.get('/:year/page/:page', frontend.middleware, frontend.year);
+    server.get('/:year/:month', frontend.middleware, frontend.month);
+    server.get('/:year/:month/page/:page', frontend.middleware, frontend.month);
+    server.get('/:year/:month/:day', frontend.middleware, frontend.day);
+    server.get('/:year/:month/:day/page/:page', frontend.middleware, frontend.day);
 }
