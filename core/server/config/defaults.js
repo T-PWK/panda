@@ -20,8 +20,10 @@ module.exports = {
 
         // # Pagination
         postsPerPage: 6,
+
+        labelUrlFormat: "/search/label/:label",
         pageUrlFormat: "/page/:page",
-        pageUrlRegExp: "/page/\\d+",
+        // pageUrlRegExp: "/page/\\d+",
         copyright: "All content copyright :title &copy; :year &bull; All rights reserved.",
 
         staticCacheAge: 0

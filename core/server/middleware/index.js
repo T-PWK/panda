@@ -24,9 +24,9 @@ function setup (app) {
 
     // Set theme static files
     app.use('/assets', 
-        express.static(cfg.get('theme:paths:static'), {maxAge: cfg.get('app:staticCacheAge')}));
+        express.static(cfg.get('theme:paths:static'), { maxAge: cfg.get('app:staticCacheAge') }));
     app.use('/shared', 
-        express.static(cfg.get('paths:sharedStatic'), {maxAge: cfg.get('app:staticCacheAge')}));
+        express.static(cfg.get('paths:sharedStatic'), { maxAge: cfg.get('app:staticCacheAge') }));
 
     // Set the template helper component
     tplHelper(app);
