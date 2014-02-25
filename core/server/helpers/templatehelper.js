@@ -1,9 +1,10 @@
-var moment        = require('moment'),
-    util          = require('util'),
-    cfg           = require('nconf'),
-    _s            = require('underscore.string'),
-    pgnUrl        = cfg.get('app:pageUrlFormat'),
-    pgnRegexp     = new RegExp(cfg.get('app:pageUrlRegExp'));
+var moment          = require('moment'),
+    util            = require('util'),
+    cfg             = require('nconf'),
+    _s              = require('underscore.string'),
+    labelUrlFormat  = cfg.get('app:labelUrlFormat'),
+    pgnUrl          = cfg.get('app:pageUrlFormat'),
+    pgnRegexp       = new RegExp(pgnUrl.replace(':page', '\\d+'));
 
 /*
  * Builds post or static page URL.
@@ -35,7 +36,8 @@ function postUrl (post, absolute) {
 };
 
 function labelUrl (label, absolute) {
-    return (absolute ? cfg.get('url') : '') + '/search/label/'+label;
+    return (absolute ? cfg.get('url') : '') + 
+        labelUrlFormat.replace(':label', encodeURIComponent(label));
 }
 
 /*
