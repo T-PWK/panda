@@ -1,11 +1,15 @@
 {
     "/welcome-to-panda.html": {
         "to": "/welcome-to-panda", 
-        "permanent": true
+        "type": 301
     },
     "/about.html": {
         "to": "/about", 
-        "permanent": true
+        "type": 302
+    },
+    "/2014/01/about": {
+        "to": "/about",
+        "type": "internal"
     },
     "/lorem-ipsum-dolor-sit-amet.html": {
         "to": "/lorem-ipsum-dolor-sit-amet"
