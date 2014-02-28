@@ -11,7 +11,7 @@ function setup (app) {
     if (cfg.get('development')) {
         app.use(express.logger('dev'));
     } else {
-        app.use(express.logger())
+        app.use(express.logger());
     }
 
     if (cfg.get('app:httpCompression')) {
