@@ -1,5 +1,6 @@
 var cfg              = require('nconf'),
     when             = require('when'),
+    moment           = require('moment'),
     provider         = require('../providers').postProvider,
     pagination       = require('../helpers/pagination'),
     limit            = cfg.get('app:postsPerPage'),
@@ -63,6 +64,7 @@ exports.month = function (req, res) {
         res.locals.posts = results[0];
         res.locals.year = year;
         res.locals.month = month;
+        res.locals.date = moment([year, month - 1]);
         res.locals.pagination = pagination(req, results[1]);
 
         res.render('index');
@@ -82,6 +84,7 @@ exports.day = function (req, res) {
         res.locals.year = year;
         res.locals.month = month;
         res.locals.day = day;
+        res.locals.date = moment([year, month - 1, day]);
         res.locals.pagination = pagination(req, results[1]);
 
         res.render('index');
@@ -114,7 +117,8 @@ exports.searchByLabel = function (req, res) {
     )
     .spread(function (posts, count) {
         res.locals.posts = posts;
-        res.locals.pagination = pagination(req, count)
+        res.locals.pagination = pagination(req, count);
+        res.locals.label = req.params.label;
         
         res.render('index');
     })
