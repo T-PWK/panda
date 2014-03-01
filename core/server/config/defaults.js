@@ -11,9 +11,9 @@ module.exports = {
         urlFormat: "/:year/:month/:day/:slug.html",
         httpCompression: true,
         
-        // Default Metadata
-        defaultMetaTitle: "Panda",
-        defaultMetaDesc: "Yet another blogging platform",
+        // Default metadata does not have default values
+        metaTitle: null,
+        metaDescription: null,
 
         title: "Panda",
         description: "Yet another blogging platform.",

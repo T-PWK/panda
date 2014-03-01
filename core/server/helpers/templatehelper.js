@@ -91,11 +91,11 @@ function labelsFormat (post, join) {
 };
 
 function metaTitle () {
-    return cfg.get('app:defaultMetaTitle') || cfg.get('app:title');
+    return cfg.get('app:metaTitle') || cfg.get('app:title');
 }
 
 function metaDescription () {
-    return cfg.get('app:defaultMetaDesc') || cfg.get('app:description');
+    return cfg.get('app:metaDescription') || cfg.get('app:description');
 }
 
 function encode (text) {
