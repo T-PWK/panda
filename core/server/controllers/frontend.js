@@ -60,12 +60,12 @@ exports.month = function (req, res) {
         provider.findByMonth({ month:month, year: year, skip:skip, limit:limit }),
         provider.count({ month:month, year: year })
     )
-    .then(function (results) {
-        res.locals.posts = results[0];
+    .spread(function (posts, count) {
+        res.locals.posts = posts;
         res.locals.year = year;
         res.locals.month = month;
         res.locals.date = moment([year, month - 1]);
-        res.locals.pagination = pagination(req, results[1]);
+        res.locals.pagination = pagination(req, count);
 
         res.render('index');
     });
@@ -92,20 +92,23 @@ exports.day = function (req, res) {
 };
 
 exports.post = function (req, res, next) {
-    provider
-        .findBySlug(req.params.slug)
-        .then(function (post) {
-            // if there is no post with the given slug, check if there is no other route
-            // which could handle that request e.g. /:year
-            if (!post) return next('route');
+    when(
+        provider.findBySlug(req.params.slug)
+    )
+    .then(function (post) {
 
-            res.locals.post = post;
+        // if there is no post with the given slug, 
+        // check if there is no other route
+        // which could handle that request e.g. /:year
+        if (!post) return next('route');
 
-            res.render(post.page ? 'page' : 'post');
-        })
-        .catch(function (error) {
-            res.send(500);
-        });
+        res.locals.post = post;
+
+        res.render(post.page ? 'page' : 'post');
+    })
+    .catch(function (error) {
+        res.send(500);
+    });
 }
 
 exports.searchByLabel = function (req, res) {
