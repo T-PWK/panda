@@ -11,8 +11,7 @@ var PostProvider = module.exports = function () {
 }
 
 PostProvider.prototype.init = function () {
-<<<<<<< HEAD
-    var deferred = when.defer();
+    // var deferred = when.defer();
 
     // Post.create({
     //     slug: 'javascript-slice-substr-substring',
@@ -23,12 +22,10 @@ PostProvider.prototype.init = function () {
     //     deferred.resolve();
     // })
 
-    deferred.resolve();
+    // deferred.resolve();
 
-    return deferred.promise;
-=======
+    // return deferred.promise;
     return when.resolve();
->>>>>>> 17958114594000e757f9374f06e960beaa186a41
 }
 
 PostProvider.prototype.findAll = function () {
