@@ -28,11 +28,17 @@ PostProvider.prototype.init = function () {
     return when.resolve();
 }
 
-PostProvider.prototype.findAll = function () {
+PostProvider.prototype.findAll = function (opts) {
+    opts = opts || {};
+
     return Post
-            .find({ published: true })
+            .find({ page: false })
             .where('publishedAt').lte(new Date())
             .sort('-publishedAt')
+            .skip(opts.skip)
+            .limit(opts.limit)
+            .select('author title teaser publishedAt labels slug')
+            .populate('author')
             .exec();
 };
 
@@ -42,72 +48,138 @@ PostProvider.prototype.findBySlug = function (slug) {
 
     // TODO: do not show unpublished items
     return Post
-            .findOne({ slug: slug, published: true })
+            .findOne({ slug: slug })
+            .where('publishedAt').lte(new Date())
+            .select('title content author publishedAt')
+            .populate('author')
             .exec()
 };
 
-PostProvider.prototype.findByYear = function (year) {
+PostProvider.prototype.findByYear = function (opts) {
+    opts = opts || {};
+
     // Make sure we do not return post scheduled after current date and time 
     // if getting all post from the current year
     var endDate = Math.min(
-        moment([year]).endOf('year').toDate(),
+        moment([opts.year]).endOf('year').toDate(),
         new Date()
     );
 
     return Post
-            .find({ hidden: false })
+            .find({ page: false })
             .where('publishedAt')
-                .gte(moment([year]).startOf('year').toDate())
+                .gte(moment([opts.year]).startOf('year').toDate())
                 .lte(new Date(endDate))
             .sort('-publishedAt')
+            .skip(opts.skip)
+            .limit(opts.limit)
+            .select('author title teaser publishedAt labels slug')
+            .populate('author')
             .exec()
 }
 
-PostProvider.prototype.findByMonth = function (year, month) {
+PostProvider.prototype.findByMonth = function (opts) {
+    opts = opts || {};
 
     // Moment uses 0-based month values i.e. 0 for Jan etc.
-    month--;
+    var month = (opts.month || 1) - 1;
 
     // Make sure we do not return post scheduled after current date and time 
     // if getting all post from the current year
     var endDate = Math.min(
-        moment([year, month]).endOf('month').toDate(),
+        moment([opts.year, month]).endOf('month').toDate(),
         new Date()
     );
 
     return Post
-            .find({ hidden: false })
+            .find({ page: false })
             .where('publishedAt')
-                .gte(moment([year, month]).startOf('month').toDate())
+                .gte(moment([opts.year, month]).startOf('month').toDate())
                 .lte(new Date(endDate))
             .sort('-publishedAt')
+            .skip(opts.skip)
+            .limit(opts.limit)
+            .select('author title teaser publishedAt labels slug')
+            .populate('author')
             .exec()
 }
 
-PostProvider.prototype.findByDay = function (year, month, day) {
+PostProvider.prototype.findByDay = function (opts) {
+    opts = opts || {};
 
     // Moment uses 0-based month values i.e. 0 for Jan etc.
-    month--;
+    var month = (opts.month || 1) - 1;
 
     // Make sure we do not return post scheduled after current date and time 
     // if getting all post from the current year
     var endDate = Math.min(
-        moment([year, month, day]).endOf('day').toDate(),
+        moment([opts.year, month, opts.day]).endOf('day').toDate(),
         new Date()
     );
 
     return Post
-            .find({ hidden: false })
+            .find({ page: false })
             .where('publishedAt')
-                .gte(moment([year, month, day]).startOf('day').toDate())
+                .gte(moment([opts.year, month, opts.day]).startOf('day').toDate())
                 .lte(new Date(endDate))
             .sort('-publishedAt')
+            .skip(opts.skip)
+            .limit(opts.limit)
+            .select('author title teaser publishedAt labels slug')
+            .populate('author')
             .exec()
+}
+
+PostProvider.prototype.findByLabel = function (opts) {
+    opts = opts || {};
+
+    if (!opts.label) return when.resolve();
+
+    return Post
+        .find({ labels: opts.label, page: false })
+        .where('publishedAt')
+            .lte(new Date())
+        .skip(opts.skip)
+        .limit(opts.limit)
+        .exec();
 }
 
 PostProvider.prototype.count = function (opts) {
-    console.info('count : ', opts)
-    return Post.count();
+    opts = opts || {};
+    var start, end = new Date(), month, query, cond = { page: false };
+
+    if (opts.label) cond.labels = opts.label;
+
+    // post published between start and end of the day
+    if (opts.day) {
+        month = opts.month - 1;
+        start = moment([opts.year, month, opts.day]).startOf('day').toDate();
+        end = moment([opts.year, month, opts.day]).endOf('day').toDate();
+    }
+    // post published between start and end of the month
+    else if (opts.month) {
+        month = opts.month - 1;
+        start = moment([opts.year, month]).startOf('month').toDate();
+        end = moment([opts.year, month]).endOf('month').toDate();
+    }
+    // post published between start and end of the year
+    else if (opts.year) {
+        start = moment([opts.year]).startOf('year').toDate();
+        end = moment([opts.year]).endOf('year').toDate();
+    }
+
+    query = Post
+        .count(cond)
+        .where('publishedAt');
+
+    if (start) {
+        query = query.gte(start);
+    }
+    if (end) {
+        query = query.lte(new Date(Math.min(end, new Date())));
+    }
+
+    return query.exec();
 }
 
 PostProvider.prototype.getArchiveInfo = function (opts) {
@@ -117,11 +189,12 @@ PostProvider.prototype.getArchiveInfo = function (opts) {
 PostProvider.prototype.getLabelsInfo = function (opts) {
     return when(
          Post.aggregate(
-            { $project: { labels: 1, _id:0 } },                 // operate on labels only
+            { $match: { publishedAt: { $lte: new Date() } } },  // limit by publication date
+            { $project: { labels: 1, _id: 0 } },                // operate on labels only
             { $unwind: "$labels" },                             // convert labels to independent objects
             { $group: { _id: "$labels", count: { $sum: 1 } } }, // aggregate labels and count number of occurences
             { $sort: { count: -1 } },                           // sort label object by count descending
-            { $project: { count: 1, labal:"$_id", _id:0 } }     // make sure we have label and count properties
+            { $project: { count: 1, label: "$_id", _id: 0 } }   // make sure we have label and count properties
         ).exec()
     );
 }

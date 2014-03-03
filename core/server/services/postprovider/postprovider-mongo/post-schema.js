@@ -8,6 +8,8 @@ var postSchema = mongoose.Schema({
     teaser: String,
     labels: { type: [String] },
 
+    author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+
     // # Metadata
     metaDescription: String,
 
