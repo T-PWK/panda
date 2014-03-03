@@ -10,7 +10,9 @@ var PostProvider = module.exports = function () {
     this.db = mongoose.connection;
 }
 
-PostProvider.prototype.init = function () {}
+PostProvider.prototype.init = function () {
+    return when.resolve();
+}
 
 PostProvider.prototype.findAll = function () {
     return Post
@@ -93,5 +95,13 @@ PostProvider.prototype.getArchiveInfo = function (opts) {
 }; 
 
 PostProvider.prototype.getLabelsInfo = function (opts) {
-    return [];
+    return when(
+         Post.aggregate(
+            { $project: { labels: 1, _id:0 } },                 // operate on labels only
+            { $unwind: "$labels" },                             // convert labels to independent objects
+            { $group: { _id: "$labels", count: { $sum: 1 } } }, // aggregate labels and count number of occurences
+            { $sort: { count: -1 } },                           // sort label object by count descending
+            { $project: { count: 1, labal:"$_id", _id:0 } }     // make sure we have label and count properties
+        ).exec()
+    );
 }
