@@ -11,6 +11,7 @@ var PostProvider = module.exports = function () {
 }
 
 PostProvider.prototype.init = function () {
+<<<<<<< HEAD
     var deferred = when.defer();
 
     // Post.create({
@@ -25,6 +26,9 @@ PostProvider.prototype.init = function () {
     deferred.resolve();
 
     return deferred.promise;
+=======
+    return when.resolve();
+>>>>>>> 17958114594000e757f9374f06e960beaa186a41
 }
 
 PostProvider.prototype.findAll = function () {
@@ -114,5 +118,13 @@ PostProvider.prototype.getArchiveInfo = function (opts) {
 }; 
 
 PostProvider.prototype.getLabelsInfo = function (opts) {
-    return [];
+    return when(
+         Post.aggregate(
+            { $project: { labels: 1, _id:0 } },                 // operate on labels only
+            { $unwind: "$labels" },                             // convert labels to independent objects
+            { $group: { _id: "$labels", count: { $sum: 1 } } }, // aggregate labels and count number of occurences
+            { $sort: { count: -1 } },                           // sort label object by count descending
+            { $project: { count: 1, labal:"$_id", _id:0 } }     // make sure we have label and count properties
+        ).exec()
+    );
 }
