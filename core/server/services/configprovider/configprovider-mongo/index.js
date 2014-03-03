@@ -1,12 +1,22 @@
-var when = require('when');
+var when        = require('when'),
+    mongoose    = require('mongoose'),
+    cfg         = require('nconf'),
+    debug       = require('debug')('panda:configprovider'),
+    Redirect    = require('./redirect-model');
 
-var PostProvider = module.exports = function () {
-    this.db = mongoose.connection;
+var ConfigProvider = module.exports = function () {};
+
+ConfigProvider.prototype.init = function () {
+    debug('initialization');
+
+    return when.resolve();
 }
 
-PostProvider.prototype.init = function () {
-    return when();
-}
+ConfigProvider.prototype.findRedirectByUrl = function (path) {
+    debug('find redirect by path', path);
 
-ConfigProvider.prototype.findRedirectByUrl = function () {
+    return Redirect
+        .findOne({ from: path })
+        .select('type to')
+        .exec();
 }
