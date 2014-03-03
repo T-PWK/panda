@@ -9,13 +9,12 @@ var postSchema = mongoose.Schema({
     labels: { type: [String] },
 
     // # Metadata
-    metaTitle: String,
     metaDescription: String,
 
     // # Dates
     createdAt: { type: Date, required: true, default: Date.now },
     updatedAt: { type: Date, required: true, default: Date.now },
-    scheduled: { type: Date, default: Date.now },
+    publishedAt: { type: Date, default: Date.now },
     
     // # Additional properties
     geo: { type: [Number] },
@@ -33,7 +32,5 @@ postSchema.pre('save', function (next) {
     this.updatedAt = new Date();
     next();
 })
-
-
 
 module.exports = postSchema;

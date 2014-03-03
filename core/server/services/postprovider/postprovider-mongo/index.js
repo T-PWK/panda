@@ -10,22 +10,38 @@ var PostProvider = module.exports = function () {
     this.db = mongoose.connection;
 }
 
-PostProvider.prototype.init = function () {}
+PostProvider.prototype.init = function () {
+    var deferred = when.defer();
+
+    // Post.create({
+    //     slug: 'javascript-slice-substr-substring',
+    //     title: 'What do JavaScript slice(), substr() and substring() do?',
+    //     content: '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>',
+    //     teaser: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit'
+    // }, function (argument) {
+    //     deferred.resolve();
+    // })
+
+    deferred.resolve();
+
+    return deferred.promise;
+}
 
 PostProvider.prototype.findAll = function () {
     return Post
-            .find({ hidden: false })
-            .where('scheduled').lte(new Date())
-            .sort('-scheduled')
+            .find({ published: true })
+            .where('publishedAt').lte(new Date())
+            .sort('-publishedAt')
             .exec();
 };
 
 PostProvider.prototype.findBySlug = function (slug) {
     // Increase page view counter
-    Post.update({ slug: slug }, { $inc: { 'counter.view':1 } }, function () {});
+    // Post.update({ slug: slug }, { $inc: { 'counter.view':1 } }, function () {});
 
+    // TODO: do not show unpublished items
     return Post
-            .findOne({ slug: slug })
+            .findOne({ slug: slug, published: true })
             .exec()
 };
 
@@ -39,10 +55,10 @@ PostProvider.prototype.findByYear = function (year) {
 
     return Post
             .find({ hidden: false })
-            .where('scheduled')
+            .where('publishedAt')
                 .gte(moment([year]).startOf('year').toDate())
                 .lte(new Date(endDate))
-            .sort('-scheduled')
+            .sort('-publishedAt')
             .exec()
 }
 
@@ -60,10 +76,10 @@ PostProvider.prototype.findByMonth = function (year, month) {
 
     return Post
             .find({ hidden: false })
-            .where('scheduled')
+            .where('publishedAt')
                 .gte(moment([year, month]).startOf('month').toDate())
                 .lte(new Date(endDate))
-            .sort('-scheduled')
+            .sort('-publishedAt')
             .exec()
 }
 
@@ -81,11 +97,16 @@ PostProvider.prototype.findByDay = function (year, month, day) {
 
     return Post
             .find({ hidden: false })
-            .where('scheduled')
+            .where('publishedAt')
                 .gte(moment([year, month, day]).startOf('day').toDate())
                 .lte(new Date(endDate))
-            .sort('-scheduled')
+            .sort('-publishedAt')
             .exec()
+}
+
+PostProvider.prototype.count = function (opts) {
+    console.info('count : ', opts)
+    return Post.count();
 }
 
 PostProvider.prototype.getArchiveInfo = function (opts) {
