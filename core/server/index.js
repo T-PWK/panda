@@ -8,10 +8,6 @@ var express     = require('express'),
     middleware  = require('./middleware');
 
 function serverStartupInfo () {
-
-    // TODO:
-    // - use configuration values for server startup
-
     console.log(
         "Panda server is running...".green,
         "\nCtrl+C to shut down".grey

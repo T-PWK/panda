@@ -32,7 +32,6 @@ PostProvider.prototype.findBySlug = function (slug) {
     // Increase page view counter
     // Post.update({ slug: slug }, { $inc: { 'counter.view':1 } }, function () {});
 
-    // TODO: do not show unpublished items
     return Post
             .findOne({ slug: slug })
             .where('publishedAt').lte(new Date())
@@ -179,11 +178,14 @@ PostProvider.prototype.getArchiveInfo = function (opts) {
 
     return when(
         Post.aggregate(
-            { $match: { publishedAt: { $lte: new Date() }, page: false } },
+            // exclude unpublished posts and pages
+            { $match: { publishedAt: { $lte: new Date() }, page: false } }, 
+            // group posts by year and month
             { $group: {
                 _id: { year: { $year: "$publishedAt" }, month: { $month: "$publishedAt" } },
                 count: { $sum: 1 }
             } },
+            // recent dates go first
             { $sort: { "_id.year": -1, "_id.month": -1 } }
         ).exec()
     ).then(processArchives);
