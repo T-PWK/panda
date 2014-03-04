@@ -13,5 +13,5 @@ UserProvider.prototype.init = function () {
 UserProvider.prototype.findLeadUser = function () {
     debug('find lead user');
 
-    return when.resolve({});
+    return User.findOne({ lead: true }).exec();
 }
