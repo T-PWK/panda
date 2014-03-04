@@ -11,20 +11,6 @@ var PostProvider = module.exports = function () {
 }
 
 PostProvider.prototype.init = function () {
-    // var deferred = when.defer();
-
-    // Post.create({
-    //     slug: 'javascript-slice-substr-substring',
-    //     title: 'What do JavaScript slice(), substr() and substring() do?',
-    //     content: '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>',
-    //     teaser: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit'
-    // }, function (argument) {
-    //     deferred.resolve();
-    // })
-
-    // deferred.resolve();
-
-    // return deferred.promise;
     return when.resolve();
 }
 
@@ -50,7 +36,7 @@ PostProvider.prototype.findBySlug = function (slug) {
     return Post
             .findOne({ slug: slug })
             .where('publishedAt').lte(new Date())
-            .select('title content author publishedAt')
+            .select('title content author publishedAt slug')
             .populate('author')
             .exec()
 };
@@ -176,14 +162,31 @@ PostProvider.prototype.count = function (opts) {
         query = query.gte(start);
     }
     if (end) {
-        query = query.lte(new Date(Math.min(end, new Date())));
+        query = query.lte(new Date(Math.min(end, Date.now())));
     }
 
     return query.exec();
 }
 
 PostProvider.prototype.getArchiveInfo = function (opts) {
-    return [];
+    function processArchives (archives) {
+        archives.forEach(function (archive) {
+            archive.date = moment([archive._id.year, archive._id.month - 1]);
+        })
+        
+        return archives;
+    };
+
+    return when(
+        Post.aggregate(
+            { $match: { publishedAt: { $lte: new Date() }, page: false } },
+            { $group: {
+                _id: { year: { $year: "$publishedAt" }, month: { $month: "$publishedAt" } },
+                count: { $sum: 1 }
+            } },
+            { $sort: { "_id.year": -1, "_id.month": -1 } }
+        ).exec()
+    ).then(processArchives);
 }; 
 
 PostProvider.prototype.getLabelsInfo = function (opts) {
