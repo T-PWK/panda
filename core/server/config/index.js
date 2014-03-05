@@ -31,9 +31,7 @@ function init () {
     updatePaths();
     updateThemePaths();
 
-    // console.info(require('util').inspect(cfg, {depth: 5}))
-
-    return when();
+    return when.resolve();
 }
 
 function updatePaths () {
