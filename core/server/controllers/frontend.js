@@ -25,7 +25,7 @@ exports.index = function(req, res) {
         provider.findAll({ limit:limit, skip:skip }),
         provider.count()
     )
-    .spread(function (posts, count, labels, archives) {
+    .spread(function (posts, count) {
         res.locals.posts = posts;
         res.locals.pagination = pagination(req, count);
 
