@@ -16,13 +16,13 @@ function postUrl (post, absolute) {
         post = this.locals.post;  
     }
 
-    var output = post.page ? '/:slug' : cfg.get('app:urlFormat'),
+    var output = post.page ? '/:slug' : cfg.get('app:postUrlFormat'),
         tags = {
             ':year':   function () { return moment(post.publishedAt).format('YYYY'); },
             ':month':  function () { return moment(post.publishedAt).format('MM'); },
             ':day':    function () { return moment(post.publishedAt).format('DD'); },
             ':slug':   function () { return post.slug; },
-            ':id':     function () { return post.id; }
+            ':id':     function () { return post.id || post._id; }
         };
 
     // replace tags like :slug or :year with actual values
@@ -91,7 +91,18 @@ function labelsFormat (post, join) {
 };
 
 function metaTitle () {
-    return cfg.get('app:metaTitle') || cfg.get('app:title');
+    var post = this.locals.post,
+        tokens = {
+            ':blogtitle': function () { return cfg.get('app:title'); },
+            ':posttitle': function () { return post.title; },
+            ':authorname': function () { return post.author ? post.author.name : ''; }
+        };
+
+    return (post)
+        ? cfg.get('app:postMetaTitleFormat').replace(/:[a-z]+/ig, function (token) {
+            if (token in tokens) return tokens[token]();
+        })
+        : cfg.get('app:metaTitle') || cfg.get('app:title');
 }
 
 function metaDescription () {
@@ -192,6 +203,7 @@ function initRequest (req, res, next) {
 function init (app) {
     // Set default application local variables as well as template helper functions
     Object.defineProperties(app.locals, {
+        custom:      { enumerable: true, value: cfg.get('theme:custom') },
         title:       { enumerable: true, value: cfg.get('app:title') },
         description: { enumerable: true, value: cfg.get('app:description') },
         url:         { enumerable: true, value: cfg.get('url') },
@@ -202,6 +214,7 @@ function init (app) {
         $assets:     { enumerable: true, value: assets.bind(app) },
         $if:         { enumerable: true, value: ifCheck },
         $labelUrl:   { enumerable: true, value: labelUrl },
+
 
         // Update application locals with view settings like debug or pretty formatting
         pretty:      { enumerable: true, value: cfg.get('view:pretty') },

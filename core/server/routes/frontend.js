@@ -9,7 +9,7 @@ module.exports = function (server) {
     server.param('page', frontend.pageParam);
 
     server.get('/', frontend.middleware, frontend.index);                           // Main page
-    server.get(cfg.get('app:urlFormat'), frontend.middleware, frontend.post);       // Post page
+    server.get(cfg.get('app:postUrlFormat'), frontend.middleware, frontend.post);   // Post page
     server.get(cfg.get('app:pageUrlFormat'), frontend.middleware, frontend.index);  // Pagination
 
     server.get(cfg.get('app:labelUrlFormat'), 
