@@ -196,6 +196,7 @@ function init (app) {
         description: { enumerable: true, value: cfg.get('app:description') },
         url:         { enumerable: true, value: cfg.get('url') },
         cover:       { enumerable: true, value: cfg.get('theme:cover') },
+        logo:        { enumerable: true, value: cfg.get('theme:logo') },
         copyright:   { enumerable: true, get: copyright.bind(app) },
         $encode:     { enumerable: true, value: encode },
         $assets:     { enumerable: true, value: assets.bind(app) },
