@@ -1,14 +1,13 @@
 module.exports = {
     theme: {
-        name: "casper"
+        name: "casper",
+        custom: {}
     },
     view: {
         pretty: false,  // true for pretty HTML formatting
         debug:  false   // true for view engine console debug
     },
     app: {
-        // Default URL contains year, month, day and slug
-        urlFormat: "/:year/:month/:day/:slug.html",
         httpCompression: true,
         
         // Default metadata does not have default values
@@ -18,14 +17,51 @@ module.exports = {
         title: "Panda",
         description: "Yet another blogging platform.",
 
-        // # Pagination
+        /*
+         * Post meta title format. Available tokens:
+         * :blogtitle - substituted with the blog's title (app:title)
+         * :posttitle - substituted with the post's title
+         * :authorname - substituted with the post's author name
+         */
+        postMetaTitleFormat: ":blogtitle | :posttitle",
+
+        // Number of posts per page
         postsPerPage: 6,
 
+        /* 
+         * Post URL format. Available tokens:
+         * :year - substitued with the post's publication year (four digits e.g. 2012, 2013 etc.)
+         * :month - substitued with the post's publication month (two digits 01 - January, 02 - February etc.)
+         * :day - substitued with the post's publication month's day (two digits)
+         * :slug' - substitued with the post's slug
+         * :id - substitued with the post's id
+         */
+        postUrlFormat: "/:year/:month/:day/:slug.html",
+
+
+        /* 
+         * Search by label URL format. Available tokens:
+         * :label - substitued with the current label
+         */
         labelUrlFormat: "/search/label/:label",
+        
+        /*
+         * Pagination URL format. Available tokens:
+         * - :page - substituted with pagination number
+         */
         pageUrlFormat: "/page/:page",
-        // pageUrlRegExp: "/page/\\d+",
+
+        /*
+         * Copyright content. Available tokens:
+         * - :title - substituted with the blog title (app:title)
+         * - :year - substituted with the current year
+         * - :url - substituted with the blog URL (url)
+         */
         copyright: "All content copyright :title &copy; :year &bull; All rights reserved.",
 
+        /*
+         * Static content cache in milliseconds
+         */
         staticCacheAge: 0
     },
     url: "http://127.0.0.1:3000",
