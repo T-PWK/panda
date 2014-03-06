@@ -9,7 +9,7 @@ var express     = require('express'),
 
 function serverStartupInfo () {
     console.log(
-        "Panda server is running...".green,
+        format("Panda v%s server is running...", module.exports.version).green,
         "\nCtrl+C to shut down".grey
     );
 
@@ -33,6 +33,7 @@ function serverStartupInfo () {
 function setup (app) {
     when().then(function () {
         // ### Express Initialisation ###
+        app.disable('x-powered-by');
         app.set('views', cfg.get('theme:paths:views'));
         app.set('admin views', path.join(__dirname, 'views'));
 
@@ -69,3 +70,6 @@ function init (app) {
 }
 
 module.exports = init;
+
+// Set Panda version
+require('pkginfo')(module, 'version');
