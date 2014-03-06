@@ -32,9 +32,7 @@ module.exports = {
 };
 
 module.exports.init = function () {
-    var promise = ('mongo' === cfg.get('database:type'))
-            ? when(initMongoDB())
-            : when();
+    var promise = ('mongo' === cfg.get('database:type')) ? when(initMongoDB()) : when.resolve();
         
     return promise
         .then(function () {

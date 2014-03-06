@@ -8,7 +8,7 @@ module.exports = {
     feeds:      feeds,
     redirects:  redirects,
     admin:      admin
-}
+};
 
 // feeds/posts/default
 // search/label/_label_name_

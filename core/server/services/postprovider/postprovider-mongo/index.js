@@ -8,11 +8,11 @@ var mongoose    = require('mongoose'),
 
 var PostProvider = module.exports = function () {
     this.db = mongoose.connection;
-}
+};
 
 PostProvider.prototype.init = function () {
     return when.resolve();
-}
+};
 
 PostProvider.prototype.findAll = function (opts) {
     opts = opts || {};
@@ -37,7 +37,7 @@ PostProvider.prototype.findBySlug = function (slug) {
             .where('publishedAt').lte(new Date())
             .select('title content author publishedAt slug')
             .populate('author')
-            .exec()
+            .exec();
 };
 
 PostProvider.prototype.findByYear = function (opts) {
@@ -60,8 +60,8 @@ PostProvider.prototype.findByYear = function (opts) {
             .limit(opts.limit)
             .select('author title teaser publishedAt labels slug')
             .populate('author')
-            .exec()
-}
+            .exec();
+};
 
 PostProvider.prototype.findByMonth = function (opts) {
     opts = opts || {};
@@ -86,8 +86,8 @@ PostProvider.prototype.findByMonth = function (opts) {
             .limit(opts.limit)
             .select('author title teaser publishedAt labels slug')
             .populate('author')
-            .exec()
-}
+            .exec();
+};
 
 PostProvider.prototype.findByDay = function (opts) {
     opts = opts || {};
@@ -112,8 +112,8 @@ PostProvider.prototype.findByDay = function (opts) {
             .limit(opts.limit)
             .select('author title teaser publishedAt labels slug')
             .populate('author')
-            .exec()
-}
+            .exec();
+};
 
 PostProvider.prototype.findByLabel = function (opts) {
     opts = opts || {};
@@ -127,7 +127,7 @@ PostProvider.prototype.findByLabel = function (opts) {
         .skip(opts.skip)
         .limit(opts.limit)
         .exec();
-}
+};
 
 PostProvider.prototype.count = function (opts) {
     opts = opts || {};
@@ -165,16 +165,16 @@ PostProvider.prototype.count = function (opts) {
     }
 
     return query.exec();
-}
+};
 
 PostProvider.prototype.getArchiveInfo = function (opts) {
     function processArchives (archives) {
         archives.forEach(function (archive) {
             archive.date = moment([archive._id.year, archive._id.month - 1]);
-        })
+        });
         
         return archives;
-    };
+    }
 
     return when(
         Post.aggregate(
@@ -202,4 +202,4 @@ PostProvider.prototype.getLabelsInfo = function (opts) {
             { $project: { count: 1, label: "$_id", _id: 0 } }   // make sure we have label and count properties
         ).exec()
     );
-}
+};

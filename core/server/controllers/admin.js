@@ -1,5 +1,5 @@
 var cfg     = require('nconf'),
-    join    = require('path').join
+    join    = require('path').join;
 
 
 module.exports.index = function (req, res) {

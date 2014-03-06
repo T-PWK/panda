@@ -35,7 +35,7 @@ function setup (app) {
     app.use(require('./poweredBy'));
 
     // Set no-cache HTTP headers for pages
-    app.use(require('./nocache'))
+    app.use(require('./nocache'));
 
     // Set the router
     app.use(app.router);

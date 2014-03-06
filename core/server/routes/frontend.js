@@ -1,4 +1,4 @@
-var frontend    = require('../controllers/frontend')
+var frontend    = require('../controllers/frontend'),
     cfg         = require('nconf');
 
 module.exports = function (server) {
@@ -32,4 +32,4 @@ module.exports = function (server) {
 
     server.get('/:year/:month/:day' + cfg.get('app:pageUrlFormat'), 
         frontend.middleware, frontend.day);
-}
+};

@@ -15,7 +15,7 @@ module.exports.rss = function (req, res) {
         .catch(function (err) {
             res.send(500);
         });
-}
+};
 
 module.exports.atom = function (req, res) {
     when(provider.findAll())
@@ -31,7 +31,7 @@ module.exports.atom = function (req, res) {
         .catch(function (err) {
             res.send(500);
         });
-}
+};
 
 function maxUpdatedDate (posts) {
     var dates = posts.map(function (post) {

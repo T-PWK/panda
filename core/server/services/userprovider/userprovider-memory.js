@@ -17,7 +17,7 @@ UserProvider.prototype.init = function () {
 
     return loadUsers
         .then(function (data) {
-            return that.users = JSON.parse(data);
+            return that.users = JSON.parse(data); // jshint ignore:line
         })
         .then(function (users) {
             _.each(users, function (user) {
@@ -25,9 +25,9 @@ UserProvider.prototype.init = function () {
                     that.lead = user;
                 }
             });
-        })
+        });
 };
 
 UserProvider.prototype.findLeadUser = function () {
     return when.resolve(this.lead);
-}
+};

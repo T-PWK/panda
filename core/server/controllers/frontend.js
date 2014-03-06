@@ -4,7 +4,7 @@ var cfg              = require('nconf'),
     provider         = require('../providers').postProvider,
     pagination       = require('../helpers/pagination'),
     limit            = cfg.get('app:postsPerPage'),
-    paginationRegexp = new RegExp(cfg.get('app:pageUrlFormat').replace(':page', '\\d+'))
+    paginationRegexp = new RegExp(cfg.get('app:pageUrlFormat').replace(':page', '\\d+'));
 
 exports.middleware = function (req, res, next) {
     when.join(

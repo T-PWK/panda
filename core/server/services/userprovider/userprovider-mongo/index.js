@@ -14,4 +14,4 @@ UserProvider.prototype.findLeadUser = function () {
     debug('find lead user');
 
     return User.findOne({ lead: true }).exec();
-}
+};

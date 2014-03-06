@@ -18,6 +18,6 @@ var userSchema = mongoose.Schema({
 userSchema.pre('save', function (next) {
     this.updatedAt = new Date();
     next();
-})
+});
 
 module.exports = userSchema;

@@ -19,7 +19,7 @@ function startPanda (app) {
         .catch(function (err) {
             console.log(("Panda server initialization error " + err).red);
             console.log((err.stack).red);
-        })
+        });
 }
 
 module.exports = startPanda;

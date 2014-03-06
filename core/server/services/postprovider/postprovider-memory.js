@@ -11,7 +11,6 @@ var _           = require('underscore'),
 
 var PostProvider = module.exports = function () {
     this.dummyData = [];
-    this.users;
 };
 
 PostProvider.prototype.init = function () {
@@ -41,23 +40,23 @@ PostProvider.prototype.select = function(opts) {
         // JavaScript Date uses 0-based month index
         month = (opts.month || 1) - 1,
         items = this.dummyData.filter(function (item) {
-            return !item.page
-                && item.publishedAt <= now
-                && (opts.label ? item.labels.indexOf(opts.label) >= 0 : true)
-                && (opts.year ? item.publishedAt.getFullYear() === opts.year : true)
-                && (opts.month ? item.publishedAt.getMonth() === month : true)
-                && (opts.day ? item.publishedAt.getDate() === opts.day : true)
+            return !item.page && 
+                item.publishedAt <= now &&
+                (opts.label ? item.labels.indexOf(opts.label) >= 0 : true) &&
+                (opts.year ? item.publishedAt.getFullYear() === opts.year : true) &&
+                (opts.month ? item.publishedAt.getMonth() === month : true) &&
+                (opts.day ? item.publishedAt.getDate() === opts.day : true);
         });
 
     return items;
-}
+};
 
 PostProvider.prototype.count = function (opts) {
     return when(this.select(opts).length);
-}
+};
 
 PostProvider.prototype.findAll = function (opts) {
-    return this.sortAndSlice(this.select(), opts)
+    return this.sortAndSlice(this.select(), opts);
 };
 
 PostProvider.prototype.findBySlug = function (slug) {
@@ -69,11 +68,11 @@ PostProvider.prototype.findBySlug = function (slug) {
 };
 
 PostProvider.prototype.findByYear = function (opts) {
-    return this.sortAndSlice(this.select(opts), opts)
+    return this.sortAndSlice(this.select(opts), opts);
 };
 
 PostProvider.prototype.findByMonth = function (opts) {
-    return this.sortAndSlice(this.select(opts), opts)
+    return this.sortAndSlice(this.select(opts), opts);
 };
 
 PostProvider.prototype.findByDay = function (opts) {
@@ -99,7 +98,7 @@ PostProvider.prototype.getArchiveInfo = function (opts) {
                 dateMillisec: +date,
                 date: moment(+date),
                 count: values.length
-            }
+            };
         })
         .sortBy(function (item) {
             return -item.dateMillisec;
@@ -107,7 +106,7 @@ PostProvider.prototype.getArchiveInfo = function (opts) {
         .value();
 
     return when.resolve(info);
-}
+};
 
 PostProvider.prototype.getLabelsInfo = function (opts) {
     return _.chain(this.select(opts))
@@ -120,13 +119,13 @@ PostProvider.prototype.getLabelsInfo = function (opts) {
             return {
                 label: label,
                 count: count
-            }
+            };
         })
         .sortBy(function (label) {
             return -label.count;
         })
         .value();
-}
+};
 
 PostProvider.prototype.sortAndSlice = function(items, opts) {
     opts = opts || {};
@@ -135,11 +134,11 @@ PostProvider.prototype.sortAndSlice = function(items, opts) {
         end = (opts.limit) ? start + opts.limit : items.length - 1;
 
     return when(this.sort(items).slice(start, end));
-}
+};
 
 PostProvider.prototype.sort = function (posts) {
     posts = posts.slice(0);
-    posts.sort(this.sortByDate)
+    posts.sort(this.sortByDate);
 
     return posts;
 };
@@ -153,13 +152,13 @@ PostProvider.prototype.sortByDate = function (a, b) {
 function convertDateProperties () {
     this.dummyData.forEach(function (post) {
         dateProps.forEach(function (prop) {
-            if (this[prop]) this[prop] = new Date(this[prop])
+            if (this[prop]) this[prop] = new Date(this[prop]);
         }, post);
     });
-};
+}
 
 function updateAuthorInfo () {
     this.dummyData.forEach(function (post) {
         post.author = this.users[post._authorId];
-    }, this)
-};
+    }, this);
+}

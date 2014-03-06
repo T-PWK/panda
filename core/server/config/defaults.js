@@ -72,4 +72,4 @@ module.exports = {
     database: { 
         type: "memory"
     }
-}
+};

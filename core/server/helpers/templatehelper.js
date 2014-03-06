@@ -33,7 +33,7 @@ function postUrl (post, absolute) {
     });
 
     return absolute ? cfg.get('url') + output : output;
-};
+}
 
 function labelUrl (label, absolute) {
     return (absolute ? cfg.get('url') : '') + 
@@ -49,8 +49,7 @@ function pageUrl (newer) {
         page = newer ? pagination.newer : pagination.older,
         ctx = this.locals.context.replace(pgnRegexp, '');
 
-    return 1 === page
-        ? ('' === ctx ? '/' : ctx)
+    return 1 === page ? ('' === ctx ? '/' : ctx)
         : ('/' === ctx ? '' : ctx) + pgnUrl.replace(':page', page);
 }
 
@@ -77,9 +76,9 @@ function dateFormat (post, format) {
         case 'timeago': return mdate.fromNow();
         case 'utc': return mdate.utc();
         case 'iso': return mdate.toISOString();
-        default: return mdate.format(format)
+        default: return mdate.format(format);
     }
-};
+}
 
 function labelsFormat (post, join) {
     if(2 > arguments.length && 'string' === typeof post) {
@@ -88,7 +87,7 @@ function labelsFormat (post, join) {
     }
 
     return post.labels.join(join || ', ');
-};
+}
 
 function metaTitle () {
     var post = this.locals.post,
@@ -115,8 +114,8 @@ function encode (text) {
 
 function labelToClass (labels) {
     return (labels || []).map(function (label) {
-        return 'tag-' + _s.slugify(label)
-    })
+        return 'tag-' + _s.slugify(label);
+    });
 }
 
 function buildBodyClass () {
@@ -160,7 +159,7 @@ function copyright () {
         };
     return cfg.get('app:copyright').replace(/(:[a-z]+)/g, function (match) {
         if (match in tags) return tags[match]();
-    })
+    });
 }
 
 function author () {
@@ -176,7 +175,7 @@ function ifCheck (value, element, checkValue) {
  * It assumes that 'this' is current application
  */
 function assets (asset) {
-    return '/assets' + ('/' === asset[0] ? '' : '/') + asset + '?v=ad2e223fd'
+    return '/assets' + ('/' === asset[0] ? '' : '/') + asset + '?v=ad2e223fd';
 }
 
 function initRequest (req, res, next) {
@@ -195,7 +194,7 @@ function initRequest (req, res, next) {
         metaTitle:  { enumerable: true, get: metaTitle.bind(res) },
         metaDescription: { enumerable: true, get: metaDescription.bind(res) },
         author:     { enumerable: true, get: author.bind(res) }
-    })
+    });
 
     next();
 }
@@ -219,10 +218,10 @@ function init (app) {
         // Update application locals with view settings like debug or pretty formatting
         pretty:      { enumerable: true, value: cfg.get('view:pretty') },
         debug:       { enumerable: true, value: cfg.get('view:debug') }
-    })
+    });
 
     // Initialize reqest / response specific variables
     app.use(initRequest);
-};
+}
 
 module.exports = init;

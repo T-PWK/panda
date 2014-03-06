@@ -10,7 +10,7 @@ ConfigProvider.prototype.init = function () {
     debug('initialization');
 
     return when.resolve();
-}
+};
 
 ConfigProvider.prototype.findRedirectByUrl = function (path) {
     debug('find redirect by path', path);
@@ -19,4 +19,4 @@ ConfigProvider.prototype.findRedirectByUrl = function (path) {
         .findOne({ from: path })
         .select('type to')
         .exec();
-}
+};
