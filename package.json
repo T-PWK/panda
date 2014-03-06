@@ -40,9 +40,14 @@
     "mongoose": "~3.8.6",
     "jade": "~1.1.5",
     "underscore": "~1.5.2",
-    "debug": "~0.7.4"
+    "debug": "~0.7.4",
+    "pkginfo": "~0.3.0"
   },
   "engines": {
     "node": "0.10.x"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-jshint": "~0.8.0"
   }
 }
