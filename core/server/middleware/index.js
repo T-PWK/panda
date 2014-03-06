@@ -31,6 +31,12 @@ function setup (app) {
     // Set the template helper component
     tplHelper(app);
 
+    // Set 'Powered By' HTTP header
+    app.use(require('./poweredBy'));
+
+    // Set no-cache HTTP headers for pages
+    app.use(require('./nocache'))
+
     // Set the router
     app.use(app.router);
 
