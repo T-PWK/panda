@@ -23,6 +23,8 @@ var postSchema = mongoose.Schema({
     published: { type: Boolean, required: true, default: false },
     page: { type: Boolean, default: false },
 
+    commentsCount: { type: Number, default: 0 },
+
     // # Conters
     counter: {
         view: { type: Number, default: 0 },
