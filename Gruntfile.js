@@ -6,12 +6,7 @@ function gruntConfig (grunt) {
         // ### Config for grunt-contrib-jshint
         // JSHint all the things!
         jshint: {
-            ignore_warning: {
-                options: {
-                    '-W015': true
-                },
-                src: ['core/**/*.js']
-            }
+            src: ['core/**/*.js']
         }
     };
 
