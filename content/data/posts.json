@@ -19,7 +19,8 @@
     "labels":["Getting Started"],
     "content":"<p>In this post I will share how to measure execution time easily in Node.js.</p><p>Many developers use JavaScript Date class in order to measure execution time. In the following example I will use setTimeout in order to simulate execution time.</p><pre><code class=\"language-javascript\">var start = new Date();\nsetTimeout(function (argument) {  \n    // execution time simulated with setTimeout function\n    var end = new Date() - start;\n    console.info(\"Execution time: %dms\", end);\n}, 1000);\n</code></pre><p>And the output is like:</p><pre><code>Execution time: 1002ms  </code></pre><p>Variable end is set a number of milliseconds which elapsed between setting start and end variables.</p><p>That approach is very popular, especially it can be used in any JavaScript program. Node.js, however, has more powerful mechanism to measure performance between intervals. It is process.hrtime() function which returns high-resolution real time in <code>[seconds, nanoseconds]</code> Array. The time Array is relative to an arbitrary time in the past (not related to the time of day) and therefore not subject to clock drifts.</p><p>Another advantage of <code>process.hrtime()</code> over Date is better accurateness of measured intervals which is very important especially while measuring intervals which last less than a millisecond.</p><p>Node that the second time tuple Array component is a number of nanoseconds and it has to be divided by 1,000,000 in order to get time in milliseconds.</p><p>In order to measure performance interval you have to provide time returned by first process.hrtime() call as a parameter to the second <code>process.hrtime()</code> call. Let's check the following example:  </p><pre><code class=\"language-javascript\">var start = new Date();  \nvar hrstart = process.hrtime();\n\nsetTimeout(function (argument) {  \n    // execution time simulated with setTimeout function\n    var end = new Date() - start;\n    var hrend = process.hrtime(hrstart);\n    console.info(\"Execution time: %dms\", end);\n    console.info(\"Execution time (hr): %ds %dms\"\n        , hrend[0], hrend[1]/1000000);\n}, 1);</code></pre><p>A few execution outputs:</p><pre><code>Execution time: 1ms\nExecution time (hr): 0s 1.025075ms\n\nExecution time: 3ms  \nExecution time (hr): 0s 2.875302ms</code></pre><p>Enjoy!</p>",
     "_authorId": "_1",
-    "featured": true
+    "featured": true,
+    "commentsCount": 0
 },{
     "title":"Lorem ipsum dolor sit amet",
     "slug":"lorem-ipsum-dolor-sit-amet",
@@ -29,7 +30,8 @@
     "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
     "content": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor. Etiam ac tincidunt lacus, sit amet lacinia sem. In a justo purus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam porttitor metus dui, pretium rutrum sem sodales quis. Cras imperdiet nibh ligula, non scelerisque enim congue nec. Donec tempor tellus ac eros porta, eget imperdiet nisi placerat. Donec convallis aliquam nunc in cursus. Duis aliquam quam enim, a ornare ligula consectetur tempus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p><p>Cras eu eleifend nibh, et imperdiet justo. Donec eu tempor dolor. Cras a fermentum libero, non adipiscing nisl. Proin ut libero condimentum, eleifend est sit amet, adipiscing ante. Vestibulum luctus pretium nulla, vitae interdum ante vestibulum eget. Vestibulum nec mauris libero. Phasellus fringilla bibendum mattis. Mauris tincidunt sem ornare risus ultricies, a rhoncus augue aliquam. Suspendisse ac tortor at elit porta ullamcorper. Praesent scelerisque nec lectus id fermentum. Fusce aliquam metus eu lectus vehicula, at porta ligula mollis.</p><p>Aliquam erat volutpat. Etiam vitae scelerisque nibh. Mauris pulvinar lectus ut quam bibendum, nec lacinia tellus lobortis. Sed facilisis dui in risus feugiat, eu imperdiet mi adipiscing. Ut et adipiscing leo. Quisque in quam eget tellus condimentum sagittis vitae sit amet justo. Donec sagittis fringilla pharetra. Nulla at molestie urna. Ut convallis ante at felis semper rutrum in quis diam. Praesent interdum interdum mollis. Maecenas blandit lorem eu cursus accumsan. Pellentesque elementum odio et augue imperdiet, sit amet auctor nisl mollis. Vivamus diam odio, dapibus non ipsum vel, gravida varius mauris. Phasellus leo diam, viverra vel fermentum ac, blandit at sem. Quisque eget semper mi, eu dapibus tellus.</p><p>Nulla feugiat ligula at nisl faucibus ullamcorper. Integer nec fermentum quam. Interdum et malesuada fames ac ante ipsum primis in faucibus. Donec facilisis ligula eget euismod aliquet. Proin ornare dolor ac lobortis viverra. Nunc ultricies, nisi ut venenatis viverra, diam velit ultrices nisl, in tempor nisl nulla non ante. Nunc rhoncus porta ante euismod commodo. Duis arcu quam, blandit vel placerat eget, iaculis consectetur risus. Integer eu neque euismod nibh vestibulum imperdiet ultrices vel lorem. Sed dapibus elit at tellus egestas facilisis. Phasellus tincidunt orci dapibus nibh placerat, ut consequat est posuere.</p><p>Sed non libero bibendum, elementum ligula eu, sollicitudin massa. Suspendisse id eros sollicitudin nulla auctor euismod. Nam sagittis neque vitae blandit eleifend. Morbi quis vestibulum arcu, et interdum odio. Morbi vel blandit odio. Duis tincidunt ultricies tortor, consequat iaculis neque mollis id. Nam nec neque id ligula vulputate eleifend. Nullam mattis congue elit, quis aliquet orci malesuada eget. Phasellus in laoreet velit. Vestibulum a sapien ultrices sapien blandit hendrerit. Integer volutpat imperdiet tempor. Mauris a aliquam ligula. Quisque dignissim posuere odio ac elementum. In vitae mollis tortor.</p>",
     "labels":["angularjs", "function"],
-    "_authorId": "_1"
+    "_authorId": "_1",
+    "commentsCount": 0
 },{
     "title":"Cras eu eleifend nibh",
     "slug":"cras-eu-eleifend-nibh",
@@ -39,7 +41,8 @@
     "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
     "content": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor</p>",
     "labels":[],
-    "_authorId": "_2"
+    "_authorId": "_2",
+    "commentsCount": 0
 },{
     "title":"Men of Tale",
     "slug":"men-of-tale",
@@ -49,7 +52,8 @@
     "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
     "content": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor</p>",
     "labels":["node.js", "authentication", "jquery", "Windows Azure", "function"],
-    "_authorId": "_1"
+    "_authorId": "_1",
+    "commentsCount": 0
 },{
     "title":"Lorem ipsum",
     "slug":"lorem-ipsum",
@@ -60,7 +64,8 @@
     "content": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor</p>",
     "labels":["node.js","javascript"],
     "_authorId": "_2",
-    "featured": true
+    "featured": true,
+    "commentsCount": 0
 },{
     "title":"The Spirits of the Heat",
     "slug":"spirits-of-heat",
@@ -70,7 +75,8 @@
     "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
     "content": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor</p>",
     "labels":["node.js","javascript"],
-    "_authorId": "_1"
+    "_authorId": "_1",
+    "commentsCount": 0
 },{
     "title":"The Academy of the Body",
     "slug":"academy-of-body",
@@ -80,7 +86,8 @@
     "teaser":"You're live! Nice. We've put together a little post to introduce you to the Ghost editor and get you started. You can manage your content by signing in to the admin area at &lt;your blog URL&gt;/ghost/. When you arrive, you can select this post from a list",
     "labels":["Getting Started"],
     "content": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor</p>",
-    "_authorId": "_2"
+    "_authorId": "_2",
+    "commentsCount": 0
 },{
     "title":"The Captive's Theft",
     "slug":"captives-theft",
@@ -90,7 +97,8 @@
     "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
     "content": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor</p>",
     "labels":["angularjs", "function"],
-    "_authorId": "_1"
+    "_authorId": "_1",
+    "commentsCount": 0
 },{
     "title":"The Rose of the Danger",
     "slug":"rose-of-danger",
@@ -100,7 +108,8 @@
     "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
     "content": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor</p>",
     "labels":[],
-    "_authorId": "_1"
+    "_authorId": "_1",
+    "commentsCount": 0
 },{
     "title":"Butterfly of Luck",
     "slug":"butterfly-of-luck",
@@ -110,7 +119,8 @@
     "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
     "content": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor</p>",
     "labels":["node.js", "authentication", "jquery", "Windows Azure", "function"],
-    "_authorId": "_1"
+    "_authorId": "_1",
+    "commentsCount": 0
 },{
     "title":"The Women of the Bridge",
     "slug":"the-women-of-the-bridge",
@@ -120,7 +130,8 @@
     "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
     "content": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor</p>",
     "labels":["node.js","javascript"],
-    "_authorId": "_1"
+    "_authorId": "_1",
+    "commentsCount": 0
 },{
     "title":"Night in the Snow",
     "slug":"night-in-the-snow",
@@ -130,7 +141,8 @@
     "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
     "content": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor</p>",
     "labels":["node.js","javascript"],
-    "_authorId": "_1"
+    "_authorId": "_1",
+    "commentsCount": 0
 },{
     "title":"Wild Visions",
     "slug":"wild-visions",
@@ -140,7 +152,8 @@
     "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
     "content": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor</p>",
     "labels":[],
-    "_authorId": "_1"
+    "_authorId": "_1",
+    "commentsCount": 0
 },{
     "title":"The Burning Winter",
     "slug":"burning-winter",
@@ -150,7 +163,8 @@
     "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
     "content": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor</p>",
     "labels":["node.js", "authentication", "jquery", "Windows Azure", "function"],
-    "_authorId": "_1"
+    "_authorId": "_1",
+    "commentsCount": 0
 },{
     "title":"The Stone of the Voyager",
     "slug":"stone-of-voyager",
@@ -160,7 +174,8 @@
     "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
     "content": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor</p>",
     "labels":["node.js","javascript"],
-    "_authorId": "_1"
+    "_authorId": "_1",
+    "commentsCount": 0
 },{
     "title":"Something in the Memory",
     "slug":"something-in-the-memory",
@@ -170,7 +185,8 @@
     "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
     "content": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor</p>",
     "labels":["node.js","javascript"],
-    "_authorId": "_1"
+    "_authorId": "_1",
+    "commentsCount": 0
 },{
     "title":"The Servant of the Spark",
     "slug":"servant-of-spark",
@@ -180,7 +196,8 @@
     "teaser":"You're live! Nice. We've put together a little post to introduce you to the Ghost editor and get you started. You can manage your content by signing in to the admin area at &lt;your blog URL&gt;/ghost/. When you arrive, you can select this post from a list",
     "labels":["Getting Started"],
     "content": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor</p>",
-    "_authorId": "_1"
+    "_authorId": "_1",
+    "commentsCount": 0
 },{
     "title":"Moon in the Dream",
     "slug":"moon-in-the-dream",
@@ -190,7 +207,8 @@
     "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
     "content": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor</p>",
     "labels":["angularjs", "function"],
-    "_authorId": "_1"
+    "_authorId": "_1",
+    "commentsCount": 0
 },{
     "title":"Worlds of Kiss",
     "slug":"worlds-of-kiss",
@@ -200,7 +218,8 @@
     "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
     "content": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor</p>",
     "labels":[],
-    "_authorId": "_1"
+    "_authorId": "_1",
+    "commentsCount": 0
 },{
     "title":"The Rough Year",
     "slug":"the-rough-year",
@@ -210,7 +229,8 @@
     "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
     "content": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor</p>",
     "labels":["node.js", "authentication", "jquery", "Windows Azure", "function"],
-    "_authorId": "_1"
+    "_authorId": "_1",
+    "commentsCount": 0
 },{
     "title":"The Consort of the Flower",
     "slug":"the-consort-of-the-flower",
@@ -220,7 +240,8 @@
     "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
     "content": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor</p>",
     "labels":["node.js","javascript"],
-    "_authorId": "_1"
+    "_authorId": "_1",
+    "commentsCount": 0
 },{
     "title":"The Bridges of the Crying",
     "slug":"the-bridges-of-the-crying",
@@ -230,5 +251,6 @@
     "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
     "content": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor</p>",
     "labels":["node.js","javascript"],
-    "_authorId": "_2"
+    "_authorId": "_2",
+    "commentsCount": 0
 }]
