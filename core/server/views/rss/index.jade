@@ -1,31 +1,37 @@
 doctype xml
-rss(version="2.0", xmlns:atom="http://www.w3.org/2005/Atom")
+rss(version="2.0", xmlns:atom="http://www.w3.org/2005/Atom",
+    xmlns:openSearch="http://a9.com/-/spec/opensearchrss/1.0/")
     channel
-        title
-            :cdata
-                !{title}
-        description
-            :cdata
-                !{description}
-        link #{url}/
-        language en
+        title= title
+        description= description
+        link= url
+
+        if labels
+            each label in labels
+                category= label.label
+
         generator Panda v#{version}
+
+        openSearch:totalResults= totalPosts
+        openSearch:startIndex= startIndex
+        openSearch:itemsPerPage= postsPerPage
+        
+        language en
+        copyright=  copyright
+        
         atom:link(rel="self", type="application/rss+xml", href="#{url}#{context}")
         if author
             author= author.name
         ttl 60
+        lastBuildDate= $date(updated, 'utc')
         each post in posts
             item
-                title
-                    :cdata
-                        !{post.title}
-                description
-                    :cdata
-                        !{post.content}
+                title= post.title
+                description= post.content
                 link= $url(post, true)
                 each label in post.labels
-                    category
-                        :cdata
-                            #{label}
+                    category= label
                 pubDate= $date(post, 'utc')
+                atom:updated= $date(post.updatedAt, 'iso')
+                thr:total= post.commentsCount
 
