@@ -1,7 +1,9 @@
-var when          = require('when'),
-    join          = require('path').join,
-    provider      = require('../providers').postProvider,
-    userProvider  = require('../providers').userProvider;
+var when                = require('when'),
+    cfg                 = require('nconf'),
+    join                = require('path').join,
+    provider            = require('../providers').postProvider,
+    userProvider        = require('../providers').userProvider,
+    atomPostPerPage     = cfg.get('app:feeds:atom:postsPerPage');
 
 require('pkginfo')(module, 'version');
 
@@ -13,11 +15,11 @@ module.exports.rss = function (req, res) {
     when.join(
         provider.findAll(), userProvider.findLeadUser()
     )
-    .spread(function (posts, user) {
+    .spread(function (posts, leadAuthor) {
 
-        res.locals.posts = posts;
-        res.locals.author = user;
-        res.locals.version = module.exports.version;
+        res.locals.posts        = posts;
+        res.locals.leadAuthor   = leadAuthor;
+        res.locals.version      = module.exports.version;
 
         res.type('rss').render(view(req, 'rss'));
     })
@@ -27,18 +29,28 @@ module.exports.rss = function (req, res) {
 };
 
 module.exports.atom = function (req, res) {
-    when(provider.findAll())
-        .then(function (posts) {
+    when.join(
+        provider.findAll({ limit: atomPostPerPage }),
+        provider.count({ limit: atomPostPerPage }),
+        provider.getLabelsInfo(),
+        userProvider.findLeadUser()
+    )
+    .spread(function (posts, count, labels, leadAuthor) {
 
-            res.locals.posts = posts;
-            res.locals.updated = maxUpdatedDate(posts);
-            res.locals.version = module.exports.version;
+        res.locals.posts        = posts;
+        res.locals.updated      = maxUpdatedDate(posts);
+        res.locals.version      = module.exports.version;
+        res.locals.labels       = labels;
+        res.locals.leadAuthor   = leadAuthor;
+        res.locals.totalPosts   = count;
+        res.locals.startIndex   = 0;
+        res.locals.postsPerPage = atomPostPerPage;
 
-            res.type('atom').render(view(req, 'atom'));
-        })
-        .catch(function (err) {
-            res.send(500);
-        });
+        res.type('atom').render(view(req, 'atom'));
+    })
+    .catch(function (err) {
+        res.send(500);
+    });
 };
 
 function maxUpdatedDate (posts) {

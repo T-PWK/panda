@@ -1,16 +1,52 @@
-doctype xml
-feed(xmlns="http://www.w3.org/2005/Atom")
+<?xml version="1.0" encoding="utf-8" ?>
+feed(xmlns="http://www.w3.org/2005/Atom", 
+    xmlns:thr="http://purl.org/syndication/thread/1.0", 
+    xmlns:openSearch="http://a9.com/-/spec/opensearchrss/1.0/")
+
     id #{url}/
+    updated= $date(updated, 'iso')
+    each label in labels
+        category(term=label.label)/
+
     title= title
+    subtitle(type='html')= description
+
     link(href="#{url}/")
     link(href="#{url}#{context}", rel="self")
-    updated= $date(updated, 'iso')
-    generator(version="0.0.1") Panda
+
+    if leadAuthor
+        author
+            name= leadAuthor.name
+            if leadAuthor.website
+                uri= leadAuthor.website
+    
+    generator(version=version) Panda
+    rights= copyright
+
+    openSearch:totalResults= totalPosts
+    openSearch:startIndex= startIndex
+    openSearch:itemsPerPage= postsPerPage
 
     each post in posts
         entry
             id= $url(post, true)
-            title= post.title
-            updated= $date(post.updatedAt, 'iso')
-            author
-                name= post.author.name
+            published= $date(post, 'iso')
+            updated= $date(post, 'iso')
+
+            if post.labels
+                each label in post.labels
+                    | <category term="#{label}" />
+
+            title(type="text")= post.title
+            content(type="html")= post.content
+            
+            if post.author
+                author
+                    name= post.author.name
+
+                    if post.author.website
+                        uri= post.author.website
+            link(rel="replies", type="text/html", href="#{$url(post, true)}#comment-form", title="#{post.commentsCount} Comments")
+            link(rel="alternate", type="text/html", href=$url(post, true), title= post.title)
+
+            thr:total= post.commentsCount
