@@ -208,6 +208,7 @@ function init (app) {
         url:         { enumerable: true, value: cfg.get('url') },
         cover:       { enumerable: true, value: cfg.get('theme:cover') },
         logo:        { enumerable: true, value: cfg.get('theme:logo') },
+        version:     { enumerable: true, value: module.exports.version },
         copyright:   { enumerable: true, get: copyright.bind(app) },
         $encode:     { enumerable: true, value: encode },
         $assets:     { enumerable: true, value: assets.bind(app) },
@@ -225,3 +226,5 @@ function init (app) {
 }
 
 module.exports = init;
+
+require('pkginfo')(module, 'version');
