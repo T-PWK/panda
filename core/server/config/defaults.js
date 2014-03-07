@@ -70,6 +70,9 @@ module.exports = {
         port: 3000 
     },
     database: { 
-        type: "memory"
+        type: "memory",
+        postsFile: 'posts.json',
+        redirectsFile: 'redirects.json',
+        usersFile: 'users.json'
     }
 };

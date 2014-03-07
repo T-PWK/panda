@@ -7,6 +7,7 @@ var _           = require('underscore'),
     fs          = require('fs'),
     path        = require('path'),
     moment      = require('moment'),
+    isAbsolute  = require('../../utils').isAbsolute,
     dateProps   = ['publishedAt', 'createdAt', 'updatedAt'];
 
 var PostProvider = module.exports = function () {
@@ -14,23 +15,30 @@ var PostProvider = module.exports = function () {
 };
 
 PostProvider.prototype.init = function () {
+    return this.loadFiles();
+};
+
+PostProvider.prototype.loadFiles = function () {
     var that        = this,
-        dataFile    = path.join(cfg.get('paths:data'), 'posts.json'),
-        usersFile   = path.join(cfg.get('paths:data'), 'users.json'),
-        loadData    = nodefn.call(fs.readFile, dataFile),
+        postsPath   = cfg.get('database:postsFile'),
+        usersPath   = cfg.get('database:usersFile'),
+        postsFile   = isAbsolute(postsPath) ? postsPath : path.join(cfg.get('paths:data'), postsPath),
+        usersFile   = isAbsolute(usersPath) ? usersPath : path.join(cfg.get('paths:data'), usersPath),
+        loadPosts   = nodefn.call(fs.readFile, postsFile),
         loadUsers   = nodefn.call(fs.readFile, usersFile);
 
     return when
-        .join(loadData, loadUsers) // load data files
-        .then(function (values) {  // parse each file to JSON
+        .join(loadPosts, loadUsers)                 // load data files
+        .then(function (values) {                   // parse each file to JSON
             return when.map(values, JSON.parse);
         })
-        .spread(function (posts, users) { // set internal properties
+        .spread(function (posts, users) {           // set internal properties
             that.dummyData = posts;
             that.users = users;
         })
-        .then(convertDateProperties.bind(that)) // convert date properties
-        .then(updateAuthorInfo.bind(that));     // update users (authors)
+        .then(convertDateProperties.bind(that))     // convert date properties
+        .then(updateAuthorInfo.bind(that));         // update users (authors)
+
 };
 
 PostProvider.prototype.select = function(opts) {
@@ -38,17 +46,16 @@ PostProvider.prototype.select = function(opts) {
 
     var now = new Date(),
         // JavaScript Date uses 0-based month index
-        month = (opts.month || 1) - 1,
-        items = this.dummyData.filter(function (item) {
-            return !item.page && 
-                item.publishedAt <= now &&
-                (opts.label ? item.labels.indexOf(opts.label) >= 0 : true) &&
-                (opts.year ? item.publishedAt.getFullYear() === opts.year : true) &&
-                (opts.month ? item.publishedAt.getMonth() === month : true) &&
-                (opts.day ? item.publishedAt.getDate() === opts.day : true);
-        });
+        month = (opts.month || 1) - 1;
 
-    return items;
+    return this.dummyData.filter(function (item) {
+        return !item.page && 
+            item.publishedAt <= now &&
+            (opts.label ? item.labels.indexOf(opts.label) >= 0 : true) &&
+            (opts.year ? item.publishedAt.getFullYear() === opts.year : true) &&
+            (opts.month ? item.publishedAt.getMonth() === month : true) &&
+            (opts.day ? item.publishedAt.getDate() === opts.day : true);
+    });
 };
 
 PostProvider.prototype.count = function (opts) {
