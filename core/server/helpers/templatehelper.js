@@ -97,8 +97,8 @@ function metaTitle () {
             ':authorname': function () { return post.author ? post.author.name : ''; }
         };
 
-    return (post)
-        ? cfg.get('app:postMetaTitleFormat').replace(/:[a-z]+/ig, function (token) {
+    return (post) ? 
+        cfg.get('app:postMetaTitleFormat').replace(/:[a-z]+/ig, function (token) {
             if (token in tokens) return tokens[token]();
         })
         : cfg.get('app:metaTitle') || cfg.get('app:title');

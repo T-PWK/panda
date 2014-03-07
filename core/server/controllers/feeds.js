@@ -2,8 +2,8 @@ var when          = require('when'),
     join          = require('path').join,
     provider      = require('../providers').postProvider;
 
-function view (req, view) {
-    return join(req.app.get('admin views'), view);
+function view (req, name) {
+    return join(req.app.get('admin views'), name);
 }
 
 module.exports.rss = function (req, res) {

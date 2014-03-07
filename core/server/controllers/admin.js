@@ -4,4 +4,4 @@ var cfg     = require('nconf'),
 
 module.exports.index = function (req, res) {
     res.render(join(cfg.get('paths:adminViews'), 'admin'));
-}
+};

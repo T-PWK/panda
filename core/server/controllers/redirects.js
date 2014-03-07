@@ -9,10 +9,10 @@ module.exports = function (req, res, next) {
             var type = redirect.type || 'internal';
 
             switch(type) {
-                case '301':
+                case '301': 
                 case '302': return res.redirect(redirect.to, +type);
                 case 'internal': req.url = redirect.to;
-                default: next('route');
             }
+            next('route');
         });
-}
+};

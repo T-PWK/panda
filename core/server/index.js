@@ -1,7 +1,7 @@
 var express     = require('express'),
     when        = require('when'),
     colors      = require('colors'),
-    path        = require('path')
+    path        = require('path'),
     cfg         = require('nconf'),
     format      = require('util').format,
     routes      = require('./routes'),
@@ -27,7 +27,7 @@ function serverStartupInfo () {
     process.on('SIGINT', function () {
         console.log("Panda server has shut down".red);
         process.exit(0);
-    })
+    });
 }
 
 function setup (app) {
@@ -56,9 +56,9 @@ function setup (app) {
             serverStartupInfo
         );
     }).catch(function (err) {
-        console.error(err.toString().red)
+        console.error(err.toString().red);
         throw err;
-    })
+    });
 }
 
 function init (app) {

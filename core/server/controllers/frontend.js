@@ -16,7 +16,7 @@ exports.middleware = function (req, res, next) {
         res.locals.archives = archives;
     })
     .then(next);
-}
+};
 
 exports.index = function(req, res) {
     var page = req.params.page || 1, skip = limit * (page - 1);
@@ -33,7 +33,7 @@ exports.index = function(req, res) {
     })
     .catch(function (err) {
         res.send(500, err.toString());
-    })
+    });
 };
 
 exports.year = function (req, res) {
@@ -109,7 +109,7 @@ exports.post = function (req, res, next) {
     .catch(function (error) {
         res.send(500);
     });
-}
+};
 
 exports.searchByLabel = function (req, res) {
     var page = req.params.page || 1, skip = limit * (page - 1);
@@ -124,8 +124,8 @@ exports.searchByLabel = function (req, res) {
         res.locals.label = req.params.label;
         
         res.render('index');
-    })
-}
+    });
+};
 
 exports.pageParam = function (req, res, next, page) {
     if (!page.match(/^\d+$/)) next('route');
@@ -134,26 +134,26 @@ exports.pageParam = function (req, res, next, page) {
         // Redirect to URL with no pagination if page 1 is used e.g. /page/1
         var path = req.path.replace(paginationRegexp, '');
         path = ('' === path) ? '/' : path; 
-        res.redirect(path)
-    };
-}
+        res.redirect(path);
+    }
+};
 
 exports.formatParam = function (req, res, next, format) {
     if (['html', 'json'].indexOf(format) >= 0) next();
     else next('route');
-}
+};
 
 exports.yearParam = function (req, res, next, year) {
     if (year.match(/^\d{4}$/)) next();
     else next('route');
-}
+};
 
 exports.monthParam = function (req, res, next, month) {
     if (month.match(/^\d{2}$/) && +month > 0 && +month < 13) next();
     else next('route');
-}
+};
 
 exports.dayParam = function (req, res, next, day) {
     if (day.match(/^\d{2}$/) && +day > 0 && +day < 32) next();
     else next('route');
-}
+};
