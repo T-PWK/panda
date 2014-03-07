@@ -62,7 +62,21 @@ module.exports = {
         /*
          * Static content cache in milliseconds
          */
-        staticCacheAge: 0
+        staticCacheAge: 0,
+
+        // Feeds configuration
+        feeds: {
+            // RSS feed configuration
+            rss: {
+                // Number of posts per page
+                postsPerPage: 25
+            },
+            // Atom feed configuration
+            atom: {
+                // Number of posts per page
+                postsPerPage: 25
+            }
+        }
     },
     url: "http://127.0.0.1:3000",
     server: { 
