@@ -6,8 +6,8 @@ block content
             .site-head-content.inner
                 if logo
                     a.blog-logo(href=logo): img(alt="Blog Logo", src=logo)
-                h1.blog-title!= title
-                h2.blog-description!= description
+                h1.blog-title !{title}
+                h2.blog-description !{description}
 
     main.content(role="main")
 
