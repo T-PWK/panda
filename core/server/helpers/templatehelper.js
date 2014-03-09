@@ -2,8 +2,8 @@ var moment          = require('moment'),
     util            = require('util'),
     cfg             = require('nconf'),
     _s              = require('underscore.string'),
-    labelUrlFormat  = cfg.get('app:labelUrlFormat'),
-    pgnUrl          = cfg.get('app:pageUrlFormat'),
+    labelUrlFormat  = cfg.get('app:labelUrl'),
+    pgnUrl          = cfg.get('app:paginationUrl'),
     pgnRegexp       = new RegExp(pgnUrl.replace(':page', '\\d+'));
 
 /*
@@ -16,7 +16,7 @@ function postUrl (post, absolute) {
         post = this.locals.post;  
     }
 
-    var output = post.page ? '/:slug' : cfg.get('app:postUrlFormat'),
+    var output = post.page ? cfg.get('app:pageUrl') : cfg.get('app:postUrl'),
         tags = {
             ':year':   function () { return moment(post.publishedAt).format('YYYY'); },
             ':month':  function () { return moment(post.publishedAt).format('MM'); },

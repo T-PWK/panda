@@ -36,20 +36,29 @@ module.exports = {
          * :slug' - substitued with the post's slug
          * :id - substitued with the post's id
          */
-        postUrlFormat: "/:year/:month/:day/:slug.html",
+        postUrl: "/:year/:month/:day/:slug.html",
 
+        /* 
+         * Post URL format. Available tokens:
+         * :year - substitued with the post's publication year (four digits e.g. 2012, 2013 etc.)
+         * :month - substitued with the post's publication month (two digits 01 - January, 02 - February etc.)
+         * :day - substitued with the post's publication month's day (two digits)
+         * :slug' - substitued with the post's slug
+         * :id - substitued with the post's id
+         */
+        pageUrl: "/:slug",
 
         /* 
          * Search by label URL format. Available tokens:
          * :label - substitued with the current label
          */
-        labelUrlFormat: "/search/label/:label",
+        labelUrl: "/search/label/:label",
         
         /*
          * Pagination URL format. Available tokens:
          * - :page - substituted with pagination number
          */
-        pageUrlFormat: "/page/:page",
+        paginationUrl: "/page/:page",
 
         /*
          * Copyright content. Available tokens:
