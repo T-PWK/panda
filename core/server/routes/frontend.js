@@ -12,7 +12,7 @@ module.exports = function (server) {
     server.get(cfg.get('app:postUrl'), frontend.middleware, frontend.post);         // Post page
 
     // Use static page URL only if it is different than postUrl
-    if (cfg.get('app:postUrl') !=== cfg.get('app:pageUrl')) {
+    if (cfg.get('app:postUrl') !== cfg.get('app:pageUrl')) {
         server.get(cfg.get('app:pageUrl'), frontend.middleware, frontend.post);     // Post page
     }
 
