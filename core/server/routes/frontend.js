@@ -8,9 +8,15 @@ module.exports = function (server) {
     server.param('format', frontend.formatParam);
     server.param('page', frontend.pageParam);
 
-    server.get('/', frontend.middleware, frontend.index);                               // Main page
-    server.get(cfg.get('app:postUrl'), frontend.middleware, frontend.post);       // Post page
-    server.get(cfg.get('app:paginationUrl'), frontend.middleware, frontend.index);// Pagination
+    server.get('/', frontend.middleware, frontend.index);                           // Main page
+    server.get(cfg.get('app:postUrl'), frontend.middleware, frontend.post);         // Post page
+
+    // Use static page URL only if it is different than postUrl
+    if (cfg.get('app:postUrl') !=== cfg.get('app:pageUrl')) {
+        server.get(cfg.get('app:pageUrl'), frontend.middleware, frontend.post);     // Post page
+    }
+
+    server.get(cfg.get('app:paginationUrl'), frontend.middleware, frontend.index);  // Pagination
 
     server.get(cfg.get('app:labelUrl'), 
         frontend.middleware, frontend.searchByLabel);
