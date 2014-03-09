@@ -35,7 +35,7 @@ PostProvider.prototype.findBySlug = function (slug) {
     return Post
             .findOne({ slug: slug })
             .where('publishedAt').lte(new Date())
-            .select('title content author publishedAt slug')
+            .select('title content author publishedAt slug labels')
             .populate('author')
             .exec();
 };
