@@ -13,7 +13,7 @@ block content
 
             span.post-meta
                 time(datetime=$date(post, 'iso')) #{$date(post, 'DD MMM YYYY')}
-                if post.labels.length
+                if $isntEmpty(post.labels)
                     |  on #{$labels(' | ')} 
 
             h1.post-title=post.title

@@ -178,6 +178,18 @@ function assets (asset) {
     return '/assets' + ('/' === asset[0] ? '' : '/') + asset + '?v=ad2e223fd';
 }
 
+function isntEmpty(obj, prop) {
+    var value;
+
+    if(arguments.length === 1) value = obj;
+    else if (arguments.length === 2) value = obj[prop];
+
+    if (!value) return false;
+    if ('string' === typeof value || util.isArray(value)) return value.length > 0;
+
+    return true;
+}
+
 function initRequest (req, res, next) {
     // Set default response local variables
 
@@ -213,6 +225,7 @@ function init (app) {
         $encode:     { enumerable: true, value: encode },
         $assets:     { enumerable: true, value: assets.bind(app) },
         $if:         { enumerable: true, value: ifCheck },
+        $isntEmpty:  { enumerable: true, value: isntEmpty },
         $labelUrl:   { enumerable: true, value: labelUrl },
 
 
