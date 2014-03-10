@@ -4,7 +4,10 @@ var cfg              = require('nconf'),
     provider         = require('../providers').postProvider,
     pagination       = require('../helpers/pagination'),
     limit            = cfg.get('app:postsPerPage'),
-    paginationRegexp = new RegExp(cfg.get('app:paginationUrl').replace(':page', '\\d+'));
+    paginationRegexp = new RegExp(cfg.get('app:paginationUrl').replace(':page', '\\d+')),
+    yearRegExp       = /^\d{4}$/,
+    monthDayRegExp   = /^\d{2}$/,
+    pageNumberRegExp = /^\d+$/;
 
 exports.middleware = function (req, res, next) {
     when.join(
@@ -128,7 +131,7 @@ exports.searchByLabel = function (req, res) {
 };
 
 exports.pageParam = function (req, res, next, page) {
-    if (!page.match(/^\d+$/)) next('route');
+    if (!page.match(pageNumberRegExp)) return next('route');
     if (+page > 1) next();
     else {
         // Redirect to URL with no pagination if page 1 is used e.g. /page/1
@@ -144,16 +147,16 @@ exports.formatParam = function (req, res, next, format) {
 };
 
 exports.yearParam = function (req, res, next, year) {
-    if (year.match(/^\d{4}$/)) next();
+    if (year.match(yearRegExp)) next();
     else next('route');
 };
 
 exports.monthParam = function (req, res, next, month) {
-    if (month.match(/^\d{2}$/) && +month > 0 && +month < 13) next();
+    if (month.match(monthDayRegExp) && +month >= 1 && +month <= 12) next();
     else next('route');
 };
 
 exports.dayParam = function (req, res, next, day) {
-    if (day.match(/^\d{2}$/) && +day > 0 && +day < 32) next();
+    if (day.match(monthDayRegExp) && +day >= 1 && +day <= 31) next();
     else next('route');
 };
