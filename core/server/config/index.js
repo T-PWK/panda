@@ -6,6 +6,7 @@ var when            = require('when'),
     adminViews      = path.resolve(appRoot, 'core/server/views'),
     themesRoot      = path.resolve(appRoot, 'content/themes'),
     dataRoot        = path.resolve(appRoot, 'content/data'),
+    clientRoot      = path.resolve(appRoot, 'core/client'),
     sharedRoot      = path.resolve(appRoot, 'content/shared');
 
 function init () {
@@ -39,6 +40,7 @@ function updatePaths () {
     cfg.set('paths:themes', themesRoot);
     cfg.set('paths:adminViews', adminViews);
     cfg.set('paths:sharedStatic', sharedRoot);
+    cfg.set('paths:clientStatic', clientRoot);
 }
 
 function updateThemePaths () {

@@ -27,6 +27,8 @@ function setup (app) {
         express.static(cfg.get('theme:paths:static'), { maxAge: cfg.get('app:staticCacheAge') }));
     app.use('/shared', 
         express.static(cfg.get('paths:sharedStatic'), { maxAge: cfg.get('app:staticCacheAge') }));
+    app.use('/client',
+        express.static(cfg.get('paths:clientStatic'), { maxAge: 0 })) //TODO: add configuration for clientStatic cache age
 
     // Set the template helper component
     tplHelper(app);
