@@ -85,6 +85,11 @@ module.exports = {
                 // Number of posts per page
                 postsPerPage: 25
             }
+        },
+
+        robots: {
+            disallow: ['/search', '/admin'],
+            allow: ['/']
         }
     },
     url: "http://127.0.0.1:3000",
