@@ -1,0 +1,24 @@
+doctype html
+html(ng-app="panda", lang="en")
+    head
+        meta(name="viewport", content="width=device-width, initial-scale=1")
+        link(rel="stylesheet", href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css")
+        link(rel="stylesheet", href="/client/css/screen.css")
+        block header
+body
+    nav.navbar.navbar-default.navbar-static-top(role="navigation")
+        .navbar-head
+            a.navbar-brand(href="#")
+                img(src="/client/img/panda_logo.png")
+                |  Panda
+    .container
+        block content
+
+    #footer
+        .container
+            p.text-muted Panda v.#{version}
+
+    script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular.min.js")
+    script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular-route.min.js")
+    script(src="/client/js/application.js")
+    script(src="/client/js/controllers.js")
