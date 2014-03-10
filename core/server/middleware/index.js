@@ -30,6 +30,8 @@ function setup (app) {
     app.use('/client',
         express.static(cfg.get('paths:clientStatic'), { maxAge: 0 })) //TODO: add configuration for clientStatic cache age
 
+    app.use(require('./robots')());
+
     // Set the template helper component
     tplHelper(app);
 

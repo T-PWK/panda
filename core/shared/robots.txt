@@ -2,7 +2,7 @@ User-agent: Mediapartners-Google
 Disallow: 
 
 User-agent: *
-Disallow: /search
-Allow: /
-
-Sitemap: http://blog.tompawlak.org/feeds/posts/default?orderby=UPDATED
+<% _.each(disallow, function(path){ %>Disallow: <%= path %>
+<% }) %><% _.each(allow, function(path){ %>Allow: <%= path %>
+<% }) %>
+Sitemap: <%= url %>/feeds/posts/default?orderby=UPDATED
