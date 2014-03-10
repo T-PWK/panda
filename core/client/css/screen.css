@@ -27,3 +27,7 @@ body {
 li.nav-header > ul {
     padding-left: 1.2em;
 }
+
+.breadcrumb {
+    margin-left: -15px;
+}

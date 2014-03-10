@@ -1,0 +1,4 @@
+ol.breadcrumb
+    li: a(href="/admin")= title
+    li {{pages[0].name}}
+    li(ng-if="pages[1]") {{pages[1].name}}
