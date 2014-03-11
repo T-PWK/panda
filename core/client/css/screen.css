@@ -31,3 +31,8 @@ li.nav-header > ul {
 .breadcrumb {
     margin-left: -15px;
 }
+
+p.btn-group {
+    line-height: 34px;
+    margin-bottom: 0;
+}
