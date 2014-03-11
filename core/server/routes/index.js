@@ -1,15 +1,16 @@
 var frontend    = require('./frontend'),
     feeds       = require('./feeds'),
     redirects   = require('./redirects'),
-    admin       = require('./admin');
+    admin       = require('./admin')
+    api         = require('./api');
 
 module.exports = {
     frontend:   frontend,
     feeds:      feeds,
     redirects:  redirects,
-    admin:      admin
+    admin:      admin,
+    api:        api
 };
 
 // feeds/posts/default
-// search/label/_label_name_
 /////

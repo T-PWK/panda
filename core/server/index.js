@@ -44,10 +44,11 @@ function setup (app) {
         middleware(app);
 
         // ## Routing
-        routes.redirects(app); // Set up redirect route
-        routes.feeds(app);     // Set up RSS routes
-        routes.frontend(app);  // Set up Frontent routes
-        routes.admin(app);     // Set up admin routes
+        routes.redirects(app);  // Set up redirect route
+        routes.feeds(app);      // Set up RSS routes
+        routes.frontend(app);   // Set up Frontent routes
+        routes.admin(app);      // Set up admin routes
+        routes.api(app);        // Set up API routes
 
         // ## Server Startup
         app.listen(
