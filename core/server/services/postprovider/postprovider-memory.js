@@ -140,20 +140,26 @@ PostProvider.prototype.sortAndSlice = function(items, opts) {
     var start = opts.skip || 0, 
         end = (opts.limit) ? start + opts.limit : items.length - 1;
 
-    return when(this.sort(items).slice(start, end));
+    return when(this.sort(items, opts).slice(start, end));
 };
 
-PostProvider.prototype.sort = function (posts) {
-    posts = posts.slice(0);
-    posts.sort(this.sortByDate);
+PostProvider.prototype.sort = function (posts, opts) {
+    var reverse = false,
+        sortBy = opts.sortBy || '-publishedAt',
+        posts = posts.slice(0);
+
+    if (sortBy[0] === '-') {
+        reverse = true;
+        sortBy = sortBy.slice(1);
+    }
+
+    posts = _.sortBy(posts, sortBy);
+
+    if (reverse) {
+        posts.reverse();
+    }
 
     return posts;
-};
-
-PostProvider.prototype.sortByDate = function (a, b) {
-    if (a.publishedAt > b.publishedAt) return -1;
-    if (a.publishedAt < b.publishedAt) return 1;
-    return 0;
 };
 
 function convertDateProperties () {

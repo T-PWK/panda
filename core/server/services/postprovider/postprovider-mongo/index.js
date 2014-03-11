@@ -20,7 +20,7 @@ PostProvider.prototype.findAll = function (opts) {
     return Post
             .find({ page: false })
             .where('publishedAt').lte(new Date())
-            .sort('-publishedAt')
+            .sort(opts.sortBy || '-publishedAt')
             .skip(opts.skip)
             .limit(opts.limit)
             .select('author title teaser publishedAt labels slug')
