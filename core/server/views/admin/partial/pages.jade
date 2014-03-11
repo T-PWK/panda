@@ -3,16 +3,53 @@
         include includes/navigation
     .col-md-9
         include includes/breadcrumb
+
         .btn-toolbar(role="toolbar")
-            .btn-group.btn-group-sm
-                button.btn.btn-default(type="button"): i.fa.fa-tags
-                button.btn.btn-default(type="button") Publish
+            .btn-group
+                button.btn.btn-default(type="button")
+                    i.fa.fa-check-square-o
+                    i.fa.fa-square-o
+                button.btn.btn-default(type="button", ng-if="publish") Publish
                 button.btn.btn-default(type="button") Revert to draft
                 button.btn.btn-default(type="button"): i.fa.fa-trash-o
-            .btn-group.btn-group-sm
+
+            .btn-group.pull-right
+                .btn-group
+                    button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
+                        | 10 
+                        span.caret
+                    ul.dropdown-menu
+                        li: a(href="#") 10
+                        li: a(href="#") 25
+                        li: a(href="#") 50
+                        li: a(href="#") 100
+
+            .btn-group.pull-right
                 button.btn.btn-default(type="button") &laquo;
                 button.btn.btn-default(type="button") 1
                 button.btn.btn-default(type="button") 2
                 button.btn.btn-default(type="button") 3
                 button.btn.btn-default(type="button") &raquo;
+
+            p.btn-group.pull-right 1-10 of 24
         hr
+        table.table
+            tbody
+                tr(ng-repeat="page in pages")
+                    td: input(type="checkbox")
+                    td: a(href="#") Post title
+                    td: span.text-warning Draft
+                    td: a(href="#", target="_blank") User Name
+                    td
+                        | 0 
+                        i.fa.fa-comment-o.text-muted
+                    td 23 Mar 2012
+                tr
+                    td: input(type="checkbox")
+                    td: a(href="#") Meta Keywords: Should we use them or not?
+                    td: span.text-success Published
+                    td: a(href="#", target="_blank") User Name
+                    td
+                        | 0 
+                        i.fa.fa-comment.text-muted
+                    td 23 Mar 2012
