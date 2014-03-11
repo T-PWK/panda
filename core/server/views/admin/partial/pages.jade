@@ -9,20 +9,52 @@
                 button.btn.btn-default(type="button")
                     i.fa.fa-check-square-o
                     i.fa.fa-square-o
+            .btn-group
                 button.btn.btn-default(type="button", ng-if="publish") Publish
                 button.btn.btn-default(type="button") Revert to draft
                 button.btn.btn-default(type="button"): i.fa.fa-trash-o
 
+            .btn-group
+                .btn-group
+                    button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
+                        | Sort By 
+                        span.caret
+                    ul.dropdown-menu
+                        li(ng-class="{active: sortBy=='title'}")
+                            a(href="#", ng-click="setSortBy('title', $event)")
+                                i.fa.fa-sort-alpha-asc
+                                |  Title 
+                        li(ng-class="{active: sortBy=='-title'}")
+                            a(href="#", ng-click="setSortBy('-title', $event)")
+                                i.fa.fa-sort-alpha-desc
+                                |  Title
+                        li(ng-class="{active: sortBy=='commentsCount'}")
+                            a(href="#", ng-click="setSortBy('commentsCount', $event)")
+                                i.fa.fa-sort-amount-asc
+                                |  Comments
+                        li(ng-class="{active: sortBy=='-commentsCount'}")
+                            a(href="#", ng-click="setSortBy('-commentsCount', $event)")
+                                i.fa.fa-sort-amount-desc
+                                |  Comments
+                        li(ng-class="{active: sortBy=='publishedAt'}")
+                            a(href="#", ng-click="setSortBy('publishedAt', $event)")
+                                i.fa.fa-sort-numeric-asc
+                                |  Published
+                        li(ng-class="{active: sortBy=='-publishedAt'}")
+                            a(href="#", ng-click="setSortBy('-publishedAt', $event)")
+                                i.fa.fa-sort-numeric-desc
+                                |  Published
+
             .btn-group.pull-right
                 .btn-group
                     button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
-                        | 10 
+                        | {{limit}} 
                         span.caret
                     ul.dropdown-menu
-                        li: a(href="#") 10
-                        li: a(href="#") 25
-                        li: a(href="#") 50
-                        li: a(href="#") 100
+                        li(ng-class="{active: limit==10}"): a(href="#", ng-click="setLimit(10, $event)") 10
+                        li(ng-class="{active: limit==25}"): a(href="#", ng-click="setLimit(25, $event)") 25
+                        li(ng-class="{active: limit==50}"): a(href="#", ng-click="setLimit(50, $event)") 50
+                        li(ng-class="{active: limit==100}"): a(href="#", ng-click="setLimit(100, $event)") 100
 
             .btn-group.pull-right
                 button.btn.btn-default(type="button") &laquo;
@@ -31,25 +63,27 @@
                 button.btn.btn-default(type="button") 3
                 button.btn.btn-default(type="button") &raquo;
 
-            p.btn-group.pull-right 1-10 of 24
+            p.btn-group.pull-right 1-10 of {{posts.length}}
         hr
-        table.table
-            tbody
-                tr(ng-repeat="page in pages")
-                    td: input(type="checkbox")
-                    td: a(href="#") Post title
-                    td: span.text-warning Draft
-                    td: a(href="#", target="_blank") User Name
-                    td
-                        | 0 
-                        i.fa.fa-comment-o.text-muted
-                    td 23 Mar 2012
+        p.text-center(ng-if="!posts.length") 
+            i.fa.fa-spinner.fa-spin 
+            |  Loading pages 
+        table.table(ng-if="posts.length")
+            thead
                 tr
-                    td: input(type="checkbox")
-                    td: a(href="#") Meta Keywords: Should we use them or not?
-                    td: span.text-success Published
-                    td: a(href="#", target="_blank") User Name
                     td
-                        | 0 
-                        i.fa.fa-comment.text-muted
-                    td 23 Mar 2012
+                    td Title 
+                    td Status
+                    td Author
+                    td
+                    td Published
+            tbody
+                tr(ng-repeat="page in pages | limitTo:limit")
+                    td: input(type="checkbox")
+                    td: a(href="#") {{page.title}}
+                    td: span(ng-class="{'text-warning':page.state=='Draft','text-success':page.state=='Published'}") {{page.state}}
+                    td: a(ng-href="{{page.author.website}}", target="_blank") {{page.author.name}}
+                    td
+                        | {{page.commentsCount || 0}} 
+                        i.fa.text-muted(ng-class="{'fa-comments-o':page.commentsCount>0,'fa-comment-o':page.commentsCount==0}")
+                    td {{page.publishedAt|date:'mediumDate'}}

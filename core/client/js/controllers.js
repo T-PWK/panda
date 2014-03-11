@@ -25,22 +25,36 @@ ctrlsModule.controller('OverviewCtrl', ['$scope',
     }
 ]);
 
-ctrlsModule.controller('PostsCtrl', ['$scope',
-    function function_name ($scope) {
+ctrlsModule.controller('PostsCtrl', ['$scope', 'Posts',
+    function ($scope, Posts) {
         $scope.setPages('posts', 'Posts', 'posts-all', 'All (20)');
-        $scope.itemsPerPage = 10;
+        $scope.limit = 10;
+        $scope.page = 1;
 
-        $scope.posts = [
-            {title:'Post title', state:'Draft', author:{name:'User Name', website:'http://google.com'}, comments: 2, publishedAt: new Date()},
-            {title:'Debug express', state:'Draft', author:{name:'User Name', website:'http://google.com'}, comments: 0, publishedAt: new Date()},
-            {title:'Meta Keywords: Should we use them or not?', state:'Published', author:{name:'User Name', website:'http://google.com'}, comments: 0, publishedAt: new Date(2013, 5, 26, 3, 1)},
-            {title:'Promise with node.js Loading file', state:'Published', author:{name:'User Name', website:'http://google.com'}, comments: 1, publishedAt: new Date(2013, 1, 20, 12, 33)}
-        ];
+        $scope.$watch('limit', postViewSetChange);
+        $scope.$watch('sortBy', postViewSetChange);
 
-        $scope.setItemsPerPage = function (count, e) {
+        loadPosts();
+
+        $scope.setSortBy = function (sortBy, e) {
             e.preventDefault();
-            $scope.itemsPerPage = count;
+            $scope.sortBy = sortBy;
+        }
+        $scope.setLimit = function (limit, e) {
+            e.preventDefault();
+            $scope.limit = limit;
         };
+
+        function postViewSetChange (old, update) {
+            if (old === update) return;
+            loadPosts();
+        }
+
+        function loadPosts () {
+            $scope.posts = Posts.query({
+                limit: $scope.limit, sortBy:$scope.sortBy
+            });
+        }
     }
 ]);
 

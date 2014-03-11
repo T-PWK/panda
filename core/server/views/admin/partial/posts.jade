@@ -9,20 +9,50 @@
                 button.btn.btn-default(type="button")
                     i.fa.fa-check-square-o
                     i.fa.fa-square-o
+            .btn-group
                 button.btn.btn-default(type="button", ng-if="publish") Publish
                 button.btn.btn-default(type="button") Revert to draft
                 button.btn.btn-default(type="button"): i.fa.fa-trash-o
 
+            .btn-group
+                button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
+                    | Sort By 
+                    span.caret
+                ul.dropdown-menu
+                    li(ng-class="{active: sortBy=='title'}")
+                        a(href="#", ng-click="setSortBy('title', $event)")
+                            i.fa.fa-sort-alpha-asc
+                            |  Title 
+                    li(ng-class="{active: sortBy=='-title'}")
+                        a(href="#", ng-click="setSortBy('-title', $event)")
+                            i.fa.fa-sort-alpha-desc
+                            |  Title
+                    li(ng-class="{active: sortBy=='commentsCount'}")
+                        a(href="#", ng-click="setSortBy('commentsCount', $event)")
+                            i.fa.fa-sort-amount-asc
+                            |  Comments
+                    li(ng-class="{active: sortBy=='-commentsCount'}")
+                        a(href="#", ng-click="setSortBy('-commentsCount', $event)")
+                            i.fa.fa-sort-amount-desc
+                            |  Comments
+                    li(ng-class="{active: sortBy=='publishedAt'}")
+                        a(href="#", ng-click="setSortBy('publishedAt', $event)")
+                            i.fa.fa-sort-numeric-asc
+                            |  Published
+                    li(ng-class="{active: sortBy=='-publishedAt'}")
+                        a(href="#", ng-click="setSortBy('-publishedAt', $event)")
+                            i.fa.fa-sort-numeric-desc
+                            |  Published
+
             .btn-group.pull-right
-                .btn-group
-                    button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
-                        | {{itemsPerPage}} 
-                        span.caret
-                    ul.dropdown-menu
-                        li: a(href="#", ng-click="setItemsPerPage(10, $event)") 10
-                        li: a(href="#", ng-click="setItemsPerPage(25, $event)") 25
-                        li: a(href="#", ng-click="setItemsPerPage(50, $event)") 50
-                        li: a(href="#", ng-click="setItemsPerPage(100, $event)") 100
+                button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
+                    | {{limit}} 
+                    span.caret
+                ul.dropdown-menu
+                    li(ng-class="{active: limit==10}"): a(href="#", ng-click="setLimit(10, $event)") 10
+                    li(ng-class="{active: limit==25}"): a(href="#", ng-click="setLimit(25, $event)") 25
+                    li(ng-class="{active: limit==50}"): a(href="#", ng-click="setLimit(50, $event)") 50
+                    li(ng-class="{active: limit==100}"): a(href="#", ng-click="setLimit(100, $event)") 100
 
             .btn-group.pull-right
                 button.btn.btn-default(type="button") &laquo;
@@ -31,16 +61,27 @@
                 button.btn.btn-default(type="button") 3
                 button.btn.btn-default(type="button") &raquo;
 
-            p.btn-group.pull-right 1-10 of 24
+            p.btn-group.pull-right 1-10 of {{posts.length}}
         hr
-        table.table
+        p.text-center(ng-if="!posts.length") 
+            i.fa.fa-spinner.fa-spin 
+            |  Loading posts 
+        table.table(ng-if="posts.length")
+            thead
+                tr
+                    td
+                    td Title 
+                    td Status
+                    td Author
+                    td
+                    td Published
             tbody
-                tr(ng-repeat="post in posts")
+                tr(ng-repeat="post in posts | limitTo:limit")
                     td: input(type="checkbox")
                     td: a(href="#") {{post.title}}
                     td: span(ng-class="{'text-warning':post.state=='Draft','text-success':post.state=='Published'}") {{post.state}}
                     td: a(ng-href="{{post.author.website}}", target="_blank") {{post.author.name}}
                     td
-                        | {{post.comments}} 
-                        i.fa.text-muted(ng-class="{'fa-comments-o':post.comments>0,'fa-comment-o':post.comments==0}")
+                        | {{post.commentsCount || 0}} 
+                        i.fa.text-muted(ng-class="{'fa-comments-o':post.commentsCount>0,'fa-comment-o':post.commentsCount==0}")
                     td {{post.publishedAt|date:'mediumDate'}}
