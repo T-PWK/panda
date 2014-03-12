@@ -6,35 +6,35 @@ ul.nav.nav-list
         a(href="#/posts")
             i.fa.fa-file-text
             |  Posts
-        ul.nav.nav-list(ng-if="pages[0].id === 'posts'")
+        ul.nav.nav-list(ng-if="breadcrumb[0].id === 'posts' && breakdown")
             li: a(href="#/posts/all")
-                span.badge.pull-right 20
+                span.badge.pull-right {{breakdown.all}}
                 | All
-            li: a(href="#/posts/scheduled")
-                span.badge.pull-right 0
+            li(ng-if="breakdown.scheduled"): a(href="#/posts/scheduled")
+                span.badge.pull-right {{breakdown.scheduled}}
                 | Scheduled
-            li: a(href="#/posts/draft")
-                span.badge.pull-right 18
+            li(ng-if="breakdown.draft"): a(href="#/posts/draft")
+                span.badge.pull-right {{breakdown.draft}}
                 | Draft
-            li: a(href="#/posts/published")
-                span.badge.pull-right 18
+            li(ng-if="breakdown.published"): a(href="#/posts/published")
+                span.badge.pull-right {{breakdown.published}}
                 | Published
     li.nav-header
         a(href="#/pages")
             i.fa.fa-file
             |  Pages
-        ul.nav.nav-list(ng-if="pages[0].id === 'pages'")
+        ul.nav.nav-list(ng-if="breadcrumb[0].id === 'pages' && breakdown")
             li: a(href="#/pages/all")
-                span.badge.pull-right 20
+                span.badge.pull-right {{breakdown.all}}
                 | All
-            li: a(href="#/pages/scheduled")
-                span.badge.pull-right 0
+            li(ng-if="breakdown.scheduled"): a(href="#/pages/scheduled")
+                span.badge.pull-right {{breakdown.scheduled}}
                 | Scheduled
-            li: a(href="#/pages/draft")
-                span.badge.pull-right 18
+            li(ng-if="breakdown.draft"): a(href="#/pages/draft")
+                span.badge.pull-right {{breakdown.draft}}
                 | Draft
-            li: a(href="#/pages/published")
-                span.badge.pull-right 18
+            li(ng-if="breakdown.published"): a(href="#/pages/published")
+                span.badge.pull-right {{breakdown.published}}
                 | Published
     li
         a(href="#/comments")

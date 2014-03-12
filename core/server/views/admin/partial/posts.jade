@@ -70,18 +70,18 @@
             thead
                 tr
                     td
-                    td Title 
-                    td Status
+                    td Title
+                    td
                     td Author
                     td
                     td Published
             tbody
                 tr(ng-repeat="post in posts | limitTo:limit")
                     td: input(type="checkbox")
-                    td: a(href="#") {{post.title}}
-                    td: span.text-warning {{status(post)}}
+                    td: a(ng-href="#/posts/{{post._id}}/edit") {{post.title}}
+                    td: span.fa(ng-class="{D:'fa-edit',S:'fa-calendar'}[statusCode(post)]", title="{{status(post)}}")
                     td: a(ng-href="{{post.author.website}}", target="_blank") {{post.author.name}}
                     td
                         | {{post.commentsCount || 0}} 
-                        i.fa.text-muted(ng-class="{'fa-comments-o':post.commentsCount>0,'fa-comment-o':post.commentsCount==0}")
+                        i.fa.text-muted(ng-class="{'fa-comments-o':post.commentsCount,'fa-comment-o':post.commentsCount==0}")
                     td {{post.publishedAt|date:'mediumDate'}}

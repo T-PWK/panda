@@ -1,4 +1,5 @@
 ol.breadcrumb
     li: a(href="/admin")= title
-    li {{pages[0].name}}
-    li(ng-if="pages[1]") {{pages[1].name}}
+    li(ng-repeat="item in breadcrumb") 
+        | {{item.display}} 
+        span(ng-if="item.data") ({{item.data}})

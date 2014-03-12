@@ -73,14 +73,14 @@
                 tr
                     td
                     td Title 
-                    td Status
+                    td
                     td Author
                     td
                     td Published
             tbody
                 tr(ng-repeat="page in pages | limitTo:limit")
                     td: input(type="checkbox")
-                    td: a(href="#") {{page.title}}
+                    td: a(ng-href="#/posts/{{page._id}}/edit") {{page.title}}
                     td: span(ng-class="{'text-warning':page.state=='Draft','text-success':page.state=='Published'}") {{page.state}}
                     td: a(ng-href="{{page.author.website}}", target="_blank") {{page.author.name}}
                     td
