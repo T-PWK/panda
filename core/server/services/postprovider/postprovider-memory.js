@@ -62,6 +62,20 @@ PostProvider.prototype.count = function (opts) {
     return when(this.select(opts).length);
 };
 
+PostProvider.prototype.fetchAll = function (opts) {
+    var items;
+
+    if ('undefined' === typeof opts.post) {
+        items = this.dummyData;
+    } else {
+        items = this.dummyData.filter(function (item) {
+            return opts.post ? (item.page !== true) : item.page;
+        });
+    }
+
+    return this.sortAndSlice(items, opts);
+};
+
 PostProvider.prototype.findAll = function (opts) {
     return this.sortAndSlice(this.select(), opts);
 };
@@ -138,7 +152,7 @@ PostProvider.prototype.sortAndSlice = function(items, opts) {
     opts = opts || {};
 
     var start = opts.skip || 0, 
-        end = (opts.limit) ? start + opts.limit : items.length - 1;
+        end = (opts.limit) ? start + opts.limit : undefined;
 
     return when(this.sort(items, opts).slice(start, end));
 };
