@@ -36,6 +36,11 @@ ctrlsModule.controller('PostsCtrl', ['$scope', 'Posts',
 
         loadPosts();
 
+        $scope.status = function (post) {
+            if (!post.publishedAt) return 'Draft';
+            else if (post.publishedAt > Date.now()) return 'Scheduled';
+        }
+
         $scope.setSortBy = function (sortBy, e) {
             e.preventDefault();
             $scope.sortBy = sortBy;
@@ -58,21 +63,12 @@ ctrlsModule.controller('PostsCtrl', ['$scope', 'Posts',
     }
 ]);
 
-ctrlsModule.controller('PagesCtrl', ['$scope', '$interval', 
-    function ($scope, $interval) {
+ctrlsModule.controller('PagesCtrl', ['$scope', 'Pages',
+    function ($scope, Pages) {
         $scope.setPages('pages', 'Pages');
         $scope.publish = true;
-
-        $interval(function () {
-            $scope.publish = !$scope.publish;
-        }, 20000);
-
-        $scope.pages = [
-            {title:'Post title', state:'Draft', user:{name:'User Name', website:'http://google.com'}, comments: 0, publishedAt: new Date()},
-            {title:'Debug express', state:'Draft', user:{name:'User Name', website:'http://google.com'}, comments: 0, publishedAt: new Date()},
-            {title:'Meta Keywords: Should we use them or not?', state:'Published', user:{name:'User Name', website:'http://google.com'}, comments: 0, publishedAt: new Date(2013, 5, 26, 3, 1)},
-            {title:'Promise with node.js Loading file', state:'Published', user:{name:'User Name', website:'http://google.com'}, comments: 0, publishedAt: new Date(2013, 0, 20, 12, 33)}
-        ];
+        $scope.pages = Pages.query();
+        $scope.limit = 100;
     }
 ]);
 

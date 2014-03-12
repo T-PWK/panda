@@ -79,7 +79,7 @@
                 tr(ng-repeat="post in posts | limitTo:limit")
                     td: input(type="checkbox")
                     td: a(href="#") {{post.title}}
-                    td: span(ng-class="{'text-warning':post.state=='Draft','text-success':post.state=='Published'}") {{post.state}}
+                    td: span.text-warning {{status(post)}}
                     td: a(ng-href="{{post.author.website}}", target="_blank") {{post.author.name}}
                     td
                         | {{post.commentsCount || 0}} 

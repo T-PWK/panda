@@ -16,4 +16,7 @@ angular.module('panda', ['ngRoute', 'ngResource', 'pandaControllers']).
     }])
     .factory('Posts', ['$resource', function ($resource) {
         return $resource('/api/v1/posts/:id', {id:'@id'});
+    }])
+    .factory('Pages', ['$resource', function ($resource) {
+        return $resource('/api/v1/pages/:id', {id:'@id'});
     }]);
