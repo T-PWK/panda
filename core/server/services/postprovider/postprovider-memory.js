@@ -38,7 +38,6 @@ PostProvider.prototype.loadFiles = function () {
         })
         .then(convertDateProperties.bind(that))     // convert date properties
         .then(updateAuthorInfo.bind(that));         // update users (authors)
-
 };
 
 PostProvider.prototype.select = function(opts) {
@@ -63,7 +62,7 @@ PostProvider.prototype.count = function (opts) {
 };
 
 PostProvider.prototype.fetchAll = function (opts) {
-    var items;
+    var items, now = Date.now();
 
     if ('undefined' === typeof opts.post) {
         items = this.dummyData;
@@ -73,19 +72,57 @@ PostProvider.prototype.fetchAll = function (opts) {
         });
     }
 
+    switch(opts.type) {
+        case 'scheduled': 
+            items = items.filter(function (item) { return item.publishedAt > now; });
+            break;
+        case 'draft':
+            items = items.filter(function (item) { return !item.publishedAt; });
+            break;
+        case 'published':
+            items = items.filter(function (item) { return item.publishedAt <= now; });
+            break;
+        default:
+    }
+
     return this.sortAndSlice(items, opts);
 };
+
+PostProvider.prototype.countByPublishedAt = function (opts) {
+    var items, now = Date.now(), 
+        count = { all: 0, published: 0, draft: 0, scheduled: 0 };
+
+    if ('undefined' === typeof opts.post) {
+        items = this.dummyData;
+    } else {
+        items = this.dummyData.filter(function (item) {
+            return opts.post ? (item.page !== true) : item.page;
+        });
+    }
+
+    items.forEach(function (item) {
+        if (!item.publishedAt) this.draft++;
+        else if (item.publishedAt > now) this.scheduled++;
+        else this.published++;
+    }, count);
+
+    count.all = count.published + count.scheduled + count.draft;
+
+    return when.resolve(count);
+}
 
 PostProvider.prototype.findAll = function (opts) {
     return this.sortAndSlice(this.select(), opts);
 };
 
-PostProvider.prototype.findBySlug = function (slug) {
-    var items = this.dummyData.filter(function (item) {
-        return item.slug === slug && item.publishedAt <= new Date();
-    });
+PostProvider.prototype.findById = function (id) {
+    return when.resolve(_.findWhere(this.dummyData, {_id: id}));
+};
 
-    return when(items[0]);
+PostProvider.prototype.findBySlug = function (slug) {
+    return when.resolve(_.find(this.dummyData, function (item) {
+        item.slug === slug && item.publishedAt <= Date.now();
+    }));
 };
 
 PostProvider.prototype.findByYear = function (opts) {
