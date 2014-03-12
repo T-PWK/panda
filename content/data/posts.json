@@ -69,7 +69,6 @@
 },{
     "title":"The Spirits of the Heat",
     "slug":"spirits-of-heat",
-    "publishedAt":"2014-02-02T00:00:00.000Z",
     "createdAt":"2014-02-02T00:00:00.000Z",
     "updatedAt":"2014-02-05T00:22:00.000Z",
     "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
@@ -100,7 +99,7 @@
 },{
     "title":"The Rose of the Danger",
     "slug":"rose-of-danger",
-    "publishedAt":"2013-12-19T00:00:00.000Z",
+    "publishedAt":"2020-12-19T00:00:00.000Z",
     "createdAt":"2013-12-19T00:00:00.000Z",
     "updatedAt":"2014-01-20T00:02:00.000Z",
     "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
