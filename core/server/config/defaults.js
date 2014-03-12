@@ -36,6 +36,7 @@ module.exports = {
          * :slug' - substitued with the post's slug
          * :id - substitued with the post's id
          */
+        //postPermalink
         postUrl: "/:year/:month/:day/:slug.html",
 
         /* 
@@ -46,6 +47,7 @@ module.exports = {
          * :slug' - substitued with the post's slug
          * :id - substitued with the post's id
          */
+        // pagePermalink
         pageUrl: "/:slug",
 
         /* 

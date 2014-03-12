@@ -2,52 +2,89 @@
 
 var ctrlsModule = angular.module('pandaControllers', []);
 
-ctrlsModule.controller('RootCtrl', ['$scope', 
-    function ($scope) {
-        $scope.pages = [];
+ctrlsModule.controller('RootCtrl', ['$scope', 'Config',
+    function ($scope, Config) {
+        $scope.breadcrumb = [];
 
-        $scope.setPages = function (props) {
+
+        $scope.setBreadcrumb = function (props) {
             var args = Array.prototype.slice.call(arguments);
-            $scope.pages.splice(0, $scope.pages.length);
 
-            console.info(args.length / 2)
-            
-            for (var i = 0; i <= args.length / 2; i+=2) {
-                $scope.pages.push({id:args[i], name:args[i+1]});
-            };
+            if (angular.isNumber(args[0])) {
+                updateItem(args);
+            } else {
+                updateBreadcrumb(args);
+                
+            }
         };
+
+        function updateItem (args) {
+            if (angular.isObject(args[1])) {
+                angular.extend($scope.breadcrumb[args[0]], args[1]);
+            } 
+            else {
+                $scope.breadcrumb[args[0]].display = args[1];
+            }
+        }
+
+        function updateBreadcrumb (args) {
+            $scope.breadcrumb = [];
+            angular.forEach(args, function (id) {
+                if (angular.isString(id)) {
+                    this.push({ id: id, display: Config.pageNames[id] || id });
+                }
+                else if (angular.isObject(id)) {
+                    this.push(angular.copy(id));
+                }
+            }, $scope.breadcrumb);
+        }
     }
 ]);
 
 ctrlsModule.controller('OverviewCtrl', ['$scope', 
-    function ($scope) {
-        $scope.setPages('overview', 'Overview');
+    function ($s) {
+        $s.setBreadcrumb('overview');
     }
 ]);
 
-ctrlsModule.controller('PostsCtrl', ['$scope', 'Posts',
-    function ($scope, Posts) {
-        $scope.setPages('posts', 'Posts', 'posts-all', 'All (20)');
-        $scope.limit = 10;
-        $scope.page = 1;
+ctrlsModule.controller('PostsCtrl', ['$scope', '$routeParams', 'Posts', 'Config',
+    function ($s, $params, Posts, Config) {
+        $s.limit = 10;
+        $s.page = 1;
+        $s.type = $params.type
+        $s.setBreadcrumb('posts', $params.type);
 
-        $scope.$watch('limit', postViewSetChange);
-        $scope.$watch('sortBy', postViewSetChange);
+        $s.breakdown = Posts.countByPublishedAt(function (breakdown) {
+            $s.setBreadcrumb(1, { data: breakdown[$params.type] });
+        });
+
+        $s.$watch('limit', postViewSetChange);
+        $s.$watch('sortBy', postViewSetChange);
 
         loadPosts();
 
-        $scope.status = function (post) {
-            if (!post.publishedAt) return 'Draft';
-            else if (post.publishedAt > Date.now()) return 'Scheduled';
+        $s.status = function (post) {
+            return Config.status[$s.statusCode(post)];
         }
 
-        $scope.setSortBy = function (sortBy, e) {
-            e.preventDefault();
-            $scope.sortBy = sortBy;
+        $s.statusCode = function (post) {
+            var date = post.publishedAt;
+            if (!angular.isDefined(date)) return 'D';
+
+            // Convert string to date            
+            if (!angular.isDate(date)) date = new Date(date);
+
+            if (date > Date.now()) return 'S';
+            else return 'A';
         }
-        $scope.setLimit = function (limit, e) {
+
+        $s.setSortBy = function (sortBy, e) {
             e.preventDefault();
-            $scope.limit = limit;
+            $s.sortBy = sortBy;
+        }
+        $s.setLimit = function (limit, e) {
+            e.preventDefault();
+            $s.limit = limit;
         };
 
         function postViewSetChange (old, update) {
@@ -56,30 +93,69 @@ ctrlsModule.controller('PostsCtrl', ['$scope', 'Posts',
         }
 
         function loadPosts () {
-            $scope.posts = Posts.query({
-                limit: $scope.limit, sortBy:$scope.sortBy
+            $s.posts = Posts.query({
+                limit: $s.limit, sortBy:$s.sortBy, type: $params.type
             });
         }
     }
 ]);
 
-ctrlsModule.controller('PagesCtrl', ['$scope', 'Pages',
-    function ($scope, Pages) {
-        $scope.setPages('pages', 'Pages');
-        $scope.publish = true;
-        $scope.pages = Pages.query();
-        $scope.limit = 100;
+ctrlsModule.controller('PagesCtrl', ['$scope', '$routeParams', 'Pages',
+    function ($s, $params, Pages) {
+        $s.setBreadcrumb('pages', $params.type);
+        $s.pages = Pages.query();
+        $s.limit = 100;
+
+        $s.breakdown = Pages.countByPublishedAt(function (breakdown) {
+            $s.setBreadcrumb(1, { data: breakdown[$params.type] });
+        });
+    }
+]);
+
+ctrlsModule.controller('PostViewCtrl', ['$scope', 
+    function ($s) {
+        //;
+    }
+]);
+
+ctrlsModule.controller('PostEditCtrl', ['$scope', 
+    function ($s) {
+        var postTitleUnwatch;
+
+        // Initialize new post
+        $s.post = {
+            scheduleOpt: 'auto',
+            slugOpt: 'auto',
+            page: false
+        };
+
+        $s.$watch('post.slugOpt', function (opt) {
+            switch(opt) {
+                case 'auto': 
+                    postTitleUnwatch = $s.$watch('post.title', updateSlugFromTitle);
+                    break;
+                case 'manual':
+                    postTitleUnwatch();
+                    break;
+                default:
+            }
+        });
+
+        function updateSlugFromTitle (value) {
+            if (!value) return;
+            $s.post.slug = S(value).slugify().s;
+        }
     }
 ]);
 
 ctrlsModule.controller('SettingsCtrl', ['$scope', 
-    function ($scope) {
-        $scope.setPages('settings', 'Settings');
+    function ($s) {
+        $s.setBreadcrumb('settings');
     }
 ]);
 
 ctrlsModule.controller('CommentsCtrl', ['$scope', 
     function ($scope) {
-        $scope.setPages('comments', 'Comments');
+        $scope.setBreadcrumb('comments');
     }
 ]);
