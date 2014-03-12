@@ -15,46 +15,44 @@
                 button.btn.btn-default(type="button"): i.fa.fa-trash-o
 
             .btn-group
-                .btn-group
-                    button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
-                        | Sort By 
-                        span.caret
-                    ul.dropdown-menu
-                        li(ng-class="{active: sortBy=='title'}")
-                            a(href="#", ng-click="setSortBy('title', $event)")
-                                i.fa.fa-sort-alpha-asc
-                                |  Title 
-                        li(ng-class="{active: sortBy=='-title'}")
-                            a(href="#", ng-click="setSortBy('-title', $event)")
-                                i.fa.fa-sort-alpha-desc
-                                |  Title
-                        li(ng-class="{active: sortBy=='commentsCount'}")
-                            a(href="#", ng-click="setSortBy('commentsCount', $event)")
-                                i.fa.fa-sort-amount-asc
-                                |  Comments
-                        li(ng-class="{active: sortBy=='-commentsCount'}")
-                            a(href="#", ng-click="setSortBy('-commentsCount', $event)")
-                                i.fa.fa-sort-amount-desc
-                                |  Comments
-                        li(ng-class="{active: sortBy=='publishedAt'}")
-                            a(href="#", ng-click="setSortBy('publishedAt', $event)")
-                                i.fa.fa-sort-numeric-asc
-                                |  Published
-                        li(ng-class="{active: sortBy=='-publishedAt'}")
-                            a(href="#", ng-click="setSortBy('-publishedAt', $event)")
-                                i.fa.fa-sort-numeric-desc
-                                |  Published
+                button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
+                    | Sort By 
+                    span.caret
+                ul.dropdown-menu
+                    li(ng-class="{active: sortBy=='title'}")
+                        a(href="#", ng-click="setSortBy('title', $event)")
+                            i.fa.fa-sort-alpha-asc
+                            |  Title 
+                    li(ng-class="{active: sortBy=='-title'}")
+                        a(href="#", ng-click="setSortBy('-title', $event)")
+                            i.fa.fa-sort-alpha-desc
+                            |  Title
+                    li(ng-class="{active: sortBy=='commentsCount'}")
+                        a(href="#", ng-click="setSortBy('commentsCount', $event)")
+                            i.fa.fa-sort-amount-asc
+                            |  Comments
+                    li(ng-class="{active: sortBy=='-commentsCount'}")
+                        a(href="#", ng-click="setSortBy('-commentsCount', $event)")
+                            i.fa.fa-sort-amount-desc
+                            |  Comments
+                    li(ng-class="{active: sortBy=='publishedAt'}")
+                        a(href="#", ng-click="setSortBy('publishedAt', $event)")
+                            i.fa.fa-sort-numeric-asc
+                            |  Published
+                    li(ng-class="{active: sortBy=='-publishedAt'}")
+                        a(href="#", ng-click="setSortBy('-publishedAt', $event)")
+                            i.fa.fa-sort-numeric-desc
+                            |  Published
 
             .btn-group.pull-right
-                .btn-group
-                    button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
-                        | {{limit}} 
-                        span.caret
-                    ul.dropdown-menu
-                        li(ng-class="{active: limit==10}"): a(href="#", ng-click="setLimit(10, $event)") 10
-                        li(ng-class="{active: limit==25}"): a(href="#", ng-click="setLimit(25, $event)") 25
-                        li(ng-class="{active: limit==50}"): a(href="#", ng-click="setLimit(50, $event)") 50
-                        li(ng-class="{active: limit==100}"): a(href="#", ng-click="setLimit(100, $event)") 100
+                button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
+                    | {{limit}} 
+                    span.caret
+                ul.dropdown-menu
+                    li(ng-class="{active: limit==10}"): a(href="#", ng-click="setLimit(10, $event)") 10
+                    li(ng-class="{active: limit==25}"): a(href="#", ng-click="setLimit(25, $event)") 25
+                    li(ng-class="{active: limit==50}"): a(href="#", ng-click="setLimit(50, $event)") 50
+                    li(ng-class="{active: limit==100}"): a(href="#", ng-click="setLimit(100, $event)") 100
 
             .btn-group.pull-right
                 button.btn.btn-default(type="button") &laquo;

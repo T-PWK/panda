@@ -6,7 +6,6 @@ ctrlsModule.controller('RootCtrl', ['$scope', 'Config',
     function ($scope, Config) {
         $scope.breadcrumb = [];
 
-
         $scope.setBreadcrumb = function (props) {
             var args = Array.prototype.slice.call(arguments);
 
@@ -14,7 +13,6 @@ ctrlsModule.controller('RootCtrl', ['$scope', 'Config',
                 updateItem(args);
             } else {
                 updateBreadcrumb(args);
-                
             }
         };
 
@@ -93,8 +91,10 @@ ctrlsModule.controller('PostsCtrl', ['$scope', '$routeParams', 'Posts', 'Config'
         }
 
         function loadPosts () {
-            $s.posts = Posts.query({
+            Posts.query({
                 limit: $s.limit, sortBy:$s.sortBy, type: $params.type
+            }, function (posts) {
+                $s.posts = posts;
             });
         }
     }
@@ -118,16 +118,24 @@ ctrlsModule.controller('PostViewCtrl', ['$scope',
     }
 ]);
 
-ctrlsModule.controller('PostEditCtrl', ['$scope', 
-    function ($s) {
+ctrlsModule.controller('PostEditCtrl', ['$scope', '$filter', 
+    function ($s, $filter) {
         var postTitleUnwatch;
 
         // Initialize new post
         $s.post = {
             scheduleOpt: 'auto',
             slugOpt: 'auto',
-            page: false
+            page: false,
+            scheduleDateTime: $filter('date')(new Date(), "yyyy-MM-ddTHH:mm"),
+            labels: []
         };
+
+        $s.addLabel = function (label) {
+            $s.post.labels.push(label);
+        };
+
+        $s.labels = ['javascript', 'azure', 'Windows Azure', 'css', 'json', 'uuid'];
 
         $s.$watch('post.slugOpt', function (opt) {
             switch(opt) {
@@ -142,8 +150,8 @@ ctrlsModule.controller('PostEditCtrl', ['$scope',
         });
 
         function updateSlugFromTitle (value) {
-            if (!value) return;
-            $s.post.slug = S(value).slugify().s;
+            if (!value) $s.post.slug = "";
+            else $s.post.slug = S(value).slugify().s;
         }
     }
 ]);

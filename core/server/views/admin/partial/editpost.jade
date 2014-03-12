@@ -2,9 +2,8 @@
     .col-md-12
         form.form-horizontal(role="form")
             .form-group
-                .col-md-1
-                    label.control-label(for="postTitle") Page Title
-                .col-md-7
+                .col-md-8
+                    label.sr-only.control-label(for="postTitle") Page Title
                     input.form-control(type="text", id="postTitle", placeholder="Enter Post Title", ng-model="post.title")
                 .col-md-4
                     .btn-group.pull-right
@@ -25,13 +24,27 @@ hr
                         |  Labels
                 #labels.panel-collapse.collapse
                     .panel-body
+                        .form-group
+                            input.form-control(type="text", placeholder="Type Label", ng-trim="true")
+                            span.help-block
+                                i.fa.fa-info-circle
+                                |  Enter label name
+                        | Post labels
+                        ul.list-inline
+                            li.btn-link(ng-click="removeLabel(label)", 
+                                ng-repeat="label in post.labels") {{label}}
+                        | Available
+                        ul.list-inline
+                            li.btn-link(ng-click="addLabel(label)", 
+                                ng-repeat="label in labels") {{label}}
+
+                        hr
                         .checkbox: label
                             input(type="checkbox", ng-model="post.featured")
                             |  Featured
                         span.help-block
                             i.fa.fa-info-circle
                             |  You can mark your post as featured.
-
 
             //- Post publication date setup
             .panel.panel-default
@@ -48,7 +61,7 @@ hr
                             input(type="radio", ng-model="post.scheduleOpt", value="manual")
                             | Set date and time
                         .form-group(ng-if="post.scheduleOpt=='manual'")
-                            input.form-control(type="text", placeholder="Set date and time", model="post.scheduleDateTime")
+                            input.form-control(type="datetime-local", placeholder="Set date and time", ng-model="post.scheduleDateTime")
                         p.help-block(ng-if="post.scheduleOpt=='auto'") 
                             i.fa.fa-info-circle
                             |  Your post will be automatically published when you press Publish button.
@@ -56,7 +69,7 @@ hr
                             i.fa.fa-info-circle
                             |  Your post will be published at a specified date and time.
 
-            // Post URL (slug) setup
+            //- Post URL (slug) setup
             .panel.panel-default
                 .panel-heading
                     a.panel-title.btn-link(data-toggle="collapse", data-parent="#accordion", data-target="#link")
@@ -71,7 +84,11 @@ hr
                             input(type="radio", ng-model="post.slugOpt", value="manual")
                             | Custom
                         .form-group(ng-if="post.slugOpt=='manual'")
-                            input.form-control(type="text", placeholder="Set custom slug", ng-model="post.slug")
+                            input.form-control(type="text", 
+                                placeholder="Set custom slug", 
+                                ng-model="post.slug", 
+                                ng-pattern="/[a-z0-9]+(-[a-z0-9]+)*/",
+                                ng-trim="true")
                         p.help-block(ng-if="post.slugOpt=='auto'") 
                             i.fa.fa-info-circle
                             |  Your post slug will be automatically generated from the post title.

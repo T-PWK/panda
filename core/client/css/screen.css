@@ -36,3 +36,7 @@ p.btn-group {
     line-height: 34px;
     margin-bottom: 0;
 }
+
+.panel-title {
+    font-size: 14px;
+}
