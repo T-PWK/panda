@@ -11,8 +11,8 @@ var cfg              = require('nconf'),
 
 exports.middleware = function (req, res, next) {
     when.join(
-        provider.getLabelsInfo(),
-        provider.getArchiveInfo()
+        provider.labelsInfo(),
+        provider.archiveInfo()
     )
     .spread(function (labels, archives) {
         res.locals.labels = labels;
@@ -25,7 +25,7 @@ exports.index = function(req, res) {
     var page = req.params.page || 1, skip = limit * (page - 1);
 
     when.join(
-        provider.findAll({ limit:limit, skip:skip }),
+        provider.findAll({ live:true, page:false, limit:limit, skip:skip }),
         provider.count()
     )
     .spread(function (posts, count) {
@@ -43,7 +43,7 @@ exports.year = function (req, res) {
     var page = req.params.page || 1, skip = limit * (page - 1), year = +req.params.year;
 
     when.join(
-        provider.findByYear({ year: year, skip:skip, limit:limit }),
+        provider.findByDate({ live: true, page: false, year: year, skip:skip, limit:limit }),
         provider.count({ year: year })
     )
     .then(function (results) {
@@ -60,7 +60,7 @@ exports.month = function (req, res) {
         year = +req.params.year, month = +req.params.month;
 
     when.join(
-        provider.findByMonth({ month:month, year: year, skip:skip, limit:limit }),
+        provider.findByDate({ live: true, page: false, month:month, year: year, skip:skip, limit:limit }),
         provider.count({ month:month, year: year })
     )
     .spread(function (posts, count) {
@@ -79,7 +79,7 @@ exports.day = function (req, res) {
         month = +req.params.month, day = +req.params.day;
 
     when.join(
-        provider.findByDay({ day:day, month:month, year: year, skip:skip, limit:limit }),
+        provider.findByDate({ live:true, page:false, day:day, month:month, year: year, skip:skip, limit:limit }),
         provider.count({ day:day, month:month, year: year })
     )
     .then(function (results) {
@@ -96,17 +96,15 @@ exports.day = function (req, res) {
 
 exports.post = function (req, res, next) {
     when(
-        provider.findBySlug(req.params.slug)
+        provider.findBySlug(req.params.slug, { live:true })
     )
     .then(function (post) {
 
-        // if there is no post with the given slug, 
-        // check if there is no other route
+        // if there is no post with the given slug, check if there is no other route
         // which could handle that request e.g. /:year
         if (!post) return next('route');
 
         res.locals.post = post;
-
         res.render(post.page ? 'page' : 'post');
     })
     .catch(function (error) {
@@ -118,7 +116,7 @@ exports.searchByLabel = function (req, res) {
     var page = req.params.page || 1, skip = limit * (page - 1);
 
     when.join(
-        provider.findByLabel({ label:req.params.label, skip:skip, limit:limit }),
+        provider.findByLabel({ live:true, page:false, label:req.params.label, skip:skip, limit:limit }),
         provider.count({ label: req.params.label })
     )
     .spread(function (posts, count) {

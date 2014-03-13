@@ -2,9 +2,10 @@ var when             = require('when'),
     provider         = require('../providers').postProvider;
 
 module.exports.posts = function (req, res) {
+    var page = ('undefined' === typeof req.query.page) ? undefined : req.query.page.toLowerCase() === 'true';
     provider
-        .fetchAll({
-            post: true, 
+        .findAll({
+            page: page,
             limit: +req.query.limit, 
             sortBy: req.query.sortBy,
             type: req.query.type
@@ -12,12 +13,9 @@ module.exports.posts = function (req, res) {
         .then(res.json.bind(res));
 }
 
-module.exports.postsCountByPublishedAt = function (req, res) {
-    provider.countByPublishedAt({ post: true }).then(res.json.bind(res));
-}
-
-module.exports.pagesCountByPublishedAt = function (req, res) {
-    provider.countByPublishedAt({ post: false }).then(res.json.bind(res));
+module.exports.postCountInfo = function (req, res) {
+    var page = ('undefined' === typeof req.query.page) ? undefined : req.query.page.toLowerCase() === 'true';
+    provider.postCountInfo({ page: page }).then(res.json.bind(res));
 }
 
 module.exports.pages = function (req, res) {

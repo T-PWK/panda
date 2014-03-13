@@ -1,11 +1,18 @@
 var api = require('../controllers/api');
 
+function notImplemented (req, res) {
+    res.json({ info: 'API not implemented' });
+}
+
 module.exports = function (server) {
     // Posts
     server.get('/api/v1/posts', api.posts);
-    server.get('/api/v1/posts/count/published', api.postsCountByPublishedAt);
+    server.get('/api/v1/posts/archive', notImplemented);
+    server.get('/api/v1/posts/count', api.postCountInfo);
+    server.get('/api/v1/posts/label/:label', notImplemented);
+    server.get('/api/v1/posts/:id', notImplemented);
 
-    // Pages
-    server.get('/api/v1/pages', api.pages);
-    server.get('/api/v1/pages/count/published', api.pagesCountByPublishedAt);
+    // Labels
+    server.get('/api/v1/labels', notImplemented);
+    server.get('/api/v1/labels/:id', notImplemented);
 };
