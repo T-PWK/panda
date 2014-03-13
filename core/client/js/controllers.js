@@ -52,9 +52,12 @@ ctrlsModule.controller('PostsCtrl', ['$scope', '$routeParams', 'Posts', 'Config'
         $s.type = $params.type
         $s.setBreadcrumb('posts', $params.type);
 
-        $s.breakdown = Posts.countByPublishedAt(function (breakdown) {
-            $s.setBreadcrumb(1, { data: breakdown[$params.type] });
-        });
+        $s.breakdown = Posts.postsCount(
+            { page: false }, 
+            function (breakdown) {
+                $s.setBreadcrumb(1, { data: breakdown[$params.type] });
+            }
+        );
 
         $s.$watch('limit', postViewSetChange);
         $s.$watch('sortBy', postViewSetChange);
@@ -85,14 +88,13 @@ ctrlsModule.controller('PostsCtrl', ['$scope', '$routeParams', 'Posts', 'Config'
             $s.limit = limit;
         };
 
-        function postViewSetChange (old, update) {
-            if (old === update) return;
-            loadPosts();
+        function postViewSetChange (newValue, oldValue) {
+            if (newValue !== oldValue) loadPosts();
         }
 
         function loadPosts () {
             Posts.query({
-                limit: $s.limit, sortBy:$s.sortBy, type: $params.type
+                limit: $s.limit, sortBy:$s.sortBy, type: $params.type, page: false
             }, function (posts) {
                 $s.posts = posts;
             });
@@ -100,15 +102,18 @@ ctrlsModule.controller('PostsCtrl', ['$scope', '$routeParams', 'Posts', 'Config'
     }
 ]);
 
-ctrlsModule.controller('PagesCtrl', ['$scope', '$routeParams', 'Pages',
-    function ($s, $params, Pages) {
+ctrlsModule.controller('PagesCtrl', ['$scope', '$routeParams', 'Posts',
+    function ($s, $params, Posts) {
         $s.setBreadcrumb('pages', $params.type);
-        $s.pages = Pages.query();
+        $s.pages = Posts.query({ page: true });
         $s.limit = 100;
 
-        $s.breakdown = Pages.countByPublishedAt(function (breakdown) {
-            $s.setBreadcrumb(1, { data: breakdown[$params.type] });
-        });
+        $s.breakdown = Posts.postsCount(
+            { page: true }, 
+            function (breakdown) {
+                $s.setBreadcrumb(1, { data: breakdown[$params.type] });
+            }
+        );
     }
 ]);
 
@@ -119,46 +124,80 @@ ctrlsModule.controller('PostViewCtrl', ['$scope',
 ]);
 
 ctrlsModule.controller('PostEditCtrl', ['$scope', '$filter', 
-    function ($s, $filter) {
-        var postTitleUnwatch;
+    function ($scope, $filter) {
+        var unwatchTitle;
+        var permalinks = {
+            page: '/:slug.html',
+            post: '/:year/:month/:day/:slug.html'
+        }
+        var tags = {
+            ':slug': function () { return $scope.post.slug; },
+            ':year': function () { return $scope.post.scheduledAt.getFullYear(); },
+            ':month': function () { return _.str.lpad($scope.post.scheduledAt.getMonth(), 2, '0'); },
+            ':day': function () { return _.str.lpad($scope.post.scheduledAt.getDate(), 2, '0'); }
+        }
+
+        $scope.allLabels = ['javascript', 'azure', 'Windows Azure', 'css', 'json', 'uuid'];
 
         // Initialize new post
-        $s.post = {
+        $scope.post = {
             scheduleOpt: 'auto',
             slugOpt: 'auto',
             page: false,
             scheduleDateTime: $filter('date')(new Date(), "yyyy-MM-ddTHH:mm"),
+            scheduledAt: new Date(),
             labels: []
         };
 
-        $s.addLabel = function (label) {
-            $s.post.labels.push(label);
-        };
-
-        $s.labels = ['javascript', 'azure', 'Windows Azure', 'css', 'json', 'uuid'];
-
-        $s.$watch('post.slugOpt', function (opt) {
-            switch(opt) {
-                case 'auto': 
-                    postTitleUnwatch = $s.$watch('post.title', updateSlugFromTitle);
-                    break;
-                case 'manual':
-                    postTitleUnwatch();
-                    break;
-                default:
-            }
+        $scope.$watch('post.slug', setSlugFromTitle);
+        $scope.$watch('post.slug', updatePermalinks);
+        $scope.$watch('post.page', updatePermalinks);
+        $scope.$watch('post.scheduledAt', updatePermalinks);
+        $scope.$watch('post.scheduleDateTime', function (dateTime) {
+            $scope.post.scheduledAt = new Date(dateTime);
+        });
+        $scope.$watch('post.slugOpt', function (opt) {
+            if('auto' === opt) unwatchTitle = $scope.$watch('post.title', setSlugFromTitle);
+            else if ('manual' === opt) unwatchTitle();
         });
 
-        function updateSlugFromTitle (value) {
-            if (!value) $s.post.slug = "";
-            else $s.post.slug = S(value).slugify().s;
+        $scope.addLabel = function (label) {
+            if (angular.isArray(label)) angular.forEach(label, add);
+            else add(label);
+
+            function add (label) {
+                if (!label || ~$scope.post.labels.indexOf(label)) return;
+                $scope.post.labels.push(label);
+            }
+        };
+
+        $scope.delLabel = function (label) {
+            var idx = $scope.post.labels.indexOf(label);
+            if (~idx) $scope.post.labels.splice(idx, 1);
+        }
+
+        function updatePermalinks () {
+            var $scope = arguments[2],
+                url = ($scope.post.page) ? permalinks.page : permalinks.post;
+
+            url = url.replace(/(:[a-z]+)/g, function (match) {
+                if (match in tags) return tags[match]();
+                return match;
+            });
+
+            $scope.permalink = url;
+        }
+
+        function setSlugFromTitle (text, oldText, $scope) {
+            if (!text) $scope.post.slug = "";
+            else $scope.post.slug = _.str.slugify(text);
         }
     }
 ]);
 
 ctrlsModule.controller('SettingsCtrl', ['$scope', 
-    function ($s) {
-        $s.setBreadcrumb('settings');
+    function ($scope) {
+        $scope.setBreadcrumb('settings');
     }
 ]);
 

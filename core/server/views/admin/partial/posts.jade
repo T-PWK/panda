@@ -79,7 +79,9 @@
                 tr(ng-repeat="post in posts | limitTo:limit")
                     td: input(type="checkbox")
                     td: a(ng-href="#/posts/{{post._id}}/edit") {{post.title}}
-                    td: span.fa(ng-class="{D:'fa-edit',S:'fa-calendar'}[statusCode(post)]", title="{{status(post)}}")
+                    td
+                        span.fa.fa-bookmark(ng-if="post.featured", title="Featured")
+                        span.fa(ng-if="statusCode(post)!='A'" ng-class="{D:'fa-edit',S:'fa-calendar'}[statusCode(post)]", title="{{status(post)}}")
                     td: a(ng-href="{{post.author.website}}", target="_blank") {{post.author.name}}
                     td
                         | {{post.commentsCount || 0}} 

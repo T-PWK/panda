@@ -18,18 +18,23 @@ angular.module('panda', ['ngRoute', 'ngResource', 'pandaControllers']).
         return $resource('/api/v1/posts/:id:info/:kind',
             {id:'@id', info:'@info', type:'@kind'},
             {
-                countByPublishedAt: { method: 'GET', params: { info: 'count', kind: 'published' }}
+                postsCount: { method: 'GET', params: { info: 'count' }}
             }
         );
     }])
-    .factory('Pages', ['$resource', function ($resource) {
-        return $resource('/api/v1/pages/:id:info/:kind', 
-            {id:'@id', info:'@info', type:'@kind'},
-            {
-                countByPublishedAt: { method: 'GET', params: { info: 'count', kind: 'published' }}
-            }
-        );
-    }])
+    .directive('ngEnter', function() {
+        return function(scope, element, attrs) {
+            element.bind("keydown keypress", function(event) {
+                if(event.which === 13) {
+                    scope.$apply(function(){
+                        scope.$eval(attrs.ngEnter, {'event': event});
+                    });
+
+                    event.preventDefault();
+                }
+            });
+        };
+    })
     .value('Config', {
         status: {
             'D': 'Draft',
