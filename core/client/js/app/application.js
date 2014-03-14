@@ -56,7 +56,9 @@
                 all: 'All',
                 scheduled: 'Scheduled',
                 draft: 'Draft',
-                published: 'Published'
+                live: 'Published',
+                users: 'Users',
+                themes: 'Themes'
             }
         });
 }());

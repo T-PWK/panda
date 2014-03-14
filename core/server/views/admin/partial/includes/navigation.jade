@@ -16,8 +16,8 @@ ul.nav.nav-list
             li(ng-if="postsCount.draft"): a(href="#/posts/draft")
                 span.badge.pull-right {{postsCount.draft}}
                 | Draft
-            li(ng-if="postsCount.published"): a(href="#/posts/published")
-                span.badge.pull-right {{postsCount.published}}
+            li(ng-if="postsCount.live"): a(href="#/posts/live")
+                span.badge.pull-right {{postsCount.live}}
                 | Published
     li.nav-header
         a(href="#/pages")
@@ -33,8 +33,8 @@ ul.nav.nav-list
             li(ng-if="breakdown.draft"): a(href="#/pages/draft")
                 span.badge.pull-right {{breakdown.draft}}
                 | Draft
-            li(ng-if="breakdown.published"): a(href="#/pages/published")
-                span.badge.pull-right {{breakdown.published}}
+            li(ng-if="breakdown.live"): a(href="#/pages/live")
+                span.badge.pull-right {{breakdown.live}}
                 | Published
 
     li: a(href="#/comments")
