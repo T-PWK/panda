@@ -24,19 +24,23 @@ body {
     margin: 20px 0;
 }
 
+.breadcrumb {
+    margin-left: -1em;
+}
+
 li.nav-header > ul {
     padding-left: 1.2em;
 }
 
-.breadcrumb {
-    margin-left: -15px;
+.postedit .panel-title {
+    font-size: 100%;
 }
 
 p.btn-group {
-    line-height: 34px;
+    line-height: 2.5em;
     margin-bottom: 0;
 }
 
-.panel-title {
-    font-size: 14px;
+.fa + .fa {
+    margin-left: .2em;
 }
