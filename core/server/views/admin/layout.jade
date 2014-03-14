@@ -2,7 +2,6 @@ doctype html
 html(ng-app="panda", lang="en")
     head
         meta(name="viewport", content="width=device-width, initial-scale=1")
-        link(href='http://fonts.googleapis.com/css?family=Open+Sans', rel='stylesheet', type='text/css')
         link(href="/shared/css/font-awesome.min.css", rel="stylesheet")
         link(rel="stylesheet", href=$adminTheme('bootstrap.min.css'))
         link(rel="stylesheet", href="/client/css/screen.css")
@@ -23,7 +22,7 @@ body
         block content
 
     //- Footer
-    #footer
+    #footer.navbar-default
         .container
             p.text-muted Panda v.#{version}
 
