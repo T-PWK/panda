@@ -1,10 +1,15 @@
-'use strict';
+"use strict";
 
 var ctrlsModule = angular.module('pandaControllers', []);
 
 ctrlsModule.controller('RootCtrl', ['$scope', 'Config',
     function ($scope, Config) {
+        $scope.loading = false;
         $scope.breadcrumb = [];
+
+        $scope.setLoading = function (loading) {
+            $scope.loading = !!loading;
+        };
 
         $scope.setBreadcrumb = function (props) {
             var args = Array.prototype.slice.call(arguments);
@@ -46,57 +51,131 @@ ctrlsModule.controller('OverviewCtrl', ['$scope',
 ]);
 
 ctrlsModule.controller('PostsCtrl', ['$scope', '$routeParams', 'Posts', 'Config',
-    function ($s, $params, Posts, Config) {
-        $s.limit = 10;
-        $s.page = 1;
-        $s.type = $params.type
-        $s.setBreadcrumb('posts', $params.type);
-
-        $s.breakdown = Posts.postsCount(
+    function ($scope, $params, Posts, Config) {
+        $scope.setBreadcrumb('posts', $params.type);
+        $scope.type = $params.type;
+        $scope.pagination = {
+            limit: 10, pages: [], page: 1, total: 0, 
+            nextPage: true, prevPage: true,
+            posts: { from: 1, to: 10 }
+        };
+        $scope.selection = { keys: {}, all: false };
+        $scope.postsCount = Posts.postsCount(
             { page: false }, 
-            function (breakdown) {
-                $s.setBreadcrumb(1, { data: breakdown[$params.type] });
+            function (postsCount) {
+                $scope.pagination.total = postsCount[$params.type];
+                $scope.total = postsCount[$params.type];
+                $scope.setBreadcrumb(1, { data: postsCount[$params.type] });
             }
         );
 
-        $s.$watch('limit', postViewSetChange);
-        $s.$watch('sortBy', postViewSetChange);
+        // Clear posts selection
+        $scope.$watch('pagination.limit', clearSelection);
+        $scope.$watch('pagination.page', clearSelection);
+        $scope.$watch('sortBy', clearSelection);
+
+        // Update posts view
+        $scope.$watch('pagination.limit', postViewSetChange);
+        $scope.$watch('pagination.page', postViewSetChange);
+        $scope.$watch('sortBy', postViewSetChange);
+
+        // Update pagination
+        $scope.$watch('posts', updatePagination);
 
         loadPosts();
 
-        $s.status = function (post) {
-            return Config.status[$s.statusCode(post)];
+        $scope.statusText = function (post) {
+            return Config.status[$scope.status(post)];
+        };
+
+        $scope.select = function (id) {
+            if ($scope.selection.keys[id]) removeSelection(id);
+            else addSelection(id);
         }
 
-        $s.statusCode = function (post) {
+        $scope.selectAll = function () {
+            var sel = $scope.selection;
+            if (sel.all) clearSelection();
+            else {
+                angular.forEach($scope.posts, function (post) {
+                    addSelection(post._id);
+                });
+                $scope.selection.all = true;
+            }
+        }
+
+        $scope.status = function (post) {
             var date = post.publishedAt;
             if (!angular.isDefined(date)) return 'D';
-
-            // Convert string to date            
-            if (!angular.isDate(date)) date = new Date(date);
-
+            if (!angular.isDate(date)) date = new Date(date); // Convert string to date 
             if (date > Date.now()) return 'S';
             else return 'A';
+        };
+
+        $scope.setSortBy = function (sortBy, e) {
+            e.preventDefault();
+            $scope.sortBy = sortBy;
+            $scope.pagination.page = 1;
+        };
+
+        $scope.setLimit = function (limit, e) {
+            e.preventDefault();
+            $scope.pagination.limit = limit;
+            $scope.pagination.page = 1;
+        };
+
+        $scope.setPage = function (num) {
+            $scope.pagination.page = num;
+        };
+
+        function clearSelection () {
+            $scope.selection.keys = {};
+            $scope.selection.all = false;
         }
 
-        $s.setSortBy = function (sortBy, e) {
-            e.preventDefault();
-            $s.sortBy = sortBy;
+        function addSelection (id) {
+            $scope.selection.keys[id] = true;
         }
-        $s.setLimit = function (limit, e) {
-            e.preventDefault();
-            $s.limit = limit;
-        };
+
+        function removeSelection (id) {
+            delete $scope.selection.keys[id];
+            $scope.selection.all = false;
+        }
+
+        function clearSelection () {
+            $scope.selection.keys = {};
+            $scope.selection.all = false;
+        }
+
+        function updatePagination () {
+            var pg = $scope.pagination, 
+                pages = Math.ceil((pg.total || 0) / pg.limit);
+                
+            pg.pages = [];
+            for(var i = 1; i <= pages; i++) pg.pages.push(i);
+
+            pg.posts.from = pg.limit * (pg.page - 1) + 1;
+            pg.posts.to = Math.min(pg.posts.from + pg.limit - 1, pg.total);
+
+            pg.hasNext = pg.page < pages;
+            pg.hasPrev = pg.page > 1;
+        }
 
         function postViewSetChange (newValue, oldValue) {
             if (newValue !== oldValue) loadPosts();
         }
 
         function loadPosts () {
+            var pg = $scope.pagination, skip = (pg.page - 1) * pg.limit;
+
             Posts.query({
-                limit: $s.limit, sortBy:$s.sortBy, type: $params.type, page: false
+                limit: $scope.pagination.limit, 
+                skip: skip,
+                sortBy: $scope.sortBy, 
+                type: $params.type, 
+                page: false
             }, function (posts) {
-                $s.posts = posts;
+                $scope.posts = posts;
             });
         }
     }
@@ -123,21 +202,22 @@ ctrlsModule.controller('PostViewCtrl', ['$scope',
     }
 ]);
 
-ctrlsModule.controller('PostEditCtrl', ['$scope', '$filter', 
-    function ($scope, $filter) {
+ctrlsModule.controller('PostEditCtrl', ['$scope', '$filter', 'Labels',
+    function ($scope, $filter, Labels) {
+        $scope.setBreadcrumb('postedit');
         var unwatchTitle;
         var permalinks = {
             page: '/:slug.html',
             post: '/:year/:month/:day/:slug.html'
         }
         var tags = {
-            ':slug': function () { return $scope.post.slug; },
+            ':slug': function () { return $scope.post.slug || ':slug:'; },
             ':year': function () { return $scope.post.scheduledAt.getFullYear(); },
             ':month': function () { return _.str.lpad($scope.post.scheduledAt.getMonth(), 2, '0'); },
             ':day': function () { return _.str.lpad($scope.post.scheduledAt.getDate(), 2, '0'); }
         }
 
-        $scope.allLabels = ['javascript', 'azure', 'Windows Azure', 'css', 'json', 'uuid'];
+        $scope.allLabels = Labels.query();
 
         // Initialize new post
         $scope.post = {
@@ -204,5 +284,17 @@ ctrlsModule.controller('SettingsCtrl', ['$scope',
 ctrlsModule.controller('CommentsCtrl', ['$scope', 
     function ($scope) {
         $scope.setBreadcrumb('comments');
+    }
+]);
+
+ctrlsModule.controller('UsersCtrl', ['$scope', 
+    function ($scope) {
+        $scope.setBreadcrumb('users');
+    }
+]);
+
+ctrlsModule.controller('ThemesCtrl', ['$scope', 
+    function ($scope) {
+        $scope.setBreadcrumb('themes');
     }
 ]);

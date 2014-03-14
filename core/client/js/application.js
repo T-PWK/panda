@@ -12,6 +12,8 @@ angular.module('panda', ['ngRoute', 'ngResource', 'pandaControllers']).
             .when('/posts/:id/edit', { templateUrl: '/admin/partial/editpost', controller: 'PostEditCtrl' })
             .when('/comments', { templateUrl:'/admin/partial/comments', controller:'CommentsCtrl' })
             .when('/settings', { templateUrl:'/admin/partial/settings', controller:'SettingsCtrl' })
+            .when('/users', { templateUrl:'/admin/partial/users', controller:'UsersCtrl' })
+            .when('/themes', { templateUrl:'/admin/partial/themes', controller:'ThemesCtrl' })
             .otherwise({ redirectTo: '/' });
     }])
     .factory('Posts', ['$resource', function ($resource) {
@@ -21,6 +23,9 @@ angular.module('panda', ['ngRoute', 'ngResource', 'pandaControllers']).
                 postsCount: { method: 'GET', params: { info: 'count' }}
             }
         );
+    }])
+    .factory('Labels', ['$resource', function ($resource) {
+        return $resource('/api/v1/labels');
     }])
     .directive('ngEnter', function() {
         return function(scope, element, attrs) {
