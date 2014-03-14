@@ -4,7 +4,7 @@ html(ng-app="panda", lang="en")
         meta(name="viewport", content="width=device-width, initial-scale=1")
         link(href='http://fonts.googleapis.com/css?family=Open+Sans', rel='stylesheet', type='text/css')
         link(href="/shared/css/font-awesome.min.css", rel="stylesheet")
-        link(rel="stylesheet", href="/client/css/bootstrap.min.css")
+        link(rel="stylesheet", href=$adminTheme('bootstrap.min.css'))
         link(rel="stylesheet", href="/client/css/screen.css")
         block header
 body
@@ -19,7 +19,7 @@ body
             p.navbar-text.navbar-right User Name
 
     //- Content
-    .container(ng-controller="RootCtrl")
+    .container(ng-controller="RootCtrl", ng-class="breadcrumb[0].id")
         block content
 
     //- Footer
@@ -31,6 +31,7 @@ body
     script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular.min.js")
     script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular-route.min.js")
     script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular-resource.min.js")
+    script(src="/client/js/underscore-1.6.0.min.js")
     script(src="/client/js/underscore.string-2.3.2.min.js")
     script(src="/client/js/bootstrap.min.js")
     script(src="/client/js/application.js")

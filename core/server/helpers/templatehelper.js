@@ -4,7 +4,9 @@ var moment          = require('moment'),
     _s              = require('underscore.string'),
     labelUrlFormat  = cfg.get('app:labelUrl'),
     pgnUrl          = cfg.get('app:paginationUrl'),
+    adminThemeName  = cfg.get('admin:theme'),
     pgnRegexp       = new RegExp(pgnUrl.replace(':page', '\\d+'));
+
 
 /*
  * Builds post or static page URL.
@@ -178,6 +180,10 @@ function assets (asset) {
     return '/assets' + ('/' === asset[0] ? '' : '/') + asset + '?v=ad2e223fd';
 }
 
+function adminTheme (asset) {
+    return '/client/css/' + adminThemeName + '/' + asset;  
+}
+
 function isntEmpty(obj, prop) {
     var value;
 
@@ -227,7 +233,7 @@ function init (app) {
         $if:         { enumerable: true, value: ifCheck },
         $isntEmpty:  { enumerable: true, value: isntEmpty },
         $labelUrl:   { enumerable: true, value: labelUrl },
-
+        $adminTheme: { enumerable: true, value: adminTheme },
 
         // Update application locals with view settings like debug or pretty formatting
         pretty:      { enumerable: true, value: cfg.get('view:pretty') },
