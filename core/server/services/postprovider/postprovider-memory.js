@@ -176,42 +176,41 @@ PostProvider.prototype.archiveInfo = function (opts) {
     var posts = select(this.dummyData, opts);
 
     var info = _.chain(posts)
-    .map(function (post) {
-        return moment(post.publishedAt).startOf('month').valueOf();
-    })
-    .groupBy()
-    .map(function (values, date) {
-        return {
-            dateMillisec: +date,
-            date: moment(+date),
-            count: values.length
-        };
-    })
-    .sortBy(function (item) {
-        return -item.dateMillisec;
-    })
-    .value();
+        .map(function (post) {
+            return moment(post.publishedAt).startOf('month').valueOf();
+        })
+        .groupBy()
+        .map(function (values, date) {
+            return {
+                dateMillisec: +date,
+                date: moment(+date),
+                count: values.length
+            };
+        })
+        .sortBy(function (item) {
+            return -item.dateMillisec;
+        })
+        .value();
 
     return when.resolve(info);
 };
 
 PostProvider.prototype.labelsInfo = function (opts) {
-    return _.chain(select(this.dummyData, opts))
-    .map(function (post) {
-        return post.labels;
-    })
-    .flatten()
-    .countBy()
-    .map(function (count, label) {
-        return {
-            label: label,
-            count: count
-        };
-    })
-    .sortBy(function (label) {
-        return -label.count;
-    })
-    .value();
+    var labels = _.chain(select(this.dummyData, opts))
+        .map(function (post) {
+            return post.labels;
+        })
+        .flatten()
+        .countBy()
+        .map(function (count, label) {
+            return { label: label, count: count };
+        })
+        .sortBy(function (item) {
+            return -item.count;
+        })
+        .value();
+
+    return when.resolve(labels);
 };
 
 function sortAndSlice(posts, opts) {

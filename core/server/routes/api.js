@@ -13,6 +13,6 @@ module.exports = function (server) {
     server.get('/api/v1/posts/:id', notImplemented);
 
     // Labels
-    server.get('/api/v1/labels', notImplemented);
+    server.get('/api/v1/labels', api.labels);
     server.get('/api/v1/labels/:id', notImplemented);
 };
