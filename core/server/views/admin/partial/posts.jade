@@ -7,8 +7,8 @@
         .btn-toolbar(role="toolbar")
             .btn-group
                 button.btn.btn-default(type="button")
-                    i.fa.fa-check-square-o
-                    i.fa.fa-square-o
+                    i.fa(ng-class="{'fa-square-o':!selection.all,'fa-check-square-o':selection.all}",
+                        ng-click="selectAll()")
             .btn-group
                 button.btn.btn-default(type="button", ng-if="publish") Publish
                 button.btn.btn-default(type="button") Revert to draft
@@ -38,30 +38,39 @@
                     li(ng-class="{active: sortBy=='publishedAt'}")
                         a(href="#", ng-click="setSortBy('publishedAt', $event)")
                             i.fa.fa-sort-numeric-asc
-                            |  Published
+                            |  Publication Date
                     li(ng-class="{active: sortBy=='-publishedAt'}")
                         a(href="#", ng-click="setSortBy('-publishedAt', $event)")
                             i.fa.fa-sort-numeric-desc
-                            |  Published
+                            |  Publication Date
 
             .btn-group.pull-right
                 button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
-                    | {{limit}} 
+                    | {{pagination.limit}} 
                     span.caret
                 ul.dropdown-menu
-                    li(ng-class="{active: limit==10}"): a(href="#", ng-click="setLimit(10, $event)") 10
-                    li(ng-class="{active: limit==25}"): a(href="#", ng-click="setLimit(25, $event)") 25
-                    li(ng-class="{active: limit==50}"): a(href="#", ng-click="setLimit(50, $event)") 50
-                    li(ng-class="{active: limit==100}"): a(href="#", ng-click="setLimit(100, $event)") 100
+                    li(ng-class="{active: pagination.limit==10}")
+                        a(href="#", ng-click="setLimit(10, $event)") 10
+                    li(ng-class="{active: pagination.limit==25}")
+                        a(href="#", ng-click="setLimit(25, $event)") 25
+                    li(ng-class="{active: pagination.limit==50}")
+                        a(href="#", ng-click="setLimit(50, $event)") 50
+                    li(ng-class="{active: pagination.limit==100}")
+                        a(href="#", ng-click="setLimit(100, $event)") 100
 
             .btn-group.pull-right
-                button.btn.btn-default(type="button") &laquo;
-                button.btn.btn-default(type="button") 1
-                button.btn.btn-default(type="button") 2
-                button.btn.btn-default(type="button") 3
-                button.btn.btn-default(type="button") &raquo;
+                button.btn.btn-default.btn-disabled(type="button", 
+                    ng-disabled="!pagination.hasPrev",
+                    ng-click="setPage(pagination.page-1)") &laquo;
+                button.btn.btn-default(type="button", 
+                    ng-repeat="page in pagination.pages", 
+                    ng-click="setPage(page)",
+                    ng-class="{active: pagination.page == page}") {{page}}
+                button.btn.btn-default(type="button", 
+                    ng-disabled="!pagination.hasNext", 
+                    ng-click="setPage(pagination.page+1)") &raquo;
 
-            p.btn-group.pull-right 1-10 of {{posts.length}}
+            p.btn-group.pull-right {{pagination.posts.from}}-{{pagination.posts.to}} of {{pagination.total}}
         hr
         p.text-center(ng-if="!posts.length") 
             i.fa.fa-spinner.fa-spin 
@@ -76,14 +85,16 @@
                     td
                     td Published
             tbody
-                tr(ng-repeat="post in posts | limitTo:limit")
-                    td: input(type="checkbox")
+                tr(ng-repeat="post in posts | limitTo:pagination.limit")
+                    td: input(type="checkbox", ng-checked="selection.keys[post._id]", ng-click="select(post._id)")
                     td: a(ng-href="#/posts/{{post._id}}/edit") {{post.title}}
                     td
-                        span.fa.fa-bookmark(ng-if="post.featured", title="Featured")
-                        span.fa(ng-if="statusCode(post)!='A'" ng-class="{D:'fa-edit',S:'fa-calendar'}[statusCode(post)]", title="{{status(post)}}")
+                        i.fa.fa-bookmark(ng-if="post.featured", title="Featured")
+                        i.fa(ng-if="status(post)!='A'" ng-class="{D:'fa-edit',S:'fa-calendar'}[status(post)]", title="{{statusText(post)}}")
                     td: a(ng-href="{{post.author.website}}", target="_blank") {{post.author.name}}
                     td
                         | {{post.commentsCount || 0}} 
                         i.fa.text-muted(ng-class="{'fa-comments-o':post.commentsCount,'fa-comment-o':post.commentsCount==0}")
-                    td {{post.publishedAt|date:'mediumDate'}}
+                    td(ng-class="{S:'text-warning'}[status(post)]")
+                        span.text-warning(ng-if="status(post)=='D'") {{statusText(post)}}
+                        | {{post.publishedAt|date:'mediumDate'}}

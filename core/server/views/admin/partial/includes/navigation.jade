@@ -6,18 +6,18 @@ ul.nav.nav-list
         a(href="#/posts")
             i.fa.fa-file-text
             |  Posts
-        ul.nav.nav-list(ng-if="breadcrumb[0].id === 'posts' && breakdown")
+        ul.nav.nav-list(ng-if="breadcrumb[0].id === 'posts' && postsCount")
             li: a(href="#/posts/all")
-                span.badge.pull-right {{breakdown.all}}
+                span.badge.pull-right {{postsCount.all}}
                 | All
-            li(ng-if="breakdown.scheduled"): a(href="#/posts/scheduled")
-                span.badge.pull-right {{breakdown.scheduled}}
+            li(ng-if="postsCount.scheduled"): a(href="#/posts/scheduled")
+                span.badge.pull-right {{postsCount.scheduled}}
                 | Scheduled
-            li(ng-if="breakdown.draft"): a(href="#/posts/draft")
-                span.badge.pull-right {{breakdown.draft}}
+            li(ng-if="postsCount.draft"): a(href="#/posts/draft")
+                span.badge.pull-right {{postsCount.draft}}
                 | Draft
-            li(ng-if="breakdown.published"): a(href="#/posts/published")
-                span.badge.pull-right {{breakdown.published}}
+            li(ng-if="postsCount.published"): a(href="#/posts/published")
+                span.badge.pull-right {{postsCount.published}}
                 | Published
     li.nav-header
         a(href="#/pages")
@@ -36,10 +36,18 @@ ul.nav.nav-list
             li(ng-if="breakdown.published"): a(href="#/pages/published")
                 span.badge.pull-right {{breakdown.published}}
                 | Published
-    li
-        a(href="#/comments")
-            i.fa.fa-comments
-            |  Comments
+
+    li: a(href="#/comments")
+        i.fa.fa-comments
+        |  Comments
+
+    li: a(href="#/users")
+        i.fa.fa-users
+        |  Users
+
+    li: a(href="#/themes")
+        i.fa.fa-desktop
+        |  Themes
 
     li: a(href="#/settings")
         i.fa.fa-wrench

@@ -40,8 +40,8 @@ hr
                         i.fa.fa-tags
                         |  Available Labels
                         ul.list-inline
-                            li.btn-link(ng-click="addLabel(label)", 
-                                ng-repeat="label in allLabels") {{label}}
+                            li.btn-link(ng-click="addLabel(label.label)", 
+                                ng-repeat="label in allLabels | orderBy:'label'") {{label.label}}
 
                         hr
                         .checkbox: label
@@ -85,7 +85,7 @@ hr
                         i.fa.fa-link
                         |  Permalink
                         br
-                        span.text-muted: {{permalink}}
+                        span.text-muted {{permalink}}
                         hr
                         .radio: label
                             input(type="radio", ng-model="post.slugOpt", value="auto")
