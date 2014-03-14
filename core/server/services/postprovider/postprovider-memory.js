@@ -1,28 +1,14 @@
 // PostProvider using memory storage
 
-// PostProvider
-
-// 1. init
-// 2 loadFiles - internal
-
-// findById, findBySlug, findByLabel, findByDate, findAll
-// archiveInfo
-// labelsInfo
-// countInfo
-// count
-
-// live: t/f
-
-
-var _       = require('underscore'),
-when        = require('when'),
-nodefn      = require('when/node/function'),
-cfg         = require('nconf'),
-fs          = require('fs'),
-path        = require('path'),
-moment      = require('moment'),
-isAbsolute  = require('../../utils').isAbsolute,
-dateProps   = ['publishedAt', 'createdAt', 'updatedAt'];
+var _           = require('underscore'),
+    when        = require('when'),
+    nodefn      = require('when/node/function'),
+    cfg         = require('nconf'),
+    fs          = require('fs'),
+    path        = require('path'),
+    moment      = require('moment'),
+    isAbsolute  = require('../../utils').isAbsolute,
+    dateProps   = ['publishedAt', 'createdAt', 'updatedAt'];
 
 var PostProvider = module.exports = function () {
     this.dummyData = [];
@@ -34,12 +20,12 @@ PostProvider.prototype.init = function () {
 
 PostProvider.prototype.loadFiles = function () {
     var that        = this,
-    postsPath   = cfg.get('database:postsFile'),
-    usersPath   = cfg.get('database:usersFile'),
-    postsFile   = isAbsolute(postsPath) ? postsPath : path.join(cfg.get('paths:data'), postsPath),
-    usersFile   = isAbsolute(usersPath) ? usersPath : path.join(cfg.get('paths:data'), usersPath),
-    loadPosts   = nodefn.call(fs.readFile, postsFile),
-    loadUsers   = nodefn.call(fs.readFile, usersFile);
+        postsPath   = cfg.get('database:postsFile'),
+        usersPath   = cfg.get('database:usersFile'),
+        postsFile   = isAbsolute(postsPath) ? postsPath : path.join(cfg.get('paths:data'), postsPath),
+        usersFile   = isAbsolute(usersPath) ? usersPath : path.join(cfg.get('paths:data'), usersPath),
+        loadPosts   = nodefn.call(fs.readFile, postsFile),
+        loadUsers   = nodefn.call(fs.readFile, usersFile);
 
     return when
         .join(loadPosts, loadUsers)                 // load data files
@@ -105,7 +91,7 @@ function updateSelection (chain, opts) {
 
     var now = Date.now();
 
-    if (opts.live) {
+    if (opts.live || 'live' === opts.type) {
         chain = chain.filter(function (post) {
             return post.publishedAt <= now;
         });
@@ -124,8 +110,8 @@ function select(posts, opts) {
     opts = opts || {};
 
     var month = (opts.month || 1) - 1, // JavaScript Date uses 0-based month index
-    now = new Date(),
-    chain = _.chain(posts);
+        now = new Date(),
+        chain = _.chain(posts);
 
     chain = updateSelection(chain, opts);
 
@@ -153,6 +139,18 @@ function select(posts, opts) {
         });
     }
 
+    if ('draft' === opts.type) {
+        chain = chain.filter(function (post) {
+            return !post.publishedAt;
+        });
+    }
+
+    if ('scheduled' === opts.type) {
+        chain = chain.filter(function (post) {
+            return post.publishedAt > now;
+        });
+    }
+
     return chain.value();
 }
 
@@ -162,12 +160,12 @@ PostProvider.prototype.postCountInfo = function (opts) {
         count = chain.reduce(function (count, post) {
             if (!post.publishedAt) count.draft++;
             else if (post.publishedAt > now) count.scheduled++;
-            else count.published++;
+            else count.live++;
 
             return count;
-        }, { all: 0, published: 0, draft: 0, scheduled: 0 }).value();
+        }, { all: 0, live: 0, draft: 0, scheduled: 0 }).value();
 
-    count.all = count.published + count.scheduled + count.draft;
+    count.all = count.live + count.scheduled + count.draft;
 
     return when.resolve(count);
 };
