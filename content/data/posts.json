@@ -182,7 +182,7 @@
     "_id": "5849504248013783040",
     "title":"The Burning Winter",
     "slug":"burning-winter",
-    "publishedAt":"2014-01-10T00:00:00.000Z",
+    "publishedAt":"2016-01-10T00:00:00.000Z",
     "createdAt":"2014-01-10T00:00:00.000Z",
     "updatedAt":"2014-01-10T03:00:00.000Z",
     "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
@@ -190,7 +190,8 @@
     "labels":["node.js", "authentication", "jquery", "Windows Azure", "function"],
     "_authorId": "_1",
     "commentsCount": 0,
-    "page": false
+    "page": false,
+    "featured": true
 },{
     "_id": "5849504281400442880",
     "title":"The Stone of the Voyager",
