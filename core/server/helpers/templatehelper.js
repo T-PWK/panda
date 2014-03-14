@@ -4,9 +4,7 @@ var moment          = require('moment'),
     _s              = require('underscore.string'),
     labelUrlFormat  = cfg.get('app:labelUrl'),
     pgnUrl          = cfg.get('app:paginationUrl'),
-    adminThemeName  = cfg.get('admin:theme'),
     pgnRegexp       = new RegExp(pgnUrl.replace(':page', '\\d+'));
-
 
 /*
  * Builds post or static page URL.
@@ -181,7 +179,7 @@ function assets (asset) {
 }
 
 function adminTheme (asset) {
-    return '/client/css/' + adminThemeName + '/' + asset;  
+    return '/client/css/' + cfg.get('admin:theme') + '/' + asset;  
 }
 
 function isntEmpty(obj, prop) {
