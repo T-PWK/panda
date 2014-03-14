@@ -28,7 +28,7 @@ function setup (app) {
     app.use('/shared', 
         express.static(cfg.get('paths:sharedStatic'), { maxAge: cfg.get('app:staticCacheAge') }));
     app.use('/client',
-        express.static(cfg.get('paths:clientStatic'), { maxAge: 0 })) //TODO: add configuration for clientStatic cache age
+        express.static(cfg.get('paths:clientStatic'), { maxAge: 0 })); //TODO: add configuration for clientStatic cache age
 
     app.use(require('./robots')());
 

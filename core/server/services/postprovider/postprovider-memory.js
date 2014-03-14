@@ -154,7 +154,7 @@ function select(posts, opts) {
     }
 
     return chain.value();
-};
+}
 
 PostProvider.prototype.postCountInfo = function (opts) {
     var items, now = Date.now(),
@@ -170,7 +170,7 @@ PostProvider.prototype.postCountInfo = function (opts) {
     count.all = count.published + count.scheduled + count.draft;
 
     return when.resolve(count);
-}
+};
 
 PostProvider.prototype.archiveInfo = function (opts) {
     var posts = select(this.dummyData, opts);
@@ -224,8 +224,9 @@ function sortAndSlice(posts, opts) {
 
 function sort(posts, opts) {
     var reverse = false,
-        sortBy = opts.sortBy || '-publishedAt',
-        posts = posts.slice(0);
+        sortBy = opts.sortBy || '-publishedAt';
+
+    posts = posts.slice(0);
 
     if (sortBy[0] === '-') {
         reverse = true;

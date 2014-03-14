@@ -4,8 +4,12 @@ var cfg     = require('nconf'),
     _       = require('underscore');
 
 module.exports = function robots (path) {
-    var tpl, path = path || join(cfg.get('paths:coreShared'), 'robots.txt'),
-        robotsLocals = { disallow: cfg.get('app:robots:disallow'), allow: cfg.get('app:robots:allow') };
+    var tpl, robotsLocals = { 
+        disallow: cfg.get('app:robots:disallow'), 
+        allow: cfg.get('app:robots:allow') 
+    };
+
+    path = path || join(cfg.get('paths:coreShared'), 'robots.txt');
 
     return function (req, res, next) {
         if ('/robots.txt' === req.url) {
@@ -22,5 +26,5 @@ module.exports = function robots (path) {
         } else {
             next();
         }
-    }
-}
+    };
+};

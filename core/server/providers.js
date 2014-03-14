@@ -40,6 +40,6 @@ module.exports.init = function () {
                 postProvider.init(), 
                 configProvider.init(),
                 userProvider.init()
-            )
+            );
         });
 };
