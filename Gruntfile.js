@@ -6,14 +6,24 @@ function gruntConfig (grunt) {
         // ### Config for grunt-contrib-jshint
         // JSHint all the things!
         jshint: {
-            src: [
-                'core/**/*.js', 
-                '!core/client/js/bootstrap.js', 
-                '!core/client/js/bootstrap.min.js',
-                '!core/client/js/string-1.8.0-min.js',
-                '!core/client/js/underscore.string-2.3.2.min.js',
-                '!core/client/js/underscore-1.6.0.min.js'
-            ]
+            server_code: {
+                src: [
+                    'core/server/**/*.js',
+                    'core/index.js',
+                    'core/server.js'
+                ]
+            },
+            client_code: {
+                options: {
+                    globals: {
+                        angular:false,  // angular library
+                        _:false         // underscore library
+                    }
+                },
+                src: [
+                    'core/client/js/app/**/*.js',
+                ]
+            }
         }
     };
 
