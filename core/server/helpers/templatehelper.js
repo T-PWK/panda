@@ -179,7 +179,7 @@ function assets (asset) {
 }
 
 function adminTheme (asset) {
-    return '/client/css/' + cfg.get('admin:theme') + '/' + asset;  
+    return '/client/css/theme/' + cfg.get('admin:theme') + '/' + asset;  
 }
 
 function isntEmpty(obj, prop) {
