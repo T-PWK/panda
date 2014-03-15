@@ -62,10 +62,9 @@
                 button.btn.btn-default(type="button") &raquo;
 
             p.btn-group.pull-right 1-10 of {{pages.length}}
+
         hr
-        p.text-center(ng-if="!pages.length") 
-            i.fa.fa-spinner.fa-spin 
-            |  Loading pages 
+
         table.table(ng-if="pages.length")
             thead
                 tr

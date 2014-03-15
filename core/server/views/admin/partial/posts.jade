@@ -73,9 +73,7 @@
             p.btn-group.pull-right {{pagination.posts.from}}-{{pagination.posts.to}} of {{pagination.total}}
         //- hr
         p
-        p.text-center(ng-if="!posts.length") 
-            i.fa.fa-spinner.fa-spin 
-            |  Loading posts 
+
         table.table(ng-if="posts.length")
             //- thead
             //-     tr

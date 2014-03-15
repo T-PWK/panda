@@ -9,7 +9,7 @@
             $scope.breadcrumb = [];
 
             $scope.setLoading = function (loading) {
-                $scope.loading = !!loading;
+                $scope.loading = loading;
             };
 
             $scope.setBreadcrumb = function (props) {
@@ -162,6 +162,7 @@
             }
 
             function loadPosts () {
+                $scope.setLoading(true);
                 var pg = $scope.pagination, skip = (pg.page - 1) * pg.limit;
 
                 Posts.query({
@@ -171,6 +172,7 @@
                     type: $params.type, 
                     page: false
                 }, function (posts) {
+                    $scope.setLoading(false);
                     $scope.posts = posts;
                 });
             }

@@ -39,3 +39,17 @@ p.btn-group {
 .fa + .fa {
     margin-left: .2em;
 }
+
+#loading {
+    color: #000;
+    left: 50%;
+    top: 0;
+    padding: 3px 6px;
+    position: fixed;
+    margin-left: -50px;
+    z-index: 1001;
+    background-color: #fff1a8;
+    background: #fff1a8 -webkit-gradient(linear,left top,left bottom,from(#ffe090),to(#fff2b0));
+    box-shadow: rgba(0,0,0,0.25) 0px -3px 5px,rgba(0,0,0,0.25) 0px 3px 5px;
+    -webkit-box-shadow: rgba(0,0,0,0.25) 0px -3px 5px,rgba(0,0,0,0.25) 0px 3px 5px;
+}
