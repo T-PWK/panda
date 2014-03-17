@@ -8,7 +8,7 @@
                 .col-md-4
                     .btn-group.pull-right
                         button.btn.btn-warning Publish
-                        button.btn.btn-default Save
+                        button.btn.btn-default(ng-click="savePost()") Save
                         button.btn.btn-default Preview
                         button.btn.btn-default Close
 hr
@@ -120,9 +120,12 @@ hr
                             br
                             | It can be used for content like About, Contact etc.
 
-    .col-md-9 
-        p {{post|json}}
-        p {{permalink|json}}
-        p slug: {{customSlug|json}}
-        p {{alamakota|json}}
-        textarea.form-control(rows="3")
+    .col-md-9
+        ul.nav.nav-tabs
+            li(ng-class="{active:tab==1}"): a.btn-link(ng-click="tab=1") Editor
+            li(ng-class="{active:tab==2}"): a.btn-link(ng-click="tab=2") Preview
+        .tab-content
+            .tab-pane(ng-class="{active:tab==1}")
+                textarea.form-control(rows="10", ng-model="post.markdown")
+            .tab-pane.fade(ng-class="{'active in':tab==2}")
+                div(ng-bind-html="postContent()")
