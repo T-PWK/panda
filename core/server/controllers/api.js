@@ -1,20 +1,7 @@
 var when             = require('when'),
     provider         = require('../providers').postProvider;
 
-module.exports.posts = function (req, res) {
-    var page = ('undefined' === typeof req.query.page) ? undefined 
-        : req.query.page.toLowerCase() === 'true';
-
-    provider
-        .findAll({
-            page: page,
-            limit: +req.query.limit, 
-            skip: +req.query.skip,
-            sortBy: req.query.sortBy,
-            type: req.query.type
-        })
-        .then(res.json.bind(res));
-};
+module.exports.posts = require('./api/posts');
 
 module.exports.postCountInfo = function (req, res) {
     var page = ('undefined' === typeof req.query.page) ? undefined 

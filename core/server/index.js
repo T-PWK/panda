@@ -1,4 +1,5 @@
-var express     = require('express'),
+var resource    = require('express-resource'),
+    express     = require('express'),
     when        = require('when'),
     colors      = require('colors'),
     path        = require('path'),
