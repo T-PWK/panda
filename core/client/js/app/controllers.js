@@ -216,6 +216,17 @@
                 ':day': function () { return _.str.lpad($scope.post.scheduledAt.getDate(), 2, '0'); }
             };
 
+            var editor = CodeMirror.fromTextArea(angular.element('#editor')[0], {
+                mode: "markdown",
+                showCursorWhenSelecting: true,
+                lineWrapping: true
+            });
+            
+            editor.on('change', function () {
+                $scope.$apply(function () {
+                    $scope.post.markdown = editor.getValue();
+                });
+            })
 
             var converter = new Showdown.converter();
 
@@ -228,15 +239,15 @@
 
             // Initialize new post
             $scope.post = {
-                scheduleOpt: 'auto',
-                slugOpt: 'auto',
+                scheduleOpt: true,
+                slugOpt: true,
                 page: false,
                 scheduleDateTime: $filter('date')(new Date(), "yyyy-MM-ddTHH:mm"),
                 scheduledAt: new Date(),
                 labels: []
             };
 
-            $scope.tab = 1; //edit tab
+            $scope.editor = true; //edit tab
 
             $scope.$watch('post.slug', setSlugFromTitle);
             $scope.$watch('post.slug', updatePermalinks);

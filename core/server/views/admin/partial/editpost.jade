@@ -18,8 +18,8 @@ hr
 
             //- Labels (tags) setup
             .panel.panel-default
-                .panel-heading
-                    a.panel-title.btn-link(data-toggle="collapse", data-parent="#accordion", data-target="#labels")
+                .panel-heading(data-toggle="collapse", data-parent="#accordion", data-target="#labels")
+                    .panel-title.btn-link
                         i.fa.fa-tags
                         |  Labels
                 #labels.panel-collapse.collapse
@@ -53,31 +53,31 @@ hr
 
             //- Post publication date setup
             .panel.panel-default
-                .panel-heading
-                    a.panel-title.btn-link(data-toggle="collapse", data-parent="#accordion", data-target="#schedule")
+                .panel-heading(data-toggle="collapse", data-parent="#accordion", data-target="#schedule")
+                    .panel-title.btn-link
                         i.fa.fa-clock-o 
                         |  Schedule
                 #schedule.panel-collapse.collapse
                     .panel-body
                         .radio: label
-                            input(type="radio", ng-model="post.scheduleOpt", value="auto", ng-init="post.scheduleOpt='auto'")
+                            input(type="radio", ng-model="post.scheduleOpt", ng-value="true")
                             | Automatic
                         .radio: label
-                            input(type="radio", ng-model="post.scheduleOpt", value="manual")
+                            input(type="radio", ng-model="post.scheduleOpt", ng-value="false")
                             | Set date and time
-                        .form-group(ng-if="post.scheduleOpt=='manual'")
+                        .form-group(ng-if="!post.scheduleOpt")
                             input.form-control(type="datetime-local", placeholder="Set date and time", ng-model="post.scheduleDateTime")
-                        p.help-block(ng-if="post.scheduleOpt=='auto'") 
+                        p.help-block(ng-if="post.scheduleOpt") 
                             i.fa.fa-info-circle
                             |  Your post will be automatically published when you press Publish button.
-                        p.help-block(ng-if="post.scheduleOpt=='manual'") 
+                        p.help-block(ng-if="!post.scheduleOpt") 
                             i.fa.fa-info-circle
                             |  Your post will be published at a specified date and time.
 
             //- Post slug setup
             .panel.panel-default
-                .panel-heading
-                    a.panel-title.btn-link(data-toggle="collapse", data-parent="#accordion", data-target="#link")
+                .panel-heading(data-toggle="collapse", data-parent="#accordion", data-target="#link")
+                    .panel-title.btn-link
                         i.fa.fa-link
                         |  Permalink
                 #link.panel-collapse.collapse
@@ -88,25 +88,25 @@ hr
                         span.text-muted {{permalink}}
                         hr
                         .radio: label
-                            input(type="radio", ng-model="post.slugOpt", value="auto")
+                            input(type="radio", ng-model="post.slugOpt", ng-value="true")
                             | Automatic
                         .radio: label
-                            input(type="radio", ng-model="post.slugOpt", value="manual")
+                            input(type="radio", ng-model="post.slugOpt", ng-value="false")
                             | Custom
-                        .form-group(ng-if="post.slugOpt=='manual'")
+                        .form-group(ng-if="!post.slugOpt")
                             input.form-control(type="text", placeholder="Enter custom slug", ng-model="post.slug")
-                        p.help-block(ng-if="post.slugOpt=='auto'") 
+                        p.help-block(ng-if="post.slugOpt") 
                             i.fa.fa-info-circle
                             |  Your post slug will be automatically generated from the post title.
-                        p.help-block(ng-if="post.slugOpt=='manual'") 
+                        p.help-block(ng-if="!post.slugOpt") 
                             i.fa.fa-info-circle
                             |  Your post slug will be set manually.
 
 
             //- Page setup
             .panel.panel-default
-                .panel-heading
-                    a.panel-title.btn-link(data-toggle="collapse", data-parent="#accordion", data-target="#page")
+                .panel-heading(data-toggle="collapse", data-parent="#accordion", data-target="#page")
+                    .panel-title.btn-link
                         i.fa.fa-file-text-o
                         |  Page
                 #page.panel-collapse.collapse
@@ -121,11 +121,18 @@ hr
                             | It can be used for content like About, Contact etc.
 
     .col-md-9
-        ul.nav.nav-tabs
-            li(ng-class="{active:tab==1}"): a.btn-link(ng-click="tab=1") Editor
-            li(ng-class="{active:tab==2}"): a.btn-link(ng-click="tab=2") Preview
+        ul.nav.nav-pills
+            li(ng-class="{active:editor}"): a.btn-link.btn-sm(ng-click="editor=true")
+                i.fa.fa-edit
+                |  Editor
+            li(ng-class="{active:!editor}"): a.btn-link.btn-sm(ng-click="editor=false")
+                i.fa.fa-eye
+                |  Preview
+        hr
         .tab-content
-            .tab-pane(ng-class="{active:tab==1}")
-                textarea.form-control(rows="10", ng-model="post.markdown")
-            .tab-pane.fade(ng-class="{'active in':tab==2}")
-                div(ng-bind-html="postContent()")
+            .tab-pane(ng-class="{active:editor}")
+                textarea.form-control#editor
+            .tab-pane(ng-class="{active:!editor}")
+                .panel.panel-default
+                    .panel-body(ng-bind-html="postContent()")
+
