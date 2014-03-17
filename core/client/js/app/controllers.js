@@ -200,9 +200,10 @@
         }
     ]);
 
-    ctrlsModule.controller('PostEditCtrl', ['$scope', '$filter', 'Labels',
-        function ($scope, $filter, Labels) {
+    ctrlsModule.controller('PostEditCtrl', ['$scope', '$filter', '$sce' ,'Labels', 'Posts',
+        function ($scope, $filter, $sce, Labels, Posts) {
             $scope.setBreadcrumb('postedit');
+
             var unwatchTitle;
             var permalinks = {
                 page: '/:slug.html',
@@ -214,6 +215,14 @@
                 ':month': function () { return _.str.lpad($scope.post.scheduledAt.getMonth(), 2, '0'); },
                 ':day': function () { return _.str.lpad($scope.post.scheduledAt.getDate(), 2, '0'); }
             };
+
+
+            var converter = new Showdown.converter();
+
+            $scope.$watch('post.markdown', function (value) {
+                if (!value) return $scope.post.content = "";
+                $scope.post.content = converter.makeHtml(value);
+            });
 
             $scope.allLabels = Labels.query();
 
@@ -227,6 +236,8 @@
                 labels: []
             };
 
+            $scope.tab = 1; //edit tab
+
             $scope.$watch('post.slug', setSlugFromTitle);
             $scope.$watch('post.slug', updatePermalinks);
             $scope.$watch('post.page', updatePermalinks);
@@ -238,6 +249,18 @@
                 if('auto' === opt) unwatchTitle = $scope.$watch('post.title', setSlugFromTitle);
                 else if ('manual' === opt) unwatchTitle();
             });
+
+            $scope.postContent = function () {
+                return $sce.trustAsHtml($scope.post.content);
+            };
+
+            $scope.savePost = function () {
+                console.info('saving the post ..... ');
+                var post = new Posts($scope.post);
+                console.info('saving the post ..... ', post);
+
+                post.$save();
+            };
 
             $scope.addLabel = function (label) {
                 if (angular.isArray(label)) angular.forEach(label, add);
