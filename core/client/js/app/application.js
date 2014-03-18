@@ -28,6 +28,22 @@
         .factory('Labels', ['$resource', function ($resource) {
             return $resource('/api/v1/labels');
         }])
+        .factory('Themes', ['$resource', function ($resource) {
+            return $resource('/api/v1/themes/:type/:id', 
+                { id:'@id' },
+                {
+                    update: { method: 'PUT', params: { type: '@type'} }
+                }
+            );
+        }])
+        // .factory('AdminThemes', ['$resource', function ($resource) {
+        //     return $resource('/api/v1/adminthemes/:id',
+        //         { id:'@id' },
+        //         {
+        //             update: { method: 'PUT' }
+        //         }
+        //     );
+        // }])
         .directive('ngEnter', function() {
             return function(scope, element, attrs) {
                 element.bind("keydown keypress", function(event) {
@@ -62,7 +78,3 @@
             }
         });
 }());
-
-
-
-

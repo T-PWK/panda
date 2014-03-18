@@ -325,9 +325,74 @@
         }
     ]);
 
-    ctrlsModule.controller('ThemesCtrl', ['$scope', 
-        function ($scope) {
+    ctrlsModule.controller('ThemesCtrl', ['$scope', '$q', '$window','Themes',
+        function ($scope, $q, $window, Themes) {
             $scope.setBreadcrumb('themes');
+            $scope.setLoading(true);
+
+            $scope.theme = {
+                site: { list: [], active: null, changed: false, selected: null },
+                admin: { list: [], active: null, changed: false, selected: null, 
+                    afterSave: function () {
+                        $window.location.reload();
+                    }
+                }
+            }
+
+            $scope.$watch('theme.site.selected', angular.bind($scope.theme.site, checkThemes));
+            $scope.$watch('theme.site.active', angular.bind($scope.theme.site, checkThemes));
+            $scope.$watch('theme.admin.selected', angular.bind($scope.theme.admin, checkThemes));
+            $scope.$watch('theme.admin.active', angular.bind($scope.theme.admin, checkThemes));
+
+            loadThemeDetails();
+
+            $scope.resetTheme = angular.bind($scope.theme, resetTheme);
+            $scope.saveTheme = angular.bind($scope.theme, saveTheme);
+
+
+            function saveTheme (type) {
+                if (!this[type].changed) return;
+
+                Themes.update({ id:this[type].selected.id, type:type })
+                    .$promise.then(angular.bind(this, afterThemeSave, type));
+            };
+
+            function afterThemeSave (type) {
+                this[type].active = this[type].selected;
+                if (angular.isFunction(this[type].afterSave)) this[type].afterSave();
+            }
+
+            function resetTheme (type) {
+                this[type].selected = this[type].active;
+            }
+
+            function checkThemes (theme) {
+                this.changed = !angular.equals(this.active, theme);
+            }
+
+            function findActive (themes) {
+                return _.findWhere(themes, { active:true });
+            }
+
+            function updateTheme (themes) {
+                var active = findActive(themes);
+
+                this.list = themes;
+                this.active = active;
+                this.selected = active;
+            }
+
+            function loadThemeDetails () {
+                $q.all([
+                    Themes.query({type:'site'}).$promise, Themes.query({type:'admin'}).$promise
+                ])
+                .then(function (themes) {
+                    $scope.setLoading(false);
+
+                    updateTheme.call($scope.theme.site, themes[0]);
+                    updateTheme.call($scope.theme.admin, themes[1]);
+                });
+            }
         }
     ]);
 }());

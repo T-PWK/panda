@@ -4,23 +4,40 @@
     .col-md-9
         include includes/breadcrumb
         h1 Themes
-        p
+        hr
         .panel.panel-default
             .panel-heading
-                h3.panel-title Blog Theme
+                h3.panel-title Theme
             .panel-body
-                dl.dl-horizontal
-                    dt Name
-                    dd: strong Casper
-                    dd Some description
-                    dt Description
-                    dd And another desciption
-        
-        
+                form.form-horizontal(role="form")
+                    .form-group
+                        label.col-sm-2.control-label(for="theme") Name
+                        .col-sm-7
+                            select.form-control#theme(ng-model="theme.site.selected", ng-options="t.name for t in theme.site.list")
+                    .col-sm-9
+                        .form-group.pull-right
+                            button.btn.btn-primary(ng-click="saveTheme('site')") Save
+                            button.btn.btn-default(ng-click="resetTheme('site')") Cancel
+                .col-sm-12
+                    .alert.alert-warning(ng-if="theme.site.changed")
+                        i.fa.fa-info-circle
+                        |  Theme has been changed but not yet saved
+
         .panel.panel-default
             .panel-heading
                 h3.panel-title Admin Console Theme
             .panel-body
-                dl.dl-horizontal
-                    dt Name
-                    dd default
+                form.form-horizontal(role="form")
+                    .form-group
+                        label.col-sm-2.control-label(for="adminTheme") Name
+                        .col-sm-7
+                            select.form-control#adminTheme(ng-model="theme.admin.selected", ng-options="t.name for t in theme.admin.list")
+                    .col-sm-9
+                        .form-group.pull-right
+                            button.btn.btn-primary(ng-click="saveTheme('admin')") Save
+                            button.btn.btn-default(ng-click="resetTheme('admin')") Cancel
+                .col-sm-12
+                    .alert.alert-warning(ng-if="theme.admin.changed")
+                        i.fa.fa-info-circle
+                        |  Admin theme has been changed but not yet saved
+
