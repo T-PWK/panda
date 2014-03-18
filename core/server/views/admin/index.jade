@@ -13,7 +13,7 @@ block content
     //- Content
     .container(ng-controller="RootCtrl", ng-class="breadcrumb[0].id")
         #loading(ng-show="loading")
-            | Loading 
+            | {{loading}} 
             i.fa.fa-spinner.fa-spin
         div(ng-view)
 

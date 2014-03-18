@@ -9,7 +9,7 @@
             .panel-heading
                 h3.panel-title Theme
             .panel-body
-                form.form-horizontal(role="form")
+                form.form-horizontal(role="form", ng-hide="!theme.site.list.length && loading")
                     .form-group
                         label.col-sm-2.control-label(for="theme") Name
                         .col-sm-7
@@ -27,7 +27,7 @@
             .panel-heading
                 h3.panel-title Admin Console Theme
             .panel-body
-                form.form-horizontal(role="form")
+                form.form-horizontal(role="form", ng-hide="!theme.admin.list.length && loading")
                     .form-group
                         label.col-sm-2.control-label(for="adminTheme") Name
                         .col-sm-7

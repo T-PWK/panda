@@ -71,18 +71,9 @@
                     ng-click="setPage(pagination.page+1)") &raquo;
 
             p.btn-group.pull-right {{pagination.posts.from}}-{{pagination.posts.to}} of {{pagination.total}}
-        //- hr
         p
 
         table.table(ng-if="posts.length")
-            //- thead
-            //-     tr
-            //-         td
-            //-         td Title
-            //-         td
-            //-         td Author
-            //-         td
-            //-         td Published
             tbody
                 tr(ng-repeat="post in posts | limitTo:pagination.limit")
                     td: input(type="checkbox", ng-checked="selection.keys[post._id]", ng-click="select(post._id)")

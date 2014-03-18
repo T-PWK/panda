@@ -9,7 +9,7 @@
             $scope.breadcrumb = [];
 
             $scope.setLoading = function (loading) {
-                $scope.loading = loading;
+                $scope.loading = (loading === true) ? 'Loading' : loading;
             };
 
             $scope.setBreadcrumb = function (props) {
@@ -257,8 +257,8 @@
                 $scope.post.scheduledAt = new Date(dateTime);
             });
             $scope.$watch('post.slugOpt', function (opt) {
-                if('auto' === opt) unwatchTitle = $scope.$watch('post.title', setSlugFromTitle);
-                else if ('manual' === opt) unwatchTitle();
+                if(true === opt) unwatchTitle = $scope.$watch('post.title', setSlugFromTitle);
+                else if (false === opt) unwatchTitle();
             });
 
             $scope.postContent = function () {
@@ -344,17 +344,19 @@
             $scope.$watch('theme.admin.selected', angular.bind($scope.theme.admin, checkThemes));
             $scope.$watch('theme.admin.active', angular.bind($scope.theme.admin, checkThemes));
 
-            loadThemeDetails();
-
             $scope.resetTheme = angular.bind($scope.theme, resetTheme);
             $scope.saveTheme = angular.bind($scope.theme, saveTheme);
 
+            loadThemeDetails();
 
             function saveTheme (type) {
                 if (!this[type].changed) return;
+                $scope.setLoading('Saving');
 
                 Themes.update({ id:this[type].selected.id, type:type })
-                    .$promise.then(angular.bind(this, afterThemeSave, type));
+                    .$promise
+                    .then(angular.bind($scope, $scope.setLoading, false))
+                    .then(angular.bind(this, afterThemeSave, type));
             };
 
             function afterThemeSave (type) {
@@ -384,7 +386,8 @@
 
             function loadThemeDetails () {
                 $q.all([
-                    Themes.query({type:'site'}).$promise, Themes.query({type:'admin'}).$promise
+                    Themes.query({type:'site'}).$promise, 
+                    Themes.query({type:'admin'}).$promise
                 ])
                 .then(function (themes) {
                     $scope.setLoading(false);
