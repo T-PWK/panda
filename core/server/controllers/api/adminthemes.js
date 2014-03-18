@@ -12,8 +12,10 @@ module.exports.index = function (req, res) {
     readdir(themesDir)
         .then(namesToThemes)
         .tap(selectActive)
-        .then(res.json.bind(res))
-        .catch(res.send.bind(res, 500));
+        .done(
+            res.json.bind(res),
+            res.send.bind(res, 500)
+        );
 
     function selectActive (themes) {
         var active = _.findWhere(themes, { id:cfg.get('admin:theme') });
@@ -48,12 +50,4 @@ module.exports.update = function (req, res) {
     function setAdminTheme (theme) {
         cfg.set('admin:theme', req.params.admin);
     }
-
-    // fs.readdir(themesDir, function (err, dirs) {
-    //     if (err) return res.send(500);
-    //     if (dirs.indexOf(req.params.admintheme) < 0) return res.send(400);
-
-    //     cfg.set('admin:theme', req.params.admintheme);
-    //     res.json({success:true});
-    // });
 };
