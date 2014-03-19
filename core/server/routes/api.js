@@ -8,6 +8,8 @@ module.exports = function (server) {
     server.resource('api/v1/themes/site', api.themes);
     server.resource('api/v1/themes/admin', api.adminthemes);
 
+    server.resource('api/v1/config/redirects', api.redirects);
+
     // server.get('/api/v1/posts/archive', notImplemented);
     // server.get('/api/v1/posts/count', api.postCountInfo);
 };
