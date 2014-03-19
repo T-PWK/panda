@@ -16,13 +16,13 @@
                 var args = Array.prototype.slice.call(arguments);
 
                 if (angular.isNumber(args[0])) {
-                    updateItem(args);
+                    updateCrumbItem(args);
                 } else {
                     updateBreadcrumb(args);
                 }
             };
 
-            function updateItem (args) {
+            function updateCrumbItem (args) {
                 if (angular.isObject(args[1])) {
                     angular.extend($scope.breadcrumb[args[0]], args[1]);
                 } 
@@ -51,8 +51,8 @@
         }
     ]);
 
-    ctrlsModule.controller('PostsCtrl', ['$scope', '$routeParams', 'Posts', 'Config',
-        function ($scope, $params, Posts, Config) {
+    ctrlsModule.controller('PostsCtrl', ['$scope', '$routeParams', 'Posts', 'PostsInfo', 'Config',
+        function ($scope, $params, Posts, Info, Config) {
             $scope.setBreadcrumb('posts', $params.type);
             $scope.type = $params.type;
             $scope.pagination = {
@@ -61,14 +61,11 @@
                 posts: { from: 1, to: 10 }
             };
             $scope.selection = { keys: {}, all: false };
-            $scope.postsCount = Posts.postsCount(
-                { page: false }, 
-                function (postsCount) {
-                    $scope.pagination.total = postsCount[$params.type];
-                    $scope.total = postsCount[$params.type];
-                    $scope.setBreadcrumb(1, { data: postsCount[$params.type] });
-                }
-            );
+            $scope.postsCount = Info.get({id:'count', page:false}, function (count) {
+                $scope.pagination.total = count[$params.type];
+                $scope.total = count[$params.type];
+                $scope.setBreadcrumb(1, { data: count[$params.type] });
+            });
 
             // Clear posts selection
             $scope.$watch('pagination.limit', clearSelection);
@@ -179,18 +176,15 @@
         }
     ]);
 
-    ctrlsModule.controller('PagesCtrl', ['$scope', '$routeParams', 'Posts',
-        function ($s, $params, Posts) {
+    ctrlsModule.controller('PagesCtrl', ['$scope', '$routeParams', 'PostsInfo',
+        function ($s, $params, Info) {
             $s.setBreadcrumb('pages', $params.type);
             $s.pages = Posts.query({ page: true });
             $s.limit = 100;
-
-            $s.breakdown = Posts.postsCount(
-                { page: true }, 
-                function (breakdown) {
+            $s.breakdown = Info.postsCount({ id:'count', page: true })
+                .$promise.then(function (breakdown) {
                     $s.setBreadcrumb(1, { data: breakdown[$params.type] });
-                }
-            );
+                });
         }
     ]);
 
@@ -226,13 +220,13 @@
                 $scope.$apply(function () {
                     $scope.post.markdown = editor.getValue();
                 });
-            })
+            });
 
             var converter = new Showdown.converter();
 
             $scope.$watch('post.markdown', function (value) {
-                if (!value) return $scope.post.content = "";
-                $scope.post.content = converter.makeHtml(value);
+                if (!value) $scope.post.content = "";
+                else $scope.post.content = converter.makeHtml(value);
             });
 
             $scope.allLabels = Labels.query();
@@ -337,51 +331,51 @@
                         $window.location.reload();
                     }
                 }
-            }
+            };
 
-            $scope.$watch('theme.site.selected', angular.bind($scope.theme.site, checkThemes));
-            $scope.$watch('theme.site.active', angular.bind($scope.theme.site, checkThemes));
-            $scope.$watch('theme.admin.selected', angular.bind($scope.theme.admin, checkThemes));
-            $scope.$watch('theme.admin.active', angular.bind($scope.theme.admin, checkThemes));
+            $scope.$watch('theme.site.selected', angular.bind(null, checkThemes, $scope.theme.site));
+            $scope.$watch('theme.site.active', angular.bind(null, checkThemes, $scope.theme.site));
+            $scope.$watch('theme.admin.selected', angular.bind(null, checkThemes, $scope.theme.admin));
+            $scope.$watch('theme.admin.active', angular.bind(null, checkThemes, $scope.theme.admin));
 
-            $scope.resetTheme = angular.bind($scope.theme, resetTheme);
-            $scope.saveTheme = angular.bind($scope.theme, saveTheme);
+            $scope.resetTheme = angular.bind(null, resetTheme, $scope.theme);
+            $scope.saveTheme = angular.bind(null, saveTheme, $scope.theme);
 
             loadThemeDetails();
 
-            function saveTheme (type) {
-                if (!this[type].changed) return;
+            function saveTheme (theme, type) {
+                if (!theme[type].changed) return;
                 $scope.setLoading('Saving');
 
-                Themes.update({ id:this[type].selected.id, type:type })
+                Themes.update({ id:theme[type].selected.id, type:type })
                     .$promise
                     .then(angular.bind($scope, $scope.setLoading, false))
-                    .then(angular.bind(this, afterThemeSave, type));
-            };
-
-            function afterThemeSave (type) {
-                this[type].active = this[type].selected;
-                if (angular.isFunction(this[type].afterSave)) this[type].afterSave();
+                    .then(angular.bind(null, afterThemeSave, theme, type));
             }
 
-            function resetTheme (type) {
-                this[type].selected = this[type].active;
+            function afterThemeSave (theme, type) {
+                theme[type].active = theme[type].selected;
+                (theme[type].afterSave || function () {})();
+            }
+
+            function resetTheme (theme, type) {
+                theme[type].selected = theme[type].active;
             }
 
             function checkThemes (theme) {
-                this.changed = !angular.equals(this.active, theme);
+                theme.changed = !angular.equals(theme.active, theme.selected);
             }
 
             function findActive (themes) {
                 return _.findWhere(themes, { active:true });
             }
 
-            function updateTheme (themes) {
+            function updateTheme (theme, themes) {
                 var active = findActive(themes);
 
-                this.list = themes;
-                this.active = active;
-                this.selected = active;
+                theme.list = themes;
+                theme.active = active;
+                theme.selected = active;
             }
 
             function loadThemeDetails () {
@@ -392,8 +386,8 @@
                 .then(function (themes) {
                     $scope.setLoading(false);
 
-                    updateTheme.call($scope.theme.site, themes[0]);
-                    updateTheme.call($scope.theme.admin, themes[1]);
+                    updateTheme.call(null, $scope.theme.site, themes[0]);
+                    updateTheme.call(null, $scope.theme.admin, themes[1]);
                 });
             }
         }

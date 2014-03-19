@@ -18,12 +18,15 @@
                 .otherwise({ redirectTo: '/' });
         }])
         .factory('Posts', ['$resource', function ($resource) {
-            return $resource('/api/v1/posts/:id:info/:kind',
+            return $resource('/api/v1/posts/:id',
                 {id:'@id', info:'@info', type:'@kind'},
                 {
                     postsCount: { method: 'GET', params: { info: 'count' }}
                 }
             );
+        }])
+        .factory('PostsInfo', ['$resource', function ($resource) {
+            return $resource('/api/v1/posts/infos/:id', {id: '@id'});
         }])
         .factory('Labels', ['$resource', function ($resource) {
             return $resource('/api/v1/labels');

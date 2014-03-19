@@ -77,9 +77,9 @@
             tbody
                 tr(ng-repeat="post in posts | limitTo:pagination.limit")
                     td: input(type="checkbox", ng-checked="selection.keys[post._id]", ng-click="select(post._id)")
-                    td: a(ng-href="#/posts/{{post._id}}/edit") {{post.title}}
+                    td: a(ng-href="#/posts/{{post._id}}/edit", ng-class="{'text-warning':!post.title}") {{post.title || '(Untitled post)'}}
                     td
-                        i.fa.fa-bookmark(ng-if="post.featured", title="Featured")
+                        i.fa.fa-bookmark-o(ng-if="post.featured", title="Featured")
                         i.fa(ng-if="status(post)!='A'" ng-class="{D:'fa-edit',S:'fa-calendar'}[status(post)]", title="{{statusText(post)}}")
                     td: a(ng-href="{{post.author.website}}", target="_blank") {{post.author.name}}
                     td
