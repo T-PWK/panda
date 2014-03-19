@@ -1,7 +1,7 @@
 var when        = require('when'),
     path        = require('path'),
     fs          = require('fs'),
-    nodefn      = require('when/node/function'),
+    node        = require('when/node'),
     cfg         = require('nconf'),
     _           = require('underscore');
 
@@ -12,14 +12,23 @@ var ConfigProvider = module.exports = function () {
 ConfigProvider.prototype.init = function () {
     var that        = this,
         dataFile    = path.join(cfg.get('paths:data'), 'redirects.json'),
-        loadData    = nodefn.call(fs.readFile, dataFile);
+        loadData    = node.call(fs.readFile, dataFile);
 
     return loadData
         .then(function (redirects) {
-            that.redirects = _.extend({}, JSON.parse(redirects), cfg.get('redirects'));
+            that.redirects = JSON.parse(redirects);
         });
 };
 
+ConfigProvider.prototype.findAllRedirects = function () {
+    return when.resolve(this.redirects);
+};
+
 ConfigProvider.prototype.findRedirectByUrl = function (url) {
-    return when(this.redirects[url]);
+    return when.resolve(_.findWhere(this.redirects, { from:url }));
+};
+
+ConfigProvider.prototype.findRedirectById = function (id) {
+
+    return when.resolve(_.findWhere(this.redirects, { id:id }));
 };
