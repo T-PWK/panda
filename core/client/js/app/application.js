@@ -13,6 +13,7 @@
                 .when('/posts/:id/edit', { templateUrl: '/admin/partial/editpost', controller: 'PostEditCtrl' })
                 .when('/comments', { templateUrl:'/admin/partial/comments', controller:'CommentsCtrl' })
                 .when('/settings', { templateUrl:'/admin/partial/settings', controller:'SettingsCtrl' })
+                .when('/settings/redirects', { templateUrl:'/admin/partial/redirects', controller:'RedirectsCtrl' })
                 .when('/users', { templateUrl:'/admin/partial/users', controller:'UsersCtrl' })
                 .when('/themes', { templateUrl:'/admin/partial/themes', controller:'ThemesCtrl' })
                 .otherwise({ redirectTo: '/' });
@@ -24,6 +25,9 @@
                     postsCount: { method: 'GET', params: { info: 'count' }}
                 }
             );
+        }])
+        .factory('ConfigInfo', ['$resource', function ($resource) {
+            return $resource('/api/v1/config/:type/:id', { id: '@id', type: '@type' });
         }])
         .factory('PostsInfo', ['$resource', function ($resource) {
             return $resource('/api/v1/posts/infos/:id', {id: '@id'});
@@ -60,7 +64,7 @@
                 });
             };
         })
-        .value('Config', {
+        .value('ConfigValues', {
             status: {
                 'D': 'Draft',
                 'S': 'Scheduled',
@@ -77,7 +81,8 @@
                 draft: 'Draft',
                 live: 'Published',
                 users: 'Users',
-                themes: 'Themes'
+                themes: 'Themes',
+                redirects: 'Redirections'
             }
         });
 }());

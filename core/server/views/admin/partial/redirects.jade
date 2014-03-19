@@ -1,0 +1,31 @@
+.row
+    .col-md-3
+        include includes/navigation
+    .col-md-9
+        include includes/breadcrumb
+        h1 Redirects
+        p &nbsp;
+        table.table.table-hover(ng-if="redirects.length")
+            thead
+                tr
+                    th #
+                    th From
+                    th To
+                    th
+                    th Type
+                    th Action
+            tbody
+                tr(ng-repeat="item in redirects", ng-class="{danger:deleteItems.has(item.id)}")
+                    td {{$index+1}} 
+                    td {{item.from}}
+                    td {{item.to}}
+                    td: i.fa(ng-class="{'internal':'fa-star-o','301':'fa-star','302':'fa-star-half-o'}[item.type||'internal']")
+                    td {{item.type||'internal'}}
+                    td.text-center
+                        a.btn.btn-default.btn-xs(href="", ng-click="deleteItems.toggle(item.id)")
+                            i.fa(ng-class="{true:'fa-undo',false:'fa-times text-danger'}[deleteItems.has(item.id)]")
+
+        .form-group.pull-right
+            button.btn.btn-danger(type="button", ng-click="deleteSelected()", ng-disabled="deleteItems.isEmpty()") Delete
+            button.btn.btn-default(type="button", ng-click="deleteItems.empty()", ng-disabled="deleteItems.isEmpty()") Cancel
+                        

@@ -1,9 +1,34 @@
 (function () {
     'use strict';
 
+    function Container () {
+        this.items = [];
+    }
+    Container.prototype = {
+        isEmpty: function () {
+            return this.items.length === 0;
+        },
+        has: function (item) {
+            return _.indexOf(this.items, item) >= 0;
+        },
+        add: function (item) {
+            if (!this.has(item)) this.items.push(item);
+        },
+        remove: function (item) {
+            var idx = _.indexOf(this.items, item);
+            if (idx >= 0) this.items.splice(idx, 1);
+        },
+        empty: function () {
+            this.items = [];
+        },
+        toggle: function (item) {
+            this.has(item) ? this.remove(item) : this.add(item);
+        }
+    };
+
     var ctrlsModule = angular.module('pandaControllers', []);
 
-    ctrlsModule.controller('RootCtrl', ['$scope', 'Config',
+    ctrlsModule.controller('RootCtrl', ['$scope', 'ConfigValues',
         function ($scope, Config) {
             $scope.loading = false;
             $scope.breadcrumb = [];
@@ -51,7 +76,7 @@
         }
     ]);
 
-    ctrlsModule.controller('PostsCtrl', ['$scope', '$routeParams', 'Posts', 'PostsInfo', 'Config',
+    ctrlsModule.controller('PostsCtrl', ['$scope', '$routeParams', 'Posts', 'PostsInfo', 'ConfigValues',
         function ($scope, $params, Posts, Info, Config) {
             $scope.setBreadcrumb('posts', $params.type);
             $scope.type = $params.type;
@@ -316,6 +341,43 @@
     ctrlsModule.controller('UsersCtrl', ['$scope', 
         function ($scope) {
             $scope.setBreadcrumb('users');
+        }
+    ]);
+
+    ctrlsModule.controller('RedirectsCtrl', ['$scope', '$q','ConfigInfo', 
+        function ($scope, $q, ConfigInfo) {
+            $scope.setBreadcrumb('settings', 'redirects');
+            $scope.redirects = ConfigInfo.query({type:'redirects'});
+            $scope.deleteItems = new Container();
+
+            $scope.deleteSelected = function () {
+                if ($scope.deleteItems.isEmpty()) return;
+
+                $scope.setLoading('Deleting');
+
+                var deletePromise = $q.all(
+                    _.map($scope.deleteItems.items, function (item) {
+                        return ConfigInfo
+                            .delete({id:item, type:'redirects'})
+                            .$promise;
+                    })
+                );
+
+                deletePromise.then(loadRedirects, function () {
+                    $scope.setLoading(false);
+                });
+            };
+
+            function loadRedirects () {
+                $scope.setLoading('Loading');
+                $scope.redirects = ConfigInfo.query(
+                    { type:'redirects' },
+                    function () {
+                        $scope.setLoading(false);
+                        $scope.deleteItems.empty();
+                    }
+                );
+            }
         }
     ]);
 

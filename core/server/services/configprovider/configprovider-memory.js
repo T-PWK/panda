@@ -6,7 +6,7 @@ var when        = require('when'),
     _           = require('underscore');
 
 var ConfigProvider = module.exports = function () {
-    this.redirects = {};
+    this.redirects = [];
 };
 
 ConfigProvider.prototype.init = function () {
@@ -29,6 +29,19 @@ ConfigProvider.prototype.findRedirectByUrl = function (url) {
 };
 
 ConfigProvider.prototype.findRedirectById = function (id) {
-
     return when.resolve(_.findWhere(this.redirects, { id:id }));
+};
+
+ConfigProvider.prototype.deleteRedirect = function (id) {
+    var index;
+
+    _.find(this.redirects, function (item, idx) {
+        if (item.id === id) {
+            index = idx;
+            return true;
+        }
+    });
+
+    if (index >= 0) this.redirects.splice(index, 1);
+    return when.resolve({success:index >= 0});
 };
