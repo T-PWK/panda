@@ -20,8 +20,7 @@ module.exports['new'] = function (req, res) {
 };
 
 module.exports.create = function (req, res) {
-    console.info('createing new post ....');
-    console.info(req.body)
+    // console.info(req.body)
     res.send('create post');
 };
 

@@ -21,7 +21,7 @@ module.exports.index = function (req, res) {
         return {
             id: name,
             name: _s.titleize(_s.humanize(name))
-        }
+        };
     }
 
     function namesToThemes (fileNames) {

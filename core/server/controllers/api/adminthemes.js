@@ -4,9 +4,9 @@ var cfg         = require('nconf'),
     _s          = require('underscore.string'),
     when        = require('when'),
     node        = require('when/node'),
-    readdir     = node.lift(fs.readdir);
+    readdir     = node.lift(fs.readdir),
     join        = require('path').join,
-    themesDir   = join(cfg.get('paths:clientStatic'), 'css/theme');
+    themesDir   = join(cfg.get('paths:clientStatic'), 'css/theme'); /* jshint -W030 */
 
 module.exports.index = function (req, res) {
     readdir(themesDir)
@@ -26,7 +26,7 @@ module.exports.index = function (req, res) {
         return {
             id: name,
             name: _s.titleize(_s.humanize(name))
-        }
+        };
     }
 
     function namesToThemes (fileNames) {
