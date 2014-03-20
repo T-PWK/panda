@@ -345,28 +345,73 @@
         }
     ]);
 
-    ctrlsModule.controller('Ctrl', ['$scope', function (scope) {
-        
-    }])
-
-    ctrlsModule.controller('RedirectsCtrl', ['$scope', '$q','Redirects', 
-        function ($scope, $q, Redirects) {
-            $scope.setBreadcrumb('settings', 'redirects');
-            $scope.deleteItems = new Container();
+    ctrlsModule.controller('RedirectEditCtrl', ['$scope', '$rootScope',
+        function ($scope, $rootScope) {
+            $scope.path = /^(\/[\w-_.]+)*\/?$/;
             $scope.isEdit = false;
-            $scope.path = /^(\/[\w-_.]+)*\/?$/
+            $scope.item = {
+                from: '/from-item',
+                to: '/to-item'
+            };
+
+            $scope.from = '/from';
+            $scope.to = '/to'
+
+            $rootScope.$on('edit', function (event, item) {
+                $scope.item = angular.copy(item);
+                $scope.isEdit = true;
+            });
+
+            $scope.reset = function () {
+                console.info('calling reset .... ', $scope.form, $scope.item)
+                $scope.item = {
+                    from: '',
+                    to: null
+                };
+                $scope.isEdit = false;
+                $scope.form.$setPristine();
+                console.info('calling reset .... ', $scope.form, $scope.item)
+            };
+    }]);
+
+    ctrlsModule.controller('RedirectsListCtrl', ['$scope', '$rootScope', '$q', 'Redirects',
+        function ($scope, $rootScope, $q, Redirects) {
+            $scope.deleting = new Container();
 
             loadRedirects();
 
-            $scope.edit = function (item) {
-                $scope.redirect = angular.copy(item);
-                $scope.isEdit = true;
+            $scope.delete = function () {
+                if ($scope.deleting.isEmpty()) return;
+                $scope.setLoading('Deleting');
+
+                var deletePromise = [];
+
+                angular.forEach($scope.items, function (item) {
+                    if ($scope.deleting.has(item.id)) {
+                        deletePromise.push(item.$remove());
+                    }
+                });
+
+                $q.all(deletePromise)
+                    .then(loadRedirects)
+                    .finally($scope.setLoading.bind($scope, false));
             };
 
-            $scope.reset = function () {
-                $scope.redirect = {};
-                $scope.isEdit = false;
-            };
+            function loadRedirects () {
+                $scope.setLoading(true);
+                $scope.items = Redirects.query(
+                    function () {
+                        $scope.setLoading(false);
+                        $scope.deleting.empty();
+                    }
+                );
+            }
+    }]);
+
+
+    ctrlsModule.controller('RedirectsRootCtrl', ['$scope', '$q','Redirects', 
+        function ($scope, $q, Redirects) {
+            $scope.setBreadcrumb('settings', 'redirects');
 
             $scope.create = function () {
                 var item = $scope.redirect;
@@ -390,32 +435,17 @@
                     .then(loadRedirects);
             };
 
-            $scope.delete = function () {
-                if ($scope.deleteItems.isEmpty()) return;
-                $scope.setLoading('Deleting');
+            
 
-                var deletePromise = [];
-
-                angular.forEach($scope.redirects, function (item) {
-                    if ($scope.deleteItems.has(item.id)) {
-                        deletePromise.push(item.$remove());
-                    }
-                });
-
-                $q.all(deletePromise)
-                    .then(loadRedirects)
-                    .finally($scope.setLoading.bind($scope, false));
-            };
-
-            function loadRedirects () {
-                $scope.setLoading('Loading');
-                $scope.redirects = Redirects.query(
-                    function () {
-                        $scope.setLoading(false);
-                        $scope.deleteItems.empty();
-                    }
-                );
-            }
+            // function loadRedirects () {
+            //     $scope.setLoading('Loading');
+            //     $scope.redirects = Redirects.query(
+            //         function () {
+            //             $scope.setLoading(false);
+            //             $scope.deleteItems.empty();
+            //         }
+            //     );
+            // }
         }
     ]);
 
