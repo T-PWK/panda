@@ -32,6 +32,7 @@ function init () {
     updateFlags();
     updatePaths();
     updateThemePaths();
+    updateHash();
 
     return when.resolve();
 }
@@ -60,4 +61,24 @@ function updateFlags () {
     cfg.set('production', 'production' === env);
 }
 
+function updateHash () {
+    if (cfg.get('development')) {
+        cfg.set('hash', randomValue(6));
+    }
+}
+
 module.exports.init = init;
+
+//TODO: move to a separate module
+function randomValue (howMany, chars) {
+    chars = chars || "abcdefghijklmnopqrstuwxyz0123456789";
+    var rnd = require('crypto').randomBytes(howMany),
+        value = new Array(howMany),
+        len = chars.length;
+
+    for (var i = 0; i < howMany; i++) {
+        value[i] = chars[rnd[i] % len];
+    }
+
+    return value.join('');
+}

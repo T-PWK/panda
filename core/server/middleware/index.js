@@ -1,7 +1,8 @@
 var express     = require('express'),
     path        = require('path'),
     cfg         = require('nconf'),
-    tplHelper   = require('../helpers/templatehelper');
+    tplHelper   = require('../helpers/templatehelper'),
+    hash        = cfg.get('hash');
 
 function setup (app) {
     // Set the favicon
@@ -27,7 +28,7 @@ function setup (app) {
         express.static(cfg.get('theme:paths:static'), { maxAge: cfg.get('app:staticCacheAge') }));
     app.use('/shared', 
         express.static(cfg.get('paths:sharedStatic'), { maxAge: cfg.get('app:staticCacheAge') }));
-    app.use('/client',
+    app.use('/client' + (hash ? '/'+ hash : ''),
         express.static(cfg.get('paths:clientStatic'), { maxAge: 0 })); //TODO: add configuration for clientStatic cache age
 
     app.use(require('./robots')());

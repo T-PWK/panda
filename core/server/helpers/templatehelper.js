@@ -2,6 +2,7 @@ var moment          = require('moment'),
     util            = require('util'),
     cfg             = require('nconf'),
     _s              = require('underscore.string'),
+    hash            = cfg.get('hash'),
     labelUrlFormat  = cfg.get('app:labelUrl'),
     pgnUrl          = cfg.get('app:paginationUrl'),
     pgnRegexp       = new RegExp(pgnUrl.replace(':page', '\\d+'));
@@ -179,7 +180,16 @@ function assets (asset) {
 }
 
 function adminTheme (asset) {
-    return '/client/css/theme/' + cfg.get('admin:theme') + '/' + asset;  
+    return adminAsset('/client/css/theme/' + cfg.get('admin:theme') + '/' + asset);
+}
+
+function adminAsset (asset) {
+    if (!hash) return asset;
+    
+    var parts = asset.split('/');
+    parts.splice(2, 0, hash);
+    
+    return parts.join('/');
 }
 
 function isntEmpty(obj, prop) {
@@ -232,6 +242,7 @@ function init (app) {
         $isntEmpty:  { enumerable: true, value: isntEmpty },
         $labelUrl:   { enumerable: true, value: labelUrl },
         $adminTheme: { enumerable: true, value: adminTheme },
+        $adminAsset: { enumerable: true, value: adminAsset },
 
         // Update application locals with view settings like debug or pretty formatting
         pretty:      { enumerable: true, value: cfg.get('view:pretty') },

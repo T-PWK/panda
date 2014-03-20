@@ -7,7 +7,7 @@ block content
         .container
             .navbar-header
                 a.navbar-brand(href="/admin")
-                    img(src="/client/img/panda-logo.png")
+                    img(src=$adminAsset("/client/img/panda-logo.png"))
                     |  Panda
             p.navbar-text.navbar-right User Name
     //- Content
@@ -27,11 +27,11 @@ block js
     script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular.min.js")
     script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular-route.min.js")
     script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular-resource.min.js")
-    script(src="/client/js/lib/underscore/underscore-1.6.0.min.js")
-    script(src="/client/js/lib/underscore/underscore.string-2.3.2.min.js")
-    script(src="/client/js/lib/bootstrap/bootstrap.min.js")
-    script(src="/client/js/app/application.js")
-    script(src="/client/js/app/controllers.js")
-    script(src="/client/js/codemirror/codemirror.js")
-    script(src="/client/js/codemirror/mode/markdown/markdown.js")
-    script(src="/client/js/lib/showdown/showdown.js")
+    script(src=$adminAsset("/client/js/lib/underscore/underscore-1.6.0.min.js"))
+    script(src=$adminAsset("/client/js/lib/underscore/underscore.string-2.3.2.min.js"))
+    script(src=$adminAsset("/client/js/lib/bootstrap/bootstrap.min.js"))
+    script(src=$adminAsset("/client/js/app/application.js"))
+    script(src=$adminAsset("/client/js/app/controllers.js"))
+    script(src=$adminAsset("/client/js/codemirror/codemirror.js"))
+    script(src=$adminAsset("/client/js/codemirror/mode/markdown/markdown.js"))
+    script(src=$adminAsset("/client/js/lib/showdown/showdown.js"))
