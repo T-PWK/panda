@@ -2,27 +2,28 @@
     'use strict';
 
     function Container () {
-        this.items = [];
+        this.items = {};
+        this.size = 0;
     }
     Container.prototype = {
         isEmpty: function () {
-            return this.items.length === 0;
+            return _.size(this.items) === 0;
         },
         has: function (item) {
-            return _.indexOf(this.items, item) >= 0;
+            return _.has(this.items, item);
         },
         add: function (item) {
-            if (!this.has(item)) this.items.push(item);
+            if (!this.has(item)) this.items[item] = null;
         },
         remove: function (item) {
-            var idx = _.indexOf(this.items, item);
-            if (idx >= 0) this.items.splice(idx, 1);
+            delete this.items[item];
         },
         empty: function () {
-            this.items = [];
+            this.items = {};
         },
         toggle: function (item) {
-            this.has(item) ? this.remove(item) : this.add(item);
+            if (this.has(item)) this.remove(item);
+            else this.add(item);
         }
     };
 
@@ -344,34 +345,71 @@
         }
     ]);
 
-    ctrlsModule.controller('RedirectsCtrl', ['$scope', '$q','ConfigInfo', 
-        function ($scope, $q, ConfigInfo) {
+    ctrlsModule.controller('Ctrl', ['$scope', function (scope) {
+        
+    }])
+
+    ctrlsModule.controller('RedirectsCtrl', ['$scope', '$q','Redirects', 
+        function ($scope, $q, Redirects) {
             $scope.setBreadcrumb('settings', 'redirects');
-            $scope.redirects = ConfigInfo.query({type:'redirects'});
             $scope.deleteItems = new Container();
+            $scope.isEdit = false;
+            $scope.path = /^(\/[\w-_.]+)*\/?$/
 
-            $scope.deleteSelected = function () {
+            loadRedirects();
+
+            $scope.edit = function (item) {
+                $scope.redirect = angular.copy(item);
+                $scope.isEdit = true;
+            };
+
+            $scope.reset = function () {
+                $scope.redirect = {};
+                $scope.isEdit = false;
+            };
+
+            $scope.create = function () {
+                var item = $scope.redirect;
+                if (!item || $scope.isEdit) return;
+
+                $scope.setLoading('Creating');
+
+                Redirects.create(item).$promise
+                    .then($scope.reset.bind($scope))
+                    .then(loadRedirects);
+            }
+
+            $scope.update = function () {
+                var item = $scope.redirect;
+                if (!item || !$scope.isEdit) return;
+
+                $scope.setLoading('Updating');
+
+                item.$update()
+                    .then($scope.reset.bind($scope))
+                    .then(loadRedirects);
+            };
+
+            $scope.delete = function () {
                 if ($scope.deleteItems.isEmpty()) return;
-
                 $scope.setLoading('Deleting');
 
-                var deletePromise = $q.all(
-                    _.map($scope.deleteItems.items, function (item) {
-                        return ConfigInfo
-                            .delete({id:item, type:'redirects'})
-                            .$promise;
-                    })
-                );
+                var deletePromise = [];
 
-                deletePromise.then(loadRedirects, function () {
-                    $scope.setLoading(false);
+                angular.forEach($scope.redirects, function (item) {
+                    if ($scope.deleteItems.has(item.id)) {
+                        deletePromise.push(item.$remove());
+                    }
                 });
+
+                $q.all(deletePromise)
+                    .then(loadRedirects)
+                    .finally($scope.setLoading.bind($scope, false));
             };
 
             function loadRedirects () {
                 $scope.setLoading('Loading');
-                $scope.redirects = ConfigInfo.query(
-                    { type:'redirects' },
+                $scope.redirects = Redirects.query(
                     function () {
                         $scope.setLoading(false);
                         $scope.deleteItems.empty();
