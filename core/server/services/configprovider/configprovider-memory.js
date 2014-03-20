@@ -3,7 +3,8 @@ var when        = require('when'),
     fs          = require('fs'),
     node        = require('when/node'),
     cfg         = require('nconf'),
-    _           = require('underscore');
+    _           = require('underscore'),
+    idGen       = require('../idgenerator');
 
 var ConfigProvider = module.exports = function () {
     this.redirects = [];
@@ -44,4 +45,37 @@ ConfigProvider.prototype.deleteRedirect = function (id) {
 
     if (index >= 0) this.redirects.splice(index, 1);
     return when.resolve({success:index >= 0});
+};
+
+ConfigProvider.prototype.updateRedirect = function (id, properties) {
+    var redirect = _.findWhere(this.redirects, {id:id});
+
+    if(redirect) {
+        _.extend(redirect, 
+            { updatedAt: new Date() }, 
+            _.pick(properties, 'from', 'to', 'type'));
+
+        return when.resolve();
+    }
+    else return when.reject();
+};
+
+ConfigProvider.prototype.createRedirect = function (properties) {
+    properties = _.pick(properties, 'from', 'to', 'type');
+
+    console.info('properties', properties);
+    console.info('exist', _.findWhere(this.redirects, { from:properties.from }));
+    console.info('howmany', _.size(properties));
+
+    if (_.findWhere(this.redirects, { from:properties.from }) || _.size(properties) < 3) return when.reject();
+
+    _.extend(properties, {
+        id: idGen(), 
+        createdAt: new Date(), 
+        updatedAt: new Date() 
+    });
+
+    this.redirects.push(properties);
+
+    return when.resolve();
 };
