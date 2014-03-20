@@ -20,6 +20,7 @@
     {
         "id": "bd68e96d50a5465fbeb9393fd28b31be",
         "from": "/lorem-ipsum-dolor-sit-amet.html",
-        "to": "/lorem-ipsum-dolor-sit-amet"
+        "to": "/lorem-ipsum-dolor-sit-amet",
+        "type": "internal"
     }
 ]
