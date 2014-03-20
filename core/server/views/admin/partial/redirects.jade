@@ -3,29 +3,65 @@
         include includes/navigation
     .col-md-9
         include includes/breadcrumb
-        h1 Redirects
-        p &nbsp;
-        table.table.table-hover(ng-if="redirects.length")
+
+        .page-header
+            h1 Redirects
+            p {{redirectForm.input|json}}
+
+        table.table.table-striped(ng-if="redirects.length")
             thead
                 tr
-                    th #
+                    th
                     th From
                     th To
                     th
                     th Type
-                    th Action
             tbody
-                tr(ng-repeat="item in redirects", ng-class="{danger:deleteItems.has(item.id)}")
-                    td {{$index+1}} 
-                    td {{item.from}}
+                tr(ng-repeat="item in redirects")
+                    td: input(type="checkbox", ng-click="deleteItems.toggle(item.id)", ng-checked="deleteItems.has(item.id)")
+                    td: a(href="", ng-click="edit(item)") {{item.from}}
                     td {{item.to}}
-                    td: i.fa(ng-class="{'internal':'fa-star-o','301':'fa-star','302':'fa-star-half-o'}[item.type||'internal']")
+                    td: i.fa(ng-class="{'internal':'fa-star-o','301':'fa-star','302':'fa-star-half-o'}[item.type]")
                     td {{item.type||'internal'}}
-                    td.text-center
-                        a.btn.btn-default.btn-xs(href="", ng-click="deleteItems.toggle(item.id)")
-                            i.fa(ng-class="{true:'fa-undo',false:'fa-times text-danger'}[deleteItems.has(item.id)]")
 
-        .form-group.pull-right
-            button.btn.btn-danger(type="button", ng-click="deleteSelected()", ng-disabled="deleteItems.isEmpty()") Delete
-            button.btn.btn-default(type="button", ng-click="deleteItems.empty()", ng-disabled="deleteItems.isEmpty()") Cancel
-                        
+        .row
+            .pull-right
+                button.btn.btn-danger(type="button", ng-click="delete()", ng-disabled="deleteItems.isEmpty()") Delete
+                button.btn.btn-default(type="button", ng-click="deleteItems.empty()", ng-disabled="deleteItems.isEmpty()") Reset
+        hr
+        form.form-horizontal(name="form")
+            .form-group
+                //- p {{form.from.$valid}}
+                //- p {{form.to.$valid}}
+                //- p {{form.$valid}}
+            .form-group
+                label.col-sm-2.control-label(for="from") From
+                .col-sm-6
+                    input.form-control(type="text", name="from", placeholder="From", 
+                        ng-model="redirect.from", ng-required="true", ng-trim="true", 
+                        ng-pattern="path")
+            .form-group
+                label.col-sm-2.control-label(for="to") To
+                .col-sm-6
+                    input.form-control(type="text", name="to", placeholder="To", 
+                        ng-model="redirect.to", ng-required="true", ng-trim="true"
+                        ng-pattern="path")
+            .form-group
+                label.col-sm-2.control-label Redirect Type
+                .col-sm-8
+                    label.radio-inline
+                        input(type="radio", ng-model="redirect.type", value="301")
+                        | Moved Permanently (301)
+                    label.radio-inline
+                        input(type="radio", ng-model="redirect.type", value="302")
+                        | Moved Temporarily (302)
+                    label.radio-inline
+                        input(type="radio", ng-model="redirect.type", value="internal")
+                        | Internal Forward
+            .form-group
+                .col-sm-offset-2.col-sm-10
+                    button.btn.btn-primary(type="button") 
+                        span(ng-if="isEdit", ng-click="update()") Update
+                        span(ng-if="!isEdit", ng-click="create()") Create
+                    button.btn.btn-default(type="button", ng-click="reset()") Reset
+
