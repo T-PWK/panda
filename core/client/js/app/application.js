@@ -26,8 +26,11 @@
                 }
             );
         }])
-        .factory('ConfigInfo', ['$resource', function ($resource) {
-            return $resource('/api/v1/config/:type/:id', { id: '@id', type: '@type' });
+        .factory('Redirects', ['$resource', function ($resource) {
+            return $resource('/api/v1/config/redirects/:id', 
+                { id: '@id' },
+                { create: { method: 'POST' }, update: { method: 'PUT' } }
+            );
         }])
         .factory('PostsInfo', ['$resource', function ($resource) {
             return $resource('/api/v1/posts/infos/:id', {id: '@id'});
@@ -43,14 +46,6 @@
                 }
             );
         }])
-        // .factory('AdminThemes', ['$resource', function ($resource) {
-        //     return $resource('/api/v1/adminthemes/:id',
-        //         { id:'@id' },
-        //         {
-        //             update: { method: 'PUT' }
-        //         }
-        //     );
-        // }])
         .directive('ngEnter', function() {
             return function(scope, element, attrs) {
                 element.bind("keydown keypress", function(event) {
