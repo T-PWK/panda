@@ -345,39 +345,53 @@
         }
     ]);
 
-    ctrlsModule.controller('RedirectEditCtrl', ['$scope', '$rootScope',
-        function ($scope, $rootScope) {
+    ctrlsModule.controller('RedirectEditCtrl', ['$scope', '$rootScope', 'Redirects',
+        function ($scope, $rootScope, Redirects) {
             $scope.path = /^(\/[\w-_.]+)*\/?$/;
             $scope.isEdit = false;
-            $scope.item = {
-                from: '/from-item',
-                to: '/to-item'
-            };
-
-            $scope.from = '/from';
-            $scope.to = '/to'
+            $scope.item = { };
 
             $rootScope.$on('edit', function (event, item) {
                 $scope.item = angular.copy(item);
                 $scope.isEdit = true;
             });
 
+            $scope.create = function () {
+                console.info()
+                var item = $scope.item;
+                if (!item || $scope.isEdit || $scope.form.$invalid) return;
+
+                $scope.setLoading('Creating');
+
+                Redirects.create(item).$promise
+                    .then($scope.reset.bind($scope))
+                    .then($scope.$emit.bind($scope, 'load'));
+            }
+
+            $scope.update = function () {
+                var item = $scope.item;
+                if (!item || !$scope.isEdit || $scope.form.$invalid) return;
+
+                $scope.setLoading('Updating');
+
+                item.$update()
+                    .then($scope.reset.bind($scope))
+                    .then($scope.$emit.bind($scope, 'load'));
+            };
+
             $scope.reset = function () {
-                console.info('calling reset .... ', $scope.form, $scope.item)
-                $scope.item = {
-                    from: '',
-                    to: null
-                };
                 $scope.isEdit = false;
+                $scope.item = { from: '', to: '' };
                 $scope.form.$setPristine();
-                console.info('calling reset .... ', $scope.form, $scope.item)
             };
     }]);
 
     ctrlsModule.controller('RedirectsListCtrl', ['$scope', '$rootScope', '$q', 'Redirects',
         function ($scope, $rootScope, $q, Redirects) {
             $scope.deleting = new Container();
+            $rootScope.$on('load', loadRedirects);
 
+            $scope.setBreadcrumb('settings', 'redirects');
             loadRedirects();
 
             $scope.delete = function () {
@@ -407,47 +421,6 @@
                 );
             }
     }]);
-
-
-    ctrlsModule.controller('RedirectsRootCtrl', ['$scope', '$q','Redirects', 
-        function ($scope, $q, Redirects) {
-            $scope.setBreadcrumb('settings', 'redirects');
-
-            $scope.create = function () {
-                var item = $scope.redirect;
-                if (!item || $scope.isEdit) return;
-
-                $scope.setLoading('Creating');
-
-                Redirects.create(item).$promise
-                    .then($scope.reset.bind($scope))
-                    .then(loadRedirects);
-            }
-
-            $scope.update = function () {
-                var item = $scope.redirect;
-                if (!item || !$scope.isEdit) return;
-
-                $scope.setLoading('Updating');
-
-                item.$update()
-                    .then($scope.reset.bind($scope))
-                    .then(loadRedirects);
-            };
-
-            
-
-            // function loadRedirects () {
-            //     $scope.setLoading('Loading');
-            //     $scope.redirects = Redirects.query(
-            //         function () {
-            //             $scope.setLoading(false);
-            //             $scope.deleteItems.empty();
-            //         }
-            //     );
-            // }
-        }
-    ]);
 
     ctrlsModule.controller('ThemesCtrl', ['$scope', '$q', '$window','Themes',
         function ($scope, $q, $window, Themes) {

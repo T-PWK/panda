@@ -13,7 +13,7 @@
                 .when('/posts/:id/edit', { templateUrl: '/admin/partial/editpost', controller: 'PostEditCtrl' })
                 .when('/comments', { templateUrl:'/admin/partial/comments', controller:'CommentsCtrl' })
                 .when('/settings', { templateUrl:'/admin/partial/settings', controller:'SettingsCtrl' })
-                .when('/settings/redirects', { templateUrl:'/admin/partial/redirects', controller:'RedirectsRootCtrl' })
+                .when('/settings/redirects', { templateUrl:'/admin/partial/redirects' })
                 .when('/users', { templateUrl:'/admin/partial/users', controller:'UsersCtrl' })
                 .when('/themes', { templateUrl:'/admin/partial/themes', controller:'ThemesCtrl' })
                 .otherwise({ redirectTo: '/' });
