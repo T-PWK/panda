@@ -32,7 +32,7 @@
                     button.btn.btn-danger(type="button", ng-click="delete()", ng-disabled="deleting.isEmpty()") Delete
                     button.btn.btn-default(type="button", ng-click="deleting.empty()", ng-disabled="deleting.isEmpty()") Reset
 
-            .row(ng-if="!items.length")
+            .row(ng-if="!items.length && !loading")
                 .alert.alert-info.text-center No redirects have been configured.
 
         hr
