@@ -63,10 +63,6 @@ ConfigProvider.prototype.updateRedirect = function (id, properties) {
 ConfigProvider.prototype.createRedirect = function (properties) {
     properties = _.pick(properties, 'from', 'to', 'type');
 
-    console.info('properties', properties);
-    console.info('exist', _.findWhere(this.redirects, { from:properties.from }));
-    console.info('howmany', _.size(properties));
-
     if (_.findWhere(this.redirects, { from:properties.from }) || _.size(properties) < 3) return when.reject();
 
     _.extend(properties, {
@@ -76,6 +72,5 @@ ConfigProvider.prototype.createRedirect = function (properties) {
     });
 
     this.redirects.push(properties);
-
     return when.resolve();
 };

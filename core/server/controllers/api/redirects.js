@@ -37,7 +37,6 @@ module.exports.destroy = function (req, res) {
 };
 
 module.exports.create = function (req, res) {
-    console.info('creating redirect ...', req.body)
     provider
         .createRedirect(req.body)
         .done(
