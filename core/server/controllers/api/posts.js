@@ -15,14 +15,20 @@ module.exports.index = function (req, res) {
         .then(res.json.bind(res));
 };
 
-module.exports['new'] = function (req, res) {
+module.exports.new = function (req, res) {
     res.send('new post');
 };
 
 module.exports.create = function (req, res) {
     console.info("creating new post .... ", req.body);
-    res.send('create post');
+    res.json(req.body);
 };
+
+module.exports.update = function (req, res) {
+    console.info("updating exiting post .... ", req.params.post, req.body);
+    res.json(req.body);
+};
+
 
 module.exports.show = function (req, res) {
     provider

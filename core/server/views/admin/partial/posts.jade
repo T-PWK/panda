@@ -13,9 +13,10 @@
                     i.fa(ng-class="{'fa-square-o':!selection.all,'fa-check-square-o':selection.all}",
                         ng-click="selectAll()")
             .btn-group
-                button.btn.btn-default(type="button", ng-if="publish") Publish
-                button.btn.btn-default(type="button") Revert to draft
-                button.btn.btn-default(type="button"): i.fa.fa-trash-o
+                a.btn.btn-primary(type="button", href="#/posts/new") New
+                //- button.btn.btn-default(type="button", ng-if="publish") Publish
+                //- button.btn.btn-default(type="button") Revert to draft
+                //- button.btn.btn-default(type="button"): i.fa.fa-trash-o
 
             .btn-group
                 button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")

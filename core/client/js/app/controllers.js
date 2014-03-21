@@ -29,7 +29,7 @@
 
     var ctrlsModule = angular.module('pandaControllers', []);
 
-    ctrlsModule.controller('RootCtrl', ['$scope', 'ConfigValues',
+    ctrlsModule.controller('RootCtrl', ['$scope', 'Constants',
         function ($scope, Config) {
             $scope.loading = false;
             $scope.breadcrumb = [];
@@ -77,7 +77,7 @@
         }
     ]);
 
-    ctrlsModule.controller('PostsCtrl', ['$scope', '$routeParams', 'Posts', 'PostsInfo', 'ConfigValues',
+    ctrlsModule.controller('PostsCtrl', ['$scope', '$routeParams', 'Posts', 'PostsInfo', 'Constants',
         function ($scope, $params, Posts, Info, Config) {
             $scope.setBreadcrumb('posts', $params.type);
             $scope.type = $params.type;
@@ -218,15 +218,94 @@
         }
     ]);
 
-    ctrlsModule.controller('PostViewCtrl', ['$scope', 
-        function ($s) {
-            //;
+    ctrlsModule.controller('LabelsCtrl', ['$scope', 'Labels',
+        function ($scope, Labels) {
+            $scope.allLabels = Labels.query();
+
+            $scope.addLabel = function (label) {
+                if (angular.isArray(label)) angular.forEach(label, add);
+                else add(label);
+
+                function add (label) {
+                    var labels = $scope.post.labels || ($scope.post.labels = []);
+
+                    if (!label || ~_.indexOf(labels, label)) return;
+                    labels.push(label);
+                }
+            };
+
+            $scope.delLabel = function (label) {
+                var labels = $scope.post.labels || ($scope.post.labels = []),
+                    idx = labels.indexOf(label);
+
+                if (~idx) labels.splice(idx, 1);
+            };
+    }]);
+
+    ctrlsModule.controller('ScheduleCtrl', ['$scope',
+        function ($scope) {
+            $scope.$watch('post.scheduleOpt', function (opt) {
+                if ('undefined' === typeof opt) return;
+                if (opt) $scope.opt.customSchedule = moment().format('lll');
+            });
+
+            $scope.$watch('opt.customSchedule', function (value) {
+                var date = moment(value);
+
+                $scope.opt.customScheduleValid = date.isValid();
+                if (date.isValid()) $scope.post.scheduledAt = date.toDate();
+            });
         }
     ]);
 
-    ctrlsModule.controller('PostEditCtrl', ['$scope', '$filter', '$sce', '$routeParams', 'Labels', 'Posts', 'MarkdownConverter',
-        function ($scope, $filter, $sce, $params, Labels, Posts, Converter) {
-            $scope.opt = { customDate: '', editor: true };
+    ctrlsModule.controller('SlugCtrl', ['$scope',
+        function ($scope) {
+            var unwatchTitle;
+
+            $scope.$watch('post.slugOpt', function (opt) {
+                if(true === opt) unwatchTitle = $scope.$watch('post.title', setSlugFromTitle);
+                else if (false === opt) unwatchTitle();
+            });
+
+            function setSlugFromTitle (text, oldText, $scope) {
+                if (!text) $scope.post.slug = "";
+                else $scope.post.slug = _.str.slugify(text);
+            }
+        }
+    ]);
+
+
+    ctrlsModule.controller('NewPostCtrl', ['$scope', '$location', 'Posts',
+        function ($scope, $location, Posts) {
+            $scope.setBreadcrumb('newpost');
+            $scope.opt = { customDate: '', editor: true, create: true };
+            $scope.post = { scheduleOpt: true, slugOpt: true };
+
+            var editor = CodeMirror.fromTextArea(angular.element('#editor')[0], {
+                mode: "markdown",
+                showCursorWhenSelecting: true,
+                lineWrapping: true
+            });
+
+            editor.on('change', function () {
+                $scope.$apply(function () {
+                    $scope.post.markdown = editor.getValue();
+                });
+            });
+
+            $scope.create = function () {
+                $scope.setLoading('Saving');
+
+                Posts.create($scope.post, function () {
+                    $location.path('/posts/5849503491495559168/edit');
+                });
+            };
+        }
+    ]);
+
+    ctrlsModule.controller('PostEditCtrl', ['$scope', '$filter', '$sce', '$routeParams', 'Posts', 'MarkdownConverter',
+        function ($scope, $filter, $sce, $params, Posts, Converter) {
+            $scope.opt = { customDate: '', editor: true, create: false };
             $scope.setBreadcrumb('postedit');
 
             var unwatchTitle;
@@ -258,22 +337,14 @@
                 else $scope.post.content = Converter.makeHtml(value);
             });
 
-            $scope.allLabels = Labels.query({id:$params.id});
+            
             $scope.post = Posts.get({ id:$params.id }, function (post) {
-                // editor.setValue(post.markdown|| '# Hello');
+                post.scheduleOpt = post.scheduleOpt || true;
+                post.slugOpt = post.slugOpt || true;
+                
+                // editor.setValue(post.markdown || '');
             });
 
-            $scope.$watch('post.scheduleOpt', function (opt) {
-                if ('undefined' === typeof opt) return;
-                if (opt) $scope.opt.customSchedule = moment().format('lll');
-            });
-
-            $scope.$watch('opt.customSchedule', function (value) {
-                var date = moment(value);
-
-                $scope.opt.customScheduleValid = date.isValid();
-                if (date.isValid()) $scope.post.scheduledAt = date.toDate();
-            });
 
             $scope.now = function (format) {
                 return moment().format(format || 'lll');
@@ -294,24 +365,10 @@
             };
 
             $scope.savePost = function () {
-                console.info('saving content ....', $scope.post)
-                // var post = new Posts($scope.post);
-                $scope.post.$save();
-            };
-
-            $scope.addLabel = function (label) {
-                if (angular.isArray(label)) angular.forEach(label, add);
-                else add(label);
-
-                function add (label) {
-                    if (!label || ~$scope.post.labels.indexOf(label)) return;
-                    $scope.post.labels.push(label);
-                }
-            };
-
-            $scope.delLabel = function (label) {
-                var idx = $scope.post.labels.indexOf(label);
-                if (~idx) $scope.post.labels.splice(idx, 1);
+                $scope.setLoading('Saving');
+                $scope.post.$update({id: $params.id}, function () {
+                    $scope.setLoading(false);
+                });
             };
 
             function updatePermalinks () {
