@@ -10,7 +10,7 @@
         //- Redirects list
         .row(ng-controller="RedirectsListCtrl")
 
-            table.table.table-striped()
+            table.table.table-striped(ng-if="items.length")
                 thead
                     tr
                         th
@@ -19,17 +19,21 @@
                         th
                         th Type
                 tbody
-                    tr(ng-repeat="item in items", ng-if="items.length")
+                    tr(ng-repeat="item in items")
                         td: input(type="checkbox", ng-click="deleting.toggle(item.id)", ng-checked="deleting.has(item.id)")
                         td: a(href="", ng-click="$emit('edit', item)") {{item.from}}
                         td {{item.to}}
                         td: i.fa(ng-class="{'internal':'fa-star-o','301':'fa-star','302':'fa-star-half-o'}[item.type]")
                         td {{item.type||'internal'}}
 
-            .row
+
+            .row(ng-if="items.length")
                 .pull-right
                     button.btn.btn-danger(type="button", ng-click="delete()", ng-disabled="deleting.isEmpty()") Delete
                     button.btn.btn-default(type="button", ng-click="deleting.empty()", ng-disabled="deleting.isEmpty()") Reset
+
+            .row(ng-if="!items.length")
+                .alert.alert-info.text-center No redirects have been configured.
 
         hr
 
