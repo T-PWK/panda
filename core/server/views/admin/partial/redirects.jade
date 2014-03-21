@@ -71,7 +71,6 @@
 
             .form-group
                 .col-sm-offset-2.col-sm-10
-                    button.btn.btn-primary(type="button", ng-disabled="form.$invalid || form.$pristine")
-                        span(ng-if="isEdit", ng-click="update()") Update
-                        span(ng-if="!isEdit", ng-click="create()") Create
+                    button.btn.btn-primary(type="button", ng-if="isEdit", ng-disabled="form.$invalid || form.$pristine", ng-click="update()") Update
+                    button.btn.btn-primary(type="button", ng-if="!isEdit", ng-disabled="form.$invalid || form.$pristine", ng-click="create()") Create
                     button.btn.btn-default(type="button", ng-click="reset()") Reset
