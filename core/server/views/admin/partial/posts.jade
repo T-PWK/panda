@@ -4,6 +4,9 @@
     .col-md-9
         include includes/breadcrumb
 
+        .page-header
+            h1 Posts
+
         .btn-toolbar(role="toolbar")
             .btn-group
                 button.btn.btn-default(type="button")
@@ -73,7 +76,15 @@
             p.btn-group.pull-right {{pagination.posts.from}}-{{pagination.posts.to}} of {{pagination.total}}
         p
 
-        table.table(ng-if="posts.length")
+        table.table.table-striped(ng-if="posts.length")
+            thead
+                th
+                th Title
+                th Info
+                th Author
+                th: i.fa.fa-tags(title="Tags")
+                th: i.fa.fa-comments-o(title="Comments")
+                th Publication
             tbody
                 tr(ng-repeat="post in posts | limitTo:pagination.limit")
                     td: input(type="checkbox", ng-checked="selection.keys[post._id]", ng-click="select(post._id)")
@@ -83,8 +94,11 @@
                         i.fa(ng-if="status(post)!='A'" ng-class="{D:'fa-edit',S:'fa-calendar'}[status(post)]", title="{{statusText(post)}}")
                     td: a(ng-href="{{post.author.website}}", target="_blank") {{post.author.name}}
                     td
+                        | {{post.labels.length || 0}} 
+                        i.fa.text-muted(ng-class="{'fa-tag':post.labels.length===1,'fa-tags':post.labels.length>1}")
+                    td
                         | {{post.commentsCount || 0}} 
                         i.fa.text-muted(ng-class="{'fa-comments-o':post.commentsCount,'fa-comment-o':post.commentsCount==0}")
                     td(ng-class="{S:'text-warning'}[status(post)]")
                         span.text-warning(ng-if="status(post)=='D'") {{statusText(post)}}
-                        | {{post.publishedAt|date:'mediumDate'}}
+                        span(ng-if="post.publishedAt") {{post.publishedAt|moment:'ll'}}
