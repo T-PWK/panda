@@ -93,6 +93,10 @@
                 $scope.setBreadcrumb(1, { data: count[$params.type] });
             });
 
+            $scope.time = function (date) {
+                return moment(date).format('LLLL');
+            }
+
             // Clear posts selection
             $scope.$watch('pagination.limit', clearSelection);
             $scope.$watch('pagination.page', clearSelection);
@@ -220,8 +224,8 @@
         }
     ]);
 
-    ctrlsModule.controller('PostEditCtrl', ['$scope', '$filter', '$sce' ,'Labels', 'Posts',
-        function ($scope, $filter, $sce, Labels, Posts) {
+    ctrlsModule.controller('PostEditCtrl', ['$scope', '$filter', '$sce', '$routeParams', 'Labels', 'Posts', 'MarkdownConverter',
+        function ($scope, $filter, $sce, $params, Labels, Posts, Converter) {
             $scope.setBreadcrumb('postedit');
 
             var unwatchTitle;
@@ -230,10 +234,10 @@
                 post: '/:year/:month/:day/:slug.html'
             };
             var tags = {
-                ':slug': function () { return $scope.post.slug || ':slug:'; },
-                ':year': function () { return $scope.post.scheduledAt.getFullYear(); },
-                ':month': function () { return _.str.lpad($scope.post.scheduledAt.getMonth(), 2, '0'); },
-                ':day': function () { return _.str.lpad($scope.post.scheduledAt.getDate(), 2, '0'); }
+                ':slug': function (post) { return post.slug || ':slug:'; },
+                ':year': function (post) { return post.scheduledAt && post.scheduledAt.getFullYear(); },
+                ':month': function (post) { return _.str.lpad(post.scheduledAt && post.scheduledAt.getMonth(), 2, '0'); },
+                ':day': function (post) { return _.str.lpad(post.scheduledAt && post.scheduledAt.getDate(), 2, '0'); }
             };
 
             var editor = CodeMirror.fromTextArea(angular.element('#editor')[0], {
@@ -248,32 +252,31 @@
                 });
             });
 
-            var converter = new Showdown.converter();
-
             $scope.$watch('post.markdown', function (value) {
                 if (!value) $scope.post.content = "";
-                else $scope.post.content = converter.makeHtml(value);
+                else $scope.post.content = Converter.makeHtml(value);
             });
 
-            $scope.allLabels = Labels.query();
+            $scope.allLabels = Labels.query({id:$params.id});
+            $scope.post = Posts.get({id:$params.id}, function (post) {
+                post.scheduledAt = new Date();
+                post.scheduleDateTime = $filter('date')(new Date(), "yyyy-MM-ddTHH:mm");
 
-            // Initialize new post
-            $scope.post = {
-                scheduleOpt: true,
-                slugOpt: true,
-                page: false,
-                scheduleDateTime: $filter('date')(new Date(), "yyyy-MM-ddTHH:mm"),
-                scheduledAt: new Date(),
-                labels: []
-            };
+                // editor.setValue(post.markdown|| '# Hello');
+            });
 
             $scope.editor = true; //edit tab
+
+            $scope.$watch('customSchedule', function (value, old, scope) {
+                console.info(".")
+                console.info(moment(value));
+            });
 
             $scope.$watch('post.slug', setSlugFromTitle);
             $scope.$watch('post.slug', updatePermalinks);
             $scope.$watch('post.page', updatePermalinks);
             $scope.$watch('post.scheduledAt', updatePermalinks);
-            $scope.$watch('post.scheduleDateTime', function (dateTime) {
+            $scope.$watch('customSchedule', function (dateTime) {
                 $scope.post.scheduledAt = new Date(dateTime);
             });
             $scope.$watch('post.slugOpt', function (opt) {
@@ -286,11 +289,9 @@
             };
 
             $scope.savePost = function () {
-                console.info('saving the post ..... ');
-                var post = new Posts($scope.post);
-                console.info('saving the post ..... ', post);
-
-                post.$save();
+                console.info('saving content ....', $scope.post)
+                // var post = new Posts($scope.post);
+                $scope.post.$save();
             };
 
             $scope.addLabel = function (label) {
@@ -310,10 +311,11 @@
 
             function updatePermalinks () {
                 var $scope = arguments[2],
-                    url = ($scope.post.page) ? permalinks.page : permalinks.post;
+                    url = ($scope.post.page) ? permalinks.page : permalinks.post,
+                    post = $scope.post;
 
                 url = url.replace(/(:[a-z]+)/g, function (match) {
-                    if (match in tags) return tags[match]();
+                    if (match in tags) return tags[match](post);
                     return match;
                 });
 
@@ -349,7 +351,7 @@
         function ($scope, $rootScope, Redirects) {
             $scope.path = /^(\/[\w-_.]+)*\/?$/;
             $scope.isEdit = false;
-            $scope.item = { };
+            $scope.item = { type: 'internal' };
 
             $rootScope.$on('edit', function (event, item) {
                 $scope.item = angular.copy(item);
@@ -357,7 +359,6 @@
             });
 
             $scope.create = function () {
-                console.info()
                 var item = $scope.item;
                 if (!item || $scope.isEdit || $scope.form.$invalid) return;
 
@@ -381,7 +382,7 @@
 
             $scope.reset = function () {
                 $scope.isEdit = false;
-                $scope.item = { from: '', to: '' };
+                $scope.item = { from: '', to: '', type: 'internal' };
                 $scope.form.$setPristine();
             };
     }]);

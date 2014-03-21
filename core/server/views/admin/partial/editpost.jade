@@ -1,16 +1,11 @@
 .row
     .col-md-12
-        form.form-horizontal(role="form")
-            .form-group
-                .col-md-8
-                    label.sr-only.control-label(for="postTitle") Page Title
-                    input.form-control(type="text", id="postTitle", placeholder="Enter Post Title", ng-model="post.title", ng-required)
-                .col-md-4
-                    .btn-group.pull-right
-                        button.btn.btn-warning Publish
-                        button.btn.btn-default(ng-click="savePost()") Save
-                        button.btn.btn-default Preview
-                        button.btn.btn-default Close
+        form.form-horizontal(role="form", name="title")
+            .form-group(ng-class="{'has-error':false}")
+                label.col-sm-2.control-label(for="title") Page Title
+                .col-sm-10
+                    input.form-control#title(type="text", placeholder="Enter Post Title", 
+                        ng-model="post.title", required, name="title")
 hr
 .row
     .col-md-3 
@@ -66,7 +61,7 @@ hr
                             input(type="radio", ng-model="post.scheduleOpt", ng-value="false")
                             | Set date and time
                         .form-group(ng-if="!post.scheduleOpt")
-                            input.form-control(type="datetime-local", placeholder="Set date and time", ng-model="post.scheduleDateTime")
+                            input.form-control(type="text", placeholder="Set date and time", ng-model="customSchedule")
                         p.help-block(ng-if="post.scheduleOpt") 
                             i.fa.fa-info-circle
                             |  Your post will be automatically published when you press Publish button.
@@ -121,13 +116,18 @@ hr
                             | It can be used for content like About, Contact etc.
 
     .col-md-9
-        ul.nav.nav-pills
-            li(ng-class="{active:editor}"): a.btn-link.btn-sm(ng-click="editor=true")
+        .btn-group
+            button.btn.btn-default(type="button", ng-click="editor=true", ng-class="{active:editor==true}")
                 i.fa.fa-edit
                 |  Editor
-            li(ng-class="{active:!editor}"): a.btn-link.btn-sm(ng-click="editor=false")
+            button.btn.btn-default(type="button", ng-click="editor=false", ng-class="{active:editor==false}")
                 i.fa.fa-eye
                 |  Preview
+        .btn-group.pull-right
+            button.btn.btn-warning Publish
+            button.btn.btn-default(ng-click="savePost()") Save
+            button.btn.btn-default Close
+
         hr
         .tab-content
             .tab-pane(ng-class="{active:editor}")
