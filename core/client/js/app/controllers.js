@@ -226,6 +226,7 @@
 
     ctrlsModule.controller('PostEditCtrl', ['$scope', '$filter', '$sce', '$routeParams', 'Labels', 'Posts', 'MarkdownConverter',
         function ($scope, $filter, $sce, $params, Labels, Posts, Converter) {
+            $scope.opt = { customDate: '', editor: true };
             $scope.setBreadcrumb('postedit');
 
             var unwatchTitle;
@@ -235,9 +236,9 @@
             };
             var tags = {
                 ':slug': function (post) { return post.slug || ':slug:'; },
-                ':year': function (post) { return post.scheduledAt && post.scheduledAt.getFullYear(); },
-                ':month': function (post) { return _.str.lpad(post.scheduledAt && post.scheduledAt.getMonth(), 2, '0'); },
-                ':day': function (post) { return _.str.lpad(post.scheduledAt && post.scheduledAt.getDate(), 2, '0'); }
+                ':year': function (post) { return moment(post.scheduledAt).year(); },
+                ':month': function (post) { return moment(post.scheduledAt).format('MM'); },
+                ':day': function (post) { return moment(post.scheduledAt).format('DD'); }
             };
 
             var editor = CodeMirror.fromTextArea(angular.element('#editor')[0], {
@@ -258,27 +259,31 @@
             });
 
             $scope.allLabels = Labels.query({id:$params.id});
-            $scope.post = Posts.get({id:$params.id}, function (post) {
-                post.scheduledAt = new Date();
-                post.scheduleDateTime = $filter('date')(new Date(), "yyyy-MM-ddTHH:mm");
-
+            $scope.post = Posts.get({ id:$params.id }, function (post) {
                 // editor.setValue(post.markdown|| '# Hello');
             });
 
-            $scope.editor = true; //edit tab
-
-            $scope.$watch('customSchedule', function (value, old, scope) {
-                console.info(".")
-                console.info(moment(value));
+            $scope.$watch('post.scheduleOpt', function (opt) {
+                if ('undefined' === typeof opt) return;
+                if (opt) $scope.opt.customSchedule = moment().format('lll');
             });
+
+            $scope.$watch('opt.customSchedule', function (value) {
+                var date = moment(value);
+
+                $scope.opt.customScheduleValid = date.isValid();
+                if (date.isValid()) $scope.post.scheduledAt = date.toDate();
+            });
+
+            $scope.now = function (format) {
+                return moment().format(format || 'lll');
+            }
 
             $scope.$watch('post.slug', setSlugFromTitle);
             $scope.$watch('post.slug', updatePermalinks);
             $scope.$watch('post.page', updatePermalinks);
             $scope.$watch('post.scheduledAt', updatePermalinks);
-            $scope.$watch('customSchedule', function (dateTime) {
-                $scope.post.scheduledAt = new Date(dateTime);
-            });
+            
             $scope.$watch('post.slugOpt', function (opt) {
                 if(true === opt) unwatchTitle = $scope.$watch('post.title', setSlugFromTitle);
                 else if (false === opt) unwatchTitle();

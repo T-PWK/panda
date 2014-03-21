@@ -1,6 +1,6 @@
 .row
     .col-md-12
-        form.form-horizontal(role="form", name="title")
+        form.form-horizontal(role="form")
             .form-group(ng-class="{'has-error':false}")
                 label.col-sm-2.control-label(for="title") Page Title
                 .col-sm-10
@@ -60,14 +60,19 @@ hr
                         .radio: label
                             input(type="radio", ng-model="post.scheduleOpt", ng-value="false")
                             | Set date and time
-                        .form-group(ng-if="!post.scheduleOpt")
-                            input.form-control(type="text", placeholder="Set date and time", ng-model="customSchedule")
+                        .form-group(ng-if="!post.scheduleOpt", ng-class="{'has-error':!opt.customScheduleValid}")
+                            .input-group
+                                input.form-control(type="text", placeholder="Set date and time", ng-model="opt.customSchedule")
+                                span.input-group-btn
+                                    button.btn.btn-default(type="button", ng-click="opt.customSchedule=now()"): i.fa.fa-clock-o
                         p.help-block(ng-if="post.scheduleOpt") 
                             i.fa.fa-info-circle
                             |  Your post will be automatically published when you press Publish button.
                         p.help-block(ng-if="!post.scheduleOpt") 
                             i.fa.fa-info-circle
-                            |  Your post will be published at a specified date and time.
+                            |  Your post will be published at a specified date and time. 
+                            i.fa.fa-clock-o
+                            |  sets current date and time.
 
             //- Post slug setup
             .panel.panel-default
@@ -117,10 +122,10 @@ hr
 
     .col-md-9
         .btn-group
-            button.btn.btn-default(type="button", ng-click="editor=true", ng-class="{active:editor==true}")
+            button.btn.btn-default(type="button", ng-click="opt.editor=true", ng-class="{active:opt.editor}")
                 i.fa.fa-edit
                 |  Editor
-            button.btn.btn-default(type="button", ng-click="editor=false", ng-class="{active:editor==false}")
+            button.btn.btn-default(type="button", ng-click="opt.editor=false", ng-class="{active:!opt.editor}")
                 i.fa.fa-eye
                 |  Preview
         .btn-group.pull-right
@@ -130,9 +135,9 @@ hr
 
         hr
         .tab-content
-            .tab-pane(ng-class="{active:editor}")
+            .tab-pane(ng-class="{active:opt.editor}")
                 textarea.form-control#editor
-            .tab-pane(ng-class="{active:!editor}")
+            .tab-pane(ng-class="{active:!opt.editor}")
                 .panel.panel-default
                     .panel-body(ng-bind-html="postContent()")
 
