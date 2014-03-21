@@ -46,6 +46,14 @@
                 }
             );
         }])
+        .factory('MarkdownConverter', [function () {
+            return new Showdown.converter();
+        }])
+        .filter('moment', [function () {
+            return function (date, format) {
+                return moment(date).format(format || 'L');
+            }
+        }])
         .directive('ngEnter', function() {
             return function(scope, element, attrs) {
                 element.bind("keydown keypress", function(event) {
