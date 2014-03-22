@@ -43,18 +43,28 @@
             //- Redirect from value
             .form-group(ng-class="{'has-error':!form.from.$valid && !form.from.$pristine}")
                 label.col-sm-2.control-label(for="from") From
-                .col-sm-6
-                    input.form-control#from(type="text", placeholder="From", 
-                        ng-model="item.from", name="from", required, ng-trim="false",
-                        ng-pattern="path")
+                .col-sm-7
+                    .input-group
+                        input.form-control#from(type="text", placeholder="From", 
+                            ng-model="item.from", name="from", required, ng-trim="false",
+                            ng-pattern="path")
+                        span.input-group-btn
+                            button.btn.btn-default(type="button", 
+                                ng-click="item.from=fix(form.from.$viewValue)",
+                                ng-disabled="!form.from.$viewValue || form.from.$valid"): i.fa.fa-wrench
 
             //- Redirect to
             .form-group(ng-class="{'has-error':!form.toinput.$valid && !form.toinput.$pristine}")
                 label.col-sm-2.control-label(for="toinput") To
-                .col-sm-6
-                    input.form-control#toinput(type="text", placeholder="To", 
-                        ng-model="item.to", required, ng-trim="true", name="toinput",
-                        ng-pattern="path")
+                .col-sm-7
+                    .input-group
+                        input.form-control#toinput(type="text", placeholder="To", 
+                            ng-model="item.to", required, ng-trim="true", name="toinput",
+                            ng-pattern="path")
+                        span.input-group-btn
+                            button.btn.btn-default(type="button", 
+                                ng-click="item.to=fix(form.toinput.$viewValue)",
+                                ng-disabled="!form.toinput.$viewValue || form.toinput.$valid"): i.fa.fa-wrench
 
             .form-group
                 label.col-sm-2.control-label Redirect Type

@@ -420,6 +420,14 @@
                 $scope.isEdit = true;
             });
 
+            $scope.fix = function (value) {
+                console.info(value)
+                return (value[0] === '/' ? '' : '/') + 
+                    _.map((value || '').split('/'), function (item) {
+                        return _.str.slugify(item)
+                    }).join('/');
+            }
+
             $scope.create = function () {
                 var item = $scope.item;
                 if (!item || $scope.isEdit || $scope.form.$invalid) return;
