@@ -7,6 +7,7 @@ var _           = require('underscore'),
     fs          = require('fs'),
     path        = require('path'),
     moment      = require('moment'),
+    idGen       = require('../idgenerator');
     isAbsolute  = require('../../utils').isAbsolute,
     dateProps   = ['publishedAt', 'createdAt', 'updatedAt'];
 
@@ -39,6 +40,17 @@ PostProvider.prototype.loadFiles = function () {
         .then(convertDateProperties.bind(that))     // convert date properties
         .then(updateAuthorInfo.bind(that));         // update users (authors)
     };
+
+PostProvider.prototype.create = function(post) {
+    post._id = idGen();
+
+    this.dummyData.push(post);
+
+    console.info('created post ... ', post);
+    console.info('all posts', this.dummyData.length);
+
+    return when.resolve(post._id);
+};
 
 /*
  * Find all posts

@@ -1,4 +1,5 @@
-var provider = require('../../providers').postProvider;
+var provider    = require('../../providers').postProvider,
+    _           = require('underscore');
 
 module.exports.index = function (req, res) {
     var page = ('undefined' === typeof req.query.page) ? undefined 
@@ -20,8 +21,18 @@ module.exports.new = function (req, res) {
 };
 
 module.exports.create = function (req, res) {
-    console.info("creating new post .... ", req.body);
-    res.json(req.body);
+    var post = _.extend({}, req.body);
+    // if (post.scheduledAt) post.scheduledAt = new Date(post.scheduledAt); 
+    post.scheduledAt = undefined;
+    post._authorId = "_1";
+    post.page = post.page || false;
+    
+    provider.create(post).then(function (id) {
+        res.json({id:id});
+    });
+    
+    // console.info("creating new post .... ", req.body);
+    // res.json({id: '234234234242332'}); //TODO: return id of newly created post
 };
 
 module.exports.update = function (req, res) {

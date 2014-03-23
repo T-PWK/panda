@@ -1,6 +1,8 @@
 (function () {
     'use strict';
 
+    var isDefined = angular.isDefined;
+
     function Container () {
         this.items = {};
         this.size = 0;
@@ -35,7 +37,7 @@
             $scope.breadcrumb = [];
 
             $scope.setLoading = function (loading) {
-                $scope.loading = (loading === true) ? 'Loading' : loading;
+                $scope.loading = (loading === true) ? 'Loading ...' : loading;
             };
 
             $scope.setBreadcrumb = function (props) {
@@ -263,12 +265,12 @@
             var unwatchTitle;
 
             $scope.$watch('post.slugOpt', function (opt) {
-                if(true === opt) unwatchTitle = $scope.$watch('post.title', setSlugFromTitle);
-                else if (false === opt) unwatchTitle();
+                if(opt) unwatchTitle = $scope.$watch('post.title', setSlugFromTitle);
+                else unwatchTitle();
             });
 
-            function setSlugFromTitle (text, oldText, $scope) {
-                if (!text) $scope.post.slug = "";
+            function setSlugFromTitle (text) {
+                if (!text) $scope.post.slug = '';
                 else $scope.post.slug = _.str.slugify(text);
             }
         }
@@ -296,8 +298,9 @@
             $scope.create = function () {
                 $scope.setLoading('Saving');
 
-                Posts.create($scope.post, function () {
-                    $location.path('/posts/5849503491495559168/edit');
+                Posts.create($scope.post, function (post) {
+                    console.info("after creation ... ", post)
+                    $location.path('/posts/'+post.id+'/edit');
                 });
             };
         }
@@ -337,10 +340,10 @@
                 else $scope.post.content = Converter.makeHtml(value);
             });
 
-            
             $scope.post = Posts.get({ id:$params.id }, function (post) {
-                post.scheduleOpt = post.scheduleOpt || true;
-                post.slugOpt = post.slugOpt || true;
+                //TODO: remove blow two lines
+                post.scheduleOpt = isDefined(post.scheduleOpt) ? post.scheduleOpt : true;
+                post.slugOpt = isDefined(post.slugOpt) ? post.slugOpt : true;
                 
                 // editor.setValue(post.markdown || '');
             });
@@ -350,15 +353,14 @@
                 return moment().format(format || 'lll');
             }
 
-            $scope.$watch('post.slug', setSlugFromTitle);
             $scope.$watch('post.slug', updatePermalinks);
             $scope.$watch('post.page', updatePermalinks);
             $scope.$watch('post.scheduledAt', updatePermalinks);
             
-            $scope.$watch('post.slugOpt', function (opt) {
-                if(true === opt) unwatchTitle = $scope.$watch('post.title', setSlugFromTitle);
-                else if (false === opt) unwatchTitle();
-            });
+            // $scope.$watch('post.slugOpt', function (opt) {
+            //     if(true === opt) unwatchTitle = $scope.$watch('post.title', setSlugFromTitle);
+            //     else if (false === opt) unwatchTitle();
+            // });
 
             $scope.postContent = function () {
                 return $sce.trustAsHtml($scope.post.content);
@@ -382,11 +384,6 @@
                 });
 
                 $scope.permalink = url;
-            }
-
-            function setSlugFromTitle (text, oldText, $scope) {
-                if (!text) $scope.post.slug = "";
-                else $scope.post.slug = _.str.slugify(text);
             }
         }
     ]);
