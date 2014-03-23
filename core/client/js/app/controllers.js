@@ -281,7 +281,7 @@
         function ($scope, $location, Posts) {
             $scope.setBreadcrumb('newpost');
             $scope.opt = { customDate: '', editor: true, create: true };
-            $scope.post = { scheduleOpt: true, slugOpt: true };
+            $scope.post = { scheduleOpt: true, slugOpt: true, page: false };
 
             var editor = CodeMirror.fromTextArea(angular.element('#editor')[0], {
                 mode: "markdown",
