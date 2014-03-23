@@ -67,7 +67,6 @@ module.exports.update = function (req, res) {
         .then(res.json.bind(res, post));
 };
 
-
 module.exports.show = function (req, res) {
     if (req.post) res.json(req.post);
     else res.send(404);

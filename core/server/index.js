@@ -45,6 +45,7 @@ function setup (app) {
         middleware(app);
 
         // ## Routing
+        routes.auth(app);       // Set up authentication routes
         routes.redirects(app);  // Set up redirect route
         routes.feeds(app);      // Set up RSS routes
         routes.frontend(app);   // Set up Frontent routes

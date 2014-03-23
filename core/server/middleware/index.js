@@ -1,10 +1,15 @@
 var express     = require('express'),
     path        = require('path'),
     cfg         = require('nconf'),
+    passport    = require('passport'),
+    auth        = require('./authentication'),
     tplHelper   = require('../helpers/templatehelper'),
     hash        = cfg.get('hash');
 
 function setup (app) {
+    // Set up authentication
+    auth();
+
     // Set the favicon
     app.use(express.favicon('core/shared/panda.ico'));
 
@@ -19,9 +24,19 @@ function setup (app) {
         app.use(express.compress());
     }
 
-    app.use(express.json());
+    app.use(express.cookieParser());
+    
+
+    // app.use(express.json());
+    app.use(express.urlencoded())
+    app.use(express.json())
     // app.use(express.urlencoded());
     // app.use(express.methodOverride());
+
+    app.use(express.session({ secret: 'keyboard cat' }));
+
+    app.use(passport.initialize());
+    app.use(passport.session());
 
     // Set theme static files
     app.use('/assets', 

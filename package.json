@@ -44,7 +44,9 @@
     "pkginfo": "~0.3.0",
     "express-resource": "~1.0.0",
     "flake-idgen": "~0.1.1",
-    "biguint-format": "~0.2.0"
+    "biguint-format": "~0.2.0",
+    "passport": "~0.2.0",
+    "passport-local": "~1.0.0"
   },
   "engines": {
     "node": "0.10.x"
