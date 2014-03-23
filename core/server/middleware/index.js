@@ -24,19 +24,6 @@ function setup (app) {
         app.use(express.compress());
     }
 
-    app.use(express.cookieParser());
-    
-
-    // app.use(express.json());
-    app.use(express.urlencoded())
-    app.use(express.json())
-    // app.use(express.urlencoded());
-    // app.use(express.methodOverride());
-
-    app.use(express.session({ secret: 'keyboard cat' }));
-
-    app.use(passport.initialize());
-    app.use(passport.session());
 
     // Set theme static files
     app.use('/assets', 
@@ -56,6 +43,19 @@ function setup (app) {
 
     // Set no-cache HTTP headers for pages
     app.use(require('./nocache'));
+
+    app.use(express.cookieParser());
+    app.use(express.urlencoded())
+    app.use(express.json())
+    app.use(express.session({ secret: 'keyboard cat' }));
+    app.use(passport.initialize());
+    app.use(passport.session());
+
+    app.use(function (req, res, fn) {
+        // body...
+        console.info('is authenticated ... ', req.isAuthenticated());
+        fn();
+    })
 
     // Set the router
     app.use(app.router);
