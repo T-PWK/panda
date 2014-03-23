@@ -51,11 +51,8 @@ function setup (app) {
     app.use(passport.initialize());
     app.use(passport.session());
 
-    app.use(function (req, res, fn) {
-        // body...
-        console.info('is authenticated ... ', req.isAuthenticated());
-        fn();
-    })
+    // Protect admin calls
+    app.use('/admin', auth.loggedIn);
 
     // Set the router
     app.use(app.router);

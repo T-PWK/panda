@@ -1,9 +1,9 @@
 var passport = require('passport');
 
 module.exports = function (app) {
-    app.post('/admin/login',
+    app.post('/login',
         passport.authenticate('local', {
-            successRedirect:'/admin', failureRedirect:'/admin/login'
+            successRedirect:'/admin', failureRedirect:'/login'
         })
     );
 };

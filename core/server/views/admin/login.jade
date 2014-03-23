@@ -8,15 +8,19 @@ block content
                     img.pull-left(src=$adminAsset("/client/img/panda-icon-48.png"), style="margin-right:-48px;")
                     h1.modal-title.text-center Login
                 .modal-body
-                    form.form-horizontal(role="form", action="/admin/login", method="post")
+                    form.form-horizontal(role="form", action="/login", method="post")
                         .form-group
                             label.col-sm-2.control-label Email
                             .col-sm-10
-                                input.form-control(type="email", placeholder="Email", name="email")
+                                .input-group
+                                    span.input-group-addon: i.fa.fa-envelope-o(style="width:20px;")
+                                    input.form-control(type="email", placeholder="Email", name="email")
                         .form-group
                             label.col-sm-2.control-label Password
                             .col-sm-10
-                                input.form-control(type="password", placeholder="Password", name="password")
+                                .input-group
+                                    span.input-group-addon: i.fa.fa-lock(style="width:20px;")
+                                    input.form-control(type="password", placeholder="Password", name="password")
                         .form-group
                             .col-sm-offset-2.col-sm-10
                                 button.btn.btn-block.btn-primary(type="submit") Sign in

@@ -13,3 +13,8 @@ module.exports.login = function (req, res) {
 module.exports.partial = function (req, res) {
     res.render(join(cfg.get('paths:adminViews'), 'admin/partial/'+req.params.name ));
 };
+
+module.exports.logout = function (req, res) {
+    req.logout();
+    res.redirect('/login');
+};
