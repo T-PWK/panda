@@ -1,5 +1,5 @@
 doctype html
-html(ng-app="panda", lang="en")
+html(lang="en")
     head
         meta(name="viewport", content="width=device-width, initial-scale=1")
         link(href="/shared/css/font-awesome.min.css", rel="stylesheet")
@@ -7,6 +7,6 @@ html(ng-app="panda", lang="en")
         link(rel="stylesheet", href=$adminAsset('/client/css/screen.css'))
         link(rel="stylesheet", href=$adminAsset('/client/css/codemirror/codemirror.css'))
         block header
-body
-    block content
-    block js
+    body
+        block content
+        block js

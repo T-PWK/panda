@@ -9,12 +9,25 @@ block content
                 a.navbar-brand(href="/admin")
                     img(src=$adminAsset("/client/img/panda-logo.png"))
                     |  Panda
+            ul.nav.navbar-nav
+                li.dropdown
+                    a.dropdown-toggle(href="#", data-toggle="dropdown") 
+                        | Quick Links 
+                        b.caret
+                    ul.dropdown-menu
+                        li: a(href="#/posts")
+                            i.fa.fa-file-text
+                            |  Posts
+                        li: a(href="#/posts/new") 
+                            i.fa.fa-pencil
+                            |  New Post
             p.navbar-text.navbar-right User Name
     //- Content
-    .container(ng-controller="RootCtrl", ng-class="breadcrumb[0].id")
+    .container(ng-controller="RootCtrl", ng-class="breadcrumb[0].id", ng-cloak)
         #loading(ng-show="loading")
-            | {{loading}} 
             i.fa.fa-spinner.fa-spin
+            |  {{loading}}
+            
         div(ng-view)
 
     //- Footer
@@ -40,3 +53,7 @@ block js
     script(src=$adminAsset("/client/js/codemirror/codemirror.js"))
     script(src=$adminAsset("/client/js/codemirror/mode/markdown/markdown.js"))
     script(src=$adminAsset("/client/js/lib/showdown/showdown.js"))
+    script.
+        angular.element(document).ready(function(){
+            angular.bootstrap(document, ['panda']);
+        });

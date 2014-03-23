@@ -27,7 +27,7 @@ li.nav-header > ul {
     padding-left: 1.2em;
 }
 
-.postedit .panel-title {
+.postedit .panel-title, .newpost .panel-title {
     font-size: 100%;
 }
 
@@ -38,6 +38,10 @@ p.btn-group {
 
 .fa + .fa {
     margin-left: .2em;
+}
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
 }
 
 #loading {
