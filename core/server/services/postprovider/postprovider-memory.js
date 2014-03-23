@@ -15,6 +15,21 @@ var PostProvider = module.exports = function () {
     this.dummyData = [];
 };
 
+// PostProvider
+// init
+// loadFiles - init
+// create (properties)
+
+// findAll (properties)
+// findBySlug (slug)
+// findById (id)
+// findByDate (properties)
+// findByLabel
+// count (properties)
+// archiveInfo
+// labelsInfo
+// postCountInfo
+
 PostProvider.prototype.init = function () {
     return this.loadFiles();
 };
