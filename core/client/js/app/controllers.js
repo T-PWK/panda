@@ -3,7 +3,7 @@
 
     var isDefined = angular.isDefined;
 
-    function Container () {
+    function Container() {
         this.items = {};
         this.size = 0;
     }
@@ -15,7 +15,7 @@
             return _.has(this.items, item);
         },
         add: function (item) {
-            if (!this.has(item)) this.items[item] = null;
+            if (!this.has(item)) { this.items[item] = null; }
         },
         remove: function (item) {
             delete this.items[item];
@@ -24,8 +24,8 @@
             this.items = {};
         },
         toggle: function (item) {
-            if (this.has(item)) this.remove(item);
-            else this.add(item);
+            if (this.has(item)) { this.remove(item); }
+            else { this.add(item); }
         }
     };
 
@@ -35,6 +35,7 @@
         function ($scope, Config) {
             $scope.loading = false;
             $scope.breadcrumb = [];
+            $scope.postsCount = {};
 
             $scope.setLoading = function (loading) {
                 $scope.loading = (loading === true) ? 'Loading ...' : loading;
@@ -48,6 +49,10 @@
                 } else {
                     updateBreadcrumb(args);
                 }
+            };
+
+            $scope.setPostCounts = function (counts) {
+                $scope.postsCount = counts;
             };
 
             function updateCrumbItem (args) {
@@ -73,7 +78,7 @@
         }
     ]);
 
-    ctrlsModule.controller('OverviewCtrl', ['$scope', 
+    ctrlsModule.controller('OverviewCtrl', ['$scope',
         function ($s) {
             $s.setBreadcrumb('overview');
         }
@@ -84,20 +89,21 @@
             $scope.setBreadcrumb('posts', $params.type);
             $scope.type = $params.type;
             $scope.pagination = {
-                limit: 10, pages: [], page: 1, total: 0, 
-                nextPage: true, prevPage: true,
+                limit: 10,
+                pages: [],
+                page: 1,
+                total: 0,
+                nextPage: true,
+                prevPage: true,
                 posts: { from: 1, to: 10 }
             };
             $scope.selection = { keys: {}, all: false };
-            $scope.postsCount = Info.get({id:'count', page:false}, function (count) {
-                $scope.pagination.total = count[$params.type];
-                $scope.total = count[$params.type];
-                $scope.setBreadcrumb(1, { data: count[$params.type] });
-            });
+
+            loadPostsCount();
 
             $scope.time = function (date) {
                 return moment(date).format('LLLL');
-            }
+            };
 
             // Clear posts selection
             $scope.$watch('pagination.limit', clearSelection);
@@ -158,6 +164,24 @@
                 $scope.pagination.page = num;
             };
 
+            function loadPostsCount () {
+                if (!$scope.postsCount.all) {
+                    Info.get({id: 'count', page: false }, function (counts) {
+                        $scope.setPostCounts(counts);
+                        updatePostsCountInfo();
+                    });
+                } else {
+                    updatePostsCountInfo();
+                }
+            }
+
+            function updatePostsCountInfo() {
+                var qty = $scope.postsCount[$params.type];
+                $scope.setBreadcrumb(1, { data: qty });
+                $scope.total = qty;
+                $scope.pagination.total = qty;
+            }
+
             function clearSelection () {
                 $scope.selection.keys = {};
                 $scope.selection.all = false;
@@ -173,7 +197,7 @@
             }
 
             function updatePagination () {
-                var pg = $scope.pagination, 
+                var pg = $scope.pagination,
                     pages = Math.ceil((pg.total || 0) / pg.limit);
                     
                 pg.pages = [];
@@ -208,14 +232,14 @@
         }
     ]);
 
-    ctrlsModule.controller('PagesCtrl', ['$scope', '$routeParams', 'PostsInfo',
-        function ($s, $params, Info) {
-            $s.setBreadcrumb('pages', $params.type);
-            $s.pages = Posts.query({ page: true });
-            $s.limit = 100;
-            $s.breakdown = Info.postsCount({ id:'count', page: true })
+    ctrlsModule.controller('PagesCtrl', ['$scope', '$routeParams', 'Posts', 'PostsInfo',
+        function ($scope, $params, Posts, Info) {
+            $scope.setBreadcrumb('pages', $params.type);
+            $scope.pages = Posts.query({ page: true });
+            $scope.limit = 100;
+            $scope.breakdown =  Info.get({id: 'count', page: false })
                 .$promise.then(function (breakdown) {
-                    $s.setBreadcrumb(1, { data: breakdown[$params.type] });
+                    $scope.setBreadcrumb(1, { data: breakdown[$params.type] });
                 });
         }
     ]);
@@ -388,9 +412,24 @@
         }
     ]);
 
-    ctrlsModule.controller('SettingsCtrl', ['$scope', 
-        function ($scope) {
+    ctrlsModule.controller('SettingsCtrl', ['$scope', 'Settings',
+        function ($scope, Settings) {
+            var hideLoading = angular.bind($scope, $scope.setLoading, false);
             $scope.setBreadcrumb('settings');
+            $scope.settings = Settings.get();
+
+
+            $scope.reset = function () {
+                $scope.setLoading(true);
+                $scope.settings = Settings.get(function () {
+                    hideLoading();
+                });
+            };
+
+            $scope.save = function () {
+                $scope.setLoading('Saving ...');
+                $scope.settings.$save().then(hideLoading);
+            }
         }
     ]);
 
