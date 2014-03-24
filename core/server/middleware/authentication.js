@@ -12,10 +12,12 @@ module.exports = function () {
             return provider
                 .findByEmail(username)
                 .then(function (user) {
-                    return bcrypt.compare(password, user.hash, function (err, res) {
-                        if (err) return done(err);
-                        if (res) { done(null, user); } else { done(null, false); }
-                    });
+                    return bcrypt.compare(password, user.hash,
+                        function (err, res) {
+                            if (err) return done(err);
+                            if (res) done(null, user);
+                            else done(null, false);
+                        });
                 });
         }
     ));
@@ -33,4 +35,4 @@ module.exports = function () {
 
 module.exports.loggedIn = function (req, res, fn) {
     if (req.isAuthenticated()) { fn(); } else { res.redirect(302, '/login'); }
-}
+};
