@@ -323,7 +323,6 @@
                 $scope.setLoading('Saving');
 
                 Posts.create($scope.post, function (post) {
-                    console.info("after creation ... ", post)
                     $location.path('/posts/'+post.id+'/edit');
                 });
             };
@@ -372,10 +371,9 @@
                 // editor.setValue(post.markdown || '');
             });
 
-
             $scope.now = function (format) {
                 return moment().format(format || 'lll');
-            }
+            };
 
             $scope.$watch('post.slug', updatePermalinks);
             $scope.$watch('post.page', updatePermalinks);
@@ -429,7 +427,7 @@
             $scope.save = function () {
                 $scope.setLoading('Saving ...');
                 $scope.settings.$save().then(hideLoading);
-            }
+            };
         }
     ]);
 
@@ -457,12 +455,11 @@
             });
 
             $scope.fix = function (value) {
-                console.info(value)
-                return (value[0] === '/' ? '' : '/') + 
+                return (value[0] === '/' ? '' : '/') +
                     _.map((value || '').split('/'), function (item) {
-                        return _.str.slugify(item)
+                        return _.str.slugify(item);
                     }).join('/');
-            }
+            };
 
             $scope.create = function () {
                 var item = $scope.item;
@@ -473,7 +470,7 @@
                 Redirects.create(item).$promise
                     .then($scope.reset.bind($scope))
                     .then($scope.$emit.bind($scope, 'load'));
-            }
+            };
 
             $scope.update = function () {
                 var item = $scope.item;
