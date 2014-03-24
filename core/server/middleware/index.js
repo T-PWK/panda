@@ -4,7 +4,8 @@ var express     = require('express'),
     passport    = require('passport'),
     auth        = require('./authentication'),
     tplHelper   = require('../helpers/templatehelper'),
-    hash        = cfg.get('hash');
+    hash        = cfg.get('hash'),
+    staticFn    = require('./static');
 
 function setup (app) {
     // Set up authentication
@@ -24,14 +25,12 @@ function setup (app) {
         app.use(express.compress());
     }
 
-
     // Set theme static files
-    app.use('/assets', 
-        express.static(cfg.get('theme:paths:static'), { maxAge: cfg.get('app:staticCacheAge') }));
-    app.use('/shared', 
+    app.use('/assets', staticFn);
+    app.use('/shared',
         express.static(cfg.get('paths:sharedStatic'), { maxAge: cfg.get('app:staticCacheAge') }));
     app.use('/client' + (hash ? '/'+ hash : ''),
-        express.static(cfg.get('paths:clientStatic'), { maxAge: 0 })); //TODO: add configuration for clientStatic cache age
+        express.static(cfg.get('paths:clientStatic'), { maxAge: 86400000 }));
 
     // robots.txt handler
     app.use(require('./robots')());
@@ -57,6 +56,8 @@ function setup (app) {
 
     // Set the router
     app.use(app.router);
+
+    console.log(app.routes)
 
     // Set error handler for development mode only
     if (cfg.get('development')) {
