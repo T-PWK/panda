@@ -2,30 +2,33 @@
     'use strict';
 
     angular.module('panda', ['ngRoute', 'ngResource', 'pandaControllers']).
-        config(['$routeProvider', function($routeProvider) {
+        config(['$routeProvider', function ($routeProvider) {
             $routeProvider
-                .when('/', { templateUrl:'/admin/partial/overview', controller:'OverviewCtrl' })
+                .when('/', { templateUrl: '/admin/partial/overview', controller: 'OverviewCtrl' })
                 .when('/posts', { redirectTo: '/posts/all' })
                 .when('/posts/new', { templateUrl: '/admin/partial/editpost', controller: 'NewPostCtrl' })
-                .when('/posts/:type?', { templateUrl:'/admin/partial/posts', controller:'PostsCtrl' })
+                .when('/posts/:type?', { templateUrl: '/admin/partial/posts', controller: 'PostsCtrl' })
                 .when('/pages', { redirectTo: '/pages/all' })
-                .when('/pages/:type?', { templateUrl:'/admin/partial/pages', controller:'PagesCtrl' })
+                .when('/pages/:type?', { templateUrl: '/admin/partial/pages', controller: 'PagesCtrl' })
                 .when('/posts/:id/edit', { templateUrl: '/admin/partial/editpost', controller: 'PostEditCtrl' })
-                .when('/comments', { templateUrl:'/admin/partial/comments', controller:'CommentsCtrl' })
-                .when('/settings', { templateUrl:'/admin/partial/settings', controller:'SettingsCtrl' })
-                .when('/settings/redirects', { templateUrl:'/admin/partial/redirects' })
-                .when('/users', { templateUrl:'/admin/partial/users', controller:'UsersCtrl' })
-                .when('/themes', { templateUrl:'/admin/partial/themes', controller:'ThemesCtrl' })
+                .when('/comments', { templateUrl: '/admin/partial/comments', controller: 'CommentsCtrl' })
+                .when('/settings', { templateUrl: '/admin/partial/settings', controller: 'SettingsCtrl' })
+                .when('/settings/redirects', { templateUrl: '/admin/partial/redirects' })
+                .when('/users', { templateUrl: '/admin/partial/users', controller: 'UsersCtrl' })
+                .when('/themes', { templateUrl: '/admin/partial/themes', controller: 'ThemesCtrl' })
                 .otherwise({ redirectTo: '/' });
+        }])
+        .factory('Settings', ['$resource', function ($resource) {
+            return $resource('/api/v1/settings');
         }])
         .factory('Posts', ['$resource', function ($resource) {
             return $resource('/api/v1/posts/:id',
-                { id:'@id' },
+                { id: '@id' },
                 { create: { method: 'POST' }, update: { method: 'PUT' } }
             );
         }])
         .factory('Redirects', ['$resource', function ($resource) {
-            return $resource('/api/v1/config/redirects/:id', 
+            return $resource('/api/v1/config/redirects/:id',
                 { id: '@id' },
                 { create: { method: 'POST' }, update: { method: 'PUT' } }
             );
@@ -37,8 +40,8 @@
             return $resource('/api/v1/labels');
         }])
         .factory('Themes', ['$resource', function ($resource) {
-            return $resource('/api/v1/themes/:type/:id', 
-                { id:'@id' },
+            return $resource('/api/v1/themes/:type/:id',
+                { id: '@id' },
                 {
                     update: { method: 'PUT', params: { type: '@type'} }
                 }
@@ -50,7 +53,7 @@
         .filter('moment', [function () {
             return function (date, format) {
                 return moment(date).format(format || 'L');
-            }
+            };
         }])
         .directive('ngEnter', function() {
             return function(scope, element, attrs) {
