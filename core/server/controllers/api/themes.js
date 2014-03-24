@@ -1,37 +1,64 @@
-var cfg     = require('nconf'),
-    fs      = require('fs'),
-    _       = require('underscore'),
-    _s      = require('underscore.string'),
-    node    = require('when/node'),
-    readdir = node.lift(fs.readdir);
+(function () {
+    'use strict';
 
-module.exports.index = function (req, res) {
-    readdir(cfg.get('paths:themes'))
-        .then(namesToThemes)
-        .tap(selectActive)
-        .then(res.json.bind(res))
-        .catch(res.send.bind(res, 500));
+    var cfg                 = require('nconf'),
+        setThemeConfig      = require('../../config').setTheme,
+        updateThemeAssets   = require('../../middleware/static').updateThemeAssets,
+        fs                  = require('fs'),
+        _                   = require('underscore'),
+        _s                  = require('underscore.string'),
+        node                = require('when/node'),
+        readdir             = node.lift(fs.readdir);
 
-    function selectActive (themes) {
-        var active = _.findWhere(themes, { id:cfg.get('theme:name') });
-        if (active) active.active = true;
-    }
+    module.exports.index = function (req, res) {
+        readdir(cfg.get('paths:themes'))
+            .then(namesToThemes)
+            .tap(selectActive)
+            .then(res.json.bind(res))
+            .otherwise(res.send.bind(res, 500));
 
-    function nameToTheme (name) {
-        return {
-            id: name,
-            name: _s.titleize(_s.humanize(name))
-        };
-    }
+        function selectActive (themes) {
+            var active = _.findWhere(themes, { id:cfg.get('theme:name') });
+            if (active) {
+                active.active = true;
+            }
+        }
 
-    function namesToThemes (fileNames) {
-        return fileNames.map(nameToTheme);
-    }
-};
+        function nameToTheme (name) {
+            return {
+                id: name,
+                name: _s.titleize(_s.humanize(name))
+            };
+        }
 
-module.exports.update = function (req, res) {
-    if (cfg.get('theme:name') === req.params.theme) return res.json();
+        function namesToThemes (fileNames) {
+            return fileNames.map(nameToTheme);
+        }
+    };
 
-    // readdir(cfg.get('paths:themes'))
-    res.json();
-};
+    module.exports.update = function (req, res) {
+
+        readdir(cfg.get('paths:themes'))
+            .then(checkThemes)
+            .then(updateThemeConfig)
+            .done(
+                res.json.bind(res),
+                res.send.bind(res, 400)
+            );
+
+        function checkThemes (themes) {
+            return (themes.indexOf(req.params.site) < 0) ? when.reject() : req.params.site;
+        }
+
+        function updateThemeConfig(theme) {
+            setThemeConfig(theme);
+
+            // Update theme views
+            req.app.set('views', cfg.get('theme:paths:views'));
+
+            // Update static files path
+            updateThemeAssets();
+        }
+    };
+
+}());
