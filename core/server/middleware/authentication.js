@@ -1,6 +1,7 @@
-var passport = require('passport'),
-    LocalStrategy = require('passport-local').Strategy,
-    bcrypt = require('bcrypt');
+var passport        = require('passport'),
+    LocalStrategy   = require('passport-local').Strategy,
+    provider        = require('../providers').userProvider,
+    bcrypt          = require('bcrypt');
 
 module.exports = function () {
     passport.use(new LocalStrategy({
@@ -8,29 +9,26 @@ module.exports = function () {
             passwordField: 'password'
         },
         function (username, password, done) {
-            console.info('username & password', username, password);
-            var salt = bcrypt.genSaltSync(10);
-            var hash = bcrypt.hashSync(password, salt);
-
-            console.info('check password : ',bcrypt.compareSync(password, hash)); // true)
-
-            console.info(hash)
-
-            return done(null, {id:123});
+            return provider
+                .findByEmail(username)
+                .then(function (user) {
+                    return bcrypt.compare(password, user.hash, function (err, res) {
+                        if (err) return done(err);
+                        if (res) done(null, user);
+                        else done(null, false);
+                    });
+                });
         }
     ));
 
     passport.serializeUser(function(user, done) {
-        console.info('serializeUser')
         done(null, user.id);
     });
 
     passport.deserializeUser(function(id, done) {
-        // User.findById(id, function(err, user) {
-        //     done(err, user);
-        // });
-        console.info('deserializeUser')
-        done(null, {id:123});
+        provider.findById(id).then(function (user) {
+            done(null, user);
+        })
     });
 };
 

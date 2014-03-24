@@ -21,7 +21,13 @@ block content
                         li: a(href="#/posts/new") 
                             i.fa.fa-pencil
                             |  New Post
-            p.navbar-text.navbar-right User Name
+            ul.nav.navbar-nav.navbar-right
+                li: a(href="/logout") Sign Out
+
+            p.navbar-text.navbar-right
+                | Signed in as 
+                a.navbar-link(href="#")= user.name
+                img(src=user.image, alt=user.name, title=user.name, style="width:24px;margin-left:5px;")
     //- Content
     .container(ng-controller="RootCtrl", ng-class="breadcrumb[0].id", ng-cloak)
         #loading(ng-show="loading")

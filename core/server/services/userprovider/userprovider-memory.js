@@ -28,6 +28,14 @@ UserProvider.prototype.init = function () {
         });
 };
 
+UserProvider.prototype.findById = function (id) {
+    return when.resolve(this.users[id]);
+};
+
+UserProvider.prototype.findByEmail = function (email) {
+    return when.resolve(_.findWhere(this.users, {email:email}));
+};
+
 UserProvider.prototype.findLeadUser = function () {
     return when.resolve(this.lead);
 };

@@ -33,10 +33,8 @@ function setup (app) {
     app.use('/client' + (hash ? '/'+ hash : ''),
         express.static(cfg.get('paths:clientStatic'), { maxAge: 0 })); //TODO: add configuration for clientStatic cache age
 
+    // robots.txt handler
     app.use(require('./robots')());
-
-    // Set the template helper component
-    tplHelper(app);
 
     // Set 'Powered By' HTTP header
     app.use(require('./poweredBy'));
@@ -50,6 +48,9 @@ function setup (app) {
     app.use(express.session({ secret: 'keyboard cat' }));
     app.use(passport.initialize());
     app.use(passport.session());
+
+    // Set the template helper component
+    tplHelper(app);
 
     // Protect admin calls
     app.use('/admin', auth.loggedIn);
