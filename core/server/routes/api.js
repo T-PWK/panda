@@ -1,6 +1,8 @@
 var api = require('../controllers/api');
 
 module.exports = function (server) {
+    'use strict';
+
     // Posts
     server.resource('api/v1/posts', api.posts);
     server.resource('api/v1/posts/infos', api.postsinfo);
@@ -9,6 +11,7 @@ module.exports = function (server) {
     server.resource('api/v1/themes/admin', api.adminthemes);
 
     server.resource('api/v1/config/redirects', api.redirects);
+    server.resource('api/v1/settings', api.settings);
 
     // server.get('/api/v1/posts/archive', notImplemented);
     // server.get('/api/v1/posts/count', api.postCountInfo);
