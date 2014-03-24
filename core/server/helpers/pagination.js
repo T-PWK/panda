@@ -1,14 +1,19 @@
-var postsPerPage = require('nconf').get('app:postsPerPage');
+(function () {
+    'use strict';
 
-module.exports = function (req, posts) {
-    var pages = Math.ceil(posts / postsPerPage),
-        page = +req.params.page || 1;
+    var cfg = require('nconf');
 
-    return {
-        context: req.path,
-        pages: pages,
-        page: page,
-        older: page < pages ? page + 1 : undefined,
-        newer: page > 1 ? page - 1 : undefined
+    module.exports = function (req, posts) {
+        var pages = Math.ceil(posts / cfg.get('app:postsPerPage')),
+            page = +req.params.page || 1;
+
+        return {
+            context: req.path,
+            pages: pages,
+            page: page,
+            older: page < pages ? page + 1 : undefined,
+            newer: page > 1 ? page - 1 : undefined
+        };
     };
-};
+
+}());
