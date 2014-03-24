@@ -219,7 +219,8 @@ function initRequest (req, res, next) {
         postClass:  { enumerable: true, get: buildPostClass.bind(res) },
         metaTitle:  { enumerable: true, get: metaTitle.bind(res) },
         metaDescription: { enumerable: true, get: metaDescription.bind(res) },
-        author:     { enumerable: true, get: author.bind(res) }
+        author:     { enumerable: true, get: author.bind(res) },
+        user:       { enumerable: true, value: req.user }
     });
 
     next();
