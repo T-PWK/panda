@@ -42,9 +42,10 @@ function setup (app) {
     app.use(require('./nocache'));
 
     app.use(express.cookieParser());
-    app.use(express.urlencoded())
-    app.use(express.json())
+    app.use(express.urlencoded());
+    app.use(express.json());
     app.use(express.session({ secret: 'keyboard cat' }));
+
     app.use(passport.initialize());
     app.use(passport.session());
 
@@ -56,8 +57,6 @@ function setup (app) {
 
     // Set the router
     app.use(app.router);
-
-    console.log(app.routes)
 
     // Set error handler for development mode only
     if (cfg.get('development')) {

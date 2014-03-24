@@ -28,7 +28,7 @@ module.exports.create = function (req, res) {
     post._authorId = "_1";
 
     if (post.slug) {
-        provider.findBySlug(post.slug).then
+//        provider.findBySlug(post.slug).then
     }
 
     // Check if there is no post with the given slug
@@ -74,7 +74,7 @@ module.exports.show = function (req, res) {
 
 module.exports.load = function (id, fn) {
     node.liftCallback(fn)(provider.findById(id));
-}
+};
 
 function increase (value) {
     return value + 1;
