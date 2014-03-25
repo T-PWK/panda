@@ -27,10 +27,14 @@ function setup (app) {
 
     // Set theme static files
     app.use('/assets', staticHanlder);
-    app.use('/shared',
-        express.static(cfg.get('paths:sharedStatic'), { maxAge: cfg.get('app:staticCacheAge') }));
-    app.use('/client' + (hash ? '/'+ hash : ''),
-        express.static(cfg.get('paths:clientStatic'), { maxAge: 86400000 }));
+    app.use('/shared', express.static(
+        cfg.get('paths:sharedStatic'),
+        { maxAge: cfg.get('app:staticCacheAge') }
+    ));
+    app.use('/client' + (hash ? '/'+ hash : ''), express.static(
+        cfg.get('paths:clientStatic'),
+        { maxAge: 86400000 }
+    ));
 
     // robots.txt handler
     app.use(require('./robots')());
@@ -44,7 +48,12 @@ function setup (app) {
     app.use(express.cookieParser());
     app.use(express.urlencoded());
     app.use(express.json());
-    app.use(express.session({ cookie: { maxAge: 60000 }, secret: cfg.get('sessionSecret') }));
+    app.use(express.cookieSession({
+        cookie: {
+            maxAge: cfg.get('admin:sessionCookieMaxAge')
+        },
+        secret: cfg.get('sessionSecret') }
+    ));
     app.use(require('connect-flash')());
 
     app.use(passport.initialize());

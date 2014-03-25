@@ -95,14 +95,15 @@ module.exports = {
         }
     },
     admin: {
-        theme: 'default'
+        theme: 'default',
+        sessionCookieMaxAge: 60*60*1000
     },
     url: "http://127.0.0.1:3000",
-    server: { 
-        host: "127.0.0.1", 
-        port: 3000 
+    server: {
+        host: "127.0.0.1",
+        port: 3000
     },
-    database: { 
+    database: {
         type: "memory",
         postsFile: 'posts.json',
         redirectsFile: 'redirects.json',
