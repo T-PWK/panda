@@ -1,11 +1,11 @@
-var express     = require('express'),
-    path        = require('path'),
-    cfg         = require('nconf'),
-    passport    = require('passport'),
-    auth        = require('./authentication'),
-    tplHelper   = require('../helpers/templatehelper'),
-    hash        = cfg.get('hash'),
-    staticFn    = require('./static');
+var express         = require('express'),
+    path            = require('path'),
+    cfg             = require('nconf'),
+    passport        = require('passport'),
+    staticHanlder   = require('./static'),
+    auth            = require('./authentication'),
+    tplHelper       = require('../helpers/templatehelper'),
+    hash            = cfg.get('hash');
 
 function setup (app) {
     // Set up authentication
@@ -26,7 +26,7 @@ function setup (app) {
     }
 
     // Set theme static files
-    app.use('/assets', staticFn);
+    app.use('/assets', staticHanlder);
     app.use('/shared',
         express.static(cfg.get('paths:sharedStatic'), { maxAge: cfg.get('app:staticCacheAge') }));
     app.use('/client' + (hash ? '/'+ hash : ''),
@@ -44,7 +44,8 @@ function setup (app) {
     app.use(express.cookieParser());
     app.use(express.urlencoded());
     app.use(express.json());
-    app.use(express.session({ secret: 'keyboard cat' }));
+    app.use(express.session({ cookie: { maxAge: 60000 }, secret: cfg.get('sessionSecret') }));
+    app.use(require('connect-flash')());
 
     app.use(passport.initialize());
     app.use(passport.session());

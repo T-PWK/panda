@@ -34,7 +34,7 @@
         updateFlags();
         updatePaths();
         updateThemePaths();
-        generateHash();
+        generateSecrets();
 
         return when.resolve();
     }
@@ -63,10 +63,12 @@
         cfg.set('production', 'production' === env);
     }
 
-    function generateHash () {
+    function generateSecrets () {
         if (cfg.get('development')) {
             cfg.set('hash', randomValue(6));
         }
+
+        cfg.set('sessionSecret', randomValue(32));
     }
 
     function setTheme (name) {
