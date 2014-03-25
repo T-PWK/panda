@@ -1,18 +1,23 @@
-var mongoose = require('mongoose');
+(function () {
+    'use strict';
 
-var redirectSchema = mongoose.Schema({
-    from: { type: String, required: true, trim: true },
-    to: { type: String, required: true, trim: true },
-    type: String,
+    var mongoose = require('mongoose');
 
-    // # Dates
-    createdAt: { type: Date, required: true, default: Date.now },
-    updatedAt: { type: Date, required: true, default: Date.now }
-});
+    var redirectSchema = mongoose.Schema({
+        from: { type: String, required: true, trim: true },
+        to: { type: String, required: true, trim: true },
+        type: String,
 
-redirectSchema.pre('save', function (next) {
-    this.updatedAt = new Date();
-    next();
-});
+        // # Dates
+        createdAt: { type: Date, required: true, default: Date.now },
+        updatedAt: { type: Date, required: true, default: Date.now }
+    });
 
-module.exports = redirectSchema;
+    redirectSchema.pre('save', function (next) {
+        this.updatedAt = new Date();
+        next();
+    });
+
+    module.exports = redirectSchema;
+
+})();

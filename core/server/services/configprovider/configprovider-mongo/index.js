@@ -1,22 +1,28 @@
-var when        = require('when'),
-    mongoose    = require('mongoose'),
-    cfg         = require('nconf'),
-    debug       = require('debug')('panda:configprovider'),
-    Redirect    = require('./redirect-model');
+(function () {
+    'use strict';
 
-var ConfigProvider = module.exports = function () {};
+    var when = require('when'),
+        mongoose = require('mongoose'),
+        cfg = require('nconf'),
+        debug = require('debug')('panda:configprovider'),
+        Redirect = require('./redirect-model');
 
-ConfigProvider.prototype.init = function () {
-    debug('initialization');
+    var ConfigProvider = module.exports = function () {
+    };
 
-    return when.resolve();
-};
+    ConfigProvider.prototype.init = function () {
+        debug('initialization');
 
-ConfigProvider.prototype.findRedirectByUrl = function (path) {
-    debug('find redirect by path', path);
+        return when.resolve();
+    };
 
-    return Redirect
-        .findOne({ from: path })
-        .select('type to')
-        .exec();
-};
+    ConfigProvider.prototype.findRedirectByUrl = function (path) {
+        debug('find redirect by path', path);
+
+        return Redirect
+            .findOne({ from: path })
+            .select('type to')
+            .exec();
+    };
+
+})();

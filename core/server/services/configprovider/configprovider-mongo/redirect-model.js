@@ -1,4 +1,9 @@
-var mongoose        = require('mongoose'),
-    redirectSchema  = require('./redirect-schema');
+(function () {
+    'use strict';
 
-module.exports = mongoose.model('Redirect', redirectSchema);
+    var mongoose = require('mongoose'),
+        redirectSchema = require('./redirect-schema');
+
+    module.exports = mongoose.model('Redirect', redirectSchema);
+
+})();
