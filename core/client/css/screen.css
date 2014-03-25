@@ -37,11 +37,15 @@ p.btn-group {
 }
 
 .fa + .fa {
-    margin-left: .2em;
+    margin-left: .3em;
 }
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
     display: none !important;
+}
+
+#login .input-group-addon i.fa {
+    width: 1.4em;
 }
 
 #loading {
