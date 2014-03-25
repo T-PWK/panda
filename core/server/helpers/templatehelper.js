@@ -1,259 +1,297 @@
-var moment          = require('moment'),
-    util            = require('util'),
-    cfg             = require('nconf'),
-    _s              = require('underscore.string'),
-    hash            = cfg.get('hash'),
-    labelUrlFormat  = cfg.get('app:labelUrl'),
-    pgnUrl          = cfg.get('app:paginationUrl'),
-    pgnRegexp       = new RegExp(pgnUrl.replace(':page', '\\d+'));
+(function () {
+    'use strict';
 
-/*
- * Builds post or static page URL.
- * It is assumed that 'this' is the current resonse
- */
-function postUrl (post, absolute) {
-    if (arguments.length < 2 && 'boolean' === typeof post) {
-        absolute = post;
-        post = this.locals.post;  
-    }
+    var moment = require('moment'),
+        util = require('util'),
+        cfg = require('nconf'),
+        _s = require('underscore.string'),
+        hash = cfg.get('hash'),
+        labelUrlFormat = cfg.get('app:labelUrl'),
+        pgnUrl = cfg.get('app:paginationUrl'),
+        pgnRegexp = new RegExp(pgnUrl.replace(':page', '\\d+'));
 
-    var output = post.page ? cfg.get('app:pageUrl') : cfg.get('app:postUrl'),
-        tags = {
-            ':year':   function () { return moment(post.publishedAt).format('YYYY'); },
-            ':month':  function () { return moment(post.publishedAt).format('MM'); },
-            ':day':    function () { return moment(post.publishedAt).format('DD'); },
-            ':slug':   function () { return post.slug; },
-            ':id':     function () { return post.id || post._id; }
-        };
-
-    // replace tags like :slug or :year with actual values
-    output = output.replace(/(:[a-z]+)/g, function (match) {
-        if (match in tags) {
-            return tags[match]();
-        }
-    });
-
-    return absolute ? cfg.get('url') + output : output;
-}
-
-function labelUrl (label, absolute) {
-    return (absolute ? cfg.get('url') : '') + 
-        labelUrlFormat.replace(':label', encodeURIComponent(label));
-}
-
-/*
- * Builds pagination URL
- * It assumes that 'this' is current response
- */
-function pageUrl (newer) {
-    var pagination = this.locals.pagination,
-        page = newer ? pagination.newer : pagination.older,
-        ctx = this.locals.context.replace(pgnRegexp, '');
-
-    return 1 === page ? ('' === ctx ? '/' : ctx)
-        : ('/' === ctx ? '' : ctx) + pgnUrl.replace(':page', page);
-}
-
-/*
- * Formats given date. If the given date is a post then 'publishedAt' date is taken for formatting.
- */
-function dateFormat (post, format) {
-    if (arguments.length < 2) {
-        if('string' === typeof post) {
-            format = post;
+    /*
+     * Builds post or static page URL.
+     * It is assumed that 'this' is the current resonse
+     */
+    function postUrl(post, absolute) {
+        if (arguments.length < 2 && 'boolean' === typeof post) {
+            absolute = post;
             post = this.locals.post;
-        } else {
-            format = "YYYY-MM-DD";
+        }
+
+        var output = post.page ? cfg.get('app:pageUrl') : cfg.get('app:postUrl'),
+            tags = {
+                ':year': function () {
+                    return moment(post.publishedAt).format('YYYY');
+                },
+                ':month': function () {
+                    return moment(post.publishedAt).format('MM');
+                },
+                ':day': function () {
+                    return moment(post.publishedAt).format('DD');
+                },
+                ':slug': function () {
+                    return post.slug;
+                },
+                ':id': function () {
+                    return post.id || post._id;
+                }
+            };
+
+        // replace tags like :slug or :year with actual values
+        output = output.replace(/(:[a-z]+)/g, function (match) {
+            if (match in tags) {
+                return tags[match]();
+            }
+        });
+
+        return absolute ? cfg.get('url') + output : output;
+    }
+
+    function labelUrl(label, absolute) {
+        return (absolute ? cfg.get('url') : '') +
+            labelUrlFormat.replace(':label', encodeURIComponent(label));
+    }
+
+    /*
+     * Builds pagination URL
+     * It assumes that 'this' is current response
+     */
+    function pageUrl(newer) {
+        var pagination = this.locals.pagination,
+            page = newer ? pagination.newer : pagination.older,
+            ctx = this.locals.context.replace(pgnRegexp, '');
+
+        return 1 === page ? ('' === ctx ? '/' : ctx)
+            : ('/' === ctx ? '' : ctx) + pgnUrl.replace(':page', page);
+    }
+
+    /*
+     * Formats given date. If the given date is a post then 'publishedAt' date is taken for formatting.
+     */
+    function dateFormat(post, format) {
+        if (arguments.length < 2) {
+            if ('string' === typeof post) {
+                format = post;
+                post = this.locals.post;
+            } else {
+                format = "YYYY-MM-DD";
+            }
+        }
+
+        var date = util.isDate(post) || moment.isMoment(post) ? post : post && post.publishedAt;
+
+        if (!date) return '';
+
+        var mdate = moment(date);
+
+        switch (format) {
+            case 'timeago':
+                return mdate.fromNow();
+            case 'utc':
+                return mdate.utc();
+            case 'iso':
+                return mdate.toISOString();
+            default:
+                return mdate.format(format);
         }
     }
 
-    var date = util.isDate(post) || moment.isMoment(post) ? post : post && post.publishedAt;
+    function labelsFormat(post, join) {
+        if (2 > arguments.length && 'string' === typeof post) {
+            join = post;
+            post = this.locals.post;
+        }
 
-    if (!date) return '';
-
-    var mdate = moment(date);
-
-    switch (format) {
-        case 'timeago': return mdate.fromNow();
-        case 'utc': return mdate.utc();
-        case 'iso': return mdate.toISOString();
-        default: return mdate.format(format);
-    }
-}
-
-function labelsFormat (post, join) {
-    if(2 > arguments.length && 'string' === typeof post) {
-        join = post;
-        post = this.locals.post;
+        return post.labels.join(join || ', ');
     }
 
-    return post.labels.join(join || ', ');
-}
+    function metaTitle() {
+        var post = this.locals.post,
+            tokens = {
+                ':blogtitle': function () {
+                    return cfg.get('app:title');
+                },
+                ':posttitle': function () {
+                    return post.title;
+                },
+                ':authorname': function () {
+                    return post.author ? post.author.name : '';
+                }
+            };
 
-function metaTitle () {
-    var post = this.locals.post,
-        tokens = {
-            ':blogtitle': function () { return cfg.get('app:title'); },
-            ':posttitle': function () { return post.title; },
-            ':authorname': function () { return post.author ? post.author.name : ''; }
-        };
-
-    return (post) ? 
-        cfg.get('app:postMetaTitleFormat').replace(/:[a-z]+/ig, function (token) {
-            if (token in tokens) return tokens[token]();
-        })
-        : cfg.get('app:metaTitle') || cfg.get('app:title');
-}
-
-function metaDescription () {
-    return cfg.get('app:metaDescription') || cfg.get('app:description');
-}
-
-function encode (text) {
-    return encodeURIComponent(text);
-}
-
-function labelToClass (labels) {
-    return (labels || []).map(function (label) {
-        return 'tag-' + _s.slugify(label);
-    });
-}
-
-function buildBodyClass () {
-    // Main page template
-    if ('/' === this.locals.context) return 'home-template';
-
-    // Any pagination template
-    if (+this.req.params.page) return 'archive-template';
-    
-    // Post or static page template (when res.locals.post is present)
-    var post = this.locals.post;
-    if (post) {
-        var bodyClass = labelToClass(post.labels);
-        bodyClass.push('post-template');
-        
-        // If post is actually a static page
-        if (post.page) bodyClass.push('page');
-
-        return bodyClass;
-    }
-}
-
-function buildPostClass (post) {
-    post = post || this.locals.post;
-
-    var postClass = ['post'];
-
-    if(post) {
-        Array.prototype.push.apply(postClass, labelToClass(post.labels));
+        return (post) ?
+            cfg.get('app:postMetaTitleFormat').replace(/:[a-z]+/ig, function (token) {
+                if (token in tokens) return tokens[token]();
+            })
+            : cfg.get('app:metaTitle') || cfg.get('app:title');
     }
 
-    return postClass;
-}
+    function metaDescription() {
+        return cfg.get('app:metaDescription') || cfg.get('app:description');
+    }
 
-function copyright () {
-    var app = this,
-        tags = {
-            ':year' : function () { return moment().format('YYYY'); },
-            ':url'  : function () { return app.locals.url; },
-            ':title': function () { return app.locals.title; }
-        };
-    return cfg.get('app:copyright').replace(/(:[a-z]+)/g, function (match) {
-        if (match in tags) return tags[match]();
-    });
-}
+    function encode(text) {
+        return encodeURIComponent(text);
+    }
 
-function author () {
-    return this.locals.post && this.locals.post.author;
-}
+    function labelToClass(labels) {
+        return (labels || []).map(function (label) {
+            return 'tag-' + _s.slugify(label);
+        });
+    }
 
-function ifCheck (value, element, checkValue) {
-    return element === checkValue ? value : undefined;
-}
+    function buildBodyClass() {
+        // Main page template
+        if ('/' === this.locals.context) return 'home-template';
 
-/*
- * Generates an asset URL.
- * It assumes that 'this' is current application
- */
-function assets (asset) {
-    return '/assets' + ('/' === asset[0] ? '' : '/') + asset + '?v=ad2e223fd';
-}
+        // Any pagination template
+        if (+this.req.params.page) return 'archive-template';
 
-function adminTheme (asset) {
-    return adminAsset('/client/css/theme/' + cfg.get('admin:theme') + '/' + asset);
-}
+        // Post or static page template (when res.locals.post is present)
+        var post = this.locals.post;
+        if (post) {
+            var bodyClass = labelToClass(post.labels);
+            bodyClass.push('post-template');
 
-function adminAsset (asset) {
-    if (!hash) return asset;
-    
-    var parts = asset.split('/');
-    parts.splice(2, 0, hash);
-    
-    return parts.join('/');
-}
+            // If post is actually a static page
+            if (post.page) bodyClass.push('page');
 
-function isntEmpty(obj, prop) {
-    var value;
+            return bodyClass;
+        }
+    }
 
-    if(arguments.length === 1) value = obj;
-    else if (arguments.length === 2) value = obj[prop];
+    function buildPostClass(post) {
+        post = post || this.locals.post;
 
-    if (!value) return false;
-    if ('string' === typeof value || util.isArray(value)) return value.length > 0;
+        var postClass = ['post'];
 
-    return true;
-}
+        if (post) {
+            Array.prototype.push.apply(postClass, labelToClass(post.labels));
+        }
 
-function initRequest (req, res, next) {
-    // Set default response local variables
+        return postClass;
+    }
 
-    Object.defineProperties(res.locals, {
-        context:    { enumerable: true, value: req.path },
-        now:        { enumerable: true, value: moment() },
-        $postClass: { enumerable: true, value: buildPostClass.bind(res) },
-        $url:       { enumerable: true, value: postUrl.bind(res) },
-        $pageUrl:   { enumerable: true, value: pageUrl.bind(res) },
-        $labels:    { enumerable: true, value: labelsFormat.bind(res) },
-        $date:      { enumerable: true, value: dateFormat.bind(res) },
-        bodyClass:  { enumerable: true, get: buildBodyClass.bind(res) },
-        postClass:  { enumerable: true, get: buildPostClass.bind(res) },
-        metaTitle:  { enumerable: true, get: metaTitle.bind(res) },
-        metaDescription: { enumerable: true, get: metaDescription.bind(res) },
-        author:     { enumerable: true, get: author.bind(res) },
-        user:       { enumerable: true, value: req.user }
-    });
+    function copyright() {
+        var app = this,
+            tags = {
+                ':year': function () {
+                    return moment().format('YYYY');
+                },
+                ':url': function () {
+                    return app.locals.url;
+                },
+                ':title': function () {
+                    return app.locals.title;
+                }
+            };
+        return cfg.get('app:copyright').replace(/(:[a-z]+)/g, function (match) {
+            if (match in tags) return tags[match]();
+        });
+    }
 
-    next();
-}
+    function author() {
+        return this.locals.post && this.locals.post.author;
+    }
 
-function init (app) {
-    // Set default application local variables as well as template helper functions
-    Object.defineProperties(app.locals, {
-        custom:      { enumerable: true, value: cfg.get('theme:custom') },
-        title:       { enumerable: true, value: cfg.get('app:title') },
-        description: { enumerable: true, value: cfg.get('app:description') },
-        url:         { enumerable: true, value: cfg.get('url') },
-        cover:       { enumerable: true, value: cfg.get('theme:cover') },
-        logo:        { enumerable: true, value: cfg.get('theme:logo') },
-        version:     { enumerable: true, value: module.exports.version },
-        copyright:   { enumerable: true, get: copyright.bind(app) },
-        $encode:     { enumerable: true, value: encode },
-        $assets:     { enumerable: true, value: assets.bind(app) },
-        $if:         { enumerable: true, value: ifCheck },
-        $isntEmpty:  { enumerable: true, value: isntEmpty },
-        $labelUrl:   { enumerable: true, value: labelUrl },
-        $adminTheme: { enumerable: true, value: adminTheme },
-        $adminAsset: { enumerable: true, value: adminAsset },
+    function ifCheck(value, element, checkValue) {
+        return element === checkValue ? value : undefined;
+    }
 
-        // Update application locals with view settings like debug or pretty formatting
-        pretty:      { enumerable: true, value: cfg.get('view:pretty') },
-        debug:       { enumerable: true, value: cfg.get('view:debug') }
-    });
+    /*
+     * Generates an asset URL.
+     * It assumes that 'this' is current application
+     */
+    function assets(asset) {
+        return '/assets' + ('/' === asset[0] ? '' : '/') + asset + '?v=ad2e223fd';
+    }
 
-    // Initialize reqest / response specific variables
-    app.use(initRequest);
-}
+    function adminTheme(asset) {
+        return adminAsset('/client/css/theme/' + cfg.get('admin:theme') + '/' + asset);
+    }
 
-module.exports = init;
+    function adminAsset(asset) {
+        if (!hash) return asset;
 
-require('pkginfo')(module, 'version');
+        var parts = asset.split('/');
+        parts.splice(2, 0, hash);
+
+        return parts.join('/');
+    }
+
+    function isntEmpty(obj, prop) {
+        var value;
+
+        if (arguments.length === 1) {
+            value = obj;
+        }
+        else if (arguments.length === 2) {
+            value = obj[prop];
+        }
+
+        if (!value) {
+            return false;
+        }
+        if ('string' === typeof value || util.isArray(value)) {
+            return value.length > 0;
+        }
+
+        return true;
+    }
+
+    function initRequest(req, res, next) {
+        // Set default response local variables
+
+        Object.defineProperties(res.locals, {
+            context: { enumerable: true, value: req.path },
+            now: { enumerable: true, value: moment() },
+            $postClass: { enumerable: true, value: buildPostClass.bind(res) },
+            $url: { enumerable: true, value: postUrl.bind(res) },
+            $pageUrl: { enumerable: true, value: pageUrl.bind(res) },
+            $labels: { enumerable: true, value: labelsFormat.bind(res) },
+            $date: { enumerable: true, value: dateFormat.bind(res) },
+            bodyClass: { enumerable: true, get: buildBodyClass.bind(res) },
+            postClass: { enumerable: true, get: buildPostClass.bind(res) },
+            metaTitle: { enumerable: true, get: metaTitle.bind(res) },
+            metaDescription: { enumerable: true, get: metaDescription.bind(res) },
+            author: { enumerable: true, get: author.bind(res) },
+            user: { enumerable: true, value: req.user }
+        });
+
+        next();
+    }
+
+    function init(app) {
+        // Set default application local variables as well as template helper functions
+        Object.defineProperties(app.locals, {
+            custom: { enumerable: true, value: cfg.get('theme:custom') },
+            title: { enumerable: true, value: cfg.get('app:title') },
+            description: { enumerable: true, value: cfg.get('app:description') },
+            url: { enumerable: true, value: cfg.get('url') },
+            cover: { enumerable: true, value: cfg.get('theme:cover') },
+            logo: { enumerable: true, value: cfg.get('theme:logo') },
+            version: { enumerable: true, value: module.exports.version },
+            copyright: { enumerable: true, get: copyright.bind(app) },
+            $encode: { enumerable: true, value: encode },
+            $assets: { enumerable: true, value: assets.bind(app) },
+            $if: { enumerable: true, value: ifCheck },
+            $isntEmpty: { enumerable: true, value: isntEmpty },
+            $labelUrl: { enumerable: true, value: labelUrl },
+            $adminTheme: { enumerable: true, value: adminTheme },
+            $adminAsset: { enumerable: true, value: adminAsset },
+
+            // Update application locals with view settings like debug or pretty formatting
+            pretty: { enumerable: true, value: cfg.get('view:pretty') },
+            debug: { enumerable: true, value: cfg.get('view:debug') }
+        });
+
+        // Initialize reqest / response specific variables
+        app.use(initRequest);
+    }
+
+    module.exports = init;
+    require('pkginfo')(module, 'version');
+
+})();

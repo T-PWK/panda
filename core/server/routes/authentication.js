@@ -1,9 +1,14 @@
-var passport = require('passport');
+(function () {
+    'use strict';
 
-module.exports = function (app) {
-    app.post('/login',
-        passport.authenticate('local', {
-            successRedirect:'/admin', failureRedirect:'/login'
-        })
-    );
-};
+    var passport = require('passport');
+
+    module.exports = function (app) {
+        app.post('/login',
+            passport.authenticate('local', {
+                successRedirect: '/admin', failureRedirect: '/login', failureFlash: 'Invalid username or password.'
+            })
+        );
+    };
+
+})();
