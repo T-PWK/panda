@@ -20,14 +20,14 @@
                         th Type
                 tbody
                     tr(ng-repeat="item in items")
-                        td: input(type="checkbox", ng-click="deleting.toggle(item.id)", ng-checked="deleting.has(item.id)")
+                        td: input(type="checkbox", ng-click="deleting.toggle(item._id)", ng-checked="deleting.has(item._id)")
                         td: a(href="", ng-click="$emit('edit', item)") {{item.from}}
                         td {{item.to}}
                         td: i.fa(ng-class="{'internal':'fa-star-o','301':'fa-star','302':'fa-star-half-o'}[item.type]")
                         td {{item.type||'internal'}}
 
 
-            .row(ng-if="items.length")
+            .form-group(ng-if="items.length")
                 .pull-right
                     button.btn.btn-danger(type="button", ng-click="delete()", ng-disabled="deleting.isEmpty()") Delete
                     button.btn.btn-default(type="button", ng-click="deleting.empty()", ng-disabled="deleting.isEmpty()") Reset

@@ -1,20 +1,20 @@
 (function () {
     'use strict';
 
-    var provider = require('../../providers').configProvider;
+    var when        = require('when'),
+        provider    = require('../../providers').configProvider;
 
     module.exports.index = function (req, res) {
-        provider
-            .findAllRedirects()
-            .done(
-                res.json.bind(res),
-                res.send.bind(res, 500)
-            );
+        when.resolve(
+            provider.findAllRedirects({select: 'from to type _id'})
+        ).done(
+            res.json.bind(res),
+            res.send.bind(res, 500)
+        );
     };
 
     module.exports.show = function (req, res) {
-        provider
-            .findRedirectById(req.params.redirect)
+        when.resolve(provider.findRedirectById(req.params.redirect))
             .done(
                 res.json.bind(res),
                 res.send.bind(res, 500)
@@ -22,8 +22,7 @@
     };
 
     module.exports.update = function (req, res) {
-        provider
-            .updateRedirect(req.params.redirect, req.body)
+        when.resolve(provider.updateRedirect(req.params.redirect, req.body))
             .done(
                 res.send.bind(res, 200),
                 res.send.bind(res, 500)
@@ -31,8 +30,7 @@
     };
 
     module.exports.destroy = function (req, res) {
-        provider
-            .deleteRedirect(req.params.redirect)
+        when.resolve(provider.deleteRedirect(req.params.redirect))
             .done(
                 res.json.bind(res),
                 res.send.bind(res, 500)
@@ -40,8 +38,7 @@
     };
 
     module.exports.create = function (req, res) {
-        provider
-            .createRedirect(req.body)
+        when.resolve(provider.createRedirect(req.body))
             .done(
                 res.json.bind(res),
                 res.send.bind(res, 500)

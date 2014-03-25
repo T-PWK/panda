@@ -1,7 +1,8 @@
 (function () {
     'use strict';
 
-    var isDefined = angular.isDefined;
+    var isDefined = angular.isDefined,
+        bind = angular.bind;
 
     function Container() {
         this.items = {};
@@ -449,6 +450,7 @@
             $scope.isEdit = false;
             $scope.item = { type: 'internal' };
 
+            $rootScope.$on('delete', reset);
             $rootScope.$on('edit', function (event, item) {
                 $scope.item = angular.copy(item);
                 $scope.isEdit = true;
@@ -483,11 +485,13 @@
                     .then($scope.$emit.bind($scope, 'load'));
             };
 
-            $scope.reset = function () {
+            $scope.reset = reset;
+
+            function reset () {
                 $scope.isEdit = false;
                 $scope.item = { from: '', to: '', type: 'internal' };
                 $scope.form.$setPristine();
-            };
+            }
     }]);
 
     ctrlsModule.controller('RedirectsListCtrl', ['$scope', '$rootScope', '$q', 'Redirects',
@@ -499,19 +503,23 @@
             loadRedirects();
 
             $scope.delete = function () {
-                if ($scope.deleting.isEmpty()) return;
                 $scope.setLoading('Deleting');
+                if ($scope.deleting.isEmpty()) {
+                    return;
+                }
 
                 var deletePromise = [];
 
                 angular.forEach($scope.items, function (item) {
-                    if ($scope.deleting.has(item.id)) {
+                    if ($scope.deleting.has(item._id)) {
+
                         deletePromise.push(item.$remove());
                     }
                 });
 
                 $q.all(deletePromise)
                     .then(loadRedirects)
+                    .then(bind($scope, $scope.$emit, 'delete'))
                     .finally($scope.setLoading.bind($scope, false));
             };
 

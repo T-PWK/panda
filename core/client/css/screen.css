@@ -36,7 +36,7 @@ p.btn-group {
     margin-bottom: 0;
 }
 
-.fa + .fa {
+.fa + .fa, .btn + .btn {
     margin-left: .3em;
 }
 

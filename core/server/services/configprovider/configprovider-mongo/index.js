@@ -1,19 +1,27 @@
 (function () {
     'use strict';
 
-    var when = require('when'),
-        mongoose = require('mongoose'),
-        cfg = require('nconf'),
-        debug = require('debug')('panda:configprovider'),
-        Redirect = require('./redirect-model');
+    var when        = require('when'),
+        _           = require('underscore'),
+        debug       = require('debug')('panda:configprovider'),
+        Redirect    = require('./redirect-model');
 
-    var ConfigProvider = module.exports = function () {
-    };
+    var ConfigProvider = module.exports = function () {};
 
     ConfigProvider.prototype.init = function () {
         debug('initialization');
 
         return when.resolve();
+    };
+
+    ConfigProvider.prototype.findAllRedirects = function (properties) {
+        properties = properties || {};
+
+        return Redirect
+            .find()
+            .sort(properties.sortBy || undefined)
+            .select(properties.select || undefined)
+            .exec();
     };
 
     ConfigProvider.prototype.findRedirectByUrl = function (path) {
@@ -23,6 +31,26 @@
             .findOne({ from: path })
             .select('type to')
             .exec();
+    };
+
+    ConfigProvider.prototype.findRedirectById = function (id) {
+        return Redirect.findById(id).exec();
+    };
+
+    ConfigProvider.prototype.deleteRedirect = function (id) {
+        return Redirect.findByIdAndRemove(id).exec();
+    };
+
+    ConfigProvider.prototype.updateRedirect = function (id, properties) {
+        var redirect = _.extend(
+            {updatedAt:new Date()},
+            _.pick(properties, 'from', 'to', 'type'));
+
+        return Redirect.findByIdAndUpdate(id, redirect).exec();
+    };
+
+    ConfigProvider.prototype.createRedirect = function (properties) {
+        return Redirect.create(_.pick(properties, 'from', 'to', 'type'));
     };
 
 })();

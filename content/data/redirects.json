@@ -1,24 +1,24 @@
 [
     {
-        "id": "14293d50bbc94a5bb82c48062475b956",
+        "_id": "14293d50bbc94a5bb82c48062475b956",
         "from": "/welcome-to-panda.html",
         "to": "/welcome-to-panda", 
         "type": "301"
     },
     {
-        "id": "75e23967cf4149bd8134e3307ebea9c0",
+        "_id": "75e23967cf4149bd8134e3307ebea9c0",
         "from": "/about.html",
         "to": "/about", 
         "type": "302"
     },
     {
-        "id": "97d7849f046c4e0db34cdd6df87aaadb",
+        "_id": "97d7849f046c4e0db34cdd6df87aaadb",
         "from": "/2014/01/about",
         "to": "/about",
         "type": "internal"
     },
     {
-        "id": "bd68e96d50a5465fbeb9393fd28b31be",
+        "_id": "bd68e96d50a5465fbeb9393fd28b31be",
         "from": "/lorem-ipsum-dolor-sit-amet.html",
         "to": "/lorem-ipsum-dolor-sit-amet",
         "type": "internal"
