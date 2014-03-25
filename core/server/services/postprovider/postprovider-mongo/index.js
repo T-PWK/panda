@@ -21,7 +21,6 @@
     var mongoose    = require('mongoose'),
         moment      = require('moment'),
         when        = require('when'),
-        cfg         = require('nconf'),
         _           = require('underscore'),
         Post        = require('./post-model');
 
@@ -62,12 +61,20 @@
     }
 
     PostProvider.prototype.findAll = function (options) {
-        var selection = addBasicSelection({}, options);
+        options = options || {};
 
-        return addQueryOptions(Post.find(selection), options)
-            .select('author title teaser publishedAt labels slug')
-            .populate('author')
-            .exec();
+        var selection = addBasicSelection({}, options),
+            query = addQueryOptions(Post.find(selection), options);
+
+        if ('draft' === options.type) {
+            query = query.exists('publishedAt', false);
+        }
+
+        if ('scheduled' === options.type) {
+            query = query.where('publishedAt').gt(new Date());
+        }
+
+        return query.populate('author').exec();
     };
 
     PostProvider.prototype.findBySlug = function (slug, options) {
@@ -78,6 +85,12 @@
         return addQueryOptions(Post.findOne(selection), options)
             .populate('author')
             .exec();
+    };
+
+    PostProvider.prototype.findById = function (id, options) {
+        options = options || {};
+
+        return Post.findById(id).select(options.select || undefined).exec();
     };
 
     PostProvider.prototype.findByDate = function (options) {
@@ -102,7 +115,7 @@
 
         return addQueryOptions(Post.find(selection), options)
             .where('publishedAt').gte(start).lte(end)
-            .select('author title teaser publishedAt labels slug')
+//            .select('author title teaser publishedAt labels slug')
             .populate('author')
             .exec();
     };
@@ -121,7 +134,9 @@
         opts = opts || {};
         var start, end = new Date(), month, query, cond = { page: false };
 
-        if (opts.label) cond.labels = opts.label;
+        if (opts.label) {
+            cond.labels = opts.label;
+        }
 
         // post published between start and end of the day
         if (opts.day) {
@@ -149,7 +164,7 @@
             query = query.gte(start);
         }
         if (end) {
-            query = query.lte(new Date(Math.min(end, Date.now())));
+            query = query.lte(new Date(Math.min(end.valueOf(), Date.now())));
         }
 
         return query.exec();
