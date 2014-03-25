@@ -3,6 +3,8 @@
 
     var when            = require('when'),
         cfg             = require('nconf'),
+        _               = require('underscore'),
+        moment          = require('moment'),
         config          = require('../../../config'),
         path            = require('path'),
         randomValue     = require('../utils').randomValue,
@@ -15,7 +17,6 @@
         coreShared      = path.resolve(appRoot, 'core/shared');
 
     function init () {
-
         // Make sure NODE_ENV is always setup as it is used by express
         var env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
@@ -35,8 +36,17 @@
         updatePaths();
         updateThemePaths();
         generateSecrets();
+        miscUpdates();
 
         return when.resolve();
+    }
+
+    function miscUpdates() {
+        // If session cookie max age set in duration (string) convert it to milliseconds
+        if (_.isString(cfg.get('admin:sessionCookieMaxAge'))) {
+            cfg.set('admin:sessionCookieMaxAge',
+                moment.duration(cfg.get('admin:sessionCookieMaxAge')).as('milliseconds'));
+        }
     }
 
     function updatePaths () {
