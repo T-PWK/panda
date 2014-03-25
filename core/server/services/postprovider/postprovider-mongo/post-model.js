@@ -1,4 +1,9 @@
-var mongoose    = require('mongoose'),
-    postSchema  = require('./post-schema');
+(function () {
+    'use strict';
 
-module.exports = mongoose.model('Post', postSchema);
+    var mongoose = require('mongoose'),
+        postSchema = require('./post-schema');
+
+    module.exports = mongoose.model('Post', postSchema);
+
+})();

@@ -1,4 +1,8 @@
-var cfg = require('nconf');
+(function () {
+    'use strict';
 
-module.exports = 'memory' === cfg.get('database:type') ? require('./postprovider-memory') 
-    : require('./postprovider-mongo');
+    var cfg = require('nconf');
+
+    module.exports = 'memory' === cfg.get('database:type') ? require('./postprovider-memory')
+        : require('./postprovider-mongo');
+})();
