@@ -1,17 +1,36 @@
-var when        = require('when'),
-    debug       = require('debug')('panda:userprovider'),
-    User        = require('./user-model');
+(function () {
+    'use strict';
 
-var UserProvider = module.exports = function () {};
+    var when        = require('when'),
+        debug       = require('debug')('panda:userprovider'),
+        User        = require('./user-model');
 
-UserProvider.prototype.init = function () {
-    debug('initialization');
+    var UserProvider = function () {};
 
-    return when.resolve();
-};
+    UserProvider.prototype.init = function () {
+        debug('initialization');
 
-UserProvider.prototype.findLeadUser = function () {
-    debug('find lead user');
+        return when.resolve();
+    };
 
-    return User.findOne({ lead: true }).exec();
-};
+    UserProvider.prototype.findLeadUser = function () {
+        debug('find lead user');
+
+        return User.findOne({ lead: true }).exec();
+    };
+
+    UserProvider.prototype.findByEmail = function (email) {
+        debug('find user by email');
+
+        console.info('searching user by email: ', email);
+
+        return User.findOne({ email: email }).exec();
+    };
+
+    UserProvider.prototype.findById = function (id) {
+        return User.findById(id).exec();
+    };
+
+    module.exports = UserProvider;
+
+}());

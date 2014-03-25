@@ -5,10 +5,10 @@
 // loadFiles - init
 
 // create (properties)
-// findAll (properties)
-// findBySlug (slug)
-// findById (id)
-// findByDate (properties)
+// findAll (properties) v
+// findBySlug (slug) v
+// findById (id) v
+// findByDate (properties) v
 // findByLabel
 // count (properties)
 // archiveInfo
@@ -22,6 +22,7 @@
         moment      = require('moment'),
         when        = require('when'),
         cfg         = require('nconf'),
+        _           = require('underscore'),
         Post        = require('./post-model');
 
     var PostProvider = module.exports = function () {
@@ -32,8 +33,10 @@
         return when.resolve();
     };
 
-    function queryUpdates(query, options) {
-        if (!options) return query;
+    function addQueryOptions(query, options) {
+        if (!options) {
+            return query;
+        }
 
         if (options.live || 'live' === options.type) {
             query = query.where('publishedAt').lte(new Date());
@@ -43,11 +46,13 @@
             .sort(options.sortBy || '-publishedAt')
             .skip(options.skip)
             .limit(options.limit)
-            .populate('author');
+            .select(options.select || undefined);
     }
 
-    function updatePageSelection(selection, options) {
-        if (!options) return selection;
+    function addBasicSelection(selection, options) {
+        if (!options) {
+            return selection;
+        }
 
         if ('undefined' !== typeof options.page) {
             selection.page = !!options.page;
@@ -57,116 +62,59 @@
     }
 
     PostProvider.prototype.findAll = function (options) {
-        var selection = updatePageSelection({}, options);
+        var selection = addBasicSelection({}, options);
 
-        return queryUpdates(Post.find(selection), options)
+        return addQueryOptions(Post.find(selection), options)
             .select('author title teaser publishedAt labels slug')
+            .populate('author')
             .exec();
     };
 
     PostProvider.prototype.findBySlug = function (slug, options) {
         // Increase page view counter
         // Post.update({ slug: slug }, { $inc: { 'counter.view':1 } }, function () {});
-        var selection = updatePageSelection({slug: slug}, options);
+        var selection = addBasicSelection({slug: slug}, options);
 
-        return queryUpdates(Post.findOne(selection), options)
+        return addQueryOptions(Post.findOne(selection), options)
+            .populate('author')
             .exec();
-
-//        return Post
-//            .findOne({ slug: slug, page: false })
-//            .where('publishedAt').lte(new Date())
-//            .select('title content author publishedAt slug labels')
-//            .populate('author')
-//            .exec();
     };
 
-    PostProvider.prototype.findByYear = function (opts) {
-        opts = opts || {};
+    PostProvider.prototype.findByDate = function (options) {
+        var selection = addBasicSelection({}, options), end, start, month = options.month - 1;
 
-        // Make sure we do not return post scheduled after current date and time
-        // if getting all post from the current year
-        var endDate = Math.min(
-            moment([opts.year]).endOf('year').toDate(),
-            new Date()
-        );
+        if (options.day) {
+            end = moment([options.year, month, options.day]).endOf('day').toDate();
+            start = moment([options.year, month, options.day]).startOf('day').toDate();
+        }
+        else if (options.month) {
+            end = moment([options.year, month]).endOf('month').toDate();
+            start = moment([options.year, month]).startOf('month').toDate();
+        }
+        else if (options.year) {
+            end = moment([options.year]).endOf('year').toDate();
+            start = moment([options.year]).startOf('year').toDate();
+        }
 
-        return Post
-            .find({ page: false })
-            .where('publishedAt')
-            .gte(moment([opts.year]).startOf('year').toDate())
-            .lte(new Date(endDate))
-            .sort('-publishedAt')
-            .skip(opts.skip)
-            .limit(opts.limit)
+        if (options.live) {
+            end = new Date(Math.min(Date.now(), end));
+        }
+
+        return addQueryOptions(Post.find(selection), options)
+            .where('publishedAt').gte(start).lte(end)
             .select('author title teaser publishedAt labels slug')
             .populate('author')
             .exec();
     };
 
-    PostProvider.prototype.findByMonth = function (opts) {
-        opts = opts || {};
+    PostProvider.prototype.findByLabel = function (options) {
+        if (!options) {
+            return when.reject();
+        }
 
-        // Moment uses 0-based month values i.e. 0 for Jan etc.
-        var month = (opts.month || 1) - 1;
+        var selection = addBasicSelection({labels: options.label}, options);
 
-        // Make sure we do not return post scheduled after current date and time
-        // if getting all post from the current year
-        var endDate = Math.min(
-            moment([opts.year, month]).endOf('month').toDate(),
-            new Date()
-        );
-
-        return Post
-            .find({ page: false })
-            .where('publishedAt')
-            .gte(moment([opts.year, month]).startOf('month').toDate())
-            .lte(new Date(endDate))
-            .sort('-publishedAt')
-            .skip(opts.skip)
-            .limit(opts.limit)
-            .select('author title teaser publishedAt labels slug')
-            .populate('author')
-            .exec();
-    };
-
-    PostProvider.prototype.findByDay = function (opts) {
-        opts = opts || {};
-
-        // Moment uses 0-based month values i.e. 0 for Jan etc.
-        var month = (opts.month || 1) - 1;
-
-        // Make sure we do not return post scheduled after current date and time
-        // if getting all post from the current year
-        var endDate = Math.min(
-            moment([opts.year, month, opts.day]).endOf('day').toDate(),
-            new Date()
-        );
-
-        return Post
-            .find({ page: false })
-            .where('publishedAt')
-            .gte(moment([opts.year, month, opts.day]).startOf('day').toDate())
-            .lte(new Date(endDate))
-            .sort('-publishedAt')
-            .skip(opts.skip)
-            .limit(opts.limit)
-            .select('author title teaser publishedAt labels slug')
-            .populate('author')
-            .exec();
-    };
-
-    PostProvider.prototype.findByLabel = function (opts) {
-        opts = opts || {};
-
-        if (!opts.label) return when.resolve();
-
-        return Post
-            .find({ labels: opts.label, page: false })
-            .where('publishedAt')
-            .lte(new Date())
-            .skip(opts.skip)
-            .limit(opts.limit)
-            .exec();
+        return addQueryOptions(Post.find(selection), options).exec();
     };
 
     PostProvider.prototype.count = function (opts) {
@@ -205,6 +153,30 @@
         }
 
         return query.exec();
+    };
+
+    PostProvider.prototype.postCountInfo = function (options) {
+        var match = {};
+
+        if ('undefined' !== typeof options.page) {
+            match.page = options.page;
+        }
+
+        return Post.mapReduce({
+            query: match,
+            map: function () {
+                emit(this.publishedAt ? this.publishedAt > Date.now() ? 'scheduled' : 'live' : 'draft', 1);
+            },
+            reduce: function (key, values) {
+                return values.length;
+            }
+        }).then(function (model) {
+            return _.reduce(model, function (memo, item) {
+                memo.all += item.value;
+                memo[item._id] = item.value;
+                return memo;
+            }, { all: 0, live: 0, draft: 0, scheduled: 0 });
+        });
     };
 
     PostProvider.prototype.archiveInfo = function (opts) {
