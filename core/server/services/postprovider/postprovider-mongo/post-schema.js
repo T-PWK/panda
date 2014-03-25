@@ -1,40 +1,51 @@
-var mongoose = require('mongoose');
+(function () {
+    'use strict';
 
-var postSchema = mongoose.Schema({
-    // # Content properties
-    slug: { type: String, required: true, trim: true },
-    title: { type: String, required: true, lowercase: true, trim: true },
-    content: String,
-    teaser: String,
-    labels: { type: [String] },
+    var mongoose = require('mongoose');
 
-    author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    var postSchema = mongoose.Schema({
+        // # Content properties
+        slug: { type: String, required: true, trim: true },
+        title: { type: String, required: true, lowercase: true, trim: true },
+        content: String,
+        markdown: String,
+        teaser: String,
+        labels: { type: [String] },
 
-    // # Metadata
-    metaDescription: String,
+        author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 
-    // # Dates
-    createdAt: { type: Date, required: true, default: Date.now },
-    updatedAt: { type: Date, required: true, default: Date.now },
-    publishedAt: { type: Date, default: Date.now },
-    
-    // # Additional properties
-    geo: { type: [Number] },
-    published: { type: Boolean, required: true, default: false },
-    page: { type: Boolean, default: false },
+        // # Metadata
+        metaDescription: String,
 
-    commentsCount: { type: Number, default: 0 },
+        // # Dates
+        createdAt: { type: Date, required: true, default: Date.now },
+        updatedAt: { type: Date, required: true, default: Date.now },
+        publishedAt: Date,
 
-    // # Conters
-    counter: {
-        view: { type: Number, default: 0 },
-        edit: { type: Number, default: 0 }
-    }
-});
+        // # Additional properties
+        geo: { type: [Number] },
+        published: { type: Boolean, required: true, default: false },
+        page: { type: Boolean, default: false },
+        featured: { type: Boolean, default: false },
 
-postSchema.pre('save', function (next) {
-    this.updatedAt = new Date();
-    next();
-});
+        commentsCount: { type: Number, default: 0 },
 
-module.exports = postSchema;
+        // # Post edition options
+        slugOpt: { type: Boolean, default: false },
+        scheduleOpt: { type: Boolean, default: false },
+
+        // # Counters
+        counter: {
+            view: { type: Number, default: 0 },
+            edit: { type: Number, default: 0 }
+        }
+    });
+
+    postSchema.pre('save', function (next) {
+        this.updatedAt = new Date();
+        next();
+    });
+
+    module.exports = postSchema;
+
+})();
