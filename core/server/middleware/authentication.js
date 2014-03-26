@@ -7,10 +7,8 @@
         crypt           = require('bcryptjs');
 
     module.exports = function () {
-        passport.use(new LocalStrategy({
-                usernameField: 'email',
-                passwordField: 'password'
-            },
+        passport.use(
+            new LocalStrategy({ usernameField: 'email', passwordField: 'password' },
             function (username, password, done) {
                 return provider
                     .findByEmail(username)
@@ -41,7 +39,14 @@
     };
 
     module.exports.loggedIn = function (req, res, fn) {
-        if (req.isAuthenticated()) { fn(); } else { res.redirect(302, '/login'); }
+        if (req.isAuthenticated()) {
+            // refreshing session
+            req.session.access = Date.now();
+            fn();
+        }
+        else {
+            res.redirect(302, '/login');
+        }
     };
 
 }());
