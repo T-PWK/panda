@@ -41,7 +41,12 @@
     };
 
     module.exports.loggedIn = function (req, res, fn) {
-        if (req.isAuthenticated()) { fn(); } else { res.redirect(302, '/login'); }
+        if (req.isAuthenticated()) {
+            req.session.access = Date.now();
+            fn();
+        } else {
+            res.redirect(302, '/login');
+        }
     };
 
 }());
