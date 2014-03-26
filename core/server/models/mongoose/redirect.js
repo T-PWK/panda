@@ -3,6 +3,7 @@
 
     var mongoose        = require('mongoose'),
         idsPlugin       = require('./plugins/idsPlugin'),
+
         RedirectSchema  = new mongoose.Schema({
             from: { type: String, required: true, trim: true },
             to: { type: String, required: true, trim: true },
@@ -15,6 +16,6 @@
 
     RedirectSchema.plugin(idsPlugin);
 
-    module.exports = RedirectSchema;
+    module.exports = mongoose.model('Redirect', RedirectSchema);
 
 })();

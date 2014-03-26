@@ -4,7 +4,7 @@
     var when        = require('when'),
         _           = require('underscore'),
         debug       = require('debug')('panda:configprovider'),
-        Redirect    = require('./../../../models/mongoose/redirect-model');
+        Redirect    = require('./../../models/mongoose/redirect');
 
     var ConfigProvider = module.exports = function () {};
 
