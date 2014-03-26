@@ -7,30 +7,57 @@
         .page-header
             h1 Redirects
 
-        //- Redirects list
         .row(ng-controller="RedirectsListCtrl")
+            nav.navbar
+                .container-fluid
+                    .navbar-form
+                        .form-group
+                            button.btn.btn-default.navbar-btn(ng-click="refresh()")
+                                i.fa.fa-refresh
+                                |  Refresh
+                        .form-group.navbar-right(ng-if="items.length")
+                            button.btn.btn-danger.navbar-btn(type="button", ng-click="delete()", ng-disabled="deleting.isEmpty()") Delete
+                            button.btn.btn-default.navbar-btn(type="button", ng-click="deleting.empty()", ng-disabled="deleting.isEmpty()") Reset
+                        .form-group.navbar-right
+                            p.navbar-text(ng-if="items.length", ng-pluralize, count="deleting.howMany()", when="{'0':'No items selected', 'one':'1 item selected', 'other':'{} items selected'}")
 
+            .text-center(ng-if="!items.length && loading")
+                i.fa.fa-spinner.fa-spin
+                |  Loading &hellip;
+
+            //- List of redirects
             table.table.table-striped(ng-if="items.length")
                 thead
                     tr
-                        th
-                        th From
-                        th To
-                        th
-                        th Type
+                        th.col-sm-1
+                        th.col-sm-5
+                            a(href="", ng-click="order='from'")
+                                | From&nbsp;
+                            a(href="", ng-click="order='-from'")
+                                i.fa.fa-sort-alpha-desc
+                        th.col-sm-4
+                            a(href="", ng-click="order='to'")
+                                | To&nbsp;
+                            a(href="", ng-click="order='-to'")
+                                i.fa.fa-sort-alpha-desc
+                        th.col-sm-2
+                            a(href="", ng-click="order='type'")
+                                | Type&nbsp;
+                            a(href="", ng-click="order='-type'")
+                                i.fa.fa-sort-alpha-desc
                 tbody
-                    tr(ng-repeat="item in items")
-                        td: input(type="checkbox", ng-click="deleting.toggle(item._id)", ng-checked="deleting.has(item._id)")
+                    tr(ng-repeat="item in items | orderBy:order | startFrom:pg.firstItem | limitTo:pg.pageSize")
+                        td: input(type="checkbox", ng-click="deleting.toggle(item.id)", ng-checked="deleting.has(item.id)")
                         td: a(href="", ng-click="$emit('edit', item)") {{item.from}}
                         td {{item.to}}
-                        td: i.fa(ng-class="{'internal':'fa-star-o','301':'fa-star','302':'fa-star-half-o'}[item.type]")
-                        td {{item.type||'internal'}}
+                        td
+                            i.fa(ng-class="{'internal':'fa-star-o','301':'fa-star','302':'fa-star-half-o'}[item.type]")
+                            |  {{item.type||'internal'}}
 
-
-            .form-group(ng-if="items.length")
-                .pull-right
-                    button.btn.btn-danger(type="button", ng-click="delete()", ng-disabled="deleting.isEmpty()") Delete
-                    button.btn.btn-default(type="button", ng-click="deleting.empty()", ng-disabled="deleting.isEmpty()") Reset
+            ul.pagination(ng-if="items.length")
+                li: a(href="", ng-click="pg.prev()") &laquo;
+                li(ng-repeat="p in pg.pageRange", ng-class="{active:p==pg.current}"): a(href="", ng-click="pg.current=p") {{p}}
+                li: a(href="", ng-click="pg.next()") &raquo;
 
             .row(ng-if="!items.length && !loading")
                 .alert.alert-info.text-center No redirects have been configured.

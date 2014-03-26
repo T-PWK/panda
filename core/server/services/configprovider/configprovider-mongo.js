@@ -4,7 +4,7 @@
     var when        = require('when'),
         _           = require('underscore'),
         debug       = require('debug')('panda:configprovider'),
-        Redirect    = require('./redirect-model');
+        Redirect    = require('./../../models/mongoose/redirect');
 
     var ConfigProvider = module.exports = function () {};
 
@@ -42,11 +42,14 @@
     };
 
     ConfigProvider.prototype.updateRedirect = function (id, properties) {
-        var redirect = _.extend(
-            {updatedAt:new Date()},
-            _.pick(properties, 'from', 'to', 'type'));
+        var update = _.extend(
+            { updatedAt: new Date() },
+            _.pick(properties, 'from', 'to', 'type')
+        );
 
-        return Redirect.findByIdAndUpdate(id, redirect).exec();
+        debug('updating redirect %j : %j', id, update);
+
+        return Redirect.findByIdAndUpdate(id, update).exec();
     };
 
     ConfigProvider.prototype.createRedirect = function (properties) {

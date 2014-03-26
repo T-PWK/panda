@@ -9,7 +9,7 @@ module.exports = {
     },
     app: {
         httpCompression: true,
-        
+
         // Default metadata does not have default values
         metaTitle: null,
         metaDescription: null,
@@ -28,7 +28,7 @@ module.exports = {
         // Number of posts per page
         postsPerPage: 6,
 
-        /* 
+        /*
          * Post URL format. Available tokens:
          * :year - substitued with the post's publication year (four digits e.g. 2012, 2013 etc.)
          * :month - substitued with the post's publication month (two digits 01 - January, 02 - February etc.)
@@ -39,7 +39,7 @@ module.exports = {
         //postPermalink
         postUrl: "/:year/:month/:day/:slug.html",
 
-        /* 
+        /*
          * Post URL format. Available tokens:
          * :year - substitued with the post's publication year (four digits e.g. 2012, 2013 etc.)
          * :month - substitued with the post's publication month (two digits 01 - January, 02 - February etc.)
@@ -50,12 +50,12 @@ module.exports = {
         // pagePermalink
         pageUrl: "/:slug",
 
-        /* 
+        /*
          * Search by label URL format. Available tokens:
          * :label - substitued with the current label
          */
         labelUrl: "/search/label/:label",
-        
+
         /*
          * Pagination URL format. Available tokens:
          * - :page - substituted with pagination number
@@ -96,7 +96,7 @@ module.exports = {
     },
     admin: {
         theme: 'default',
-        sessionCookieMaxAge: 60*60*1000
+        sessionCookieMaxAge: '00:10:00'
     },
     url: "http://127.0.0.1:3000",
     server: {

@@ -1,20 +1,5 @@
 // PostProvider using MongoDB
 
-// PostProvider
-// init
-// loadFiles - init
-
-// create (properties)
-// findAll (properties) v
-// findBySlug (slug) v
-// findById (id) v
-// findByDate (properties) v
-// findByLabel
-// count (properties)
-// archiveInfo
-// labelsInfo
-// postCountInfo
-
 (function(){
     'use strict';
 
@@ -22,7 +7,7 @@
         moment      = require('moment'),
         when        = require('when'),
         _           = require('underscore'),
-        Post        = require('./post-model');
+        Post        = require('./../../models/mongoose/post');
 
     var PostProvider = module.exports = function () {
         this.db = mongoose.connection;

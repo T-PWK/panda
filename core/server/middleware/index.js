@@ -1,14 +1,15 @@
 (function () {
     'use strict';
 
-    var express = require('express'),
-        path = require('path'),
-        cfg = require('nconf'),
-        passport = require('passport'),
-        staticHanlder = require('./static'),
-        auth = require('./authentication'),
-        tplHelper = require('../helpers/templatehelper'),
-        hash = cfg.get('hash');
+    var express         = require('express'),
+        path            = require('path'),
+        cfg             = require('nconf'),
+        passport        = require('passport'),
+        moment          = require('moment'),
+        staticHanlder   = require('./static'),
+        auth            = require('./authentication'),
+        tplHelper       = require('../helpers/templatehelper'),
+        hash            = cfg.get('hash');
 
     function setup(app) {
         // Set up authentication
@@ -52,9 +53,7 @@
         app.use(express.urlencoded());
         app.use(express.json());
         app.use(express.cookieSession({
-                cookie: {
-                    maxAge: cfg.get('admin:sessionCookieMaxAge')
-                },
+                cookie: { maxAge: cfg.get('admin:sessionCookieMaxAge') },
                 secret: cfg.get('sessionSecret') }
         ));
         app.use(require('connect-flash')());

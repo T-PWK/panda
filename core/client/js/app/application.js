@@ -29,7 +29,7 @@
         }])
         .factory('Redirects', ['$resource', function ($resource) {
             return $resource('/api/v1/config/redirects/:id',
-                { id: '@_id' },
+                { id: '@id' },
                 { create: { method: 'POST' }, update: { method: 'PUT' } }
             );
         }])
@@ -53,6 +53,11 @@
         .filter('moment', [function () {
             return function (date, format) {
                 return moment(date).format(format || 'L');
+            };
+        }])
+        .filter('startFrom', [function () {
+            return function (input, start) {
+                return input.slice(+start);
             };
         }])
         .directive('ngEnter', function() {

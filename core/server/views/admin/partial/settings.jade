@@ -1,54 +1,53 @@
 .row
-	.col-md-3
-		include includes/navigation
-	.col-md-9
-		include includes/breadcrumb
+    .col-md-3
+        include includes/navigation
+    .col-md-9
+        include includes/breadcrumb
 
-		.page-header
-			h1 Settings
+        .page-header
+            h1 Settings
 
-		.row
-			.pull-right
-				button.btn.btn-primary(ng-click="save()") Save
-				button.btn.btn-default(ng-click="reset()") Cancel
+        .row
+            .col-md-2: h4 Basic
+            .col-md-10
+                form.form-horizontal(role="form", name="basicForm")
+                    .form-group
+                        label.col-sm-2.control-label(for="title") Title
+                        .col-sm-10
+                            input.form-control#title(placeholder="Title", type="text", required, ng-trim="true",
+                                ng-model="settings.title")
+                    .form-group
+                        label.col-sm-2.control-label(for="description") Description
+                        .col-sm-10
+                            textarea.form-control#description(placeholder="Description", type="text", ng-trim="true", row="3",
+                                ng-model="settings.description")
 
-		.page-header
-			h3 Basic
+        hr
 
-		form.form-horizontal(role="form", name="basicForm")
-			.form-group
-				label.col-sm-2.control-label(for="title") Title
-				.col-sm-10
-					input.form-control#title(placeholder="Title", type="text", required, ng-trim="true",
-						ng-model="settings.title")
-			.form-group
-				label.col-sm-2.control-label(for="description") Description
-				.col-sm-10
-					textarea.form-control#description(placeholder="Description", type="text", ng-trim="true", row="3",
-						ng-model="settings.description")
+        .row
+            .col-md-2.text: h4 Posts
+            .col-md-10
+                form.form-horizontal(role="form", name="postsForm")
+                    .form-group(ng-class="{'has-error':basicForm.postpp.$invalid}")
+                        label.col-sm-2.control-label(for="postspp") Posts per page
+                        .col-sm-2
+                            input.form-control#postspp(type="number", required, min="1", max="100", name="postpp",
+                            ng-model="settings.postsPerPage")
 
-		.page-header
-			h3 Posts
+        hr
+        .row
+            .col-md-2: h4 Publishing
+            .col-md-10
+                form.form-horizontal(role="form", name="pubForm")
+                    .form-group
+                        label.col-sm-2.control-label(for="address") Address
+                        .col-sm-10
+                            input.form-control#address(placeholder="Address", type="text", required, ng-trim="true",
+                                ng-model="settings.host")
 
-		form.form-horizontal(role="form", name="postsForm")
-			.form-group(ng-class="{'has-error':basicForm.postpp.$invalid}")
-				label.col-sm-2.control-label(for="postspp") Posts per page
-				.col-sm-2
-					input.form-control#postspp(type="number", required, min="1", max="100", name="postpp",
-					ng-model="settings.postsPerPage")
-
-		.page-header
-			h3 Publishing
-
-		form.form-horizontal(role="form", name="pubForm")
-			.form-group
-				label.col-sm-2.control-label(for="address") Address
-				.col-sm-10
-					input.form-control#address(placeholder="Address", type="text", required, ng-trim="true",
-						ng-model="settings.host")
-
-		.row
-			hr
-			.pull-right
-				button.btn.btn-primary(ng-click="save()") Save
-				button.btn.btn-default(ng-click="reset()") Cancel
+        .row
+            hr
+            .pull-right
+                button.btn.btn-primary(ng-click="save()") Save
+                button.btn.btn-default(ng-click="reset()") Cancel
+        p

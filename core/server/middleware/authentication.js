@@ -43,8 +43,7 @@
             // refreshing session
             req.session.access = Date.now();
             fn();
-        }
-        else {
+        } else {
             res.redirect(302, '/login');
         }
     };

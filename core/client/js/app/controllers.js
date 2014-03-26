@@ -1,8 +1,12 @@
 (function () {
     'use strict';
 
-    var isDefined = angular.isDefined,
-        bind = angular.bind;
+    var isDefined   = angular.isDefined,
+        bind        = angular.bind,
+        forEach     = angular.forEach,
+        isObject    = angular.isObject,
+        copy        = angular.copy,
+        isArray     = angular.isArray;
 
     function Container() {
         this.items = {};
@@ -10,7 +14,10 @@
     }
     Container.prototype = {
         isEmpty: function () {
-            return _.size(this.items) === 0;
+            return this.howMany() === 0;
+        },
+        howMany: function () {
+            return _.size(this.items);
         },
         has: function (item) {
             return _.has(this.items, item);
@@ -29,6 +36,56 @@
             else { this.add(item); }
         }
     };
+
+    function Pagination(options) {
+        options = options || {};
+        this._items = options.items || 0;
+        this._current = 1;
+        this.pageSize = options.pageSize || 10;
+        this.pages = Math.ceil(this._items / this.pageSize) || 1;
+        this.hasPrev = this._current > 1;
+        this.hasNext = this._current < this.pages;
+        this.firstItem = 0;
+    }
+
+    Pagination.prototype.next = function () {
+        if (this.hasNext) {
+            this.current++;
+        }
+    };
+
+    Pagination.prototype.prev = function () {
+        if (this.hasPrev) {
+            this.current--;
+        }
+    };
+
+    Object.defineProperties(Pagination.prototype, {
+        items: {
+            enumerable: true,
+            set: function (value) {
+                value = isArray(value) ? value.length : value;
+                this._items = value;
+                this.pages = Math.ceil(this._items / this.pageSize) || 1;
+                this.current = this.current;
+            },
+            get: function () { return this._items; }
+        },
+        current: {
+            enumerable: true,
+            set: function (value) {
+                this._current = value;
+                this.hasPrev = value > 1;
+                this.hasNext = value < this.pages;
+                this.firstItem = (value-1)*this.pageSize;
+            },
+            get: function () { return this._current; }
+        },
+        pageRange: {
+            enumerable: true,
+            get: function () { return _.range(1, this.pages+1); }
+        }
+    });
 
     var ctrlsModule = angular.module('pandaControllers', []);
 
@@ -57,7 +114,7 @@
             };
 
             function updateCrumbItem (args) {
-                if (angular.isObject(args[1])) {
+                if (isObject(args[1])) {
                     angular.extend($scope.breadcrumb[args[0]], args[1]);
                 } 
                 else {
@@ -67,12 +124,12 @@
 
             function updateBreadcrumb (args) {
                 $scope.breadcrumb = [];
-                angular.forEach(args, function (id) {
+                forEach(args, function (id) {
                     if (angular.isString(id)) {
                         this.push({ id: id, display: Config.pageNames[id] || id });
                     }
-                    else if (angular.isObject(id)) {
-                        this.push(angular.copy(id));
+                    else if (isObject(id)) {
+                        this.push(copy(id));
                     }
                 }, $scope.breadcrumb);
             }
@@ -132,10 +189,11 @@
 
             $scope.selectAll = function () {
                 var sel = $scope.selection;
-                if (sel.all) clearSelection();
-                else {
-                    angular.forEach($scope.posts, function (post) {
-                        addSelection(post._id);
+                if (sel.all) {
+                    clearSelection();
+                } else {
+                    forEach($scope.posts, function (post) {
+                        addSelection(post.id);
                     });
                     $scope.selection.all = true;
                 }
@@ -143,10 +201,16 @@
 
             $scope.status = function (post) {
                 var date = post.publishedAt;
-                if (!angular.isDefined(date)) return 'D';
-                if (!angular.isDate(date)) date = new Date(date); // Convert string to date 
-                if (date > Date.now()) return 'S';
-                else return 'A';
+                if (!isDefined(date)) {
+                    return 'D';
+                }
+                if (!angular.isDate(date)) {
+                    date = new Date(date);
+                }
+                if (date > Date.now()) { // Convert string to date
+                    return 'S';
+                }
+                return 'A';
             };
 
             $scope.setSortBy = function (sortBy, e) {
@@ -202,7 +266,9 @@
                     pages = Math.ceil((pg.total || 0) / pg.limit);
                     
                 pg.pages = [];
-                for(var i = 1; i <= pages; i++) pg.pages.push(i);
+                for(var i = 1; i <= pages; i++) {
+                    pg.pages.push(i);
+                }
 
                 pg.posts.from = pg.limit * (pg.page - 1) + 1;
                 pg.posts.to = Math.min(pg.posts.from + pg.limit - 1, pg.total);
@@ -212,7 +278,9 @@
             }
 
             function postViewSetChange (newValue, oldValue) {
-                if (newValue !== oldValue) loadPosts();
+                if (newValue !== oldValue) {
+                    loadPosts();
+                }
             }
 
             function loadPosts () {
@@ -220,10 +288,10 @@
                 var pg = $scope.pagination, skip = (pg.page - 1) * pg.limit;
 
                 Posts.query({
-                    limit: $scope.pagination.limit, 
+                    limit: $scope.pagination.limit,
                     skip: skip,
-                    sortBy: $scope.sortBy, 
-                    type: $params.type, 
+                    sortBy: $scope.sortBy,
+                    type: $params.type,
                     page: false
                 }, function (posts) {
                     $scope.setLoading(false);
@@ -250,13 +318,18 @@
             $scope.allLabels = Labels.query();
 
             $scope.addLabel = function (label) {
-                if (angular.isArray(label)) angular.forEach(label, add);
-                else add(label);
+                if (angular.isArray(label)) {
+                    forEach(label, add);
+                }
+                else { add(label); }
 
                 function add (label) {
                     var labels = $scope.post.labels || ($scope.post.labels = []);
 
-                    if (!label || ~_.indexOf(labels, label)) return;
+                    if (!label || ~_.indexOf(labels, label)) {
+                        return;
+                    }
+
                     labels.push(label);
                 }
             };
@@ -272,15 +345,21 @@
     ctrlsModule.controller('ScheduleCtrl', ['$scope',
         function ($scope) {
             $scope.$watch('post.scheduleOpt', function (opt) {
-                if ('undefined' === typeof opt) return;
-                if (opt) $scope.opt.customSchedule = moment().format('lll');
+                if ('undefined' === typeof opt) {
+                    return;
+                }
+                if (opt) {
+                    $scope.opt.customSchedule = moment().format('lll');
+                }
             });
 
             $scope.$watch('opt.customSchedule', function (value) {
                 var date = moment(value);
 
                 $scope.opt.customScheduleValid = date.isValid();
-                if (date.isValid()) $scope.post.scheduledAt = date.toDate();
+                if (date.isValid()) {
+                    $scope.post.scheduledAt = date.toDate();
+                }
             });
         }
     ]);
@@ -290,13 +369,19 @@
             var unwatchTitle;
 
             $scope.$watch('post.slugOpt', function (opt) {
-                if(opt) unwatchTitle = $scope.$watch('post.title', setSlugFromTitle);
-                else unwatchTitle();
+                if(opt) {
+                    unwatchTitle = $scope.$watch('post.title', setSlugFromTitle);
+                } else {
+                    unwatchTitle();
+                }
             });
 
             function setSlugFromTitle (text) {
-                if (!text) $scope.post.slug = '';
-                else $scope.post.slug = _.str.slugify(text);
+                if (!text) {
+                    $scope.post.slug = '';
+                } else {
+                    $scope.post.slug = _.str.slugify(text);
+                }
             }
         }
     ]);
@@ -335,7 +420,6 @@
             $scope.opt = { customDate: '', editor: true, create: false };
             $scope.setBreadcrumb('postedit');
 
-            var unwatchTitle;
             var permalinks = {
                 page: '/:slug.html',
                 post: '/:year/:month/:day/:slug.html'
@@ -360,15 +444,14 @@
             });
 
             $scope.$watch('post.markdown', function (value) {
-                if (!value) $scope.post.content = "";
-                else $scope.post.content = Converter.makeHtml(value);
+                $scope.post.content = (!value) ? "" : Converter.makeHtml(value);
             });
 
             $scope.post = Posts.get({ id:$params.id }, function (post) {
                 //TODO: remove blow two lines
                 post.scheduleOpt = isDefined(post.scheduleOpt) ? post.scheduleOpt : true;
                 post.slugOpt = isDefined(post.slugOpt) ? post.slugOpt : true;
-                
+
                 // editor.setValue(post.markdown || '');
             });
 
@@ -380,11 +463,6 @@
             $scope.$watch('post.page', updatePermalinks);
             $scope.$watch('post.scheduledAt', updatePermalinks);
             
-            // $scope.$watch('post.slugOpt', function (opt) {
-            //     if(true === opt) unwatchTitle = $scope.$watch('post.title', setSlugFromTitle);
-            //     else if (false === opt) unwatchTitle();
-            // });
-
             $scope.postContent = function () {
                 return $sce.trustAsHtml($scope.post.content);
             };
@@ -402,7 +480,9 @@
                     post = $scope.post;
 
                 url = url.replace(/(:[a-z]+)/g, function (match) {
-                    if (match in tags) return tags[match](post);
+                    if (match in tags) {
+                        return tags[match](post);
+                    }
                     return match;
                 });
 
@@ -413,7 +493,7 @@
 
     ctrlsModule.controller('SettingsCtrl', ['$scope', 'Settings',
         function ($scope, Settings) {
-            var hideLoading = angular.bind($scope, $scope.setLoading, false);
+            var hideLoading = bind($scope, $scope.setLoading, false);
             $scope.setBreadcrumb('settings');
             $scope.settings = Settings.get();
 
@@ -432,13 +512,13 @@
         }
     ]);
 
-    ctrlsModule.controller('CommentsCtrl', ['$scope', 
+    ctrlsModule.controller('CommentsCtrl', ['$scope',
         function ($scope) {
             $scope.setBreadcrumb('comments');
         }
     ]);
 
-    ctrlsModule.controller('UsersCtrl', ['$scope', 
+    ctrlsModule.controller('UsersCtrl', ['$scope',
         function ($scope) {
             $scope.setBreadcrumb('users');
         }
@@ -452,7 +532,7 @@
 
             $rootScope.$on('delete', reset);
             $rootScope.$on('edit', function (event, item) {
-                $scope.item = angular.copy(item);
+                $scope.item = copy(item);
                 $scope.isEdit = true;
             });
 
@@ -470,8 +550,8 @@
                 $scope.setLoading('Creating');
 
                 Redirects.create(item).$promise
-                    .then($scope.reset.bind($scope))
-                    .then($scope.$emit.bind($scope, 'load'));
+                    .then(bind($scope, $scope.reset))
+                    .then(bind($scope, $scope.$emit, 'load'));
             };
 
             $scope.update = function () {
@@ -481,8 +561,8 @@
                 $scope.setLoading('Updating');
 
                 item.$update()
-                    .then($scope.reset.bind($scope))
-                    .then($scope.$emit.bind($scope, 'load'));
+                    .then(bind($scope, $scope.reset))
+                    .then(bind($scope, $scope.$emit, 'load'));
             };
 
             $scope.reset = reset;
@@ -497,7 +577,13 @@
     ctrlsModule.controller('RedirectsListCtrl', ['$scope', '$rootScope', '$q', 'Redirects',
         function ($scope, $rootScope, $q, Redirects) {
             $scope.deleting = new Container();
+            $scope.pg = new Pagination({ pageSize: 10 });
+
             $rootScope.$on('load', loadRedirects);
+
+            $scope.$watchCollection("items", function (items) {
+                $scope.pg.items = items && items.length || 0;
+            });
 
             $scope.setBreadcrumb('settings', 'redirects');
             loadRedirects();
@@ -510,8 +596,8 @@
 
                 var deletePromise = [];
 
-                angular.forEach($scope.items, function (item) {
-                    if ($scope.deleting.has(item._id)) {
+                forEach($scope.items, function (item) {
+                    if ($scope.deleting.has(item.id)) {
 
                         deletePromise.push(item.$remove());
                     }
@@ -519,9 +605,10 @@
 
                 $q.all(deletePromise)
                     .then(loadRedirects)
-                    .then(bind($scope, $scope.$emit, 'delete'))
-                    .finally($scope.setLoading.bind($scope, false));
+                    .then(bind($scope, $scope.$emit, 'delete'));
             };
+
+            $scope.refresh = loadRedirects;
 
             function loadRedirects () {
                 $scope.setLoading(true);
@@ -541,31 +628,33 @@
 
             $scope.theme = {
                 site: { list: [], active: null, changed: false, selected: null },
-                admin: { list: [], active: null, changed: false, selected: null, 
+                admin: { list: [], active: null, changed: false, selected: null,
                     afterSave: function () {
                         $window.location.reload();
                     }
                 }
             };
 
-            $scope.$watch('theme.site.selected', angular.bind(null, checkThemes, $scope.theme.site));
-            $scope.$watch('theme.site.active', angular.bind(null, checkThemes, $scope.theme.site));
-            $scope.$watch('theme.admin.selected', angular.bind(null, checkThemes, $scope.theme.admin));
-            $scope.$watch('theme.admin.active', angular.bind(null, checkThemes, $scope.theme.admin));
+            $scope.$watch('theme.site.selected', bind(null, checkThemes, $scope.theme.site));
+            $scope.$watch('theme.site.active', bind(null, checkThemes, $scope.theme.site));
+            $scope.$watch('theme.admin.selected', bind(null, checkThemes, $scope.theme.admin));
+            $scope.$watch('theme.admin.active', bind(null, checkThemes, $scope.theme.admin));
 
-            $scope.resetTheme = angular.bind(null, resetTheme, $scope.theme);
-            $scope.saveTheme = angular.bind(null, saveTheme, $scope.theme);
+            $scope.resetTheme = bind(null, resetTheme, $scope.theme);
+            $scope.saveTheme = bind(null, saveTheme, $scope.theme);
 
             loadThemeDetails();
 
             function saveTheme (theme, type) {
-                if (!theme[type].changed) return;
+                if (!theme[type].changed) {
+                    return;
+                }
                 $scope.setLoading('Saving');
 
                 Themes.update({ id:theme[type].selected.id, type:type })
                     .$promise
-                    .then(angular.bind($scope, $scope.setLoading, false))
-                    .then(angular.bind(null, afterThemeSave, theme, type));
+                    .then(bind($scope, $scope.setLoading, false))
+                    .then(bind(null, afterThemeSave, theme, type));
             }
 
             function afterThemeSave (theme, type) {
@@ -595,7 +684,7 @@
 
             function loadThemeDetails () {
                 $q.all([
-                    Themes.query({type:'site'}).$promise, 
+                    Themes.query({type:'site'}).$promise,
                     Themes.query({type:'admin'}).$promise
                 ])
                 .then(function (themes) {
