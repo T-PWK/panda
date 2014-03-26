@@ -6,7 +6,7 @@
 
     module.exports.index = function (req, res) {
         when.resolve(
-            provider.findAllRedirects({select: 'from to type _id'})
+            provider.findAllRedirects({select: 'from to type'})
         ).done(
             res.json.bind(res),
             res.send.bind(res, 500)

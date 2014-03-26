@@ -1,5 +1,5 @@
 [{
-    "_id": "5849503486730829824",
+    "id": "5849503486730829824",
     "title":"About",
     "slug":"about",
     "publishedAt":"2014-02-12T15:00:00.000Z",
@@ -11,7 +11,7 @@
     "_authorId": "_1",
     "page": true
 },{
-    "_id": "5849503491495559168",
+    "id": "5849503491495559168",
     "title":"Welcome to Panda",
     "slug":"welcome-to-panda",
     "publishedAt":"2014-02-12T15:00:00.000Z",
@@ -28,7 +28,7 @@
     "slugOpt": true,
     "scheduleOpt": true
 },{
-    "_id": "5849503493575933952",
+    "id": "5849503493575933952",
     "title":"Lorem ipsum dolor sit amet",
     "slug":"lorem-ipsum-dolor-sit-amet",
     "publishedAt":"2014-02-10T21:22:19.000Z",
@@ -41,7 +41,7 @@
     "commentsCount": 0,
     "page": false
 },{
-    "_id": "5849503495052328960",
+    "id": "5849503495052328960",
     "title":"Cras eu eleifend nibh",
     "slug":"cras-eu-eleifend-nibh",
     "publishedAt":"2013-12-19T00:00:00.000Z",
@@ -54,7 +54,7 @@
     "commentsCount": 0,
     "page": false
 },{
-    "_id": "5849503949568081920",
+    "id": "5849503949568081920",
     "title":"Men of Tale",
     "slug":"men-of-tale",
     "publishedAt":"2014-01-10T00:00:00.000Z",
@@ -67,7 +67,7 @@
     "commentsCount": 0,
     "page": false
 },{
-    "_id": "5849503975006535680",
+    "id": "5849503975006535680",
     "title":"Lorem ipsum",
     "slug":"lorem-ipsum",
     "publishedAt":"2014-02-02T00:00:00.000Z",
@@ -81,7 +81,7 @@
     "commentsCount": 0,
     "page": false
 },{
-    "_id": "5849504009865396224",
+    "id": "5849504009865396224",
     "title":"The Spirits of the Heat",
     "slug":"spirits-of-heat",
     "createdAt":"2014-02-02T00:00:00.000Z",
@@ -92,7 +92,7 @@
     "commentsCount": 0,
     "page": false
 },{
-    "_id": "5849504031847743488",
+    "id": "5849504031847743488",
     "title":"The Academy of the Body",
     "slug":"academy-of-body",
     "publishedAt":"2012-12-20T00:00:00.000Z",
@@ -104,7 +104,7 @@
     "commentsCount": 0,
     "page": false
 },{
-    "_id": "5849504063489572864",
+    "id": "5849504063489572864",
     "title":"The Captive's Theft",
     "slug":"captives-theft",
     "publishedAt":"2013-12-10T00:00:00.000Z",
@@ -117,7 +117,7 @@
     "commentsCount": 0,
     "page": false
 },{
-    "_id": "5849504094154129408",
+    "id": "5849504094154129408",
     "title":"The Rose of the Danger",
     "slug":"rose-of-danger",
     "publishedAt":"2020-12-19T00:00:00.000Z",
@@ -130,7 +130,7 @@
     "commentsCount": 0,
     "page": false
 },{
-    "_id": "5849504122444709888",
+    "id": "5849504122444709888",
     "title":"Butterfly of Luck",
     "slug":"butterfly-of-luck",
     "publishedAt":"2014-01-10T00:00:00.000Z",
@@ -143,7 +143,7 @@
     "commentsCount": 1,
     "page": false
 },{
-    "_id": "5849504152471732224",
+    "id": "5849504152471732224",
     "title":"The Women of the Bridge",
     "slug":"the-women-of-the-bridge",
     "publishedAt":"2014-02-02T00:00:00.000Z",
@@ -156,7 +156,7 @@
     "commentsCount": 0,
     "page": false
 },{
-    "_id": "5849504181630533632",
+    "id": "5849504181630533632",
     "title":"Night in the Snow",
     "slug":"night-in-the-snow",
     "publishedAt":"2014-02-02T00:00:00.000Z",
@@ -169,7 +169,7 @@
     "commentsCount": 0,
     "page": false
 },{
-    "_id": "5849504211473006592",
+    "id": "5849504211473006592",
     "title":"Wild Visions",
     "slug":"wild-visions",
     "publishedAt":"2013-12-19T00:00:00.000Z",
@@ -182,7 +182,7 @@
     "commentsCount": 0,
     "page": false
 },{
-    "_id": "5849504248013783040",
+    "id": "5849504248013783040",
     "title":"The Burning Winter",
     "slug":"burning-winter",
     "publishedAt":"2016-01-10T00:00:00.000Z",
@@ -196,7 +196,7 @@
     "page": false,
     "featured": true
 },{
-    "_id": "5849504281400442880",
+    "id": "5849504281400442880",
     "title":"The Stone of the Voyager",
     "slug":"stone-of-voyager",
     "publishedAt":"2014-02-02T00:00:00.000Z",
@@ -209,7 +209,7 @@
     "commentsCount": 0,
     "page": false
 },{
-    "_id": "5849504301533102080",
+    "id": "5849504301533102080",
     "title":"Something in the Memory",
     "slug":"something-in-the-memory",
     "publishedAt":"2014-02-02T00:00:00.000Z",
@@ -222,7 +222,7 @@
     "commentsCount": 0,
     "page": false
 },{
-    "_id": "5849504330083729408",
+    "id": "5849504330083729408",
     "title":"The Servant of the Spark",
     "slug":"servant-of-spark",
     "publishedAt":"2012-12-20T00:00:00.000Z",
@@ -234,73 +234,8 @@
     "_authorId": "_1",
     "commentsCount": 0,
     "page": false
-},{
-    "_id": "5849504360219803648",
-    "title":"Moon in the Dream",
-    "slug":"moon-in-the-dream",
-    "publishedAt":"2013-12-10T00:00:00.000Z",
-    "createdAt":"2013-12-10T00:00:00.000Z",
-    "updatedAt":"2014-01-25T00:00:33.000Z",
-    "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
-    "content":"<p>The <code>map()</code> method creates a new array with the results of calling a provided function on every element in this array.  </p>\n\n<h3 id=\"syntax\">Syntax</h3>\n\n<pre><code class=\"language-javascript\">arr.map(callback[, thisArg])  \n</code></pre>\n\n<p>Alternative  </p>\n\n<blockquote>\n  <p><code>arr.map(callback[, thisArg])</code></p>\n</blockquote>\n\n<h3 id=\"description\">Description</h3>\n\n<p><code>map</code> calls a provided <code>callback</code> functiononce for each element in an array, in order, and constructs a new array from the results. <code>callback</code> is invoked only for indexes of the array which have assigned values; it is not invoked for indexes which have been deleted or which have never been assigned values.</p>\n\n<p><code>callback</code> is invoked with three arguments: thevalue of the element, the index of the element, and the Array object being traversed.</p>\n\n<p>If a <code>thisArg</code> parameter is provided to <code>map</code>, it will be passed to <code>callback</code> when invoked, for use as its this value. Otherwise, the value undefined will be passed for use as its <code>this</code> value. The <code>this</code> value ultimately observable by callback is determined according to <a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this' >the usual rules for determining the this seen by a function</a>.</p>\n\n<p><code>map</code> does not mutate the array on which it is called (although callback, if invoked, maydo so).</p>\n\n<p>The range of elements processed by map is set before the first invocation of <code>callback</code>. Elements which are appended to the array after the call to map begins will not be visited by <code>callback</code>. If existing elements of the array are changed, or deleted, their value as passed to <code>callback</code> will be the value at the time map visits them; elements that are deleted are not visited.</p>\n\n<h3 id=\"example\">Example</h3>\n\n<p>The following code takes an array of numbers and creates a new array containing the square roots of the numbers in the first array.  </p>\n\n<pre><code class=\"language-javascript\">var numbers = [1, 4, 9];  \nvar roots = numbers.map(Math.sqrt);  \n/* roots is now [1, 2, 3], numbers is still [1, 4, 9] */\n</code></pre>\n\n<h3 id=\"exampleusingmapgenerically\">Example: using <code>map</code> generically</h3>\n\n<pre><code class=\"language-javascript\">[].map.call(document.querySelectorAll('select option:checked'), function(obj) {\n    console.log(obj.parentNode.id, obj.value);\n}\n</code></pre>\n\n<p>Sample page from <a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map' >MDN</a></p>",
-    "labels":["angularjs", "function"],
-    "_authorId": "_1",
-    "commentsCount": 0,
-    "page": false
-},{
-    "_id": "5849504387331784704",
-    "title":"Worlds of Kiss",
-    "slug":"worlds-of-kiss",
-    "publishedAt":"2013-12-19T00:00:00.000Z",
-    "createdAt":"2013-12-19T00:00:00.000Z",
-    "updatedAt":"2014-01-20T00:04:00.000Z",
-    "teaser":"<p>The <code>map()</code> method creates a new array with the results of calling a provided function on every element in this array.  </p>\n\n<h3 id=\"syntax\">Syntax</h3>\n\n<pre><code class=\"language-javascript\">arr.map(callback[, thisArg])  \n</code></pre>\n\n<p>Alternative  </p>\n\n<blockquote>\n  <p><code>arr.map(callback[, thisArg])</code></p>\n</blockquote>\n\n<h3 id=\"description\">Description</h3>\n\n<p><code>map</code> calls a provided <code>callback</code> functiononce for each element in an array, in order, and constructs a new array from the results. <code>callback</code> is invoked only for indexes of the array which have assigned values; it is not invoked for indexes which have been deleted or which have never been assigned values.</p>\n\n<p><code>callback</code> is invoked with three arguments: thevalue of the element, the index of the element, and the Array object being traversed.</p>\n\n<p>If a <code>thisArg</code> parameter is provided to <code>map</code>, it will be passed to <code>callback</code> when invoked, for use as its this value. Otherwise, the value undefined will be passed for use as its <code>this</code> value. The <code>this</code> value ultimately observable by callback is determined according to <a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this' >the usual rules for determining the this seen by a function</a>.</p>\n\n<p><code>map</code> does not mutate the array on which it is called (although callback, if invoked, maydo so).</p>\n\n<p>The range of elements processed by map is set before the first invocation of <code>callback</code>. Elements which are appended to the array after the call to map begins will not be visited by <code>callback</code>. If existing elements of the array are changed, or deleted, their value as passed to <code>callback</code> will be the value at the time map visits them; elements that are deleted are not visited.</p>\n\n<h3 id=\"example\">Example</h3>\n\n<p>The following code takes an array of numbers and creates a new array containing the square roots of the numbers in the first array.  </p>\n\n<pre><code class=\"language-javascript\">var numbers = [1, 4, 9];  \nvar roots = numbers.map(Math.sqrt);  \n/* roots is now [1, 2, 3], numbers is still [1, 4, 9] */\n</code></pre>\n\n<h3 id=\"exampleusingmapgenerically\">Example: using <code>map</code> generically</h3>\n\n<pre><code class=\"language-javascript\">[].map.call(document.querySelectorAll('select option:checked'), function(obj) {\n    console.log(obj.parentNode.id, obj.value);\n}\n</code></pre>\n\n<p>Sample page from <a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map' >MDN</a></p>",
-    "content":"<p>The <code>map()</code> method creates a new array with the results of calling a provided function on every element in this array.  </p>\n\n<h3 id=\"syntax\">Syntax</h3>\n\n<pre><code class=\"language-javascript\">arr.map(callback[, thisArg])  \n</code></pre>\n\n<p>Alternative  </p>\n\n<blockquote>\n  <p><code>arr.map(callback[, thisArg])</code></p>\n</blockquote>\n\n<h3 id=\"description\">Description</h3>\n\n<p><code>map</code> calls a provided <code>callback</code> functiononce for each element in an array, in order, and constructs a new array from the results. <code>callback</code> is invoked only for indexes of the array which have assigned values; it is not invoked for indexes which have been deleted or which have never been assigned values.</p>\n\n<p><code>callback</code> is invoked with three arguments: thevalue of the element, the index of the element, and the Array object being traversed.</p>\n\n<p>If a <code>thisArg</code> parameter is provided to <code>map</code>, it will be passed to <code>callback</code> when invoked, for use as its this value. Otherwise, the value undefined will be passed for use as its <code>this</code> value. The <code>this</code> value ultimately observable by callback is determined according to <a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this' >the usual rules for determining the this seen by a function</a>.</p>\n\n<p><code>map</code> does not mutate the array on which it is called (although callback, if invoked, maydo so).</p>\n\n<p>The range of elements processed by map is set before the first invocation of <code>callback</code>. Elements which are appended to the array after the call to map begins will not be visited by <code>callback</code>. If existing elements of the array are changed, or deleted, their value as passed to <code>callback</code> will be the value at the time map visits them; elements that are deleted are not visited.</p>\n\n<h3 id=\"example\">Example</h3>\n\n<p>The following code takes an array of numbers and creates a new array containing the square roots of the numbers in the first array.  </p>\n\n<pre><code class=\"language-javascript\">var numbers = [1, 4, 9];  \nvar roots = numbers.map(Math.sqrt);  \n/* roots is now [1, 2, 3], numbers is still [1, 4, 9] */\n</code></pre>\n\n<h3 id=\"exampleusingmapgenerically\">Example: using <code>map</code> generically</h3>\n\n<pre><code class=\"language-javascript\">[].map.call(document.querySelectorAll('select option:checked'), function(obj) {\n    console.log(obj.parentNode.id, obj.value);\n}\n</code></pre>\n\n<p>Sample page from <a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map' >MDN</a></p>",    
-    "labels":[],
-    "_authorId": "_1",
-    "commentsCount": 0,
-    "page": false
-},{
-    "_id": "5849504423369244672",
-    "title":"The Rough Year",
-    "slug":"the-rough-year",
-    "publishedAt":"2014-01-10T00:00:00.000Z",
-    "createdAt":"2014-01-10T00:00:00.000Z",
-    "updatedAt":"2014-01-10T11:00:00.000Z",
-    "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
-    "content": "<p>The <code>map()</code> method creates a new array with the results of calling a provided function on every element in this array.  </p>\n\n<h3 id=\"syntax\">Syntax</h3>\n\n<pre><code class=\"language-javascript\">arr.map(callback[, thisArg])  \n</code></pre>\n\n<p>Alternative  </p>\n\n<blockquote>\n  <p><code>arr.map(callback[, thisArg])</code></p>\n</blockquote>\n\n<h3 id=\"description\">Description</h3>\n\n<p><code>map</code> calls a provided <code>callback</code> functiononce for each element in an array, in order, and constructs a new array from the results. <code>callback</code> is invoked only for indexes of the array which have assigned values; it is not invoked for indexes which have been deleted or which have never been assigned values.</p>\n\n<p><code>callback</code> is invoked with three arguments: thevalue of the element, the index of the element, and the Array object being traversed.</p>\n\n<p>If a <code>thisArg</code> parameter is provided to <code>map</code>, it will be passed to <code>callback</code> when invoked, for use as its this value. Otherwise, the value undefined will be passed for use as its <code>this</code> value. The <code>this</code> value ultimately observable by callback is determined according to <a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this' >the usual rules for determining the this seen by a function</a>.</p>\n\n<p><code>map</code> does not mutate the array on which it is called (although callback, if invoked, maydo so).</p>\n\n<p>The range of elements processed by map is set before the first invocation of <code>callback</code>. Elements which are appended to the array after the call to map begins will not be visited by <code>callback</code>. If existing elements of the array are changed, or deleted, their value as passed to <code>callback</code> will be the value at the time map visits them; elements that are deleted are not visited.</p>\n\n<h3 id=\"example\">Example</h3>\n\n<p>The following code takes an array of numbers and creates a new array containing the square roots of the numbers in the first array.  </p>\n\n<pre><code class=\"language-javascript\">var numbers = [1, 4, 9];  \nvar roots = numbers.map(Math.sqrt);  \n/* roots is now [1, 2, 3], numbers is still [1, 4, 9] */\n</code></pre>\n\n<h3 id=\"exampleusingmapgenerically\">Example: using <code>map</code> generically</h3>\n\n<pre><code class=\"language-javascript\">[].map.call(document.querySelectorAll('select option:checked'), function(obj) {\n    console.log(obj.parentNode.id, obj.value);\n}\n</code></pre>\n\n<p>Sample page from <a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map' >MDN</a></p>",
-    "labels":["node.js", "authentication", "jquery", "Windows Azure", "function"],
-    "_authorId": "_1",
-    "commentsCount": 0,
-    "page": false
-},{
-    "_id": "5849504453870223360",
-    "title":"The Consort of the Flower",
-    "slug":"the-consort-of-the-flower",
-    "publishedAt":"2014-02-02T00:00:00.000Z",
-    "createdAt":"2014-02-02T00:00:00.000Z",
-    "updatedAt":"2014-02-05T00:00:10.000Z",
-    "teaser":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam malesuada nec erat nec sagittis. Curabitur semper purus eget erat convallis, et mollis mauris dignissim. Suspendisse interdum arcu euismod, ullamcorper lectus eu, eleifend neque. Integer luctus dictum ipsum eget tempor.",
-    "content": "<p>The <code>map()</code> method creates a new array with the results of calling a provided function on every element in this array.  </p>\n\n<h3 id=\"syntax\">Syntax</h3>\n\n<pre><code class=\"language-javascript\">arr.map(callback[, thisArg])  \n</code></pre>\n\n<p>Alternative  </p>\n\n<blockquote>\n  <p><code>arr.map(callback[, thisArg])</code></p>\n</blockquote>\n\n<h3 id=\"description\">Description</h3>\n\n<p><code>map</code> calls a provided <code>callback</code> functiononce for each element in an array, in order, and constructs a new array from the results. <code>callback</code> is invoked only for indexes of the array which have assigned values; it is not invoked for indexes which have been deleted or which have never been assigned values.</p>\n\n<p><code>callback</code> is invoked with three arguments: thevalue of the element, the index of the element, and the Array object being traversed.</p>\n\n<p>If a <code>thisArg</code> parameter is provided to <code>map</code>, it will be passed to <code>callback</code> when invoked, for use as its this value. Otherwise, the value undefined will be passed for use as its <code>this</code> value. The <code>this</code> value ultimately observable by callback is determined according to <a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this' >the usual rules for determining the this seen by a function</a>.</p>\n\n<p><code>map</code> does not mutate the array on which it is called (although callback, if invoked, maydo so).</p>\n\n<p>The range of elements processed by map is set before the first invocation of <code>callback</code>. Elements which are appended to the array after the call to map begins will not be visited by <code>callback</code>. If existing elements of the array are changed, or deleted, their value as passed to <code>callback</code> will be the value at the time map visits them; elements that are deleted are not visited.</p>\n\n<h3 id=\"example\">Example</h3>\n\n<p>The following code takes an array of numbers and creates a new array containing the square roots of the numbers in the first array.  </p>\n\n<pre><code class=\"language-javascript\">var numbers = [1, 4, 9];  \nvar roots = numbers.map(Math.sqrt);  \n/* roots is now [1, 2, 3], numbers is still [1, 4, 9] */\n</code></pre>\n\n<h3 id=\"exampleusingmapgenerically\">Example: using <code>map</code> generically</h3>\n\n<pre><code class=\"language-javascript\">[].map.call(document.querySelectorAll('select option:checked'), function(obj) {\n    console.log(obj.parentNode.id, obj.value);\n}\n</code></pre>\n\n<p>Sample page from <a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map' >MDN</a></p>",
-    "labels":["node.js","javascript"],
-    "_authorId": "_1",
-    "commentsCount": 0,
-    "page": false
-},{
-    "_id": "5849504479321260032",
-    "title":"The Bridges of the Crying",
-    "slug":"the-bridges-of-the-crying",
-    "publishedAt":"2014-02-02T00:00:00.000Z",
-    "createdAt":"2014-02-02T00:00:00.000Z",
-    "updatedAt":"2014-02-05T00:00:22.000Z",
-    "teaser":"<p>The <code>map()</code> method creates a new array with the results of calling a provided function on every element in this array.  </p>\n\n<h3 id=\"syntax\">Syntax</h3>\n\n<pre><code class=\"language-javascript\">arr.map(callback[, thisArg])  \n</code></pre>\n\n<p>Alternative  </p>\n\n<blockquote>\n  <p><code>arr.map(callback[, thisArg])</code></p>\n</blockquote>\n\n<h3 id=\"description\">Description</h3>\n\n<p><code>map</code> calls a provided <code>callback</code> functiononce for each element in an array, in order, and constructs a new array from the results. <code>callback</code> is invoked only for indexes of the array which have assigned values; it is not invoked for indexes which have been deleted or which have never been assigned values.</p>\n\n<p><code>callback</code> is invoked with three arguments: thevalue of the element, the index of the element, and the Array object being traversed.</p>\n\n<p>If a <code>thisArg</code> parameter is provided to <code>map</code>, it will be passed to <code>callback</code> when invoked, for use as its this value. Otherwise, the value undefined will be passed for use as its <code>this</code> value. The <code>this</code> value ultimately observable by callback is determined according to <a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this' >the usual rules for determining the this seen by a function</a>.</p>\n\n<p><code>map</code> does not mutate the array on which it is called (although callback, if invoked, maydo so).</p>\n\n<p>The range of elements processed by map is set before the first invocation of <code>callback</code>. Elements which are appended to the array after the call to map begins will not be visited by <code>callback</code>. If existing elements of the array are changed, or deleted, their value as passed to <code>callback</code> will be the value at the time map visits them; elements that are deleted are not visited.</p>\n\n<h3 id=\"example\">Example</h3>\n\n<p>The following code takes an array of numbers and creates a new array containing the square roots of the numbers in the first array.  </p>\n\n<pre><code class=\"language-javascript\">var numbers = [1, 4, 9];  \nvar roots = numbers.map(Math.sqrt);  \n/* roots is now [1, 2, 3], numbers is still [1, 4, 9] */\n</code></pre>\n\n<h3 id=\"exampleusingmapgenerically\">Example: using <code>map</code> generically</h3>\n\n<pre><code class=\"language-javascript\">[].map.call(document.querySelectorAll('select option:checked'), function(obj) {\n    console.log(obj.parentNode.id, obj.value);\n}\n</code></pre>\n\n<p>Sample page from <a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map' >MDN</a></p>",
-    "content": "<p>The <code>map()</code> method creates a new array with the results of calling a provided function on every element in this array.  </p>\n\n<h3 id=\"syntax\">Syntax</h3>\n\n<pre><code class=\"language-javascript\">arr.map(callback[, thisArg])  \n</code></pre>\n\n<p>Alternative  </p>\n\n<blockquote>\n  <p><code>arr.map(callback[, thisArg])</code></p>\n</blockquote>\n\n<h3 id=\"description\">Description</h3>\n\n<p><code>map</code> calls a provided <code>callback</code> functiononce for each element in an array, in order, and constructs a new array from the results. <code>callback</code> is invoked only for indexes of the array which have assigned values; it is not invoked for indexes which have been deleted or which have never been assigned values.</p>\n\n<p><code>callback</code> is invoked with three arguments: thevalue of the element, the index of the element, and the Array object being traversed.</p>\n\n<p>If a <code>thisArg</code> parameter is provided to <code>map</code>, it will be passed to <code>callback</code> when invoked, for use as its this value. Otherwise, the value undefined will be passed for use as its <code>this</code> value. The <code>this</code> value ultimately observable by callback is determined according to <a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this' >the usual rules for determining the this seen by a function</a>.</p>\n\n<p><code>map</code> does not mutate the array on which it is called (although callback, if invoked, maydo so).</p>\n\n<p>The range of elements processed by map is set before the first invocation of <code>callback</code>. Elements which are appended to the array after the call to map begins will not be visited by <code>callback</code>. If existing elements of the array are changed, or deleted, their value as passed to <code>callback</code> will be the value at the time map visits them; elements that are deleted are not visited.</p>\n\n<h3 id=\"example\">Example</h3>\n\n<p>The following code takes an array of numbers and creates a new array containing the square roots of the numbers in the first array.  </p>\n\n<pre><code class=\"language-javascript\">var numbers = [1, 4, 9];  \nvar roots = numbers.map(Math.sqrt);  \n/* roots is now [1, 2, 3], numbers is still [1, 4, 9] */\n</code></pre>\n\n<h3 id=\"exampleusingmapgenerically\">Example: using <code>map</code> generically</h3>\n\n<pre><code class=\"language-javascript\">[].map.call(document.querySelectorAll('select option:checked'), function(obj) {\n    console.log(obj.parentNode.id, obj.value);\n}\n</code></pre>\n\n<p>Sample page from <a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map' >MDN</a></p>",
-    "labels":["node.js","javascript"],
-    "_authorId": "_2",
-    "commentsCount": 0,
-    "page": false
-},{
-    "_id": "5849504479321290032",
+}{
+    "id": "5849504479321290032",
     "createdAt":"2014-02-02T00:00:00.000Z",
     "updatedAt":"2014-02-05T00:00:22.000Z",
     "teaser":"<p>The <code>map()</code> method creates a new array with the results of calling a provided function on every element in this array.  </p>\n\n<h3 id=\"syntax\">Syntax</h3>\n\n<pre><code class=\"language-javascript\">arr.map(callback[, thisArg])  \n</code></pre>\n\n<p>Alternative  </p>\n\n<blockquote>\n  <p><code>arr.map(callback[, thisArg])</code></p>\n</blockquote>\n\n<h3 id=\"description\">Description</h3>\n\n<p><code>map</code> calls a provided <code>callback</code> functiononce for each element in an array, in order, and constructs a new array from the results. <code>callback</code> is invoked only for indexes of the array which have assigned values; it is not invoked for indexes which have been deleted or which have never been assigned values.</p>\n\n<p><code>callback</code> is invoked with three arguments: thevalue of the element, the index of the element, and the Array object being traversed.</p>\n\n<p>If a <code>thisArg</code> parameter is provided to <code>map</code>, it will be passed to <code>callback</code> when invoked, for use as its this value. Otherwise, the value undefined will be passed for use as its <code>this</code> value. The <code>this</code> value ultimately observable by callback is determined according to <a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this' >the usual rules for determining the this seen by a function</a>.</p>\n\n<p><code>map</code> does not mutate the array on which it is called (although callback, if invoked, maydo so).</p>\n\n<p>The range of elements processed by map is set before the first invocation of <code>callback</code>. Elements which are appended to the array after the call to map begins will not be visited by <code>callback</code>. If existing elements of the array are changed, or deleted, their value as passed to <code>callback</code> will be the value at the time map visits them; elements that are deleted are not visited.</p>\n\n<h3 id=\"example\">Example</h3>\n\n<p>The following code takes an array of numbers and creates a new array containing the square roots of the numbers in the first array.  </p>\n\n<pre><code class=\"language-javascript\">var numbers = [1, 4, 9];  \nvar roots = numbers.map(Math.sqrt);  \n/* roots is now [1, 2, 3], numbers is still [1, 4, 9] */\n</code></pre>\n\n<h3 id=\"exampleusingmapgenerically\">Example: using <code>map</code> generically</h3>\n\n<pre><code class=\"language-javascript\">[].map.call(document.querySelectorAll('select option:checked'), function(obj) {\n    console.log(obj.parentNode.id, obj.value);\n}\n</code></pre>\n\n<p>Sample page from <a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map' >MDN</a></p>",

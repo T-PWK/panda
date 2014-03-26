@@ -33,14 +33,14 @@
     };
 
     ConfigProvider.prototype.findRedirectById = function (id) {
-        return when.resolve(_.findWhere(this.redirects, { _id: id }));
+        return when.resolve(_.findWhere(this.redirects, { id: id }));
     };
 
     ConfigProvider.prototype.deleteRedirect = function (id) {
         var index = -1;
 
         _.find(this.redirects, function (item, idx) {
-            if (item._id === id) {
+            if (item.id === id) {
                 index = idx;
                 return true;
             }
@@ -53,7 +53,7 @@
     };
 
     ConfigProvider.prototype.updateRedirect = function (id, properties) {
-        var redirect = _.findWhere(this.redirects, { _id: id });
+        var redirect = _.findWhere(this.redirects, { id: id });
 
         if (redirect) {
             _.extend(redirect,
@@ -73,7 +73,7 @@
         }
 
         _.extend(properties, {
-            _id: idGen(),
+            id: idGen(),
             createdAt: new Date(),
             updatedAt: new Date()
         });

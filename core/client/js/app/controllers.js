@@ -135,7 +135,7 @@
                 if (sel.all) clearSelection();
                 else {
                     angular.forEach($scope.posts, function (post) {
-                        addSelection(post._id);
+                        addSelection(post.id);
                     });
                     $scope.selection.all = true;
                 }
@@ -511,7 +511,7 @@
                 var deletePromise = [];
 
                 angular.forEach($scope.items, function (item) {
-                    if ($scope.deleting.has(item._id)) {
+                    if ($scope.deleting.has(item.id)) {
 
                         deletePromise.push(item.$remove());
                     }

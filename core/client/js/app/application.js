@@ -29,7 +29,7 @@
         }])
         .factory('Redirects', ['$resource', function ($resource) {
             return $resource('/api/v1/config/redirects/:id',
-                { id: '@_id' },
+                { id: '@id' },
                 { create: { method: 'POST' }, update: { method: 'PUT' } }
             );
         }])

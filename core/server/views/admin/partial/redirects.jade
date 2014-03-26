@@ -20,7 +20,7 @@
                         th Type
                 tbody
                     tr(ng-repeat="item in items")
-                        td: input(type="checkbox", ng-click="deleting.toggle(item._id)", ng-checked="deleting.has(item._id)")
+                        td: input(type="checkbox", ng-click="deleting.toggle(item.id)", ng-checked="deleting.has(item.id)")
                         td: a(href="", ng-click="$emit('edit', item)") {{item.from}}
                         td {{item.to}}
                         td: i.fa(ng-class="{'internal':'fa-star-o','301':'fa-star','302':'fa-star-half-o'}[item.type]")

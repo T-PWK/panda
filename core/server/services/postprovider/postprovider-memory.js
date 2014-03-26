@@ -60,14 +60,14 @@
     };
 
     PostProvider.prototype.create = function(post) {
-        post._id = idGen();
+        post.id = idGen();
 
         this.dummyData.push(post);
 
         console.info('created post ... ', post);
         console.info('all posts', this.dummyData.length);
 
-        return when.resolve(post._id);
+        return when.resolve(post.id);
     };
 
     /*
@@ -93,7 +93,7 @@
      */
     PostProvider.prototype.findById = function (id, opts) {
         var chain = _.chain(this.dummyData).filter(function (post) {
-            return post._id === id;
+            return post.id === id;
         });
 
         return when.resolve(updateSelection(chain, opts).first().value());

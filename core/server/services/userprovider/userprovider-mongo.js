@@ -3,7 +3,7 @@
 
     var when        = require('when'),
         debug       = require('debug')('panda:userprovider'),
-        User        = require('./user-model');
+        User        = require('./../../models/mongoose/user');
 
     var UserProvider = function () {};
 
