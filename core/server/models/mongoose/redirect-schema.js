@@ -2,7 +2,7 @@
     'use strict';
 
     var mongoose        = require('mongoose'),
-        idsPlugin       = require('../../../models/mongoose/plugins/idsPlugin'),
+        idsPlugin       = require('./plugins/idsPlugin'),
         RedirectSchema  = new mongoose.Schema({
             from: { type: String, required: true, trim: true },
             to: { type: String, required: true, trim: true },
