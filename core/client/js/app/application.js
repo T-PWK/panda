@@ -55,6 +55,11 @@
                 return moment(date).format(format || 'L');
             };
         }])
+        .filter('startFrom', [function () {
+            return function (input, start) {
+                return input.slice(+start);
+            };
+        }])
         .directive('ngEnter', function() {
             return function(scope, element, attrs) {
                 element.bind("keydown keypress", function(event) {
