@@ -42,11 +42,14 @@
     };
 
     ConfigProvider.prototype.updateRedirect = function (id, properties) {
-        var redirect = _.extend(
-            {updatedAt:new Date()},
-            _.pick(properties, 'from', 'to', 'type'));
+        var update = _.extend(
+            { updatedAt: new Date() },
+            _.pick(properties, 'from', 'to', 'type')
+        );
 
-        return Redirect.findByIdAndUpdate(id, redirect).exec();
+        debug('updating redirect %j : %j', id, update);
+
+        return Redirect.findByIdAndUpdate(id, update).exec();
     };
 
     ConfigProvider.prototype.createRedirect = function (properties) {
