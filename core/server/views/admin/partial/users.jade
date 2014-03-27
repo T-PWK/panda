@@ -6,3 +6,87 @@
 
         .page-header
             h1 Users
+
+        .row
+            .col-md-2: h3 Basic
+            .col-md-10
+                form.form-horizontal(role="form", name="userForm")
+
+                    //- User name
+                    .form-group(ng-class="{'has-error':userForm.name.$invalid && userForm.name.$dirty}")
+                        label.col-sm-3.control-label(for="name") Name
+                        .col-sm-7
+                            input.form-control#name(type="text", required, name="name", ng-model="user.name", ng-maxlength="50", ng-trim="true")
+
+                    //- User email
+                    .form-group(ng-class="{'has-error':userForm.email.$invalid && userForm.email.$dirty}")
+                        label.col-sm-3.control-label(for="email") Email
+                        .col-sm-7
+                            input.form-control#email(type="email", required, name="email", ng-model="user.email", ng-maxlength="50", ng-trim="true")
+
+                    //- User website
+                    .form-group
+                        label.col-sm-3.control-label(for="website") Website
+                        .col-sm-7
+                            input.form-control#website(type="text", name="website", ng-model="user.website", ng-trim="true", ng-maxlength="100")
+
+                    // User location
+                    .form-group
+                        label.col-sm-3.control-label(for="location") Location
+                        .col-sm-7
+                            input.form-control#location(type="text", name="location", ng-model="user.location", ng-trim="true", ng-maxlength="100")
+
+                    //- User bio
+                    .form-group(ng-class="{'has-error':userForm.bio.$invalid}")
+                        label.col-sm-3.control-label(for="bio") Bio
+                        .col-sm-7
+                            textarea.form-control#bio(type="text", name="bio", ng-model="user.bio", rows="4", ng-maxlength="200", ng-trim="true")
+                            p.help-block.pull-right(ng-show="userForm.bio.$valid" ng-pluralize, count="user.bio.length || 0",
+                                when="{'0':'No characters', 'one': 'just one character', 'other':'{} characters'}")
+                            p.help-block(ng-show="userForm.bio.$error.maxlength")
+                                i.fa.fa-exclamation-triangle
+                                |  User bio should not be longer than 200 characters
+
+                    //- Update form buttons
+                    .form-group
+                        .col-sm-7.col-sm-offset-3
+                            button.btn.btn-primary(ng-click="saveUser()", ng-disabled="userForm.$invalid") Save
+                            button.btn.btn-default(ng-click="resetUser()") Reset
+
+        hr
+
+        .row
+            .col-md-2: h3 Password
+            .col-md-10
+                form.form-horizontal(name="passForm")
+
+                    //- Current / old password
+                    .form-group(ng-class="{'has-error':passForm.current.$invalid && passForm.current.$dirty}")
+                        label.col-sm-3.control-label(for="current") Current Password
+                        .col-sm-7
+                            input.form-control#current(type="password", name="current", ng-model="passwd.current", ng-maxlength="100", ng-required="passReq")
+
+                    //- New password
+                    .form-group(ng-class="{'has-error':passForm.new.$invalid && passForm.new.$dirty,'has-success':passForm.new.$valid && passForm.new.$dirty}")
+                        label.col-sm-3.control-label(for="new") New Password
+                        .col-sm-7
+                            input.form-control#new(type="password", name="new", ng-model="passwd.new", ng-maxlength="100", ng-minlength="6", ng-required="passReq")
+                            p.help-block(ng-show="passForm.new.$invalid && passForm.new.$dirty")
+                                i.fa.fa-exclamation-triangle
+                                span(ng-show="passForm.new.$error.minlength")  New password must be at least 6 characters long
+                                span(ng-show="passForm.new.$error.required && passForm.new.$dirty")  New password must not be empty
+
+                    //- Password verification
+                    .form-group(ng-class="{'has-error':passForm.verify.$invalid && passForm.verify.$dirty,'has-success':passForm.verify.$valid && passForm.verify.$dirty}")
+                        label.col-sm-3.control-label(for="verify") Verify Password
+                        .col-sm-7(ng-class="{'has-error':passForm.verify.$invalid && passForm.verify.$dirty}")
+                            input.form-control#verify(type="password", name="verify", ng-model="passwd.verify", ng-maxlength="100", ng-required="passReq")
+                            p.help-block
+                                i.fa.fa-exclamation-triangle(ng-show="passForm.verify.$invalid && passForm.verify.$dirty")
+                                span(ng-show="passForm.verify.$error.match")  Verified password does not match new password
+
+                    //- Form buttons
+                    .form-group
+                        .col-sm-7.col-sm-offset-3
+                            button.btn.btn-primary(ng-click="savePasswd()", ng-disabled="passForm.$invalid") Update Password
+                            button.btn.btn-default(ng-click="resetPasswd()") Reset

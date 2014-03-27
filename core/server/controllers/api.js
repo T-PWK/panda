@@ -8,3 +8,4 @@ module.exports.labels       = require('./api/labels');
 module.exports.postsinfo    = require('./api/postsinfo');
 module.exports.redirects    = require('./api/redirects');
 module.exports.settings     = require('./api/settings');
+module.exports.users        = require('./api/users');

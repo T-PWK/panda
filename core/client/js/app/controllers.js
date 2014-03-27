@@ -96,7 +96,7 @@
             $scope.postsCount = {};
 
             $scope.setLoading = function (loading) {
-                $scope.loading = (loading === true) ? 'Loading ...' : loading;
+                $scope.loading = (loading === true) ? 'Loading' : loading;
             };
 
             $scope.setBreadcrumb = function (props) {
@@ -494,9 +494,10 @@
     ctrlsModule.controller('SettingsCtrl', ['$scope', 'Settings',
         function ($scope, Settings) {
             var hideLoading = bind($scope, $scope.setLoading, false);
-            $scope.setBreadcrumb('settings');
-            $scope.settings = Settings.get();
 
+            $scope.setLoading(true);
+            $scope.setBreadcrumb('settings');
+            $scope.settings = Settings.get(hideLoading);
 
             $scope.reset = function () {
                 $scope.setLoading(true);
@@ -506,7 +507,7 @@
             };
 
             $scope.save = function () {
-                $scope.setLoading('Saving ...');
+                $scope.setLoading('Saving');
                 $scope.settings.$save().then(hideLoading);
             };
         }
@@ -518,15 +519,70 @@
         }
     ]);
 
-    ctrlsModule.controller('UsersCtrl', ['$scope',
-        function ($scope) {
+    ctrlsModule.controller('UsersCtrl', ['$scope', '$timeout', 'Users',
+        function ($scope, $timeout, Users) {
             $scope.setBreadcrumb('users');
+            $scope.setLoading(true);
+            $scope.passReq=true;
+
+            $scope.$watch('master.name', function (name, oldName) {
+                if (!name || !oldName || name == oldName) { return; }
+                angular.element('.user-name').text(name);
+            });
+
+            $scope.$watch('passwd.verify', function (value) {
+                if (!value) return;
+                $scope.passForm.verify.$setValidity('match', value === $scope.passwd['new']);
+            });
+
+            $scope.loadUser = function () {
+                $scope.setLoading(true);
+                $scope.master = Users.get(function (user) {
+                    $scope.user = copy(user);
+                    $scope.setLoading(false);
+                });
+            };
+
+            $scope.resetUser = function() {
+                $scope.user = copy($scope.master);
+            };
+
+            $scope.saveUser = function() {
+                $scope.setLoading('Saving');
+                $scope.user.$update()
+                    .then(function () {
+                        $scope.master = copy($scope.user);
+                        $scope.setLoading();
+                    });
+            };
+
+            $scope.savePasswd = function() {
+                $scope.setLoading('Changing password');
+                Users.updatePassword($scope.passwd)
+                    .$promise
+                        .then(bind($scope, $scope.resetPasswd()))
+                        .then(bind($scope, $scope.setLoading()));
+            };
+
+            $scope.resetPasswd = function() {
+                $scope.passReq = false;
+                $scope.passwd = { };
+                $scope.passForm.$setPristine();
+
+                // This is to prevent browser behaviour
+                // which shows error message when required field is reset
+                $timeout(function () {
+                    $scope.passReq = true;
+                });
+            };
+
+            $scope.loadUser();
         }
     ]);
 
     ctrlsModule.controller('RedirectEditCtrl', ['$scope', '$rootScope', 'Redirects',
         function ($scope, $rootScope, Redirects) {
-            $scope.path = /^(\/[\w-_.]+)*\/?$/;
+            $scope.path = /^(\/[a-zA-Z0-9-_.]+)*\/?$/;
             $scope.isEdit = false;
             $scope.item = { type: 'internal' };
 

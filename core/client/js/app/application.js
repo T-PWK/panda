@@ -18,6 +18,14 @@
                 .when('/themes', { templateUrl: '/admin/partial/themes', controller: 'ThemesCtrl' })
                 .otherwise({ redirectTo: '/' });
         }])
+        .factory('Users', ['$resource', function($resource) {
+            return $resource('/api/v1/user/:type', {type: '@type'},
+                {
+                    update: { method: 'PUT', params: { type: 'basic' } },
+                    updatePassword: { method: 'PUT', params: { type: 'password' } }
+                }
+            );
+        }])
         .factory('Settings', ['$resource', function ($resource) {
             return $resource('/api/v1/settings');
         }])
