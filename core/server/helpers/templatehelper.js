@@ -245,19 +245,22 @@
         // Set default response local variables
 
         Object.defineProperties(res.locals, {
-            context: { enumerable: true, value: req.path },
-            now: { enumerable: true, value: moment() },
-            $postClass: { enumerable: true, value: buildPostClass.bind(res) },
-            $url: { enumerable: true, value: postUrl.bind(res) },
-            $pageUrl: { enumerable: true, value: pageUrl.bind(res) },
-            $labels: { enumerable: true, value: labelsFormat.bind(res) },
-            $date: { enumerable: true, value: dateFormat.bind(res) },
-            bodyClass: { enumerable: true, get: buildBodyClass.bind(res) },
-            postClass: { enumerable: true, get: buildPostClass.bind(res) },
-            metaTitle: { enumerable: true, get: metaTitle.bind(res) },
-            metaDescription: { enumerable: true, get: metaDescription.bind(res) },
-            author: { enumerable: true, get: author.bind(res) },
-            user: { enumerable: true, value: req.user }
+            context:        { enumerable: true, value: req.path },
+            title:          { enumerable: true, value: cfg.get('app:title') },
+            description:    { enumerable: true, value: cfg.get('app:description') },
+            metaTitle:      { enumerable: true, get: metaTitle.bind(res) },
+            metaDescription:{ enumerable: true, get: metaDescription.bind(res) },
+            now:            { enumerable: true, value: moment() },
+            copyright:      { enumerable: true, get: copyright.bind(app) },
+            $postClass:     { enumerable: true, value: buildPostClass.bind(res) },
+            $url:           { enumerable: true, value: postUrl.bind(res) },
+            $pageUrl:       { enumerable: true, value: pageUrl.bind(res) },
+            $labels:        { enumerable: true, value: labelsFormat.bind(res) },
+            $date:          { enumerable: true, value: dateFormat.bind(res) },
+            bodyClass:      { enumerable: true, get: buildBodyClass.bind(res) },
+            postClass:      { enumerable: true, get: buildPostClass.bind(res) },
+            author:         { enumerable: true, get: author.bind(res) },
+            user:           { enumerable: true, value: req.user }
         });
 
         next();
@@ -266,25 +269,22 @@
     function init(app) {
         // Set default application local variables as well as template helper functions
         Object.defineProperties(app.locals, {
-            custom: { enumerable: true, value: cfg.get('theme:custom') },
-            title: { enumerable: true, value: cfg.get('app:title') },
-            description: { enumerable: true, value: cfg.get('app:description') },
-            url: { enumerable: true, value: cfg.get('url') },
-            cover: { enumerable: true, value: cfg.get('theme:cover') },
-            logo: { enumerable: true, value: cfg.get('theme:logo') },
-            version: { enumerable: true, value: module.exports.version },
-            copyright: { enumerable: true, get: copyright.bind(app) },
-            $encode: { enumerable: true, value: encode },
-            $assets: { enumerable: true, value: assets.bind(app) },
-            $if: { enumerable: true, value: ifCheck },
-            $isntEmpty: { enumerable: true, value: isntEmpty },
-            $labelUrl: { enumerable: true, value: labelUrl },
-            $adminTheme: { enumerable: true, value: adminTheme },
-            $adminAsset: { enumerable: true, value: adminAsset },
+            custom:         { enumerable: true, value: cfg.get('theme:custom') },
+            url:            { enumerable: true, value: cfg.get('url') },
+            cover:          { enumerable: true, value: cfg.get('theme:cover') },
+            logo:           { enumerable: true, value: cfg.get('theme:logo') },
+            version:        { enumerable: true, value: module.exports.version },
+            $encode:        { enumerable: true, value: encode },
+            $assets:        { enumerable: true, value: assets.bind(app) },
+            $if:            { enumerable: true, value: ifCheck },
+            $isntEmpty:     { enumerable: true, value: isntEmpty },
+            $labelUrl:      { enumerable: true, value: labelUrl },
+            $adminTheme:    { enumerable: true, value: adminTheme },
+            $adminAsset:    { enumerable: true, value: adminAsset },
 
             // Update application locals with view settings like debug or pretty formatting
-            pretty: { enumerable: true, value: cfg.get('view:pretty') },
-            debug: { enumerable: true, value: cfg.get('view:debug') }
+            pretty:         { enumerable: true, value: cfg.get('view:pretty') },
+            debug:          { enumerable: true, value: cfg.get('view:debug') }
         });
 
         // Initialize reqest / response specific variables

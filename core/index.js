@@ -9,10 +9,16 @@
     function startPanda (app) {
         when()
             .then(function () {
+                // Configuration initialization
                 return require('./server/config').init();
             })
             .then(function () {
+                // Data providers initialization
                 return require('./server/providers').init();
+            })
+            .then(function () {
+                // Config updates from the storage
+                return require('./server/config/update').init();
             })
             .then(function () {
                 var panda = require('./server');

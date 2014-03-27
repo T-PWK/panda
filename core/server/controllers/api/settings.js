@@ -1,9 +1,16 @@
 (function () {
     'use strict';
 
-    var cfg     = require('nconf'),
-        _       = require('underscore'),
-        parse   = require('url').parse;
+    var cfg         = require('nconf'),
+        when        = require('when'),
+        _           = require('underscore'),
+        parse       = require('url').parse,
+        provider    = require('../../providers').configProvider,
+        mapping     = {
+            title:'app:title',
+            description:'app:description',
+            postsPerPage:'app:postsPerPage'
+        };
 
     module.exports.index = function (req, res) {
         var settings = {
@@ -19,12 +26,13 @@
     };
 
     module.exports.create = function (req, res) {
+        var storage = [];
 
         _.each(req.body, function (value, property) {
-            switch (property) {
-                case 'title': cfg.set('app:title', value); break;
-                case 'description': cfg.set('app:description', value); break;
-                case 'postsPerPage': cfg.set('app:postsPerPage', +value); break;
+            if (property in mapping) {
+                cfg.set(mapping[property], value);
+                //storage.push()
+                //TODO: push to storage
             }
         });
 

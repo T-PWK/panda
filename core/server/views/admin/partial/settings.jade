@@ -9,7 +9,7 @@
 
         .row
             .col-md-2: h4 Basic
-            .col-md-10
+            .col-md-9
                 form.form-horizontal(role="form", name="basicForm")
                     .form-group
                         label.col-sm-2.control-label(for="title") Title
@@ -19,14 +19,14 @@
                     .form-group
                         label.col-sm-2.control-label(for="description") Description
                         .col-sm-10
-                            textarea.form-control#description(placeholder="Description", type="text", ng-trim="true", row="3",
+                            textarea.form-control#description(placeholder="Description", type="text", ng-trim="true", rows="3",
                                 ng-model="settings.description")
 
         hr
 
         .row
             .col-md-2.text: h4 Posts
-            .col-md-10
+            .col-md-9
                 form.form-horizontal(role="form", name="postsForm")
                     .form-group(ng-class="{'has-error':basicForm.postpp.$invalid}")
                         label.col-sm-2.control-label(for="postspp") Posts per page
@@ -37,7 +37,7 @@
         hr
         .row
             .col-md-2: h4 Publishing
-            .col-md-10
+            .col-md-9
                 form.form-horizontal(role="form", name="pubForm")
                     .form-group
                         label.col-sm-2.control-label(for="address") Address
@@ -45,9 +45,11 @@
                             input.form-control#address(placeholder="Address", type="text", required, ng-trim="true",
                                 ng-model="settings.host")
 
+        hr
         .row
-            hr
-            .pull-right
-                button.btn.btn-primary(ng-click="save()") Save
-                button.btn.btn-default(ng-click="reset()") Cancel
-        p
+            .col-md-2
+            .col-md-9
+                .form-group
+                    .col-md-10.col-md-offset-2
+                        button.btn.btn-primary(ng-click="save()") Save
+                        button.btn.btn-default(ng-click="reset()") Cancel
