@@ -44,6 +44,9 @@
 
     PostSchema.plugin(idsPlugin);
 
+    PostSchema.path('slug').index({ unique: true, sparse: true });
+    PostSchema.path('publishedAt').index(true);
+
     module.exports = mongoose.model('Post', PostSchema);
 
 })();
