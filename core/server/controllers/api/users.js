@@ -50,7 +50,7 @@
     }
 
     function sendUser (res, user) {
-        res.json(_.pick(user, 'name', 'email', 'image', 'website', 'bio', 'lead', 'createdAt', 'updatedAt'));
+        res.json(_.pick(user, 'name', 'email', 'image', 'location', 'website', 'bio', 'lead', 'createdAt', 'updatedAt'));
     }
 
 }());
