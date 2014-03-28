@@ -15,6 +15,7 @@
         });
 
     RedirectSchema.plugin(idsPlugin);
+    RedirectSchema.path('from').index({ unique: true });
 
     module.exports = mongoose.model('Redirect', RedirectSchema);
 

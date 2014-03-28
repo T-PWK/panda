@@ -10,6 +10,7 @@
             email: { type: String, required: true, trim: true },
             password: { type: String, trim: true },
             website: { type: String, required: false, trim: true },
+            location: { type: String, required: false, trim: true },
             bio: String,
             image: String,
             lead: Boolean,
@@ -20,6 +21,7 @@
         });
 
     UserSchema.plugin(idsPlugin);
+    UserSchema.path('email').index({ unique: true });
 
     module.exports = mongoose.model('User', UserSchema);
 
