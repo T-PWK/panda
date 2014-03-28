@@ -12,13 +12,13 @@
             .col-md-9
                 form.form-horizontal(role="form", name="basicForm")
                     .form-group
-                        label.col-sm-2.control-label(for="title") Title
-                        .col-sm-10
+                        label.col-sm-3.control-label(for="title") Title
+                        .col-sm-9
                             input.form-control#title(placeholder="Title", type="text", required, ng-trim="true",
                                 ng-model="settings.title")
                     .form-group
-                        label.col-sm-2.control-label(for="description") Description
-                        .col-sm-10
+                        label.col-sm-3.control-label(for="description") Description
+                        .col-sm-9
                             textarea.form-control#description(placeholder="Description", type="text", ng-trim="true", rows="3",
                                 ng-model="settings.description")
 
@@ -29,7 +29,7 @@
             .col-md-9
                 form.form-horizontal(role="form", name="postsForm")
                     .form-group(ng-class="{'has-error':basicForm.postpp.$invalid}")
-                        label.col-sm-2.control-label(for="postspp") Posts per page
+                        label.col-sm-3.control-label(for="postspp") Posts per page
                         .col-sm-2
                             input.form-control#postspp(type="number", required, min="1", max="100", name="postpp",
                             ng-model="settings.postsPerPage")
@@ -40,16 +40,16 @@
             .col-md-9
                 form.form-horizontal(role="form", name="pubForm")
                     .form-group
-                        label.col-sm-2.control-label(for="address") Address
-                        .col-sm-10
+                        label.col-sm-3.control-label(for="address") Address
+                        .col-sm-9
                             input.form-control#address(placeholder="Address", type="text", required, ng-trim="true",
                                 ng-model="settings.host")
 
         hr
-        .row
-            .col-md-2
-            .col-md-9
-                .form-group
+        .form-group
+            .row
+                .col-md-2
+                .col-md-9
                     .col-md-10.col-md-offset-2
                         button.btn.btn-primary(ng-click="save()") Save
                         button.btn.btn-default(ng-click="reset()") Cancel
