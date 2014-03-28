@@ -14,9 +14,9 @@
 
     module.exports.index = function (req, res) {
         var settings = {
-                title:          cfg.get('app:title'),
-                description:    cfg.get('app:description'),
-                postsPerPage:   cfg.get('app:postsPerPage')
+                title:          cfg.get(mapping.title),
+                description:    cfg.get(mapping.description),
+                postsPerPage:   cfg.get(mapping.postsPerPage)
             },
             url = parse(cfg.get('url'));
 
@@ -26,17 +26,25 @@
     };
 
     module.exports.create = function (req, res) {
-        var storage = [];
+        var promises = [];
 
         _.each(req.body, function (value, property) {
-            if (property in mapping) {
-                cfg.set(mapping[property], value);
-                //storage.push()
-                //TODO: push to storage
+
+            console.info('checking  ', property)
+
+            if (property in mapping && cfg.get(mapping[property]) !== value) {
+                console.info('updating ', mapping[property])
+                promises.push(
+                    provider.saveConfig(mapping[property], value)
+                        .then(cfg.set.bind(cfg, mapping[property], value))
+                );
             }
         });
 
-        module.exports.index(req, res);
+        when.all(promises).done(
+            module.exports.index.bind(null, req, res),
+            res.send.bind(res, 500)
+        );
     };
 
 }());

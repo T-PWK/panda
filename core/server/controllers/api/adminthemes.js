@@ -7,6 +7,7 @@
         _s          = require('underscore.string'),
         when        = require('when'),
         node        = require('when/node'),
+        provider    = require('../../providers').configProvider,
         readdir     = node.lift(fs.readdir),
         join        = require('path').join,
         themesDir   = join(cfg.get('paths:clientStatic'), 'css/theme'); /* jshint -W030 */
@@ -42,6 +43,7 @@
     module.exports.update = function (req, res) {
         readdir(themesDir)
             .then(checkThemes)
+            .tap(provider.saveConfig.bind(provider, 'admin:theme'))
             .then(setAdminTheme)
             .done(
                 res.json.bind(res),
@@ -53,7 +55,8 @@
         }
 
         function setAdminTheme (theme) {
-            cfg.set('admin:theme', req.params.admin);
+            cfg.set('admin:theme', theme);
+            cfg.notify('set:admin:theme', theme);
         }
     };
 
