@@ -5,8 +5,10 @@
 
     var mongoose    = require('mongoose'),
         moment      = require('moment'),
-        when        = require('when'),
         _           = require('underscore'),
+        when        = require('when'),
+        lift        = require('when/node').lift,
+        debug       = require('debug')('panda:postProvider'),
         Post        = require('./../../models/mongoose/post');
 
     var PostProvider = module.exports = function () {
@@ -14,6 +16,7 @@
     };
 
     PostProvider.prototype.init = function () {
+        debug('initializing');
         return when.resolve();
     };
 
@@ -47,6 +50,8 @@
 
     PostProvider.prototype.findAll = function (options) {
         options = options || {};
+
+        debug('finding all posts %j', options);
 
         var selection = addBasicSelection({}, options),
             query = addQueryOptions(Post.find(selection), options);
@@ -214,6 +219,41 @@
                 { $project: { count: 1, label: "$_id", _id: 0 } }   // make sure we have label and count properties
             ).exec()
         );
+    };
+
+    PostProvider.prototype.update = function (id, properties, options) {
+        if (!properties) return when.reject();
+
+        debug('updating post %j', id);
+
+        var post = _.extend(
+            { updatedAt: new Date() },
+            _.pick(properties, 'slug', 'title', 'teaser', 'markdown', 'author', 'content', 'scheduleOpt', 'slugOpt',
+                'featured', 'page', 'labels')
+        );
+
+        if (options.publish) {
+            post.publishedAt = new Date();
+        }
+
+        return Post.findByIdAndUpdate(id, post).exec();
+    };
+
+    PostProvider.prototype.create = function (properties, options) {
+        debug('creating post %j', properties);
+
+        var post = _.pick(properties, 'slug', 'title', 'teaser', 'markdown', 'author', 'content', 'scheduleOpt',
+            'slugOpt', 'featured', 'page', 'labels', 'title');
+
+        if (options.publish) {
+            post.publishedAt = new Date();
+        }
+
+        return Post.create(post);
+    };
+
+    PostProvider.prototype.delete = function (id) {
+        return Post.findByIdAndRemove(id).exec();
     };
 
 })();

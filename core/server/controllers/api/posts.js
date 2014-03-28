@@ -27,45 +27,54 @@
 
         if (req.query.publish === 'true') options.publish = true;
 
-        post._authorId = "_1";
-
-        if (post.slug) {
-            provider.findBySlug(post.slug).then();
-        }
+        post.author = "531badf9a0e6552c820002ae";
 
         // Check if there is no post with the given slug
         // If there is on, suffix slug with index number (slug_index)
-        when.iterate(increase,
-            function (seed) {
-                var slug = post.slug;
-                if (seed > 0) {
-                    slug = format('%s_%s', slug, seed);
-                }
-                return provider.findBySlug(slug).then(function (post) { return !post; });
-            }, noop, 0)
-            .then(function (seed) {
-                if (seed > 0) {
+        return findAvailableSlug(post.slug)
+            .then(function (check) {
+                if (check.slug > 0) {
                     post.slugOpt = false;
-                    post.slug = format('%s_%s', post.slug, seed);
+                    post.slug = check.slug;
                 }
+                return post;
+            })
+            .then(function (post) {
                 return provider.create(post, options);
             })
-            .then(function (id) {
-                res.json({ id:id });
+            .done(
+                function (post) { res.json({id:post.id}); },
+            function (err) {
+                console.error(err.stack)
+                res.send(500);
             });
     };
 
+    function findAvailableSlug(slug) {
+        var outputSlug = slug;
+
+        return when.iterate(increase,
+            function (seed) {
+                if (seed > 0) {
+                    outputSlug = format('%s_%s', slug, seed);
+                }
+                return provider.findBySlug(outputSlug).then(function (post) { return !post; });
+            }, noop, 0)
+            .then(function (seed) {
+                return { slug: outputSlug, seed: seed };
+            });
+    }
+
     module.exports.update = function (req, res) {
-        var post = _.extend({}, req.body),
-            options = {};
+        var options = {};
 
         if (req.query.publish === 'true') {
             options.publish = true;
         }
 
         provider
-            .update(post, options)
-            .then(res.json.bind(res, post));
+            .update(req.params.post, req.body, options)
+            .then(res.json.bind(res, req.body));
     };
 
     module.exports.show = function (req, res) {
@@ -74,6 +83,10 @@
 
     module.exports.load = function (id, fn) {
         node.liftCallback(fn)(provider.findById(id));
+    };
+
+    module.exports.destroy = function (req, res) {
+        when.resolve(provider.delete(req.params.post)).done(res.json.bind(res), res.send.bind(res, 500));
     };
 
     function increase (value) {

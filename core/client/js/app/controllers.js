@@ -63,6 +63,14 @@
     };
 
     Object.defineProperties(Pagination.prototype, {
+        pageSize: {
+            enumerable: true,
+            set: function (value) {
+                this._pageSize = value;
+                this.current = 1;
+            },
+            get: function () { return this._pageSize; }
+        },
         items: {
             enumerable: true,
             set: function (value) {
@@ -93,11 +101,15 @@
 
     var ctrlsModule = angular.module('pandaControllers', []);
 
-    ctrlsModule.controller('RootCtrl', ['$scope', 'Constants',
-        function ($scope, Config) {
+    ctrlsModule.controller('RootCtrl', ['$scope', 'PostsInfo', 'Constants',
+        function ($scope, Info, Config) {
             $scope.loading = false;
             $scope.breadcrumb = [];
             $scope.postsCount = {};
+
+            $scope.$on('post:delete', reloadPostStats);
+            $scope.$on('post:create', reloadPostStats);
+            $scope.$on('post:publish', reloadPostStats);
 
             $scope.setLoading = function (loading) {
                 $scope.loading = (loading === true) ? 'Loading' : loading;
@@ -116,6 +128,12 @@
             $scope.setPostCounts = function (counts) {
                 $scope.postsCount = counts;
             };
+
+            function reloadPostStats () {
+                Info.get({id: 'count', page: false }, function (stats) {
+                    $scope.setPostCounts(stats);
+                });
+            }
 
             function updateCrumbItem (args) {
                 if (isObject(args[1])) {
@@ -146,10 +164,11 @@
         }
     ]);
 
-    ctrlsModule.controller('PostsCtrl', ['$scope', '$routeParams', 'Posts', 'PostsInfo', 'Constants',
-        function ($scope, $params, Posts, Info, Config) {
+    ctrlsModule.controller('PostsCtrl', ['$scope', '$routeParams', '$q', 'Posts', 'PostsInfo', 'Constants',
+        function ($scope, $params, $q, Posts, Info, Config) {
             $scope.setBreadcrumb('posts', $params.type);
             $scope.type = $params.type;
+            $scope.pg = new Pagination({pageSize: 10});
             $scope.pagination = {
                 limit: 10,
                 pages: [],
@@ -181,6 +200,21 @@
             $scope.$watch('posts', updatePagination);
 
             loadPosts();
+
+            $scope.delete = function () {
+                $scope.setLoading('Deleting');
+                var deletePromises = [];
+                forEach($scope.posts, function (post) {
+                    if (post.id in $scope.selection.keys) {
+                        deletePromises.push(post.$remove());
+                    }
+                });
+
+                $q.all(deletePromises)
+                    .then(loadPosts)
+                    .then(bind($scope, $scope.setLoading))
+                    .then(bind($scope, $scope.$emit, 'post:delete'));
+            };
 
             $scope.statusText = function (post) {
                 return Config.status[$scope.status(post)];
@@ -220,6 +254,7 @@
             $scope.setSortBy = function (sortBy, e) {
                 e.preventDefault();
                 $scope.sortBy = sortBy;
+                $scope.pg.current = 1;
                 $scope.pagination.page = 1;
             };
 
@@ -227,10 +262,13 @@
                 e.preventDefault();
                 $scope.pagination.limit = limit;
                 $scope.pagination.page = 1;
+
+                $scope.pg.pageSize = limit;
             };
 
             $scope.setPage = function (num) {
                 $scope.pagination.page = num;
+                $scope.pg.current = num;
             };
 
             function loadPostsCount () {
@@ -249,6 +287,7 @@
                 $scope.setBreadcrumb(1, { data: qty });
                 $scope.total = qty;
                 $scope.pagination.total = qty;
+                $scope.pg.items = qty;
             }
 
             function clearSelection () {
@@ -373,10 +412,13 @@
             var unwatchTitle;
 
             $scope.$watch('post.slugOpt', function (opt) {
+                if ('undefined' === typeof opt) {
+                    return;
+                }
                 if(opt) {
                     unwatchTitle = $scope.$watch('post.title', setSlugFromTitle);
                 } else {
-                    unwatchTitle();
+                    unwatchTitle && unwatchTitle();
                 }
             });
 
@@ -412,15 +454,20 @@
             $scope.create = function () {
                 $scope.setLoading('Saving');
 
+                var post = new Posts($scope.post);
+
+                console.info('creating a post ....', post);
+
                 Posts.create($scope.post, function (post) {
+                    $scope.$emit('post:create');
                     $location.path('/posts/'+post.id+'/edit');
                 });
             };
         }
     ]);
 
-    ctrlsModule.controller('PostEditCtrl', ['$scope', '$filter', '$sce', '$routeParams', 'Posts', 'MarkdownConverter',
-        function ($scope, $filter, $sce, $params, Posts, Converter) {
+    ctrlsModule.controller('PostEditCtrl', ['$scope', '$filter', '$sce', '$timeout', '$routeParams', 'Posts', 'MarkdownConverter',
+        function ($scope, $filter, $sce, $timeout, $params, Posts, Converter) {
             $scope.opt = { customDate: '', editor: true, create: false };
             $scope.setBreadcrumb('postedit');
 
@@ -428,6 +475,7 @@
                 page: '/:slug.html',
                 post: '/:year/:month/:day/:slug.html'
             };
+
             var tags = {
                 ':slug': function (post) { return post.slug || ':slug:'; },
                 ':year': function (post) { return moment(post.scheduledAt).year(); },
@@ -451,12 +499,11 @@
                 $scope.post.content = (!value) ? "" : Converter.makeHtml(value);
             });
 
-            $scope.post = Posts.get({ id:$params.id }, function (post) {
-                //TODO: remove blow two lines
-                post.scheduleOpt = isDefined(post.scheduleOpt) ? post.scheduleOpt : true;
-                post.slugOpt = isDefined(post.slugOpt) ? post.slugOpt : true;
 
-                // editor.setValue(post.markdown || '');
+            $scope.post = Posts.get({ id:$params.id }, function (post) {
+                $timeout(function () {
+                    editor.setValue(post.markdown || '');
+                });
             });
 
             $scope.now = function (format) {
@@ -471,9 +518,17 @@
                 return $sce.trustAsHtml($scope.post.content);
             };
 
-            $scope.savePost = function () {
+            $scope.save = function () {
                 $scope.setLoading('Saving');
                 $scope.post.$update({id: $params.id}, function () {
+                    $scope.setLoading(false);
+                });
+            };
+
+            $scope.publish = function () {
+                $scope.setLoading('Publishing');
+                $scope.post.$update({id: $params.id, publish: true }, function () {
+                    $scope.$emit('post:publish');
                     $scope.setLoading(false);
                 });
             };

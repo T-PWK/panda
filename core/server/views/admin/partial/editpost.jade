@@ -33,12 +33,12 @@ mixin slugForm
 .row
     .col-md-12
 
-        form.form-horizontal(role="titleform")
-            .form-group(ng-class="{'has-error':false}")
+        form.form-horizontal(name="form")
+            .form-group(ng-class="{'has-error':form.$invalid && form.title.$dirty}")
                 label.col-sm-2.control-label(for="title") Page Title
                 .col-sm-10
-                    input.form-control#title(type="text", placeholder="Enter Post Title", 
-                        ng-model="post.title", required, name="title")
+                    input.form-control#title(type="text", placeholder="Enter Post Title",
+                        ng-model="post.title", required, name="title", ng-maxlength="100")
         hr
         .row
             .col-md-3 
@@ -58,26 +58,24 @@ mixin slugForm
                                         span.input-group-btn
                                             button.btn.btn-default(type="button", ng-click="addLabel(labels);labels=[]"): i.fa.fa-plus
                                     span.help-block
-                                        i.fa.fa-info-circle
-                                        |  Enter label name
-                                i.fa.fa-tags
-                                |  Post labels
+                                        i.fa.fa-info-circle.fa-fw
+                                        | Enter label name
+                                i.fa.fa-tags.fa-fw
+                                | Post labels
                                 ul.list-inline
-                                    li.btn-link(ng-click="delLabel(label)", 
-                                        ng-repeat="label in post.labels") {{label}}
-                                i.fa.fa-tags
-                                |  Available Labels
+                                    li.btn-link(ng-click="delLabel(label)", ng-repeat="label in post.labels") {{label}}
+                                i.fa.fa-tags.fa-fw
+                                | Available Labels
                                 ul.list-inline
-                                    li.btn-link(ng-click="addLabel(label.label)", 
-                                        ng-repeat="label in allLabels | orderBy:'label'") {{label.label}}
+                                    li.btn-link(ng-click="addLabel(label.label)", ng-repeat="label in allLabels | orderBy:'label'") {{label.label}}
 
                                 hr
                                 .checkbox: label
                                     input(type="checkbox", ng-model="post.featured")
                                     |  Featured
                                 span.help-block
-                                    i.fa.fa-info-circle
-                                    |  You can mark your post as featured.
+                                    i.fa.fa-info-circle.fa-fw
+                                    | You can mark your post as featured.
 
                     //- Post publication date setup
                     .panel.panel-default(ng-controller="ScheduleCtrl")
@@ -137,7 +135,7 @@ mixin slugForm
                         i.fa.fa-eye
                         |  Preview
                 .btn-group.pull-right
-                    button.btn.btn-warning Publish
+                    button.btn.btn-warning(ng-click="publish()") Publish
                     button.btn.btn-default(ng-click="create()", ng-if="opt.create") Create
                     button.btn.btn-default(ng-click="save()", ng-if="!opt.create") Save
                     a.btn.btn-default(href="#/posts") Close

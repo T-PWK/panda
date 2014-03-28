@@ -16,7 +16,7 @@
                 a.btn.btn-primary(type="button", href="#/posts/new") New
                 //- button.btn.btn-default(type="button", ng-if="publish") Publish
                 //- button.btn.btn-default(type="button") Revert to draft
-                //- button.btn.btn-default(type="button"): i.fa.fa-trash-o
+                button.btn.btn-default(type="button", ng-click="delete()"): i.fa.fa-trash-o
 
             .btn-group
                 button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
@@ -63,18 +63,11 @@
                         a(href="#", ng-click="setLimit(100, $event)") 100
 
             .btn-group.pull-right
-                button.btn.btn-default.btn-disabled(type="button", 
-                    ng-disabled="!pagination.hasPrev",
-                    ng-click="setPage(pagination.page-1)") &laquo;
-                button.btn.btn-default(type="button", 
-                    ng-repeat="page in pagination.pages", 
-                    ng-click="setPage(page)",
-                    ng-class="{active: pagination.page == page}") {{page}}
-                button.btn.btn-default(type="button", 
-                    ng-disabled="!pagination.hasNext", 
-                    ng-click="setPage(pagination.page+1)") &raquo;
+                button.btn.btn-default.btn-disabled(type="button", ng-disabled="!pg.hasPrev", ng-click="setPage(pagination.page-1)") &laquo;
+                button.btn.btn-default(type="button", ng-repeat="p in pg.pageRange", ng-click="pg.current=p", ng-class="{active:p==pg.current}") {{p}}
+                button.btn.btn-default(type="button", ng-disabled="!pg.hasNext", ng-click="setPage(pagination.page+1)") &raquo;
 
-            p.btn-group.pull-right {{pagination.posts.from}}-{{pagination.posts.to}} of {{pagination.total}}
+            p.btn-group.pull-right {{pg.from}}-{{pg.to}} of {{pg.items}}
         p
 
         table.table.table-striped(ng-if="posts.length")

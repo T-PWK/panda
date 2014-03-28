@@ -6,8 +6,8 @@
 
         PostSchema  = mongoose.Schema({
             // # Content properties
-            slug: { type: String, required: true, trim: true },
-            title: { type: String, required: true, lowercase: true, trim: true },
+            slug: { type: String, trim: true, lowercase: true },
+            title: { type: String, trim: true },
             content: String,
             markdown: String,
             teaser: String,
