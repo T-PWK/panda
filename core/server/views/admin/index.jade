@@ -29,8 +29,8 @@ block content
 
             p.navbar-text.navbar-right
                 | Signed in as 
-                a.navbar-link.user-name(href="#")= user.name
-                img.user-img(src=user.image, alt=user.name, title=user.name, style="width:24px;margin-left:5px;")
+                a.navbar-link.user-name(href="#/users")= user.name
+                img.img-circle.user-img(src=user.image, alt=user.name, title=user.name, style="width:24px;margin-left:5px;")
     //- Content
     .container(ng-controller="RootCtrl", ng-class="breadcrumb[0].id", ng-cloak)
         #loading(ng-show="loading")

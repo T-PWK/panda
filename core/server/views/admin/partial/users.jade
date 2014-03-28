@@ -36,16 +36,28 @@
                         .col-sm-7
                             input.form-control#location(type="text", name="location", ng-model="user.location", ng-trim="true", ng-maxlength="100")
 
+                    // User image
+                    .form-group
+                        label.col-sm-3.control-label(for="image") Image
+                        .col-sm-7
+                            input.form-control#image(type="text", name="image", ng-model="user.image", ng-trim="true")
+
+                    // User image preview
+                    .form-group(ng-if="user.image")
+                        label.col-sm-3.control-label(for="image") Image Preview
+                        .col-sm-7
+                            img.img-thumbnail(ng-src="{{user.image}}", alt="user image preview")
+
                     //- User bio
                     .form-group(ng-class="{'has-error':userForm.bio.$invalid}")
                         label.col-sm-3.control-label(for="bio") Bio
                         .col-sm-7
                             textarea.form-control#bio(type="text", name="bio", ng-model="user.bio", rows="4", ng-maxlength="200", ng-trim="true")
                             p.help-block.pull-right(ng-show="userForm.bio.$valid" ng-pluralize, count="user.bio.length || 0",
-                                when="{'0':'No characters', 'one': 'just one character', 'other':'{} characters'}")
+                            when="{'0':'No characters', 'one': 'just one character', 'other':'{} characters'}")
                             p.help-block(ng-show="userForm.bio.$error.maxlength")
                                 i.fa.fa-exclamation-triangle
-                                |  User bio should not be longer than 200 characters
+                                | User bio should not be longer than 200 characters
 
                     //- Update form buttons
                     .form-group
