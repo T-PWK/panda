@@ -11,6 +11,7 @@
     function Container() {
         this.items = {};
         this.size = 0;
+        this.all = false;
     }
     Container.prototype = {
         isEmpty: function () {
@@ -29,6 +30,7 @@
             delete this.items[item];
         },
         empty: function () {
+            this.all = false;
             this.items = {};
         },
         toggle: function (item) {
@@ -46,8 +48,8 @@
         this.hasPrev = this._current > 1;
         this.hasNext = this._current < this.pages;
         this.firstItem = 0;
-        this.from = 1;
-        this.to = 1;
+        this.from = 0;
+        this.to = 0;
     }
 
     Pagination.prototype.next = function () {
@@ -66,6 +68,7 @@
         pageSize: {
             enumerable: true,
             set: function (value) {
+                this.pages = Math.ceil(this._items / value) || 1;
                 this._pageSize = value;
                 this.current = 1;
             },
@@ -105,11 +108,24 @@
         function ($scope, Info, Config) {
             $scope.loading = false;
             $scope.breadcrumb = [];
-            $scope.postsCount = {};
+            $scope.postStats = {};
+            $scope.pageStats = {};
+
+            $scope.$on('post:load', function(){
+                if (!$scope.postStats.all) reloadPostStats();
+            });
 
             $scope.$on('post:delete', reloadPostStats);
             $scope.$on('post:create', reloadPostStats);
             $scope.$on('post:publish', reloadPostStats);
+
+            $scope.$on('page:load', function(){
+                if (!$scope.pageStats.all) reloadPageStats();
+            });
+
+            $scope.$on('page:delete', reloadPageStats);
+            $scope.$on('page:create', reloadPageStats);
+            $scope.$on('page:publish', reloadPageStats);
 
             $scope.setLoading = function (loading) {
                 $scope.loading = (loading === true) ? 'Loading' : loading;
@@ -124,16 +140,6 @@
                     updateBreadcrumb(args);
                 }
             };
-
-            $scope.setPostCounts = function (counts) {
-                $scope.postsCount = counts;
-            };
-
-            function reloadPostStats () {
-                Info.get({id: 'count', page: false }, function (stats) {
-                    $scope.setPostCounts(stats);
-                });
-            }
 
             function updateCrumbItem (args) {
                 if (isObject(args[1])) {
@@ -155,6 +161,22 @@
                     }
                 }, $scope.breadcrumb);
             }
+
+            function reloadPostStats () {
+                $scope.loadingPostStats = true;
+                Info.get({id: 'count', page: false }, function (stats) {
+                    $scope.postStats = stats;
+                    $scope.loadingPostStats = false;
+                });
+            }
+
+            function reloadPageStats () {
+                $scope.loadingPageStats = true;
+                Info.get({id: 'count', page: true }, function (stats) {
+                    $scope.pageStats = stats;
+                    $scope.loadingPageStats = false;
+                });
+            }
         }
     ]);
 
@@ -166,38 +188,29 @@
 
     ctrlsModule.controller('PostsCtrl', ['$scope', '$routeParams', '$q', 'Posts', 'PostsInfo', 'Constants',
         function ($scope, $params, $q, Posts, Info, Config) {
+
             $scope.setBreadcrumb('posts', $params.type);
             $scope.type = $params.type;
-            $scope.pg = new Pagination({pageSize: 10});
-            $scope.pagination = {
-                limit: 10,
-                pages: [],
-                page: 1,
-                total: 0,
-                nextPage: true,
-                prevPage: true,
-                posts: { from: 1, to: 10 }
-            };
-            $scope.selection = { keys: {}, all: false };
+            $scope.pg = new Pagination({ pageSize: 10 });
+            $scope.select = new Container();
 
-            loadPostsCount();
-
-            $scope.time = function (date) {
-                return moment(date).format('LLLL');
-            };
+            $scope.$emit('post:load'); // load post statistics
+            $scope.$watch('postStats', function(stats) {
+                if (stats) {
+                    $scope.setBreadcrumb(1, { data: stats[$params.type] });
+                    $scope.pg.items = stats[$params.type];
+                }
+            });
 
             // Clear posts selection
-            $scope.$watch('pagination.limit', clearSelection);
-            $scope.$watch('pagination.page', clearSelection);
+            $scope.$watch('pg.pageSize', clearSelection);
+            $scope.$watch('pg.pageSize', postViewSetChange);
+
+            $scope.$watch('pg.current', clearSelection);
+            $scope.$watch('pg.current', postViewSetChange);
+
             $scope.$watch('sortBy', clearSelection);
-
-            // Update posts view
-            $scope.$watch('pagination.limit', postViewSetChange);
-            $scope.$watch('pagination.page', postViewSetChange);
             $scope.$watch('sortBy', postViewSetChange);
-
-            // Update pagination
-            $scope.$watch('posts', updatePagination);
 
             loadPosts();
 
@@ -205,7 +218,7 @@
                 $scope.setLoading('Deleting');
                 var deletePromises = [];
                 forEach($scope.posts, function (post) {
-                    if (post.id in $scope.selection.keys) {
+                    if ($scope.select.has(post.id)) {
                         deletePromises.push(post.$remove());
                     }
                 });
@@ -220,20 +233,15 @@
                 return Config.status[$scope.status(post)];
             };
 
-            $scope.select = function (id) {
-                if ($scope.selection.keys[id]) removeSelection(id);
-                else addSelection(id);
-            };
-
             $scope.selectAll = function () {
-                var sel = $scope.selection;
+                var sel = $scope.select;
                 if (sel.all) {
                     clearSelection();
                 } else {
                     forEach($scope.posts, function (post) {
                         addSelection(post.id);
                     });
-                    $scope.selection.all = true;
+                    sel.all = true;
                 }
             };
 
@@ -251,73 +259,21 @@
                 return 'A';
             };
 
-            $scope.setSortBy = function (sortBy, e) {
-                e.preventDefault();
+            $scope.setSortBy = function (sortBy) {
                 $scope.sortBy = sortBy;
                 $scope.pg.current = 1;
-                $scope.pagination.page = 1;
             };
-
-            $scope.setLimit = function (limit, e) {
-                e.preventDefault();
-                $scope.pagination.limit = limit;
-                $scope.pagination.page = 1;
-
-                $scope.pg.pageSize = limit;
-            };
-
-            $scope.setPage = function (num) {
-                $scope.pagination.page = num;
-                $scope.pg.current = num;
-            };
-
-            function loadPostsCount () {
-                if (!$scope.postsCount.all) {
-                    Info.get({id: 'count', page: false }, function (counts) {
-                        $scope.setPostCounts(counts);
-                        updatePostsCountInfo();
-                    });
-                } else {
-                    updatePostsCountInfo();
-                }
-            }
-
-            function updatePostsCountInfo() {
-                var qty = $scope.postsCount[$params.type];
-                $scope.setBreadcrumb(1, { data: qty });
-                $scope.total = qty;
-                $scope.pagination.total = qty;
-                $scope.pg.items = qty;
-            }
 
             function clearSelection () {
-                $scope.selection.keys = {};
-                $scope.selection.all = false;
+                $scope.select.empty();
             }
 
             function addSelection (id) {
-                $scope.selection.keys[id] = true;
+                $scope.select.add(id);
             }
 
             function removeSelection (id) {
-                delete $scope.selection.keys[id];
-                $scope.selection.all = false;
-            }
-
-            function updatePagination () {
-                var pg = $scope.pagination,
-                    pages = Math.ceil((pg.total || 0) / pg.limit);
-                    
-                pg.pages = [];
-                for(var i = 1; i <= pages; i++) {
-                    pg.pages.push(i);
-                }
-
-                pg.posts.from = pg.limit * (pg.page - 1) + 1;
-                pg.posts.to = Math.min(pg.posts.from + pg.limit - 1, pg.total);
-
-                pg.hasNext = pg.page < pages;
-                pg.hasPrev = pg.page > 1;
+                $scope.select.remove(id);
             }
 
             function postViewSetChange (newValue, oldValue) {
@@ -328,11 +284,9 @@
 
             function loadPosts () {
                 $scope.setLoading(true);
-                var pg = $scope.pagination, skip = (pg.page - 1) * pg.limit;
-
                 Posts.query({
-                    limit: $scope.pagination.limit,
-                    skip: skip,
+                    limit: $scope.pg.pageSize,
+                    skip: $scope.pg.firstItem,
                     sortBy: $scope.sortBy,
                     type: $params.type,
                     page: false
@@ -349,10 +303,11 @@
             $scope.setBreadcrumb('pages', $params.type);
             $scope.pages = Posts.query({ page: true });
             $scope.limit = 100;
-            $scope.breakdown =  Info.get({id: 'count', page: false })
-                .$promise.then(function (breakdown) {
-                    $scope.setBreadcrumb(1, { data: breakdown[$params.type] });
-                });
+//            $scope.breakdown =  Info.get({id: 'count', page: false })
+//                .$promise.then(function (breakdown) {
+//                    $scope.setBreadcrumb(1, { data: breakdown[$params.type] });
+//                });
+            $scope.$emit('page:load');
         }
     ]);
 
