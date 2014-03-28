@@ -2,12 +2,11 @@
     'use strict';
 
     var cfg                 = require('nconf'),
-        setThemeConfig      = require('../../config').setTheme,
-        updateThemeAssets   = require('../../middleware/static').updateThemeAssets,
         fs                  = require('fs'),
         _                   = require('underscore'),
         _s                  = require('underscore.string'),
         node                = require('when/node'),
+        provider            = require('../../providers').configProvider,
         readdir             = node.lift(fs.readdir);
 
     module.exports.index = function (req, res) {
@@ -40,6 +39,7 @@
 
         readdir(cfg.get('paths:themes'))
             .then(checkThemes)
+            .tap(provider.saveConfig.bind(provider, 'theme:name'))
             .then(updateThemeConfig)
             .done(
                 res.json.bind(res),
@@ -51,13 +51,8 @@
         }
 
         function updateThemeConfig(theme) {
-            setThemeConfig(theme);
-
-            // Update theme views
-            req.app.set('views', cfg.get('theme:paths:views'));
-
-            // Update static files path
-            updateThemeAssets();
+            cfg.set('theme:name', theme);
+            cfg.notify('set:theme:name', theme);
         }
     };
 

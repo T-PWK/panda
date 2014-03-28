@@ -35,6 +35,12 @@
     }
 
     function setup (app) {
+
+        // Update views path on theme paths view change
+        cfg.on('set:theme:paths:views', function() {
+            app.set('views', cfg.get('theme:paths:views'));
+        });
+
         when().then(function () {
             // ### Express Initialisation ###
             app.disable('x-powered-by');

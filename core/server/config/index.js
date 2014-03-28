@@ -8,6 +8,8 @@
         config          = require('../../../config'),
         path            = require('path'),
         randomValue     = require('../utils').randomValue,
+        EventEmitter    = require('events').EventEmitter,
+        configEmitter   = new EventEmitter(),
         appRoot         = path.resolve(__dirname, '../../..'),
         adminViews      = path.resolve(appRoot, 'core/server/views'),
         themesRoot      = path.resolve(appRoot, 'content/themes'),
@@ -15,6 +17,20 @@
         clientRoot      = path.resolve(appRoot, 'core/client'),
         sharedRoot      = path.resolve(appRoot, 'content/shared'),
         coreShared      = path.resolve(appRoot, 'core/shared');
+
+    // EventEmitter functionality added to configuration
+    cfg.notify = function() {
+        EventEmitter.prototype.emit.apply(
+            configEmitter, Array.prototype.slice.call(arguments));
+    };
+
+    cfg.on = function(event, listener) {
+        configEmitter.on(event, listener);
+    };
+
+    cfg.once = function(event, listener) {
+        configEmitter.once(event, listener);
+    };
 
     function init () {
         // Make sure NODE_ENV is always setup as it is used by express
@@ -37,6 +53,9 @@
         updateThemePaths();
         generateSecrets();
         miscUpdates();
+
+        // Update site theme paths upon theme:name change
+        cfg.on('set:theme:name', updateThemePaths);
 
         return when.resolve();
     }
@@ -63,6 +82,9 @@
 
         cfg.set('theme:paths:views', path.resolve(themesRoot, themeName));
         cfg.set('theme:paths:static', path.resolve(themesRoot, themeName, 'assets'));
+
+        cfg.notify('set:theme:paths:views');
+        cfg.notify('set:theme:paths:static');
     }
 
     function updateFlags () {
@@ -81,12 +103,6 @@
         cfg.set('sessionSecret', randomValue(32));
     }
 
-    function setTheme (name) {
-        cfg.set('theme:name', name);
-        updateThemePaths();
-    }
-
     module.exports.init = init;
-    module.exports.setTheme = setTheme;
 
 }());

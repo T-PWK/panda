@@ -7,6 +7,8 @@
 
     updateThemeAssets();
 
+    cfg.on('set:theme:paths:static', updateThemeAssets);
+
     function staticContent(req, res, fn) {
         return handler(req, res, fn);
     }
@@ -16,5 +18,4 @@
     }
 
     module.exports = staticContent;
-    module.exports.updateThemeAssets = updateThemeAssets;
 }());
