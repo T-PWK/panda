@@ -1,36 +1,47 @@
 extends layout
 
 block content
-    
-    //- Navigation
+
     nav.navbar.navbar-default.navbar-static-top(role="navigation")
         .container
-            .navbar-header
-                a.navbar-brand(href="/admin")
-                    img(src=$adminAsset("/client/img/panda-logo.png"))
-                    |  Panda
-            ul.nav.navbar-nav
-                li.dropdown
-                    a.dropdown-toggle(href="#", data-toggle="dropdown") 
-                        | Quick Links 
-                        b.caret
-                    ul.dropdown-menu
-                        li: a(href=url, target="_blank")
-                            i.fa.fa-eye
-                            |  View Blog
-                        li: a(href="#/posts")
-                            i.fa.fa-file-text
-                            |  Posts
-                        li: a(href="#/posts/new") 
-                            i.fa.fa-pencil
-                            |  New Post
-            ul.nav.navbar-nav.navbar-right
-                li: a(href="/logout") Sign Out
 
-            p.navbar-text.navbar-right
-                | Signed in as 
-                a.navbar-link.user-name(href="#/users")= user.name
-                img.img-circle.user-img(src=user.image, alt=user.name, title=user.name, style="width:24px;margin-left:5px;")
+            .navbar-header
+                button.navbar-toggle(type="button", data-toggle="collapse", data-target="#panda-navbar")
+                    span.sr-only Toggle navigation
+                    span.icon-bar
+                    span.icon-bar
+                    span.icon-bar
+                a.navbar-brand(href="/admin") Panda
+
+            #panda-navbar.collapse.navbar-collapse
+                ul.nav.navbar-nav
+                    li.dropdown
+                        a(href="#", class="dropdown-toggle", data-toggle="dropdown")
+                            | Quick Links
+                            b.caret
+                        ul.dropdown-menu
+                            li: a(href=url, target="_blank")
+                                i.fa.fa-eye.fa-fw
+                                |  View Blog
+                            li: a(href="#/posts")
+                                i.fa.fa-file-text.fa-fw
+                                |  Posts
+                            li: a(href="#/posts/new")
+                                i.fa.fa-pencil.fa-fw
+                                |  New Post
+                ul.nav.navbar-nav.navbar-right
+                    li.active: a(href="/logout") Sign Out
+
+                p.navbar-text.navbar-img.navbar-right: a(href="#/users")
+                    if user.image
+                        img.img-circle(src=user.image, alt=user.name, title=user.name)
+                    else
+                        i.fa.fa-user.fa-3x
+
+                p.navbar-text.navbar-right
+                    | Signed in as&nbsp;
+                    a.navbar-link(href="#/users")= user.name
+
     //- Content
     .container(ng-controller="RootCtrl", ng-class="breadcrumb[0].id", ng-cloak)
         #loading(ng-show="loading")
@@ -39,10 +50,9 @@ block content
             
         div(ng-view)
 
-    //- Footer
-    #footer.navbar-default
+    nav.navbar.navbar-default.navbar-fixed-bottom(role="navigation")
         .container
-            p.text-muted Panda v.#{version}
+            p.navbar-text Panda v.#{version}
 
 block js
     //- script(src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js")

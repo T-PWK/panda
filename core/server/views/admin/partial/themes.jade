@@ -18,16 +18,17 @@ mixin warning(condition)
             .col-md-3: h4 Site Theme
             .col-md-8
                 form.form-horizontal(name="siteForm")
-                    .form-group
-                        label.col-sm-2.control-label(for="siteTheme") Name
-                        .col-sm-10
-                            select.form-control#siteTheme(ng-model="theme.site.selected", ng-options="t.name for t in theme.site.list")
-                    .form-group
+                    fieldset(ng-disabled="loading")
+                        .form-group
+                            label.col-sm-2.control-label(for="siteTheme") Name
+                            .col-sm-10
+                                select.form-control#siteTheme(ng-model="theme.site.selected", ng-options="t.name for t in theme.site.list")
+                        .form-group
+                            .col-sm-10.col-sm-offset-2
+                                button.btn.btn-primary(ng-click="saveTheme('site')", ng-disabled="!theme.site.changed") Save
+                                button.btn.btn-default(ng-click="resetTheme('site')", ng-disabled="!theme.site.changed") Cancel
                         .col-sm-10.col-sm-offset-2
-                            button.btn.btn-primary(ng-click="saveTheme('site')", ng-disabled="!theme.site.changed") Save
-                            button.btn.btn-default(ng-click="resetTheme('site')", ng-disabled="!theme.site.changed") Cancel
-                    .col-sm-10.col-sm-offset-2
-                        mixin warning("theme.site.changed")
+                            mixin warning("theme.site.changed")
 
         hr
 
@@ -35,19 +36,20 @@ mixin warning(condition)
             .col-md-3: h4 Admin Theme
             .col-md-8
                 form.form-horizontal(name="adminForm")
-                    .form-group
-                        label.col-sm-2.control-label(for="adminTheme") Name
-                        .col-sm-10
-                            select.form-control#adminTheme(ng-model="theme.admin.selected", ng-options="t.name for t in theme.admin.list")
-                            p.help-block
-                                span.text-info
-                                    i.fa.fa-info-circle
-                                    |  Admin theme change will cause the page to be reloaded from the server.
+                    fieldset(ng-disabled="loading")
+                        .form-group
+                            label.col-sm-2.control-label(for="adminTheme") Name
+                            .col-sm-10
+                                select.form-control#adminTheme(ng-model="theme.admin.selected", ng-options="t.name for t in theme.admin.list")
+                                p.help-block
+                                    span.text-info
+                                        i.fa.fa-info-circle
+                                        |  Admin theme change will cause the page to be reloaded from the server.
 
-                    .form-group
+                        .form-group
+                            .col-sm-10.col-sm-offset-2
+                                button.btn.btn-primary(ng-click="saveTheme('admin')", ng-disabled="!theme.admin.changed") Save
+                                button.btn.btn-default(ng-click="resetTheme('admin')", ng-disabled="!theme.admin.changed") Cancel
+
                         .col-sm-10.col-sm-offset-2
-                            button.btn.btn-primary(ng-click="saveTheme('admin')", ng-disabled="!theme.admin.changed") Save
-                            button.btn.btn-default(ng-click="resetTheme('admin')", ng-disabled="!theme.admin.changed") Cancel
-
-                    .col-sm-10.col-sm-offset-2
-                        mixin warning("theme.admin.changed")
+                            mixin warning("theme.admin.changed")

@@ -1,0 +1,10 @@
+.navbar-img {
+    margin: .25em 1em;
+}
+.navbar-img img {
+    width: 42px;
+}
+
+.navbar-img i.fa {
+    color: #ffffff;
+}

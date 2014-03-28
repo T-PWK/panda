@@ -3,28 +3,10 @@ html {
     min-height: 100%;
 }
 
-body {
-    margin-bottom: 60px;
-}
-
-#footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 60px;
-}
-
-#footer > .container {
-    padding-right: 15px;
-    padding-left: 15px;
-}
-
-#footer p {
-    margin: 20px 0;
-}
+body { padding-bottom: 70px; }
 
 li.nav-header > ul {
-    padding-left: 1.2em;
+    padding-left: 1.5em;
 }
 
 .postedit .panel-title, .newpost .panel-title {
@@ -36,16 +18,12 @@ p.btn-group {
     margin-bottom: 0;
 }
 
-.fa + .fa, .btn + .btn {
+.btn + .btn {
     margin-left: .3em;
 }
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
     display: none !important;
-}
-
-#login .input-group-addon i.fa {
-    width: 1.4em;
 }
 
 #loading {

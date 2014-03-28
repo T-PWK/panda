@@ -4,7 +4,7 @@ ul.nav.nav-list
         |  Overview
     li.nav-header
         a(href="#/posts")
-            i.fa.fa-file-text
+            i.fa.fa-file-text.fa-fw
             |  Posts
         ul.nav.nav-list(ng-if="breadcrumb[0].id === 'posts' && postsCount")
             li: a(href="#/posts/all")
@@ -21,7 +21,7 @@ ul.nav.nav-list
                 | Published
     li.nav-header
         a(href="#/pages")
-            i.fa.fa-file
+            i.fa.fa-file.fa-fw
             |  Pages
         ul.nav.nav-list(ng-if="breadcrumb[0].id === 'pages' && breakdown")
             li: a(href="#/pages/all")
@@ -38,23 +38,26 @@ ul.nav.nav-list
                 | Published
 
     li: a(href="#/comments")
-        i.fa.fa-comments
+        i.fa.fa-comments.fa-fw
         |  Comments
 
     li: a(href="#/users")
-        i.fa.fa-users
+        i.fa.fa-user.fa-fw
         |  Users
 
     li: a(href="#/themes")
-        i.fa.fa-desktop
+        i.fa.fa-desktop.fa-fw
         |  Themes
 
     li.nav-header
         a(href="#/settings")
-            i.fa.fa-wrench
+            i.fa.fa-wrench.fa-fw
             |  Settings
         ul.nav.nav-list(ng-if="breadcrumb[0].id === 'settings'")
-            li: a(href="#/settings/redirects") 
-                i.fa.fa-share-square-o
+            li: a(href="#/settings/basic")
+                i.fa.fa-cog.fa-fw
+                |  Basic
+            li: a(href="#/settings/redirects")
+                i.fa.fa-share-square-o.fa-fw
                 |  Redirects
 
