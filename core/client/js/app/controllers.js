@@ -46,6 +46,8 @@
         this.hasPrev = this._current > 1;
         this.hasNext = this._current < this.pages;
         this.firstItem = 0;
+        this.from = 1;
+        this.to = 1;
     }
 
     Pagination.prototype.next = function () {
@@ -78,6 +80,8 @@
                 this.hasPrev = value > 1;
                 this.hasNext = value < this.pages;
                 this.firstItem = (value-1)*this.pageSize;
+                this.from = this.firstItem + 1;
+                this.to = Math.min(this.from + this.pageSize - 1, this.items);
             },
             get: function () { return this._current; }
         },
