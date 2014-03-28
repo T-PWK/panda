@@ -2,9 +2,12 @@
     'use strict';
 
     var when        = require('when'),
+        node        = require('when/node'),
         _           = require('underscore'),
         crypt       = require('bcryptjs'),
-        debug       = require('debug')('panda:userprovider'),
+        genSalt     = node.lift(crypt.genSalt),
+        hash        = node.lift(crypt.hash),
+        debug       = require('debug')('panda:userProvider'),
         User        = require('./../../models/mongoose/user');
 
     var UserProvider = function () {};
@@ -16,20 +19,20 @@
     };
 
     UserProvider.prototype.findLeadUser = function () {
-        debug('find lead user');
+        debug('finding lead user');
 
         return User.findOne({ lead: true }).exec();
     };
 
     UserProvider.prototype.findByEmail = function (email) {
-        debug('find user by email');
-
-        console.info('searching user by email: ', email);
+        debug('finding user by email %j', email);
 
         return User.findOne({ email: email }).exec();
     };
 
     UserProvider.prototype.findById = function (id) {
+        debug('finding user by id %j', id);
+
         return User.findById(id).exec();
     };
 
@@ -39,28 +42,21 @@
             _.pick(properties, 'name', 'email', 'image', 'website', 'bio', 'location')
         );
 
+        debug('updating user %j : %j', id, update);
+
         return User.findByIdAndUpdate(id, update).exec();
     };
 
     UserProvider.prototype.updatePassword = function (id, password) {
-        var deferred = when.defer(), update;
+        debug('updating password for %j', id);
 
-        crypt.genSalt(10, function (err, salt) {
-            if (err) {
-                return deferred.reject(err);
-            }
-
-            crypt.hash(password, salt, function (err, hash) {
-                if (err) {
-                    return deferred.reject(err);
-                }
-
-                deferred.resolve(
-                    User.findByIdAndUpdate(id, { updatedAt: new Date(), password: hash }).exec()
-                );
-            });
-        });
-        return deferred.promise;
+        return genSalt(10)
+            .then(function (salt) {
+                return hash(password, salt);
+            })
+            .then(function (hash) {
+                return User.findByIdAndUpdate(id, { updatedAt: new Date(), password: hash }).exec();
+            })
     };
 
     module.exports = UserProvider;
