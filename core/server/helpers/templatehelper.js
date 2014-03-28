@@ -175,16 +175,16 @@
     }
 
     function copyright() {
-        var app = this,
+        var res = this,
             tags = {
                 ':year': function () {
                     return moment().format('YYYY');
                 },
                 ':url': function () {
-                    return app.locals.url;
+                    return res.locals.url;
                 },
                 ':title': function () {
-                    return app.locals.title;
+                    return res.locals.title;
                 }
             };
         return cfg.get('app:copyright').replace(/(:[a-z]+)/g, function (match) {
@@ -251,7 +251,8 @@
             metaTitle:      { enumerable: true, get: metaTitle.bind(res) },
             metaDescription:{ enumerable: true, get: metaDescription.bind(res) },
             now:            { enumerable: true, value: moment() },
-            copyright:      { enumerable: true, get: copyright.bind(app) },
+            url:            { enumerable: true, value: cfg.get('url') },
+            copyright:      { enumerable: true, get: copyright.bind(res) },
             $postClass:     { enumerable: true, value: buildPostClass.bind(res) },
             $url:           { enumerable: true, value: postUrl.bind(res) },
             $pageUrl:       { enumerable: true, value: pageUrl.bind(res) },
@@ -270,7 +271,6 @@
         // Set default application local variables as well as template helper functions
         Object.defineProperties(app.locals, {
             custom:         { enumerable: true, value: cfg.get('theme:custom') },
-            url:            { enumerable: true, value: cfg.get('url') },
             cover:          { enumerable: true, value: cfg.get('theme:cover') },
             logo:           { enumerable: true, value: cfg.get('theme:logo') },
             version:        { enumerable: true, value: module.exports.version },
