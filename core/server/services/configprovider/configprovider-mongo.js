@@ -4,7 +4,7 @@
     var when        = require('when'),
         lift        = require('when/node').lift,
         _           = require('underscore'),
-        debug       = require('debug')('panda:configprovider'),
+        debug       = require('debug')('panda:configProvider'),
         Redirect    = require('./../../models/mongoose/redirect'),
         Config      = require('./../../models/mongoose/config');
 
