@@ -36,7 +36,7 @@
     UserProvider.prototype.updateUser = function (id, properties) {
         var update = _.extend(
             { updatedAt: new Date() },
-            _.pick(properties, 'name', 'email', 'image', 'website', 'bio')
+            _.pick(properties, 'name', 'email', 'image', 'website', 'bio', 'location')
         );
 
         return User.findByIdAndUpdate(id, update).exec();
