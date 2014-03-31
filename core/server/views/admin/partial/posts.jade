@@ -7,7 +7,7 @@
         .page-header
             h1 Posts
 
-        .form-group
+        .form-group(ng-if="posts.length")
             .btn-toolbar(role="toolbar")
                 .btn-group
                     a.btn.btn-default(type="button", href="#/posts/new"): i.fa.fa-plus.fa-fw.text-primary
@@ -67,8 +67,11 @@
                     button.btn.btn-default(type="button", ng-disabled="!pg.hasNext", ng-click="pg.next()") &raquo;
 
                 p.btn-group.pull-right(ng-show="pg.items") {{pg.from}}-{{pg.to}} of {{pg.items}}
+        p
 
-        p(ng-show="!select.isEmpty()", ng-pluralize, count="select.howMany()", when="{'one':'{} post selected', 'other':'{} posts selected'}")
+        .alert.alert-info.text-center(ng-if="!posts.length && !loading")
+            | No posts. You can create your first post&nbsp;
+            a(href="#/posts/new") here
 
         .text-center(ng-if="!posts.length && loading")
             i.fa.fa-spinner.fa-spin

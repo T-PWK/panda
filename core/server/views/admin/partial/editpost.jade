@@ -135,7 +135,8 @@ mixin slugForm
                         i.fa.fa-eye
                         |  Preview
                 .btn-group.pull-right
-                    button.btn.btn-warning(ng-click="publish()") Publish
+                    button.btn.btn-warning(ng-click="publish()", ng-show="!post.publishedAt && post.$resolved") Publish
+                    button.btn.btn-warning(ng-click="draft()", ng-show="post.publishedAt && post.$resolved") Revert to Draft
                     button.btn.btn-default(ng-click="create()", ng-if="opt.create") Create
                     button.btn.btn-default(ng-click="save()", ng-if="!opt.create") Save
                     a.btn.btn-default(href="#/posts") Close
