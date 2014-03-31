@@ -33,6 +33,7 @@
             $scope.$on('post:delete', reloadPostStats);
             $scope.$on('post:create', reloadPostStats);
             $scope.$on('post:publish', reloadPostStats);
+            $scope.$on('post:draft', reloadPostStats);
 
             $scope.$on('page:load', function(){
                 if (!$scope.pageStats.all) reloadPageStats();
@@ -174,7 +175,7 @@
 
             $scope.status = function (post) {
                 var date = post.publishedAt;
-                if (!isDefined(date)) {
+                if (!date) {
                     return 'D';
                 }
                 if (!angular.isDate(date)) {
@@ -261,9 +262,7 @@
                 if ('undefined' === typeof opt) {
                     return;
                 }
-                if (opt) {
-                    $scope.opt.customSchedule = moment().format('lll');
-                }
+                $scope.opt.customSchedule = (opt ? moment() : moment($scope.post.scheduledAt)).format('lll');
             });
 
             $scope.$watch('opt.customSchedule', function (value) {
@@ -339,6 +338,7 @@
         function ($scope, $filter, $sce, $q, $timeout, $params, Posts, Settings, Converter) {
             $scope.opt = { customDate: '', editor: true, create: false };
             $scope.setCrumb('postedit');
+            $scope.post = {};
 
             var permalinks = { page: '', post: '' };
 
@@ -346,15 +346,8 @@
                 Settings.get({ id:'app:postUrl' }).$promise,
                 Settings.get({ id:'app:pageUrl' }).$promise
             ]).then(function(values){
-                console.info(values)
-            });
-
-            Settings.get({ id:'app:postUrl' }, function(settings){
-                permalinks.post = settings.value;
-            });
-
-            Settings.get({ id:'app:pageUrl' }, function(settings){
-                permalinks.page = settings.value;
+                permalinks.post = values[0].value;
+                permalinks.page = values[1].value;
             });
 
             var tags = {
@@ -380,12 +373,18 @@
                 $scope.post.content = (!value) ? "" : Converter.makeHtml(value);
             });
 
-
-            $scope.post = Posts.get({ id:$params.id }, function (post) {
-                $timeout(function () {
-                    editor.setValue(post.markdown || '');
+            function loadPost() {
+                $scope.setLoading(true);
+                Posts.get({ id:$params.id }, function (post) {
+                    $scope.post = post;
+                    $scope.setLoading();
+                    $timeout(function () {
+                        editor.setValue(post.markdown || '');
+                    });
                 });
-            });
+            }
+
+            loadPost();
 
             $scope.now = function (format) {
                 return moment().format(format || 'lll');
@@ -401,7 +400,7 @@
 
             $scope.save = function () {
                 $scope.setLoading('Saving');
-                $scope.post.$update({id: $params.id}, function () {
+                $scope.post.$update({draft:true}, function () {
                     $scope.setLoading(false);
                 });
             };
@@ -412,6 +411,15 @@
                     $scope.$emit('post:publish');
                     $scope.setLoading(false);
                 });
+            };
+
+            $scope.draft = function() {
+                $scope.setLoading('Reverting to draft');
+                Posts.update({ draft: true }, {id: $params.id}).$promise
+                    .then(function(){
+                        $scope.$emit('post:draft');
+                        loadPost();
+                    });
             };
 
             function updatePermalinks () {
