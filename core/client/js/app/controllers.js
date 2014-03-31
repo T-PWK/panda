@@ -8,106 +8,12 @@
         copy        = angular.copy,
         isArray     = angular.isArray;
 
-    function Container() {
-        this.items = {};
-        this.size = 0;
-        this.all = false;
-    }
-    Container.prototype = {
-        isEmpty: function () {
-            return this.howMany() === 0;
-        },
-        howMany: function () {
-            return _.size(this.items);
-        },
-        has: function (item) {
-            return _.has(this.items, item);
-        },
-        add: function (item) {
-            if (!this.has(item)) { this.items[item] = null; }
-        },
-        remove: function (item) {
-            delete this.items[item];
-        },
-        empty: function () {
-            this.all = false;
-            this.items = {};
-        },
-        toggle: function (item) {
-            if (this.has(item)) { this.remove(item); }
-            else { this.add(item); }
-        }
-    };
+    var controllers = angular.module('panda.controllers', ['panda.utils']);
 
-    function Pagination(options) {
-        options = options || {};
-        this._items = options.items || 0;
-        this._current = 1;
-        this.pageSize = options.pageSize || 10;
-        this.pages = Math.ceil(this._items / this.pageSize) || 1;
-        this.hasPrev = this._current > 1;
-        this.hasNext = this._current < this.pages;
-        this.firstItem = 0;
-        this.from = 0;
-        this.to = 0;
-    }
-
-    Pagination.prototype.next = function () {
-        if (this.hasNext) {
-            this.current++;
-        }
-    };
-
-    Pagination.prototype.prev = function () {
-        if (this.hasPrev) {
-            this.current--;
-        }
-    };
-
-    Object.defineProperties(Pagination.prototype, {
-        pageSize: {
-            enumerable: true,
-            set: function (value) {
-                this.pages = Math.ceil(this._items / value) || 1;
-                this._pageSize = value;
-                this.current = 1;
-            },
-            get: function () { return this._pageSize; }
-        },
-        items: {
-            enumerable: true,
-            set: function (value) {
-                value = isArray(value) ? value.length : value;
-                this._items = value;
-                this.pages = Math.ceil(this._items / this.pageSize) || 1;
-                this.current = this.current;
-            },
-            get: function () { return this._items; }
-        },
-        current: {
-            enumerable: true,
-            set: function (value) {
-                this._current = value;
-                this.hasPrev = value > 1;
-                this.hasNext = value < this.pages;
-                this.firstItem = (value-1)*this.pageSize;
-                this.from = this.firstItem + 1;
-                this.to = Math.min(this.from + this.pageSize - 1, this.items);
-            },
-            get: function () { return this._current; }
-        },
-        pageRange: {
-            enumerable: true,
-            get: function () { return _.range(1, this.pages+1); }
-        }
-    });
-
-    var ctrlsModule = angular.module('pandaControllers', []);
-
-    ctrlsModule.controller('RootCtrl', ['$scope', 'PostsInfo', 'Constants',
+    controllers.controller('RootCtrl', ['$scope', 'PostsInfo', 'Constants',
         function ($scope, Info, Config) {
             $scope.loading = false;
-            $scope.breadcrumb = [];
+            $scope.crumb = [];
             $scope.postStats = {};
             $scope.pageStats = {};
 
@@ -131,27 +37,27 @@
                 $scope.loading = (loading === true) ? 'Loading' : loading;
             };
 
-            $scope.setBreadcrumb = function (props) {
+            $scope.setCrumb = function (props) {
                 var args = Array.prototype.slice.call(arguments);
 
                 if (angular.isNumber(args[0])) {
                     updateCrumbItem(args);
                 } else {
-                    updateBreadcrumb(args);
+                    updateCrumb(args);
                 }
             };
 
             function updateCrumbItem (args) {
                 if (isObject(args[1])) {
-                    angular.extend($scope.breadcrumb[args[0]], args[1]);
+                    angular.extend($scope.crumb[args[0]], args[1]);
                 } 
                 else {
-                    $scope.breadcrumb[args[0]].display = args[1];
+                    $scope.crumb[args[0]].display = args[1];
                 }
             }
 
-            function updateBreadcrumb (args) {
-                $scope.breadcrumb = [];
+            function updateCrumb (args) {
+                $scope.crumb = [];
                 forEach(args, function (id) {
                     if (angular.isString(id)) {
                         this.push({ id: id, display: Config.pageNames[id] || id });
@@ -159,7 +65,7 @@
                     else if (isObject(id)) {
                         this.push(copy(id));
                     }
-                }, $scope.breadcrumb);
+                }, $scope.crumb);
             }
 
             function reloadPostStats () {
@@ -180,24 +86,26 @@
         }
     ]);
 
-    ctrlsModule.controller('OverviewCtrl', ['$scope',
+    controllers.controller('OverviewCtrl', ['$scope',
         function ($s) {
-            $s.setBreadcrumb('overview');
+            $s.setCrumb('overview');
         }
     ]);
 
-    ctrlsModule.controller('PostsCtrl', ['$scope', '$routeParams', '$q', 'Posts', 'PostsInfo', 'Constants',
-        function ($scope, $params, $q, Posts, Info, Config) {
-
-            $scope.setBreadcrumb('posts', $params.type);
+    controllers.controller('PostsCtrl',
+        ['$scope', '$routeParams', '$q', 'Posts', 'PostsInfo', 'Constants', 'Utils',
+        function ($scope, $params, $q, Posts, Info, Config, Utils) {
+            $scope.setCrumb('posts', $params.type);
             $scope.type = $params.type;
-            $scope.pg = new Pagination({ pageSize: 10 });
-            $scope.select = new Container();
+
+            $scope.pg = Utils.pagination();
+            $scope.select = Utils.selection();
+            $scope.sizes = [10, 25, 50, 100];
 
             $scope.$emit('post:load'); // load post statistics
             $scope.$watch('postStats', function(stats) {
                 if (stats) {
-                    $scope.setBreadcrumb(1, { data: stats[$params.type] });
+                    $scope.setCrumb(1, { data: stats[$params.type] });
                     $scope.pg.items = stats[$params.type];
                 }
             });
@@ -224,6 +132,7 @@
                 });
 
                 $q.all(deletePromises)
+                    .then(bind($scope.select.empty, $scope.select))
                     .then(loadPosts)
                     .then(bind($scope, $scope.setLoading))
                     .then(bind($scope, $scope.$emit, 'post:delete'));
@@ -272,10 +181,6 @@
                 $scope.select.add(id);
             }
 
-            function removeSelection (id) {
-                $scope.select.remove(id);
-            }
-
             function postViewSetChange (newValue, oldValue) {
                 if (newValue !== oldValue) {
                     loadPosts();
@@ -298,20 +203,16 @@
         }
     ]);
 
-    ctrlsModule.controller('PagesCtrl', ['$scope', '$routeParams', 'Posts', 'PostsInfo',
+    controllers.controller('PagesCtrl', ['$scope', '$routeParams', 'Posts', 'PostsInfo',
         function ($scope, $params, Posts, Info) {
-            $scope.setBreadcrumb('pages', $params.type);
+            $scope.setCrumb('pages', $params.type);
             $scope.pages = Posts.query({ page: true });
             $scope.limit = 100;
-//            $scope.breakdown =  Info.get({id: 'count', page: false })
-//                .$promise.then(function (breakdown) {
-//                    $scope.setBreadcrumb(1, { data: breakdown[$params.type] });
-//                });
             $scope.$emit('page:load');
         }
     ]);
 
-    ctrlsModule.controller('LabelsCtrl', ['$scope', 'Labels',
+    controllers.controller('LabelsCtrl', ['$scope', 'Labels',
         function ($scope, Labels) {
             $scope.allLabels = Labels.query();
 
@@ -340,7 +241,7 @@
             };
     }]);
 
-    ctrlsModule.controller('ScheduleCtrl', ['$scope',
+    controllers.controller('ScheduleCtrl', ['$scope',
         function ($scope) {
             $scope.$watch('post.scheduleOpt', function (opt) {
                 if ('undefined' === typeof opt) {
@@ -362,7 +263,7 @@
         }
     ]);
 
-    ctrlsModule.controller('SlugCtrl', ['$scope',
+    controllers.controller('SlugCtrl', ['$scope',
         function ($scope) {
             var unwatchTitle;
 
@@ -388,9 +289,9 @@
     ]);
 
 
-    ctrlsModule.controller('NewPostCtrl', ['$scope', '$location', 'Posts',
+    controllers.controller('NewPostCtrl', ['$scope', '$location', 'Posts',
         function ($scope, $location, Posts) {
-            $scope.setBreadcrumb('newpost');
+            $scope.setCrumb('newpost');
             $scope.opt = { customDate: '', editor: true, create: true };
             $scope.post = { scheduleOpt: true, slugOpt: true, page: false };
 
@@ -411,8 +312,6 @@
 
                 var post = new Posts($scope.post);
 
-                console.info('creating a post ....', post);
-
                 Posts.create($scope.post, function (post) {
                     $scope.$emit('post:create');
                     $location.path('/posts/'+post.id+'/edit');
@@ -421,15 +320,21 @@
         }
     ]);
 
-    ctrlsModule.controller('PostEditCtrl', ['$scope', '$filter', '$sce', '$timeout', '$routeParams', 'Posts', 'MarkdownConverter',
-        function ($scope, $filter, $sce, $timeout, $params, Posts, Converter) {
+    controllers.controller('PostEditCtrl',
+        ['$scope', '$filter', '$sce', '$q', '$timeout', '$routeParams', 'Posts', 'Settings', 'MarkdownConverter',
+        function ($scope, $filter, $sce, $q, $timeout, $params, Posts, Settings, Converter) {
             $scope.opt = { customDate: '', editor: true, create: false };
-            $scope.setBreadcrumb('postedit');
+            $scope.setCrumb('postedit');
 
-            var permalinks = {
-                page: '/:slug.html',
-                post: '/:year/:month/:day/:slug.html'
-            };
+            var permalinks = { page: '', post: '' };
+
+            Settings.get({ id:'app:postUrl' }, function(settings){
+                permalinks.post = settings.value;
+            });
+
+            Settings.get({ id:'app:pageUrl' }, function(settings){
+                permalinks.page = settings.value;
+            });
 
             var tags = {
                 ':slug': function (post) { return post.slug || ':slug:'; },
@@ -505,12 +410,12 @@
         }
     ]);
 
-    ctrlsModule.controller('SettingsCtrl', ['$scope', 'Settings',
+    controllers.controller('SettingsCtrl', ['$scope', 'Settings',
         function ($scope, Settings) {
             var hideLoading = bind($scope, $scope.setLoading, false);
 
             $scope.setLoading(true);
-            $scope.setBreadcrumb('settings');
+            $scope.setCrumb('settings', 'basic');
             $scope.settings = Settings.get(hideLoading);
 
             $scope.reset = function () {
@@ -527,15 +432,15 @@
         }
     ]);
 
-    ctrlsModule.controller('CommentsCtrl', ['$scope',
+    controllers.controller('CommentsCtrl', ['$scope',
         function ($scope) {
-            $scope.setBreadcrumb('comments');
+            $scope.setCrumb('comments');
         }
     ]);
 
-    ctrlsModule.controller('UsersCtrl', ['$scope', '$timeout', 'Users',
+    controllers.controller('UsersCtrl', ['$scope', '$timeout', 'Users',
         function ($scope, $timeout, Users) {
-            $scope.setBreadcrumb('users');
+            $scope.setCrumb('users');
             $scope.setLoading(true);
             $scope.passReq=true;
 
@@ -594,7 +499,7 @@
         }
     ]);
 
-    ctrlsModule.controller('RedirectEditCtrl', ['$scope', '$rootScope', 'Redirects',
+    controllers.controller('RedirectEditCtrl', ['$scope', '$rootScope', 'Redirects',
         function ($scope, $rootScope, Redirects) {
             $scope.path = /^(\/[a-zA-Z0-9-_.]+)*\/?$/;
             $scope.isEdit = false;
@@ -644,10 +549,10 @@
             }
     }]);
 
-    ctrlsModule.controller('RedirectsListCtrl', ['$scope', '$rootScope', '$q', 'Redirects',
-        function ($scope, $rootScope, $q, Redirects) {
-            $scope.deleting = new Container();
-            $scope.pg = new Pagination({ pageSize: 10 });
+    controllers.controller('RedirectsListCtrl', ['$scope', '$rootScope', '$q', 'Redirects', 'Utils',
+        function ($scope, $rootScope, $q, Redirects, Utils) {
+            $scope.deleting = Utils.selection();
+            $scope.pg = Utils.pagination();
 
             $rootScope.$on('load', loadRedirects);
 
@@ -655,7 +560,7 @@
                 $scope.pg.items = items && items.length || 0;
             });
 
-            $scope.setBreadcrumb('settings', 'redirects');
+            $scope.setCrumb('settings', 'redirects');
             loadRedirects();
 
             $scope.delete = function () {
@@ -691,9 +596,9 @@
             }
     }]);
 
-    ctrlsModule.controller('ThemesCtrl', ['$scope', '$q', '$window','Themes',
+    controllers.controller('ThemesCtrl', ['$scope', '$q', '$window','Themes',
         function ($scope, $q, $window, Themes) {
-            $scope.setBreadcrumb('themes');
+            $scope.setCrumb('themes');
             $scope.setLoading(true);
 
             $scope.theme = {
