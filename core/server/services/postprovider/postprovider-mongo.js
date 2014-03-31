@@ -58,7 +58,7 @@
             query = addQueryOptions(Post.find(selection), options);
 
         if ('draft' === options.type) {
-            query = query.exists('publishedAt', false);
+            query = query.find({'publishedAt': null});
         }
 
         if ('scheduled' === options.type) {
@@ -229,11 +229,15 @@
         var post = _.extend(
             { updatedAt: new Date() },
             _.pick(properties, 'slug', 'title', 'teaser', 'markdown', 'author', 'content', 'scheduleOpt', 'slugOpt',
-                'featured', 'page', 'labels')
+                'featured', 'page', 'labels', 'scheduledAt')
         );
 
         if (options.publish) {
-            post.publishedAt = new Date();
+            post.scheduleOpt = ('undefined' === post.scheduleOpt) ? true : post.scheduleOpt;
+            post.publishedAt = post.scheduleOpt ? new Date() : (post.scheduledAt || new Date());
+        }
+        if (options.draft) {
+            post.publishedAt = null;
         }
 
         return Post.findByIdAndUpdate(id, post).exec();
