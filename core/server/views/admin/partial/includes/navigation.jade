@@ -1,5 +1,5 @@
 ul.nav.nav-list
-    li: a(href="#/overview")
+    li: a(href="#/overview", ng-class="{'text-bold':crumb[0].id=='overview'}")
         i.fa.fa-home
         |  Overview
     li.nav-header
@@ -7,17 +7,17 @@ ul.nav.nav-list
             i.fa.fa-file-text.fa-fw
             | Posts
             i.fa.fa-spinner.fa-spin.fa-fw.pull-right.text-info(ng-show="loadingPostStats")
-        ul.nav.nav-list(ng-if="breadcrumb[0].id === 'posts' && postStats")
-            li: a(href="#/posts/all")
+        ul.nav.nav-list(ng-if="crumb[0].id === 'posts' && postStats")
+            li: a(href="#/posts/all", ng-class="{'text-bold':crumb[1].id=='all'}")
                 span.badge.pull-right {{postStats.all}}
                 | All
-            li(ng-if="postStats.scheduled"): a(href="#/posts/scheduled")
+            li(ng-if="postStats.scheduled"): a(href="#/posts/scheduled", ng-class="{'text-bold':crumb[1].id=='scheduled'}")
                 span.badge.pull-right {{postStats.scheduled}}
                 | Scheduled
-            li(ng-if="postStats.draft"): a(href="#/posts/draft")
+            li(ng-if="postStats.draft"): a(href="#/posts/draft", ng-class="{'text-bold':crumb[1].id=='draft'}")
                 span.badge.pull-right {{postStats.draft}}
                 | Draft
-            li(ng-if="postStats.live"): a(href="#/posts/live")
+            li(ng-if="postStats.live"): a(href="#/posts/live", ng-class="{'text-bold':crumb[1].id=='live'}")
                 span.badge.pull-right {{postStats.live}}
                 | Published
     li.nav-header
@@ -25,7 +25,7 @@ ul.nav.nav-list
             i.fa.fa-file.fa-fw
             | Pages
             i.fa.fa-spinner.fa-spin.fa-fw.pull-right.text-info(ng-show="loadingPageStats")
-        ul.nav.nav-list(ng-if="breadcrumb[0].id === 'pages' && pageStats")
+        ul.nav.nav-list(ng-if="crumb[0].id === 'pages' && pageStats")
             li: a(href="#/pages/all")
                 span.badge.pull-right {{pageStats.all}}
                 | All
@@ -39,15 +39,15 @@ ul.nav.nav-list
                 span.badge.pull-right {{pageStats.live}}
                 | Published
 
-    li: a(href="#/comments")
+    li: a(href="#/comments", ng-class="{'text-bold':crumb[0].id=='comments'}")
         i.fa.fa-comments.fa-fw
         |  Comments
 
-    li: a(href="#/users")
+    li: a(href="#/users", ng-class="{'text-bold':crumb[0].id=='users'}")
         i.fa.fa-user.fa-fw
         |  Users
 
-    li: a(href="#/themes")
+    li: a(href="#/themes", ng-class="{'text-bold':crumb[0].id=='themes'}")
         i.fa.fa-desktop.fa-fw
         |  Themes
 
@@ -55,11 +55,11 @@ ul.nav.nav-list
         a(href="#/settings")
             i.fa.fa-wrench.fa-fw
             |  Settings
-        ul.nav.nav-list(ng-if="breadcrumb[0].id === 'settings'")
-            li: a(href="#/settings/basic")
+        ul.nav.nav-list(ng-if="crumb[0].id === 'settings'")
+            li: a(href="#/settings/basic", ng-class="{'text-bold':crumb[1].id=='basic'}")
                 i.fa.fa-cog.fa-fw
                 |  Basic
-            li: a(href="#/settings/redirects")
+            li: a(href="#/settings/redirects", ng-class="{'text-bold':crumb[1].id=='redirects'}")
                 i.fa.fa-share-square-o.fa-fw
                 |  Redirects
 

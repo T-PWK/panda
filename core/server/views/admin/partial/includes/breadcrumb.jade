@@ -1,5 +1,5 @@
 ol.breadcrumb
     li: a(href="/admin") Panda
-    li(ng-repeat="item in breadcrumb") 
+    li(ng-repeat="item in crumb")
         | {{item.display}} 
         span(ng-if="item.data") ({{item.data}})
