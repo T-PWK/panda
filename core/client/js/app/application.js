@@ -1,22 +1,22 @@
 (function () {
     'use strict';
 
-    angular.module('panda', ['ngRoute', 'ngResource', 'pandaControllers']).
+    angular.module('panda', ['ngRoute', 'ngResource', 'panda.controllers', 'panda.utils']).
         config(['$routeProvider', function ($routeProvider) {
             $routeProvider
-                .when('/', { templateUrl: '/admin/partial/overview', controller: 'OverviewCtrl' })
+                .when('/', { templateUrl: 'overview', controller: 'OverviewCtrl' })
                 .when('/posts', { redirectTo: '/posts/all' })
-                .when('/posts/new', { templateUrl: '/admin/partial/editpost', controller: 'NewPostCtrl' })
-                .when('/posts/:type?', { templateUrl: '/admin/partial/posts', controller: 'PostsCtrl' })
+                .when('/posts/new', { templateUrl: 'editpost', controller: 'NewPostCtrl' })
+                .when('/posts/:type?', { templateUrl: 'posts', controller: 'PostsCtrl' })
                 .when('/pages', { redirectTo: '/pages/all' })
-                .when('/pages/:type?', { templateUrl: '/admin/partial/pages', controller: 'PagesCtrl' })
-                .when('/posts/:id/edit', { templateUrl: '/admin/partial/editpost', controller: 'PostEditCtrl' })
-                .when('/comments', { templateUrl: '/admin/partial/comments', controller: 'CommentsCtrl' })
+                .when('/pages/:type?', { templateUrl: 'pages', controller: 'PagesCtrl' })
+                .when('/posts/:id/edit', { templateUrl: 'editpost', controller: 'PostEditCtrl' })
+                .when('/comments', { templateUrl: 'comments', controller: 'CommentsCtrl' })
                 .when('/settings', { redirectTo: '/settings/basic' })
-                .when('/settings/basic', { templateUrl: '/admin/partial/settings', controller: 'SettingsCtrl' })
-                .when('/settings/redirects', { templateUrl: '/admin/partial/redirects' })
-                .when('/users', { templateUrl: '/admin/partial/users', controller: 'UsersCtrl' })
-                .when('/themes', { templateUrl: '/admin/partial/themes', controller: 'ThemesCtrl' })
+                .when('/settings/basic', { templateUrl: 'settings', controller: 'SettingsCtrl' })
+                .when('/settings/redirects', { templateUrl: 'redirects' })
+                .when('/users', { templateUrl: 'users', controller: 'UsersCtrl' })
+                .when('/themes', { templateUrl: 'themes', controller: 'ThemesCtrl' })
                 .otherwise({ redirectTo: '/' });
         }])
         .factory('Users', ['$resource', function($resource) {
@@ -28,7 +28,7 @@
             );
         }])
         .factory('Settings', ['$resource', function ($resource) {
-            return $resource('/api/v1/settings');
+            return $resource('/api/v1/settings/:id', { id:'@id' });
         }])
         .factory('Posts', ['$resource', function ($resource) {
             return $resource('/api/v1/posts/:id',
@@ -89,6 +89,7 @@
                 'A': 'Active'
             },
             pageNames: {
+                basic: 'Basic',
                 overview: 'Overview',
                 posts: 'Posts',
                 pages: 'Pages',
