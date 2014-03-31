@@ -7,81 +7,85 @@
         .page-header
             h1 Posts
 
-        .btn-toolbar(role="toolbar")
-            .btn-group
-                button.btn.btn-default(type="button", ng-click="selectAll()")
-                    i.fa.fa-fw(ng-class="{'fa-square-o':!select.all,'fa-check-square-o':select.all}")
+        .form-group
+            .btn-toolbar(role="toolbar")
+                .btn-group
+                    a.btn.btn-default(type="button", href="#/posts/new"): i.fa.fa-plus.fa-fw.text-primary
+                    button.btn.btn-default(type="button", ng-hide="crumb[1].id=='live'") Publish
+                    button.btn.btn-default(type="button", ng-hide="crumb[1].id=='draft'") Revert to Draft
+                    button.btn.btn-default(type="button", ng-click="delete()"): i.fa.fa-trash-o.text-danger
 
-            .btn-group
-                a.btn.btn-primary(type="button", href="#/posts/new") New
-                //- button.btn.btn-default(type="button", ng-if="publish") Publish
-                //- button.btn.btn-default(type="button") Revert to draft
-                button.btn.btn-default(type="button", ng-click="delete()"): i.fa.fa-trash-o
+                .btn-group
+                    button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
+                        | Sort By&nbsp;
+                        span.caret
+                    ul.dropdown-menu
+                        li(ng-class="{active: sortBy=='title'}")
+                            a(href="", ng-click="setSortBy('title')")
+                                i.fa.fa-sort-alpha-asc
+                                |  Title
+                        li(ng-class="{active: sortBy=='-title'}")
+                            a(href="", ng-click="setSortBy('-title')")
+                                i.fa.fa-sort-alpha-desc
+                                |  Title
+                        li(ng-class="{active: sortBy=='commentsCount'}")
+                            a(href="", ng-click="setSortBy('commentsCount')")
+                                i.fa.fa-sort-numeric-asc
+                                |  Comments
+                        li(ng-class="{active: sortBy=='-commentsCount'}")
+                            a(href="", ng-click="setSortBy('-commentsCount')")
+                                i.fa.fa-sort-numeric-desc
+                                |  Comments
+                        li(ng-class="{active: sortBy=='publishedAt'}")
+                            a(href="", ng-click="setSortBy('publishedAt')")
+                                i.fa.fa-sort-numeric-asc
+                                |  Publication Date
+                        li(ng-class="{active: sortBy=='-publishedAt'}")
+                            a(href="", ng-click="setSortBy('-publishedAt')")
+                                i.fa.fa-sort-numeric-desc
+                                |  Publication Date
+                        li(ng-class="{active: sortBy=='createdAt'}")
+                            a(href="", ng-click="setSortBy('createdAt')")
+                                i.fa.fa-sort-numeric-asc
+                                |  Creation Date
+                        li(ng-class="{active: sortBy=='-createdAt'}")
+                            a(href="", ng-click="setSortBy('-createdAt')")
+                                i.fa.fa-sort-numeric-desc
+                                |  Creation Date
 
-            .btn-group
-                button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
-                    | Sort By 
-                    span.caret
-                ul.dropdown-menu
-                    li(ng-class="{active: sortBy=='title'}")
-                        a(href="", ng-click="setSortBy('title')")
-                            i.fa.fa-sort-alpha-asc
-                            |  Title 
-                    li(ng-class="{active: sortBy=='-title'}")
-                        a(href="", ng-click="setSortBy('-title')")
-                            i.fa.fa-sort-alpha-desc
-                            |  Title
-                    li(ng-class="{active: sortBy=='commentsCount'}")
-                        a(href="", ng-click="setSortBy('commentsCount')")
-                            i.fa.fa-sort-amount-asc
-                            |  Comments
-                    li(ng-class="{active: sortBy=='-commentsCount'}")
-                        a(href="", ng-click="setSortBy('-commentsCount')")
-                            i.fa.fa-sort-amount-desc
-                            |  Comments
-                    li(ng-class="{active: sortBy=='publishedAt'}")
-                        a(href="", ng-click="setSortBy('publishedAt')")
-                            i.fa.fa-sort-numeric-asc
-                            |  Publication Date
-                    li(ng-class="{active: sortBy=='-publishedAt'}")
-                        a(href="", ng-click="setSortBy('-publishedAt')")
-                            i.fa.fa-sort-numeric-desc
-                            |  Publication Date
+                .btn-group.pull-right
+                    button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
+                        | {{pg.pageSize}}&nbsp;
+                        span.caret
+                    ul.dropdown-menu
+                        li(ng-class="{active:pg.pageSize==s}", ng-repeat="s in sizes")
+                            a(href="", ng-click="pg.pageSize=s") {{s}}
 
-            .btn-group.pull-right
-                button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
-                    | {{pg.pageSize}}&nbsp;
-                    span.caret
-                ul.dropdown-menu
-                    li(ng-class="{active: pg.pageSize==10}")
-                        a(href="", ng-click="pg.pageSize=10") 10
-                    li(ng-class="{active: pg.pageSize==25}")
-                        a(href="", ng-click="pg.pageSize=25") 25
-                    li(ng-class="{active: pg.pageSize==50}")
-                        a(href="", ng-click="pg.pageSize=50") 50
-                    li(ng-class="{active: pg.pageSize==100}")
-                        a(href="", ng-click="pg.pageSize=100") 100
+                .btn-group.pull-right
+                    button.btn.btn-default.btn-disabled(type="button", ng-disabled="!pg.hasPrev", ng-click="pg.prev()") &laquo;
+                    button.btn.btn-default(type="button", ng-repeat="p in pg.pageRange", ng-click="pg.current=p", ng-class="{active:p==pg.current}") {{p}}
+                    button.btn.btn-default(type="button", ng-disabled="!pg.hasNext", ng-click="pg.next()") &raquo;
 
-            .btn-group.pull-right
-                button.btn.btn-default.btn-disabled(type="button", ng-disabled="!pg.hasPrev", ng-click="pg.prev()") &laquo;
-                button.btn.btn-default(type="button", ng-repeat="p in pg.pageRange", ng-click="pg.current=p", ng-class="{active:p==pg.current}") {{p}}
-                button.btn.btn-default(type="button", ng-disabled="!pg.hasNext", ng-click="pg.next()") &raquo;
+                p.btn-group.pull-right(ng-show="pg.items") {{pg.from}}-{{pg.to}} of {{pg.items}}
 
-            p.btn-group.pull-right(ng-show="pg.items") {{pg.from}}-{{pg.to}} of {{pg.items}}
-        p
+        p(ng-show="!select.isEmpty()", ng-pluralize, count="select.howMany()", when="{'one':'{} post selected', 'other':'{} posts selected'}")
+
+        .text-center(ng-if="!posts.length && loading")
+            i.fa.fa-spinner.fa-spin
+            |  Loading &hellip;
 
         table.table.table-striped(ng-if="posts.length")
             thead
-                th
-                th Title
-                th Info
-                th Author
-                th: i.fa.fa-tags(title="Tags")
-                th: i.fa.fa-comments-o(title="Comments")
-                th Publication
+                th.col-sm-1: i.btn-link.fa.fa-fw(ng-class="{'fa-square-o':!select.all,'fa-check-square-o':select.all}", ng-click="selectAll()")
+                th.col-sm-4 Title
+                th.col-sm-1 Info
+                th.col-sm-2 Author
+                th.col-sm-1: i.fa.fa-tags(title="Tags")
+                th.col-sm-1: i.fa.fa-comments-o(title="Comments")
+                th.col-sm-2 Publication
             tbody
                 tr(ng-repeat="post in posts | limitTo:pg.pageSize")
-                    td: input(type="checkbox", ng-checked="select.has(post.id)", ng-click="select.toggle(post.id)")
+                    td: i.btn-link.fa.fa-fw(ng-class="{'fa-square-o':!select.has(post.id),'fa-check-square-o':select.has(post.id)}", ng-click="select.toggle(post.id)")
                     td: a(ng-href="#/posts/{{post.id}}/edit", ng-class="{'text-warning':!post.title}") {{post.title || '(Untitled post)'}}
                     td
                         i.fa.fa-bookmark-o.fa-fw(ng-if="post.featured", title="Featured")
