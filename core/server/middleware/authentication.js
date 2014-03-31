@@ -38,13 +38,20 @@
         });
     };
 
-    module.exports.loggedIn = function (req, res, fn) {
+    module.exports.adminLoginCheck = function (req, res, fn) {
         if (req.isAuthenticated()) {
-            // refreshing session
-            req.session.access = Date.now();
+            req.session.access = Date.now(); // refreshing session
             fn();
         } else {
             res.redirect(302, '/login');
+        }
+    };
+
+    module.exports.apiLoginCheck = function (req, res, fn) {
+        if (req.isAuthenticated()) {
+            fn();
+        } else {
+            res.send(401);
         }
     };
 
