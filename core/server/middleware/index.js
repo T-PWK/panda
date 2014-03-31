@@ -65,7 +65,8 @@
         tplHelper(app);
 
         // Protect admin calls
-        app.use('/admin', auth.loggedIn);
+        app.use('/admin', auth.adminLoginCheck);
+        app.use('/api', auth.apiLoginCheck);
 
         // Set the router
         app.use(app.router);
