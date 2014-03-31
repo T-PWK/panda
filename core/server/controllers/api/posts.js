@@ -16,7 +16,8 @@
                 limit: +req.query.limit,
                 skip: +req.query.skip,
                 sortBy: req.query.sortBy,
-                type: req.query.type
+                type: req.query.type,
+                select: 'id title commentsCount featured page labels updatedAt createdAt publishedAt author.bio'
             })
             .then(res.json.bind(res));
     };
@@ -33,21 +34,19 @@
         // If there is on, suffix slug with index number (slug_index)
         return findAvailableSlug(post.slug)
             .then(function (check) {
-                if (check.slug > 0) {
+                if (check.seed > 0) {
                     post.slugOpt = false;
                     post.slug = check.slug;
                 }
                 return post;
             })
-            .then(function (post) {
-                return provider.create(post, options);
+            .then(function (properties) {
+                return provider.create(properties, options);
             })
             .done(
                 function (post) { res.json({id:post.id}); },
-            function (err) {
-                console.error(err.stack)
-                res.send(500);
-            });
+                function (err) { res.send(500); }
+        );
     };
 
     function findAvailableSlug(slug) {
