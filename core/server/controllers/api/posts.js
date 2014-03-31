@@ -71,9 +71,17 @@
             options.publish = true;
         }
 
+        if (req.query.draft === 'true') {
+            options.draft = true;
+        }
+
+        var post = _.extend({}, req.body);
+
+        console.info('post update ...', post, options)
+
         provider
-            .update(req.params.post, req.body, options)
-            .then(res.json.bind(res, req.body));
+            .update(req.params.post, post, options)
+            .then(res.json.bind(res));
     };
 
     module.exports.show = function (req, res) {
