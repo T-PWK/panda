@@ -33,6 +33,7 @@
             .sort(options.sortBy || '-publishedAt')
             .skip(options.skip)
             .limit(options.limit)
+            .populate('author')
             .select(options.select || undefined);
     }
 
@@ -64,7 +65,7 @@
             query = query.where('publishedAt').gt(new Date());
         }
 
-        return query.populate('author').exec();
+        return query.exec();
     };
 
     PostProvider.prototype.findBySlug = function (slug, options) {
@@ -73,7 +74,6 @@
         var selection = addBasicSelection({slug: slug}, options);
 
         return addQueryOptions(Post.findOne(selection), options)
-            .populate('author')
             .exec();
     };
 
