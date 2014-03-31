@@ -190,9 +190,18 @@
         }
     ]);
 
-    ctrlsModule.controller('OverviewCtrl', ['$scope',
-        function ($s) {
-            $s.setBreadcrumb('overview');
+    ctrlsModule.controller('NavRootCtrl', ['$scope', '$rootScope', 'Users',
+        function ($scope, $root, Users) {
+            $scope.user = Users.get();
+            $root.$on('user:update', function (event, user) {
+                $scope.user = user;
+            });
+        }
+    ]);
+
+    ctrlsModule.controller('OverviewCtrl', ['$scope', '$rootScope',
+        function ($scope, $root) {
+            $scope.setBreadcrumb('overview');
         }
     ]);
 
@@ -577,6 +586,7 @@
                     .then(function () {
                         $scope.master = copy($scope.user);
                         $scope.setLoading();
+                        $scope.$emit('user:update', $scope.master);
                     });
             };
 
