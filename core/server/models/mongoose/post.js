@@ -21,11 +21,11 @@
             // # Dates
             createdAt: { type: Date, required: true, default: Date.now },
             updatedAt: { type: Date, required: true, default: Date.now },
-            publishedAt: Date,
+            publishedAt: { type: Date, default: null },
+            scheduledAt: Date,
 
             // # Additional properties
             geo: { type: [Number] },
-            published: { type: Boolean, required: true, default: false },
             page: { type: Boolean, default: false },
             featured: { type: Boolean, default: false },
 
