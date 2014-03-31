@@ -7,7 +7,7 @@
         .page-header
             h1 Posts
 
-        .btn-toolbar(role="toolbar")
+        .btn-toolbar(role="toolbar", ng-if="posts.length && !loading")
             .btn-group
                 button.btn.btn-default(type="button", ng-click="selectAll()")
                     i.fa.fa-fw(ng-class="{'fa-square-o':!select.all,'fa-check-square-o':select.all}")
@@ -69,6 +69,10 @@
 
             p.btn-group.pull-right(ng-show="pg.items") {{pg.from}}-{{pg.to}} of {{pg.items}}
         p
+
+        .alert.alert-info.text-center(ng-if="!posts.length && !loading")
+            | No posts. You can create your first post&nbsp;
+            a(href="#/posts/new") here
 
         table.table.table-striped(ng-if="posts.length")
             thead

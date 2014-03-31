@@ -8,16 +8,20 @@
             h1 Redirects
 
         .row(ng-controller="RedirectsListCtrl")
-            .navbar-form
+            .navbar-form(ng-if="items.length")
                 .form-group
-                    button.btn.btn-default.navbar-btn(ng-click="refresh()")
-                        i.fa.fa-refresh
-                        |  Refresh
-                .form-group.navbar-right(ng-if="items.length")
+                    p.navbar-text Items {{pg.from}}-{{pg.to}} of {{pg.items}}
+                .form-group
+                    .btn-group
+                        a.btn.btn-default(href="", ng-click="pg.prev()", ng-class="{disabled:!pg.hasPrev}") &laquo;
+                        a.btn.btn-default(ng-repeat="p in pg.pageRange", ng-class="{active:p==pg.current}", ng-click="pg.current=p") {{p}}
+                        a.btn.btn-default(href="", ng-click="pg.next()", ng-class="{disabled:!pg.hasNext}") &raquo;
+
+                .form-group.navbar-right
                     button.btn.btn-danger.navbar-btn(type="button", ng-click="delete()", ng-disabled="deleting.isEmpty()") Delete
                     button.btn.btn-default.navbar-btn(type="button", ng-click="deleting.empty()", ng-disabled="deleting.isEmpty()") Reset
                 .form-group.navbar-right
-                    p.navbar-text(ng-if="items.length", ng-pluralize, count="deleting.howMany()", when="{'0':'No items selected', 'one':'1 item selected', 'other':'{} items selected'}")
+                    p.navbar-text(ng-pluralize, count="deleting.howMany()", when="{'0':'No items selected', 'one':'1 item selected', 'other':'{} items selected'}")
 
             .text-center(ng-if="!items.length && loading")
                 i.fa.fa-spinner.fa-spin
@@ -52,18 +56,7 @@
                             i.fa(ng-class="{'internal':'fa-star-o','301':'fa-star','302':'fa-star-half-o'}[item.type]")
                             |  {{item.type||'internal'}}
 
-            .row(ng-if="items.length")
-                .navbar-form
-                    .form-group
-                        p.navbar-text {{pg.from}}-{{pg.to}} of {{pg.items}}
-                    .form-group
-                        .btn-group
-                            a.btn.btn-default(href="", ng-click="pg.prev()", ng-class="{disabled:!pg.hasPrev}") &laquo;
-                            a.btn.btn-default(ng-repeat="p in pg.pageRange", ng-class="{active:p==pg.current}", ng-click="pg.current=p") {{p}}
-                            a.btn.btn-default(href="", ng-click="pg.next()", ng-class="{disabled:!pg.hasNext}") &raquo;
-
-            .row(ng-if="!items.length && !loading")
-                .alert.alert-info.text-center No redirects have been configured.
+            .alert.alert-info.text-center(ng-if="!items.length && !loading") No redirects have been configured. You can create one in the form below.
 
         hr
 
