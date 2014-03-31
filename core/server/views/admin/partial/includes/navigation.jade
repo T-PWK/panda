@@ -5,36 +5,38 @@ ul.nav.nav-list
     li.nav-header
         a(href="#/posts")
             i.fa.fa-file-text.fa-fw
-            |  Posts
-        ul.nav.nav-list(ng-if="breadcrumb[0].id === 'posts' && postsCount")
+            | Posts
+            i.fa.fa-spinner.fa-spin.fa-fw.pull-right.text-info(ng-show="loadingPostStats")
+        ul.nav.nav-list(ng-if="breadcrumb[0].id === 'posts' && postStats")
             li: a(href="#/posts/all")
-                span.badge.pull-right {{postsCount.all}}
+                span.badge.pull-right {{postStats.all}}
                 | All
-            li(ng-if="postsCount.scheduled"): a(href="#/posts/scheduled")
-                span.badge.pull-right {{postsCount.scheduled}}
+            li(ng-if="postStats.scheduled"): a(href="#/posts/scheduled")
+                span.badge.pull-right {{postStats.scheduled}}
                 | Scheduled
-            li(ng-if="postsCount.draft"): a(href="#/posts/draft")
-                span.badge.pull-right {{postsCount.draft}}
+            li(ng-if="postStats.draft"): a(href="#/posts/draft")
+                span.badge.pull-right {{postStats.draft}}
                 | Draft
-            li(ng-if="postsCount.live"): a(href="#/posts/live")
-                span.badge.pull-right {{postsCount.live}}
+            li(ng-if="postStats.live"): a(href="#/posts/live")
+                span.badge.pull-right {{postStats.live}}
                 | Published
     li.nav-header
         a(href="#/pages")
             i.fa.fa-file.fa-fw
-            |  Pages
-        ul.nav.nav-list(ng-if="breadcrumb[0].id === 'pages' && breakdown")
+            | Pages
+            i.fa.fa-spinner.fa-spin.fa-fw.pull-right.text-info(ng-show="loadingPageStats")
+        ul.nav.nav-list(ng-if="breadcrumb[0].id === 'pages' && pageStats")
             li: a(href="#/pages/all")
-                span.badge.pull-right {{breakdown.all}}
+                span.badge.pull-right {{pageStats.all}}
                 | All
-            li(ng-if="breakdown.scheduled"): a(href="#/pages/scheduled")
-                span.badge.pull-right {{breakdown.scheduled}}
+            li(ng-if="pageStats.scheduled"): a(href="#/pages/scheduled")
+                span.badge.pull-right {{pageStats.scheduled}}
                 | Scheduled
-            li(ng-if="breakdown.draft"): a(href="#/pages/draft")
-                span.badge.pull-right {{breakdown.draft}}
+            li(ng-if="pageStats.draft"): a(href="#/pages/draft")
+                span.badge.pull-right {{pageStats.draft}}
                 | Draft
-            li(ng-if="breakdown.live"): a(href="#/pages/live")
-                span.badge.pull-right {{breakdown.live}}
+            li(ng-if="pageStats.live"): a(href="#/pages/live")
+                span.badge.pull-right {{pageStats.live}}
                 | Published
 
     li: a(href="#/comments")

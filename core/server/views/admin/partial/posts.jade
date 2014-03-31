@@ -9,9 +9,9 @@
 
         .btn-toolbar(role="toolbar")
             .btn-group
-                button.btn.btn-default(type="button")
-                    i.fa(ng-class="{'fa-square-o':!selection.all,'fa-check-square-o':selection.all}",
-                        ng-click="selectAll()")
+                button.btn.btn-default(type="button", ng-click="selectAll()")
+                    i.fa.fa-fw(ng-class="{'fa-square-o':!select.all,'fa-check-square-o':select.all}")
+
             .btn-group
                 a.btn.btn-primary(type="button", href="#/posts/new") New
                 //- button.btn.btn-default(type="button", ng-if="publish") Publish
@@ -24,50 +24,50 @@
                     span.caret
                 ul.dropdown-menu
                     li(ng-class="{active: sortBy=='title'}")
-                        a(href="#", ng-click="setSortBy('title', $event)")
+                        a(href="", ng-click="setSortBy('title')")
                             i.fa.fa-sort-alpha-asc
                             |  Title 
                     li(ng-class="{active: sortBy=='-title'}")
-                        a(href="#", ng-click="setSortBy('-title', $event)")
+                        a(href="", ng-click="setSortBy('-title')")
                             i.fa.fa-sort-alpha-desc
                             |  Title
                     li(ng-class="{active: sortBy=='commentsCount'}")
-                        a(href="#", ng-click="setSortBy('commentsCount', $event)")
+                        a(href="", ng-click="setSortBy('commentsCount')")
                             i.fa.fa-sort-amount-asc
                             |  Comments
                     li(ng-class="{active: sortBy=='-commentsCount'}")
-                        a(href="#", ng-click="setSortBy('-commentsCount', $event)")
+                        a(href="", ng-click="setSortBy('-commentsCount')")
                             i.fa.fa-sort-amount-desc
                             |  Comments
                     li(ng-class="{active: sortBy=='publishedAt'}")
-                        a(href="#", ng-click="setSortBy('publishedAt', $event)")
+                        a(href="", ng-click="setSortBy('publishedAt')")
                             i.fa.fa-sort-numeric-asc
                             |  Publication Date
                     li(ng-class="{active: sortBy=='-publishedAt'}")
-                        a(href="#", ng-click="setSortBy('-publishedAt', $event)")
+                        a(href="", ng-click="setSortBy('-publishedAt')")
                             i.fa.fa-sort-numeric-desc
                             |  Publication Date
 
             .btn-group.pull-right
                 button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
-                    | {{pagination.limit}} 
+                    | {{pg.pageSize}}&nbsp;
                     span.caret
                 ul.dropdown-menu
-                    li(ng-class="{active: pagination.limit==10}")
-                        a(href="#", ng-click="setLimit(10, $event)") 10
-                    li(ng-class="{active: pagination.limit==25}")
-                        a(href="#", ng-click="setLimit(25, $event)") 25
-                    li(ng-class="{active: pagination.limit==50}")
-                        a(href="#", ng-click="setLimit(50, $event)") 50
-                    li(ng-class="{active: pagination.limit==100}")
-                        a(href="#", ng-click="setLimit(100, $event)") 100
+                    li(ng-class="{active: pg.pageSize==10}")
+                        a(href="", ng-click="pg.pageSize=10") 10
+                    li(ng-class="{active: pg.pageSize==25}")
+                        a(href="", ng-click="pg.pageSize=25") 25
+                    li(ng-class="{active: pg.pageSize==50}")
+                        a(href="", ng-click="pg.pageSize=50") 50
+                    li(ng-class="{active: pg.pageSize==100}")
+                        a(href="", ng-click="pg.pageSize=100") 100
 
             .btn-group.pull-right
-                button.btn.btn-default.btn-disabled(type="button", ng-disabled="!pg.hasPrev", ng-click="setPage(pagination.page-1)") &laquo;
+                button.btn.btn-default.btn-disabled(type="button", ng-disabled="!pg.hasPrev", ng-click="pg.prev()") &laquo;
                 button.btn.btn-default(type="button", ng-repeat="p in pg.pageRange", ng-click="pg.current=p", ng-class="{active:p==pg.current}") {{p}}
-                button.btn.btn-default(type="button", ng-disabled="!pg.hasNext", ng-click="setPage(pagination.page+1)") &raquo;
+                button.btn.btn-default(type="button", ng-disabled="!pg.hasNext", ng-click="pg.next()") &raquo;
 
-            p.btn-group.pull-right {{pg.from}}-{{pg.to}} of {{pg.items}}
+            p.btn-group.pull-right(ng-show="pg.items") {{pg.from}}-{{pg.to}} of {{pg.items}}
         p
 
         table.table.table-striped(ng-if="posts.length")
@@ -80,8 +80,8 @@
                 th: i.fa.fa-comments-o(title="Comments")
                 th Publication
             tbody
-                tr(ng-repeat="post in posts | limitTo:pagination.limit")
-                    td: input(type="checkbox", ng-checked="selection.keys[post.id]", ng-click="select(post.id)")
+                tr(ng-repeat="post in posts | limitTo:pg.pageSize")
+                    td: input(type="checkbox", ng-checked="select.has(post.id)", ng-click="select.toggle(post.id)")
                     td: a(ng-href="#/posts/{{post.id}}/edit", ng-class="{'text-warning':!post.title}") {{post.title || '(Untitled post)'}}
                     td
                         i.fa.fa-bookmark-o.fa-fw(ng-if="post.featured", title="Featured")
@@ -95,4 +95,4 @@
                         i.fa.text-muted(ng-class="{'fa-comments-o':post.commentsCount,'fa-comment-o':post.commentsCount==0}")
                     td(ng-class="{S:'text-warning'}[status(post)]")
                         span.text-warning(ng-if="status(post)=='D'") {{statusText(post)}}
-                        span(ng-if="post.publishedAt") {{post.publishedAt|moment:'ll'}}
+                        span(ng-if="post.publishedAt") {{post.publishedAt|date:'mediumDate'}}
