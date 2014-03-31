@@ -86,4 +86,8 @@
         return when.resolve([]);
     };
 
+    ConfigProvider.prototype.saveConfig = function () {
+        return when.resolve();
+    };
+
 })();
