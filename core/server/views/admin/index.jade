@@ -22,7 +22,7 @@ block header
 
 block content
 
-    nav.navbar.navbar-default.navbar-static-top(role="navigation")
+    nav.navbar.navbar-default.navbar-static-top(role="navigation", ng-controller="NavRootCtrl")
         .container
 
             .navbar-header
@@ -47,15 +47,13 @@ block content
                 ul.nav.navbar-nav.navbar-right
                     li.active: a(href="/logout") Sign Out
 
-                p.navbar-text.navbar-img.navbar-right: a(href="#/users")
-                    if user.image
-                        img.img-circle(src=user.image, alt=user.name, title=user.name)
-                    else
-                        i.fa.fa-user.fa-3x
+                p.navbar-text.navbar-img.navbar-right(ng-cloak): a(href="#/users", ng-if="user.$resolved")
+                    img.img-circle(ng-src="{{user.image}}", alt="user.name", title="user.name", ng-show="user.image")
+                    i.fa.fa-user.fa-3x(ng-hide="user.image")
 
-                p.navbar-text.navbar-right
+                p.navbar-text.navbar-right(ng-show="user.name", ng-cloak)
                     | Signed in as&nbsp;
-                    a.navbar-link(href="#/users")= user.name
+                    a.navbar-link(href="#/users", ng-bind="user.name")
 
     //- Content
     .container(ng-controller="RootCtrl", ng-class="breadcrumb[0].id", ng-cloak)

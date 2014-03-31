@@ -5,17 +5,26 @@
         bind        = angular.bind,
         forEach     = angular.forEach,
         isObject    = angular.isObject,
-        copy        = angular.copy,
-        isArray     = angular.isArray;
+        copy        = angular.copy;
 
     var controllers = angular.module('panda.controllers', ['panda.utils']);
 
-    controllers.controller('RootCtrl', ['$scope', 'PostsInfo', 'Constants',
-        function ($scope, Info, Config) {
+    controllers.controller('RootCtrl', ['$scope', '$window', 'PostsInfo', 'Constants',
+        function ($scope, $window, Info, Config) {
             $scope.loading = false;
             $scope.crumb = [];
             $scope.postStats = {};
             $scope.pageStats = {};
+
+            // Redirect to login page in case of session expiration
+            $scope.$on('api:error', function (event, error) {
+                if (error && error.status === 401) {
+                    $window.location.href='/login';
+                }
+            });
+
+            // Reload current window
+            $scope.$on('location:reload', bind($window.location, $window.location.reload));
 
             $scope.$on('post:load', function(){
                 if (!$scope.postStats.all) reloadPostStats();
@@ -86,9 +95,18 @@
         }
     ]);
 
+    controllers.controller('NavRootCtrl', ['$scope', '$rootScope', 'Users',
+        function ($scope, $root, Users) {
+            $scope.user = Users.get();
+            $root.$on('user:update', function (event, user) {
+                $scope.user = user;
+            });
+        }
+    ]);
+
     controllers.controller('OverviewCtrl', ['$scope',
-        function ($s) {
-            $s.setCrumb('overview');
+        function ($scope) {
+            $scope.setCrumb('overview');
         }
     ]);
 
@@ -203,12 +221,8 @@
         }
     ]);
 
-    controllers.controller('PagesCtrl', ['$scope', '$routeParams', 'Posts', 'PostsInfo',
-        function ($scope, $params, Posts, Info) {
-            $scope.setCrumb('pages', $params.type);
-            $scope.pages = Posts.query({ page: true });
-            $scope.limit = 100;
-            $scope.$emit('page:load');
+    controllers.controller('PagesCtrl', ['$scope',
+        function ($scope) {
         }
     ]);
 
@@ -225,7 +239,7 @@
                 function add (label) {
                     var labels = $scope.post.labels || ($scope.post.labels = []);
 
-                    if (!label || ~_.indexOf(labels, label)) {
+                    if (!label || _.contains(labels, label)) {
                         return;
                     }
 
@@ -327,6 +341,13 @@
             $scope.setCrumb('postedit');
 
             var permalinks = { page: '', post: '' };
+
+            $q.all([
+                Settings.get({ id:'app:postUrl' }).$promise,
+                Settings.get({ id:'app:pageUrl' }).$promise
+            ]).then(function(values){
+                console.info(values)
+            });
 
             Settings.get({ id:'app:postUrl' }, function(settings){
                 permalinks.post = settings.value;
@@ -472,6 +493,7 @@
                     .then(function () {
                         $scope.master = copy($scope.user);
                         $scope.setLoading();
+                        $scope.$emit('user:update', $scope.master);
                     });
             };
 
@@ -602,10 +624,14 @@
             $scope.setLoading(true);
 
             $scope.theme = {
-                site: { list: [], active: null, changed: false, selected: null },
-                admin: { list: [], active: null, changed: false, selected: null,
+                site: {
+                    list: [], active: null, changed: false, selected: null
+                },
+                admin: {
+                    list: [], active: null, changed: false, selected: null,
                     afterSave: function () {
-                        $window.location.reload();
+                        $scope.setLoading('Reloading admin console');
+                        $scope.$emit('location:reload');
                     }
                 }
             };
@@ -664,10 +690,10 @@
                 ])
                 .then(function (themes) {
                     $scope.setLoading(false);
-
                     updateTheme.call(null, $scope.theme.site, themes[0]);
                     updateTheme.call(null, $scope.theme.admin, themes[1]);
-                });
+                })
+                .catch(bind($scope, $scope.$emit, 'api:error'));
             }
         }
     ]);
