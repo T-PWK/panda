@@ -18,7 +18,7 @@
                             label.col-sm-2.control-label(for="name") Name
                             .col-sm-6
                                 input.form-control#name(type="text", required, name="name", ng-model="user.name", ng-maxlength="50", ng-trim="true")
-                            .col-sm-4.text-danger(ng-show="userForm.name.$invalid")
+                            .col-sm-4.text-danger(ng-show="userForm.name.$invalid && userForm.name.$dirty")
                                 i.fa.fa-fw.fa-exclamation-triangle
                                 | Name is required
 
@@ -27,7 +27,7 @@
                             label.col-sm-2.control-label(for="email") Email
                             .col-sm-6
                                 input.form-control#email(type="email", required, name="email", ng-model="user.email", ng-maxlength="50", ng-trim="true")
-                            .col-sm-4.text-danger(ng-show="userForm.email.$invalid")
+                            .col-sm-4.text-danger(ng-show="userForm.email.$invalid && userForm.email.$dirty")
                                 i.fa.fa-fw.fa-exclamation-triangle
                                 | Email address is required
 

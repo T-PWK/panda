@@ -11,9 +11,9 @@
             .btn-toolbar(role="toolbar")
                 .btn-group
                     a.btn.btn-default(type="button", href="#/posts/new"): i.fa.fa-plus.fa-fw.text-primary
-                    button.btn.btn-default(type="button", ng-hide="crumb[1].id=='live'") Publish
-                    button.btn.btn-default(type="button", ng-hide="crumb[1].id=='draft'") Revert to Draft
-                    button.btn.btn-default(type="button", ng-click="delete()"): i.fa.fa-trash-o.text-danger
+                    button.btn.btn-default(type="button", ng-click="publish()", ng-hide="crumb[1].id=='live'||crumb[1].id=='scheduled'", ng-disabled="select.isEmpty()") Publish
+                    button.btn.btn-default(type="button", ng-click="draft()", ng-hide="crumb[1].id=='draft'", ng-disabled="select.isEmpty()") Revert to Draft
+                    button.btn.btn-default(type="button", ng-click="delete()", ng-disabled="select.isEmpty()"): i.fa.fa-trash-o.text-danger
 
                 .btn-group
                     button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
@@ -62,7 +62,7 @@
                             a(href="", ng-click="pg.pageSize=s") {{s}}
 
                 .btn-group.pull-right
-                    button.btn.btn-default.btn-disabled(type="button", ng-disabled="!pg.hasPrev", ng-click="pg.prev()") &laquo;
+                    button.btn.btn-default(type="button", ng-disabled="!pg.hasPrev", ng-click="pg.prev()") &laquo;
                     button.btn.btn-default(type="button", ng-repeat="p in pg.pageRange", ng-click="pg.current=p", ng-class="{active:p==pg.current}") {{p}}
                     button.btn.btn-default(type="button", ng-disabled="!pg.hasNext", ng-click="pg.next()") &raquo;
 
@@ -100,6 +100,4 @@
                     td
                         | {{post.commentsCount || 0}} 
                         i.fa.text-muted(ng-class="{'fa-comments-o':post.commentsCount,'fa-comment-o':post.commentsCount==0}")
-                    td(ng-class="{S:'text-warning'}[status(post)]")
-                        span.text-warning(ng-if="status(post)=='D'") {{statusText(post)}}
-                        span(ng-if="post.publishedAt") {{post.publishedAt|date:'mediumDate'}}
+                    td(ng-class="{S:'text-warning',D:'text-warning'}[status(post)]") {{post.publishedAt|date:'mediumDate'}}

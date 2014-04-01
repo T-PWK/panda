@@ -41,15 +41,9 @@ mixin warning(condition)
                             label.col-sm-2.control-label(for="adminTheme") Name
                             .col-sm-10
                                 select.form-control#adminTheme(ng-model="theme.admin.selected", ng-options="t.name for t in theme.admin.list")
-                                p.help-block
-                                    span.text-info
-                                        i.fa.fa-info-circle
-                                        |  Admin theme change will cause the page to be reloaded from the server.
-
                         .form-group
                             .col-sm-10.col-sm-offset-2
                                 button.btn.btn-primary(ng-click="saveTheme('admin')", ng-disabled="!theme.admin.changed") Save
                                 button.btn.btn-default(ng-click="resetTheme('admin')", ng-disabled="!theme.admin.changed") Cancel
-
                         .col-sm-10.col-sm-offset-2
                             mixin warning("theme.admin.changed")

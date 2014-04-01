@@ -1,3 +1,9 @@
+mixin post(id, name)
+    li(ng-if="postStats.#{id}")
+        a(href="#/posts/#{id}", ng-class="{'text-bold':crumb[1].id=='#{id}'}")
+            span.badge.pull-right {{postStats.#{id}}}
+            = name
+
 ul.nav.nav-list
     li: a(href="#/overview", ng-class="{'text-bold':crumb[0].id=='overview'}")
         i.fa.fa-home
@@ -8,18 +14,10 @@ ul.nav.nav-list
             | Posts
             i.fa.fa-spinner.fa-spin.fa-fw.pull-right.text-info(ng-show="loadingPostStats")
         ul.nav.nav-list(ng-if="crumb[0].id === 'posts' && postStats")
-            li: a(href="#/posts/all", ng-class="{'text-bold':crumb[1].id=='all'}")
-                span.badge.pull-right {{postStats.all}}
-                | All
-            li(ng-if="postStats.scheduled"): a(href="#/posts/scheduled", ng-class="{'text-bold':crumb[1].id=='scheduled'}")
-                span.badge.pull-right {{postStats.scheduled}}
-                | Scheduled
-            li(ng-if="postStats.draft"): a(href="#/posts/draft", ng-class="{'text-bold':crumb[1].id=='draft'}")
-                span.badge.pull-right {{postStats.draft}}
-                | Draft
-            li(ng-if="postStats.live"): a(href="#/posts/live", ng-class="{'text-bold':crumb[1].id=='live'}")
-                span.badge.pull-right {{postStats.live}}
-                | Published
+            mixin post('all', 'All')
+            mixin post('draft', 'Draft')
+            mixin post('live', 'Published')
+            mixin post('scheduled', 'Scheduled')
     li.nav-header
         a(href="#/pages")
             i.fa.fa-file.fa-fw
