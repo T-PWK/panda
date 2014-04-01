@@ -101,7 +101,7 @@
                 live: 'Published',
                 users: 'Users',
                 themes: 'Themes',
-                redirects: 'Redirections',
+                redirects: 'Redirects',
                 'new': 'New'
             }
         });

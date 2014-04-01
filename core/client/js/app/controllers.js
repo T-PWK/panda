@@ -5,12 +5,13 @@
         bind        = angular.bind,
         forEach     = angular.forEach,
         isObject    = angular.isObject,
-        copy        = angular.copy;
+        copy        = angular.copy,
+        element     = angular.element;
 
     var controllers = angular.module('panda.controllers', ['panda.utils']);
 
-    controllers.controller('RootCtrl', ['$scope', '$window', 'PostsInfo', 'Constants',
-        function ($scope, $window, Info, Config) {
+    controllers.controller('RootCtrl', ['$scope', '$window', '$timeout', 'PostsInfo', 'Constants',
+        function ($scope, $window, $timeout, Info, Config) {
             $scope.loading = false;
             $scope.crumb = [];
             $scope.postStats = {};
@@ -44,7 +45,13 @@
             $scope.$on('page:publish', reloadPageStats);
 
             $scope.setLoading = function (loading) {
-                $scope.loading = (loading === true) ? 'Loading' : loading;
+                if (!loading) {
+                    $timeout(function () {
+                        $scope.loading = false;
+                    }, 250);
+                } else {
+                    $scope.loading = (loading === true) ? 'Loading' : loading;
+                }
             };
 
             $scope.setCrumb = function (props) {
@@ -157,6 +164,39 @@
                     .then(bind($scope, $scope.$emit, 'post:delete'));
             };
 
+            $scope.draft = function () {
+                $scope.setLoading('Reverting to draft');
+                var promises = [];
+                forEach($scope.posts, function (post) {
+                    console.info('checking ... ',post.id, $scope.status(post))
+                    if ($scope.select.has(post.id) && $scope.status(post) !== 'D') {
+                        promises.push(Posts.update({ draft: true }, {id: post.id}).$promise);
+                    }
+                });
+
+                $q.all(promises)
+                    .then(bind($scope.select, $scope.select.empty))
+                    .then(loadPosts)
+                    .then(bind($scope, $scope.setLoading))
+                    .then(bind($scope, $scope.$emit, 'post:draft'));
+            };
+
+            $scope.publish = function () {
+                $scope.setLoading('Publishing');
+                var promises = [];
+                forEach($scope.posts, function (post) {
+                    if ($scope.select.has(post.id) && $scope.status(post) === 'D') {
+                        promises.push(Posts.update({ publish: true }, {id: post.id}).$promise);
+                    }
+                });
+
+                $q.all(promises)
+                    .then(bind($scope.select, $scope.select.empty))
+                    .then(loadPosts)
+                    .then(bind($scope, $scope.setLoading))
+                    .then(bind($scope, $scope.$emit, 'post:publish'));
+            };
+
             $scope.statusText = function (post) {
                 return Config.status[$scope.status(post)];
             };
@@ -174,10 +214,9 @@
             };
 
             $scope.status = function (post) {
+                if (!post.published) return 'D';
+
                 var date = post.publishedAt;
-                if (!date) {
-                    return 'D';
-                }
                 if (!angular.isDate(date)) {
                     date = new Date(date);
                 }
@@ -258,11 +297,15 @@
 
     controllers.controller('ScheduleCtrl', ['$scope',
         function ($scope) {
-            $scope.$watch('post.scheduleOpt', function (opt) {
+            $scope.now = function (format) {
+                return moment().format(format || 'lll');
+            };
+
+            $scope.$watch('post.autoPublishOpt', function (opt) {
                 if ('undefined' === typeof opt) {
                     return;
                 }
-                $scope.opt.customSchedule = (opt ? moment() : moment($scope.post.scheduledAt)).format('lll');
+                $scope.opt.customSchedule = (opt ? moment() : moment($scope.post.publishedAt)).format('lll');
             });
 
             $scope.$watch('opt.customSchedule', function (value) {
@@ -270,7 +313,7 @@
 
                 $scope.opt.customScheduleValid = date.isValid();
                 if (date.isValid()) {
-                    $scope.post.scheduledAt = date.toDate();
+                    $scope.post.publishedAt = date.toDate();
                 }
             });
         }
@@ -280,11 +323,11 @@
         function ($scope) {
             var unwatchTitle;
 
-            $scope.$watch('post.slugOpt', function (opt) {
-                if ('undefined' === typeof opt) {
+            $scope.$watch('post.autoSlugOpt', function (autoSlugOpt) {
+                if ('undefined' === typeof autoSlugOpt) {
                     return;
                 }
-                if(opt) {
+                if(autoSlugOpt) {
                     unwatchTitle = $scope.$watch('post.title', setSlugFromTitle);
                 } else {
                     unwatchTitle && unwatchTitle();
@@ -306,7 +349,7 @@
         function ($scope, $location, Posts) {
             $scope.setCrumb('newpost');
             $scope.opt = { customDate: '', editor: true, create: true };
-            $scope.post = { scheduleOpt: true, slugOpt: true, page: false };
+            $scope.post = { autoPublishOpt: true, autoSlugOpt: true, page: false };
 
             var editor = CodeMirror.fromTextArea(angular.element('#editor')[0], {
                 mode: "markdown",
@@ -352,9 +395,9 @@
 
             var tags = {
                 ':slug': function (post) { return post.slug || ':slug:'; },
-                ':year': function (post) { return moment(post.scheduledAt).year(); },
-                ':month': function (post) { return moment(post.scheduledAt).format('MM'); },
-                ':day': function (post) { return moment(post.scheduledAt).format('DD'); }
+                ':year': function (post) { return moment(post.publishedAt).year(); },
+                ':month': function (post) { return moment(post.publishedAt).format('MM'); },
+                ':day': function (post) { return moment(post.publishedAt).format('DD'); }
             };
 
             var editor = CodeMirror.fromTextArea(angular.element('#editor')[0], {
@@ -386,13 +429,9 @@
 
             loadPost();
 
-            $scope.now = function (format) {
-                return moment().format(format || 'lll');
-            };
-
             $scope.$watch('post.slug', updatePermalinks);
             $scope.$watch('post.page', updatePermalinks);
-            $scope.$watch('post.scheduledAt', updatePermalinks);
+            $scope.$watch('post.publishedAt', updatePermalinks);
             
             $scope.postContent = function () {
                 return $sce.trustAsHtml($scope.post.content);
@@ -515,7 +554,7 @@
 
             $scope.resetPasswd = function() {
                 $scope.passReq = false;
-                $scope.passwd = { };
+                $scope.passwd = { 'new': '' };
                 $scope.passForm.$setPristine();
 
                 // This is to prevent browser behaviour
@@ -626,8 +665,8 @@
             }
     }]);
 
-    controllers.controller('ThemesCtrl', ['$scope', '$q', '$window','Themes',
-        function ($scope, $q, $window, Themes) {
+    controllers.controller('ThemesCtrl', ['$scope', '$q', '$http', '$timeout', 'Themes',
+        function ($scope, $q, $http, $timeout, Themes) {
             $scope.setCrumb('themes');
             $scope.setLoading(true);
 
@@ -638,8 +677,22 @@
                 admin: {
                     list: [], active: null, changed: false, selected: null,
                     afterSave: function () {
-                        $scope.setLoading('Reloading admin console');
-                        $scope.$emit('location:reload');
+                        var bootstrap = element('#adminBootstrap'),
+                            screen = element('#adminScreen');
+
+                        $q.all([
+                            $http.get(updateHref(bootstrap.prop('href'))),
+                            $http.get(updateHref(screen.prop('href')))
+                        ]).then(function () {
+                            $timeout(function () {
+                                bootstrap.prop('href', updateHref(bootstrap.prop('href')));
+                                screen.prop('href', updateHref(screen.prop('href')));
+                            }, 250);
+                        });
+
+                        function updateHref (href) {
+                            return href.replace(/\/\w+\/([a-z.]+)$/, '/' + $scope.theme.admin.selected.id + '/$1');
+                        }
                     }
                 }
             };
@@ -668,7 +721,7 @@
 
             function afterThemeSave (theme, type) {
                 theme[type].active = theme[type].selected;
-                (theme[type].afterSave || function () {})();
+                (theme[type].afterSave || function () {})(theme, type);
             }
 
             function resetTheme (theme, type) {

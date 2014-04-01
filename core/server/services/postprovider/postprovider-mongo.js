@@ -46,6 +46,10 @@
             selection.page = !!options.page;
         }
 
+        if (options.live) {
+            selection.published = true;
+        }
+
         return selection;
     }
 
@@ -58,11 +62,11 @@
             query = addQueryOptions(Post.find(selection), options);
 
         if ('draft' === options.type) {
-            query = query.find({'publishedAt': null});
+            query = query.find({ published: false });
         }
 
         if ('scheduled' === options.type) {
-            query = query.where('publishedAt').gt(new Date());
+            query = query.find({ published: true }).where('publishedAt').gt(new Date());
         }
 
         return query.exec();
@@ -160,7 +164,7 @@
         return query.exec();
     };
 
-    PostProvider.prototype.postCountInfo = function (options) {
+    PostProvider.prototype.postStatsInfo = function (options) {
         var match = {};
 
         if ('undefined' !== typeof options.page) {
@@ -170,7 +174,7 @@
         return Post.mapReduce({
             query: match,
             map: function () {
-                emit(this.publishedAt ? this.publishedAt > Date.now() ? 'scheduled' : 'live' : 'draft', 1);
+                emit(this.published === false ? 'draft' : this.publishedAt > Date.now() ? 'scheduled' : 'live', 1);
             },
             reduce: function (key, values) {
                 return values.length;
@@ -226,28 +230,34 @@
 
         debug('updating post %j', id);
 
-        var post = _.extend(
-            { updatedAt: new Date() },
-            _.pick(properties, 'slug', 'title', 'teaser', 'markdown', 'author', 'content', 'scheduleOpt', 'slugOpt',
-                'featured', 'page', 'labels', 'scheduledAt')
-        );
+        var post = filterProperties(properties);
 
-        if (options.publish) {
-            post.scheduleOpt = ('undefined' === post.scheduleOpt) ? true : post.scheduleOpt;
-            post.publishedAt = post.scheduleOpt ? new Date() : (post.scheduledAt || new Date());
-        }
-        if (options.draft) {
-            post.publishedAt = null;
-        }
+        return Post.findById(id).exec()
+            .then(function (item) {
+                if (!item) return when.reject();
 
-        return Post.findByIdAndUpdate(id, post).exec();
+                _.extend(item, post, { updatedAt: new Date() });
+
+                if (options.publish && !item.published) {
+                    item.published = true;
+                }
+
+                if (options.draft) {
+                    item.published = false;
+                }
+
+                return lift(item.save.bind(item))();
+            })
+            .then(function (result) {
+                // result array contains updated post and number of affected posts
+                return result[0];
+            });
     };
 
     PostProvider.prototype.create = function (properties, options) {
         debug('creating post %j', properties);
 
-        var post = _.pick(properties, 'slug', 'title', 'teaser', 'markdown', 'author', 'content', 'scheduleOpt',
-            'slugOpt', 'featured', 'page', 'labels', 'title');
+        var post = filterProperties(properties);
 
         if (options.publish) {
             post.publishedAt = new Date();
@@ -259,6 +269,12 @@
     PostProvider.prototype.delete = function (id) {
         return Post.findByIdAndRemove(id).exec();
     };
+
+    function filterProperties(properties) {
+        return _.pick(properties,
+            'slug', 'title', 'teaser', 'markdown', 'author', 'content', 'publishedAt',
+            'autoPublishOpt', 'autoSlugOpt', 'featured', 'page', 'labels');
+    }
 
 })();
 

@@ -11,5 +11,5 @@ function postCountInfo(req, res) {
     var page = ('undefined' === typeof req.query.page) ? undefined 
         : req.query.page.toLowerCase() === 'true';
 
-    provider.postCountInfo({ page: page }).then(res.json.bind(res));
+    provider.postStatsInfo({ page: page }).then(res.json.bind(res));
 }

@@ -21,8 +21,9 @@
             // # Dates
             createdAt: { type: Date, required: true, default: Date.now },
             updatedAt: { type: Date, required: true, default: Date.now },
-            publishedAt: { type: Date, default: null },
-            scheduledAt: Date,
+            publishedAt: { type: Date },
+
+            published: { type: Boolean, default: false },
 
             // # Additional properties
             geo: { type: [Number] },
@@ -32,8 +33,8 @@
             commentsCount: { type: Number, default: 0 },
 
             // # Post edition options
-            slugOpt: { type: Boolean, default: false },
-            scheduleOpt: { type: Boolean, default: false },
+            autoSlugOpt: { type: Boolean, default: false },
+            autoPublishOpt: { type: Boolean, default: false },
 
             // # Counters
             counter: {
@@ -46,6 +47,7 @@
 
     PostSchema.path('slug').index({ unique: true, sparse: true });
     PostSchema.path('publishedAt').index(true);
+    PostSchema.path('published').index({ sparse: true });
 
     module.exports = mongoose.model('Post', PostSchema);
 

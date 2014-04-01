@@ -17,7 +17,7 @@
                 skip: +req.query.skip,
                 sortBy: req.query.sortBy,
                 type: req.query.type,
-                select: 'id title commentsCount featured page labels updatedAt createdAt publishedAt author.bio'
+                select: 'id title commentsCount featured page labels updatedAt createdAt publishedAt author.bio published'
             })
             .then(res.json.bind(res));
     };
