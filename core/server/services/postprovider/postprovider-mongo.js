@@ -174,7 +174,9 @@
         return Post.mapReduce({
             query: match,
             map: function () {
-                emit(this.published === false ? 'draft' : this.publishedAt > Date.now() ? 'scheduled' : 'live', 1);
+                var type = this.published == false ? 'draft' :
+                        this.publishedAt > Date.now() ? 'scheduled' : 'live'
+                emit(type, 1);
             },
             reduce: function (key, values) {
                 return values.length;
@@ -200,7 +202,7 @@
         return when(
             Post.aggregate(
                 // exclude unpublished posts and pages
-                { $match: { publishedAt: { $lte: new Date() }, page: false } },
+                { $match: { publishedAt: { $lte: new Date() }, published: true, page: false } },
                 // group posts by year and month
                 { $group: {
                     _id: { year: { $year: "$publishedAt" }, month: { $month: "$publishedAt" } },
@@ -212,10 +214,10 @@
         ).then(processArchives);
     };
 
-    PostProvider.prototype.labelsInfo = function (opts) {
+    PostProvider.prototype.labelsInfo = function () {
         return when(
             Post.aggregate(
-                { $match: { publishedAt: { $lte: new Date() } } },  // limit by publication date
+                { $match: { publishedAt: { $lte: new Date() }, published: true } },  // limit by publication date
                 { $project: { labels: 1, _id: 0 } },                // operate on labels only
                 { $unwind: "$labels" },                             // convert labels to independent objects
                 { $group: { _id: "$labels", count: { $sum: 1 } } }, // aggregate labels and count number of occurences
@@ -260,7 +262,7 @@
         var post = filterProperties(properties);
 
         if (options.publish) {
-            post.publishedAt = new Date();
+            item.published = true;
         }
 
         return Post.create(post);

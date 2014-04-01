@@ -159,8 +159,8 @@
 
                 $q.all(deletePromises)
                     .then(bind($scope.select.empty, $scope.select))
-                    .then(loadPosts)
                     .then(bind($scope, $scope.setLoading))
+                    .then(loadPosts)
                     .then(bind($scope, $scope.$emit, 'post:delete'));
             };
 
@@ -168,7 +168,6 @@
                 $scope.setLoading('Reverting to draft');
                 var promises = [];
                 forEach($scope.posts, function (post) {
-                    console.info('checking ... ',post.id, $scope.status(post))
                     if ($scope.select.has(post.id) && $scope.status(post) !== 'D') {
                         promises.push(Posts.update({ draft: true }, {id: post.id}).$promise);
                     }
@@ -176,8 +175,8 @@
 
                 $q.all(promises)
                     .then(bind($scope.select, $scope.select.empty))
-                    .then(loadPosts)
                     .then(bind($scope, $scope.setLoading))
+                    .then(loadPosts)
                     .then(bind($scope, $scope.$emit, 'post:draft'));
             };
 
@@ -192,8 +191,8 @@
 
                 $q.all(promises)
                     .then(bind($scope.select, $scope.select.empty))
-                    .then(loadPosts)
                     .then(bind($scope, $scope.setLoading))
+                    .then(loadPosts)
                     .then(bind($scope, $scope.$emit, 'post:publish'));
             };
 
