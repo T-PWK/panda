@@ -2,12 +2,14 @@ doctype html
 html(lang="en")
     head
         meta(name="viewport", content="width=device-width, initial-scale=1")
-        link(rel="stylesheet", href="/shared/css/font-awesome.min.css")
-        link(rel="stylesheet", href=$adminAsset('/client/css/codemirror/codemirror.css'))
-        link(rel="stylesheet", href=$adminTheme('bootstrap.min.css'))
-        link(rel="stylesheet", href=$adminTheme('screen.css'))
-        link(rel="stylesheet", href=$adminAsset('/client/css/screen.css'))
         block header
+            link(rel="stylesheet", href="/shared/css/font-awesome.min.css")
+            link#adminBootstrap(rel="stylesheet", href=$adminTheme('bootstrap.min.css'))
+            link#adminScreen(rel="stylesheet", href=$adminTheme('screen.css'))
+            link(rel="stylesheet", href=$adminAsset('/client/css/screen.css'))
+
+        block templates
+
     body
         block content
         block js

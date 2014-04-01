@@ -1,24 +1,18 @@
 extends layout
 
-block header
-    script(type="text/ng-template", id="overview")
-        include partial/overview
-    script(type="text/ng-template", id="themes")
-        include partial/themes
-    script(type="text/ng-template", id="pages")
-        include partial/pages
-    script(type="text/ng-template", id="posts")
-        include partial/posts
-    script(type="text/ng-template", id="editpost")
-        include partial/editpost
-    script(type="text/ng-template", id="comments")
-        include partial/comments
-    script(type="text/ng-template", id="settings")
-        include partial/settings
-    script(type="text/ng-template", id="redirects")
-        include partial/redirects
-    script(type="text/ng-template", id="users")
-        include partial/users
+block prepend header
+    link(rel="stylesheet", href=$adminAsset('/client/css/codemirror/codemirror.css'))
+
+block templates
+    script(type="text/ng-template", id="overview"): include partial/overview
+    script(type="text/ng-template", id="themes"): include partial/themes
+    script(type="text/ng-template", id="pages"): include partial/pages
+    script(type="text/ng-template", id="posts"): include partial/posts
+    script(type="text/ng-template", id="editpost"): include partial/editpost
+    script(type="text/ng-template", id="comments"): include partial/comments
+    script(type="text/ng-template", id="settings"): include partial/settings
+    script(type="text/ng-template", id="redirects"): include partial/redirects
+    script(type="text/ng-template", id="users"): include partial/users
 
 block content
 
@@ -84,5 +78,6 @@ block js
     script(src=$adminAsset("/client/js/app/utils.js"))
     script.
         angular.element(document).ready(function(){
-            angular.bootstrap(document, ['panda']);
+            angular.module('panda.config', []).value('Config', {adminTheme:'#{adminTheme}'});
+            angular.bootstrap(document, ['panda', 'panda.config']);
         });
