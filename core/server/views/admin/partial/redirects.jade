@@ -49,7 +49,7 @@
                                 i.fa.fa-sort-alpha-desc
                 tbody
                     tr(ng-repeat="item in items | orderBy:order | startFrom:pg.firstItem | limitTo:pg.pageSize")
-                        td: input(type="checkbox", ng-click="deleting.toggle(item.id)", ng-checked="deleting.has(item.id)")
+                        td: i.btn-link.fa.fa-fw(ng-class="{'fa-square-o':!deleting.has(item.id),'fa-check-square-o':deleting.has(item.id)}", ng-click="deleting.toggle(item.id)")
                         td: a(href="", ng-click="$emit('edit', item)") {{item.from}}
                         td {{item.to}}
                         td

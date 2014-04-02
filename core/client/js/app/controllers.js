@@ -31,18 +31,19 @@
                 if (!$scope.postStats.all) reloadPostStats();
             });
 
+            $scope.$on('page:load', function(){
+                if (!$scope.pageStats.all) reloadPageStats();
+            });
+
             $scope.$on('post:delete', reloadPostStats);
             $scope.$on('post:create', reloadPostStats);
             $scope.$on('post:publish', reloadPostStats);
             $scope.$on('post:draft', reloadPostStats);
 
-            $scope.$on('page:load', function(){
-                if (!$scope.pageStats.all) reloadPageStats();
-            });
-
-            $scope.$on('page:delete', reloadPageStats);
-            $scope.$on('page:create', reloadPageStats);
-            $scope.$on('page:publish', reloadPageStats);
+            $scope.$on('post:delete', reloadPageStats);
+            $scope.$on('post:create', reloadPageStats);
+            $scope.$on('post:publish', reloadPageStats);
+            $scope.$on('post:draft', reloadPageStats);
 
             $scope.setLoading = function (loading) {
                 if (!loading) {
@@ -118,17 +119,13 @@
         }
     ]);
 
-    controllers.controller('PostsCtrl',
-        ['$scope', '$routeParams', '$q', 'Posts', 'PostsInfo', 'Constants', 'Utils',
-        function ($scope, $params, $q, Posts, Info, Config, Utils) {
-            $scope.setCrumb('posts', $params.type);
+    controllers.controller('PostListCtrl', ['$scope', '$routeParams', '$q', 'Posts', 'Utils', 'Constants',
+        function ($scope, $params, $q, Posts, Utils, Constants) {
             $scope.type = $params.type;
-
+            $scope.sizes = [10, 25, 50, 100];
             $scope.pg = Utils.pagination();
             $scope.select = Utils.selection();
-            $scope.sizes = [10, 25, 50, 100];
 
-            $scope.$emit('post:load'); // load post statistics
             $scope.$watch('postStats', function(stats) {
                 if (stats) {
                     $scope.setCrumb(1, { data: stats[$params.type] });
@@ -136,83 +133,99 @@
                 }
             });
 
-            // Clear posts selection
-            $scope.$watch('pg.pageSize', clearSelection);
             $scope.$watch('pg.pageSize', postViewSetChange);
-
-            $scope.$watch('pg.current', clearSelection);
             $scope.$watch('pg.current', postViewSetChange);
-
-            $scope.$watch('sortBy', clearSelection);
             $scope.$watch('sortBy', postViewSetChange);
 
-            loadPosts();
+            $scope.$on('post:publish', loadPosts);
+            $scope.$on('post:draft', loadPosts);
+            $scope.$on('post:delete', loadPosts);
+
+            $scope.selectAll = function () {
+                var sel = $scope.select;
+                if (sel.all) {
+                    $scope.select.empty();
+                } else {
+                    forEach($scope.posts, function (post) {
+                        $scope.select.add(post.id, status(post));
+                    });
+                    sel.all = true;
+                }
+            };
 
             $scope.delete = function () {
                 $scope.setLoading('Deleting');
                 var deletePromises = [];
+
                 forEach($scope.posts, function (post) {
-                    if ($scope.select.has(post.id)) {
+                    // allow deletion of draft posts only
+                    if ($scope.select.has(post.id) && status(post) === 'D') {
                         deletePromises.push(post.$remove());
                     }
                 });
 
-                $q.all(deletePromises)
-                    .then(bind($scope.select.empty, $scope.select))
-                    .then(bind($scope, $scope.setLoading))
-                    .then(loadPosts)
-                    .then(bind($scope, $scope.$emit, 'post:delete'));
+                $q.all(deletePromises).then(bind($scope, $scope.$emit, 'post:delete'));
             };
 
             $scope.draft = function () {
                 $scope.setLoading('Reverting to draft');
                 var promises = [];
                 forEach($scope.posts, function (post) {
-                    if ($scope.select.has(post.id) && $scope.status(post) !== 'D') {
+                    if ($scope.select.has(post.id) && status(post) !== 'D') {
                         promises.push(Posts.update({ draft: true }, {id: post.id}).$promise);
                     }
                 });
 
-                $q.all(promises)
-                    .then(bind($scope.select, $scope.select.empty))
-                    .then(bind($scope, $scope.setLoading))
-                    .then(loadPosts)
-                    .then(bind($scope, $scope.$emit, 'post:draft'));
+                $q.all(promises).then(bind($scope, $scope.$emit, 'post:draft'));
             };
 
             $scope.publish = function () {
                 $scope.setLoading('Publishing');
                 var promises = [];
                 forEach($scope.posts, function (post) {
-                    if ($scope.select.has(post.id) && $scope.status(post) === 'D') {
+                    if ($scope.select.has(post.id) && status(post) === 'D') {
                         promises.push(Posts.update({ publish: true }, {id: post.id}).$promise);
                     }
                 });
 
-                $q.all(promises)
-                    .then(bind($scope.select, $scope.select.empty))
-                    .then(bind($scope, $scope.setLoading))
-                    .then(loadPosts)
-                    .then(bind($scope, $scope.$emit, 'post:publish'));
+                $q.all(promises).then(bind($scope, $scope.$emit, 'post:publish'));
             };
 
             $scope.statusText = function (post) {
-                return Config.status[$scope.status(post)];
+                return Constants.status[$scope.status(post)];
             };
 
-            $scope.selectAll = function () {
-                var sel = $scope.select;
-                if (sel.all) {
-                    clearSelection();
-                } else {
-                    forEach($scope.posts, function (post) {
-                        addSelection(post.id);
-                    });
-                    sel.all = true;
+            $scope.status = status;
+
+            $scope.setSortBy = function (sortBy) {
+                $scope.sortBy = sortBy;
+                $scope.pg.current = 1;
+            };
+
+            loadPosts();
+
+            function postViewSetChange (newValue, oldValue) {
+                if (newValue !== oldValue) {
+                    loadPosts();
                 }
-            };
+            }
 
-            $scope.status = function (post) {
+            function loadPosts () {
+                $scope.setLoading(true);
+                $scope.select.empty();
+                Posts.query({
+                    limit: $scope.pg.pageSize,
+                    skip: $scope.pg.firstItem,
+                    sortBy: $scope.sortBy,
+                    type: $params.type,
+                    page: $scope.page
+                }, function (posts) {
+                    $scope.setLoading(false);
+                    $scope.posts = posts;
+                });
+            }
+
+            function status(post) {
                 if (!post.published) return 'D';
 
                 var date = post.publishedAt;
@@ -223,45 +236,23 @@
                     return 'S';
                 }
                 return 'A';
-            };
-
-            $scope.setSortBy = function (sortBy) {
-                $scope.sortBy = sortBy;
-                $scope.pg.current = 1;
-            };
-
-            function clearSelection () {
-                $scope.select.empty();
-            }
-
-            function addSelection (id) {
-                $scope.select.add(id);
-            }
-
-            function postViewSetChange (newValue, oldValue) {
-                if (newValue !== oldValue) {
-                    loadPosts();
-                }
-            }
-
-            function loadPosts () {
-                $scope.setLoading(true);
-                Posts.query({
-                    limit: $scope.pg.pageSize,
-                    skip: $scope.pg.firstItem,
-                    sortBy: $scope.sortBy,
-                    type: $params.type,
-                    page: false
-                }, function (posts) {
-                    $scope.setLoading(false);
-                    $scope.posts = posts;
-                });
             }
         }
     ]);
 
-    controllers.controller('PagesCtrl', ['$scope',
-        function ($scope) {
+    controllers.controller('PostsCtrl', ['$scope', '$routeParams',
+        function ($scope, $params) {
+            $scope.page = false;
+            $scope.setCrumb('posts', $params.type);
+            $scope.$emit('post:load'); // load post statistics
+        }
+    ]);
+
+    controllers.controller('PagesCtrl', ['$scope', '$routeParams',
+        function ($scope, $params) {
+            $scope.page = true;
+            $scope.setCrumb('pages', $params.type);
+            $scope.$emit('page:load');  // load page statistics
         }
     ]);
 
@@ -318,9 +309,28 @@
         }
     ]);
 
-    controllers.controller('SlugCtrl', ['$scope',
-        function ($scope) {
-            var unwatchTitle;
+    controllers.controller('SlugCtrl', ['$scope', '$q', 'Settings',
+        function ($scope, $q, Settings) {
+            var unwatchTitle,
+                permalinks = { page: '', post: '' },
+                tags = {
+                    ':slug': function (post) { return post.slug || ':slug:'; },
+                    ':year': function (post) { return moment(post.publishedAt).year(); },
+                    ':month': function (post) { return moment(post.publishedAt).format('MM'); },
+                    ':day': function (post) { return moment(post.publishedAt).format('DD'); }
+                };
+
+            $q.all([
+                Settings.get({ id:'app:postUrl' }).$promise,
+                Settings.get({ id:'app:pageUrl' }).$promise
+            ]).then(function(values){
+                permalinks.post = values[0].value;
+                permalinks.page = values[1].value;
+            });
+
+            $scope.$watch('post.slug', updatePermalinks);
+            $scope.$watch('post.page', updatePermalinks);
+            $scope.$watch('post.publishedAt', updatePermalinks);
 
             $scope.$watch('post.autoSlugOpt', function (autoSlugOpt) {
                 if ('undefined' === typeof autoSlugOpt) {
@@ -333,12 +343,31 @@
                 }
             });
 
+            $scope.fix = function (text) {
+                $scope.post.slug = _.str.slugify(text);
+            };
+
             function setSlugFromTitle (text) {
                 if (!text) {
                     $scope.post.slug = '';
                 } else {
                     $scope.post.slug = _.str.slugify(text);
                 }
+            }
+
+            function updatePermalinks () {
+                var $scope = arguments[2],
+                    url = ($scope.post.page) ? permalinks.page : permalinks.post,
+                    post = $scope.post;
+
+                url = url.replace(/(:[a-z]+)/g, function (match) {
+                    if (match in tags) {
+                        return tags[match](post);
+                    }
+                    return match;
+                });
+
+                $scope.permalink = url;
             }
         }
     ]);
@@ -376,28 +405,12 @@
     ]);
 
     controllers.controller('PostEditCtrl',
-        ['$scope', '$filter', '$sce', '$q', '$timeout', '$routeParams', 'Posts', 'Settings', 'MarkdownConverter',
-        function ($scope, $filter, $sce, $q, $timeout, $params, Posts, Settings, Converter) {
+        ['$scope', '$filter', '$sce', '$q', '$timeout', '$routeParams', 'Posts', 'Users', 'MarkdownConverter',
+        function ($scope, $filter, $sce, $q, $timeout, $params, Posts, Users, Converter) {
             $scope.opt = { customDate: '', editor: true, create: false };
             $scope.setCrumb('postedit');
             $scope.post = {};
-
-            var permalinks = { page: '', post: '' };
-
-            $q.all([
-                Settings.get({ id:'app:postUrl' }).$promise,
-                Settings.get({ id:'app:pageUrl' }).$promise
-            ]).then(function(values){
-                permalinks.post = values[0].value;
-                permalinks.page = values[1].value;
-            });
-
-            var tags = {
-                ':slug': function (post) { return post.slug || ':slug:'; },
-                ':year': function (post) { return moment(post.publishedAt).year(); },
-                ':month': function (post) { return moment(post.publishedAt).format('MM'); },
-                ':day': function (post) { return moment(post.publishedAt).format('DD'); }
-            };
+            $scope.user = Users.get();
 
             var editor = CodeMirror.fromTextArea(angular.element('#editor')[0], {
                 mode: "markdown",
@@ -428,23 +441,25 @@
 
             loadPost();
 
-            $scope.$watch('post.slug', updatePermalinks);
-            $scope.$watch('post.page', updatePermalinks);
-            $scope.$watch('post.publishedAt', updatePermalinks);
-            
+            $scope.canSave = function () {
+                return $scope.user.$resolved && $scope.post.$resolved;
+            };
+
             $scope.postContent = function () {
                 return $sce.trustAsHtml($scope.post.content);
             };
 
             $scope.save = function () {
                 $scope.setLoading('Saving');
-                $scope.post.$update({draft:true}, function () {
+                $scope.post.author = $scope.user.id;
+                $scope.post.$update(function () {
                     $scope.setLoading(false);
                 });
             };
 
             $scope.publish = function () {
                 $scope.setLoading('Publishing');
+                $scope.post.author = $scope.user.id;
                 $scope.post.$update({id: $params.id, publish: true }, function () {
                     $scope.$emit('post:publish');
                     $scope.setLoading(false);
@@ -453,49 +468,37 @@
 
             $scope.draft = function() {
                 $scope.setLoading('Reverting to draft');
+                $scope.post.author = $scope.user.id;
                 Posts.update({ draft: true }, {id: $params.id}).$promise
                     .then(function(){
                         $scope.$emit('post:draft');
                         loadPost();
                     });
             };
-
-            function updatePermalinks () {
-                var $scope = arguments[2],
-                    url = ($scope.post.page) ? permalinks.page : permalinks.post,
-                    post = $scope.post;
-
-                url = url.replace(/(:[a-z]+)/g, function (match) {
-                    if (match in tags) {
-                        return tags[match](post);
-                    }
-                    return match;
-                });
-
-                $scope.permalink = url;
-            }
         }
     ]);
 
     controllers.controller('SettingsCtrl', ['$scope', 'Settings',
         function ($scope, Settings) {
-            var hideLoading = bind($scope, $scope.setLoading, false);
-
             $scope.setLoading(true);
             $scope.setCrumb('settings', 'basic');
-            $scope.settings = Settings.get(hideLoading);
-
-            $scope.reset = function () {
-                $scope.setLoading(true);
-                $scope.settings = Settings.get(function () {
-                    hideLoading();
-                });
-            };
-
+            $scope.reset = loadSettings;
             $scope.save = function () {
                 $scope.setLoading('Saving');
-                $scope.settings.$save().then(hideLoading);
+                $scope.settings.$save()
+                    .then(bind($scope, $scope.setLoading, false))
+                    .catch(bind($scope, $scope.$emit, 'api:error'));
             };
+
+            loadSettings()
+
+            function loadSettings() {
+                $scope.setLoading(true);
+                Settings.get().$promise.then(function (settings) {
+                    $scope.settings = settings;
+                    $scope.setLoading();
+                });
+            }
         }
     ]);
 
@@ -523,10 +526,13 @@
 
             $scope.loadUser = function () {
                 $scope.setLoading(true);
-                $scope.master = Users.get(function (user) {
-                    $scope.user = copy(user);
-                    $scope.setLoading(false);
-                });
+                Users.get().$promise
+                    .then(function (user) {
+                        $scope.master = user;
+                        $scope.user = copy(user);
+                        $scope.setLoading(false);
+                    })
+                    .catch(bind($scope, $scope.$emit, 'api:error'));
             };
 
             $scope.resetUser = function() {

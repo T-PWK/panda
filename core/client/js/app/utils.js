@@ -3,12 +3,13 @@
 
     function Selection() {
         this.items = {};
+        this.types = {};
         this.size = 0;
         this.all = false;
     }
     Selection.prototype = {
         isEmpty: function () {
-            return this.howMany() === 0;
+            return this.size === 0;
         },
         howMany: function () {
             return _.size(this.items);
@@ -16,20 +17,39 @@
         has: function (item) {
             return _.has(this.items, item);
         },
-        add: function (item) {
-            if (!this.has(item)) { this.items[item] = null; }
+        hasType: function () {
+            var types = Array.prototype.slice.call(arguments), has = false;
+            angular.forEach(types, function (type) {
+                has = has || this.types[type] > 0;
+            }, this);
+            return has;
         },
-        remove: function (item) {
+        add: function (item, type) {
+            if (!this.has(item)) {
+                this.items[item] = true;
+                this.size++;
+
+                if(type) { this.types[type] = (this.types[type] + 1) || 1; }
+            }
+        },
+        remove: function (item, type) {
             delete this.items[item];
             this.all = false;
+            this.size = _.size(this.items);
+
+            if (type && this.types[type] > 0) {
+                this.types[type]--;
+            }
         },
         empty: function () {
             this.all = false;
+            this.size = 0;
             this.items = {};
+            this.types = {};
         },
-        toggle: function (item) {
-            if (this.has(item)) { this.remove(item); }
-            else { this.add(item); }
+        toggle: function (item, type) {
+            if (this.has(item)) { this.remove(item, type); }
+            else { this.add(item, type); }
         }
     };
 

@@ -29,6 +29,10 @@
             query = query.where('publishedAt').lte(new Date());
         }
 
+        if ('scheduled' === options.type) {
+            query = query.where('publishedAt').gt(new Date());
+        }
+
         return query
             .sort(options.sortBy || '-publishedAt')
             .skip(options.skip)
@@ -46,7 +50,15 @@
             selection.page = !!options.page;
         }
 
-        if (options.live) {
+        if (options.live || 'live' === options.type) {
+            selection.published = true;
+        }
+
+        if ('draft' === options.type) {
+            selection.published = false;
+        }
+
+        if ('scheduled' === options.type) {
             selection.published = true;
         }
 
@@ -60,14 +72,6 @@
 
         var selection = addBasicSelection({}, options),
             query = addQueryOptions(Post.find(selection), options);
-
-        if ('draft' === options.type) {
-            query = query.find({ published: false });
-        }
-
-        if ('scheduled' === options.type) {
-            query = query.find({ published: true }).where('publishedAt').gt(new Date());
-        }
 
         return query.exec();
     };
@@ -109,7 +113,6 @@
 
         return addQueryOptions(Post.find(selection), options)
             .where('publishedAt').gte(start).lte(end)
-//            .select('author title teaser publishedAt labels slug')
             .populate('author')
             .exec();
     };
@@ -214,10 +217,18 @@
         ).then(processArchives);
     };
 
-    PostProvider.prototype.labelsInfo = function () {
+    PostProvider.prototype.labelsInfo = function (options) {
+        options = options || {};
+        var match = {};
+
+        if (options.live) {
+            match.publishedAt = { $lte: new Date() };
+            match.published = true;
+        }
+
         return when(
             Post.aggregate(
-                { $match: { publishedAt: { $lte: new Date() }, published: true } },  // limit by publication date
+                { $match: match },                                  // limit by publication date
                 { $project: { labels: 1, _id: 0 } },                // operate on labels only
                 { $unwind: "$labels" },                             // convert labels to independent objects
                 { $group: { _id: "$labels", count: { $sum: 1 } } }, // aggregate labels and count number of occurences
@@ -247,7 +258,6 @@
                 if (options.draft) {
                     item.published = false;
                 }
-
                 return lift(item.save.bind(item))();
             })
             .then(function (result) {

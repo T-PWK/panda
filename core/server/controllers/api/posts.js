@@ -17,7 +17,7 @@
                 skip: +req.query.skip,
                 sortBy: req.query.sortBy,
                 type: req.query.type,
-                select: 'id title commentsCount featured page labels updatedAt createdAt publishedAt author.bio published'
+                select: 'id title commentsCount featured page labels updatedAt createdAt publishedAt author published'
             })
             .then(res.json.bind(res));
     };
@@ -26,9 +26,9 @@
         var post = _.extend({}, req.body),
             options = {};
 
-        if (req.query.publish === 'true') options.publish = true;
-
-        post.author = "531badf9a0e6552c820002ae";
+        if (req.query.publish === 'true') {
+            options.publish = true;
+        }
 
         // Check if there is no post with the given slug
         // If there is on, suffix slug with index number (slug_index)
@@ -41,7 +41,7 @@
                 return post;
             })
             .then(function (properties) {
-                return provider.create(properties, options);
+                return provider.create(filterProperties(properties), options);
             })
             .done(
                 function (post) { res.json({id:post.id}); },
@@ -75,12 +75,8 @@
             options.draft = true;
         }
 
-        var post = _.extend({}, req.body);
-
-        console.info('post update ...', post, options)
-
         provider
-            .update(req.params.post, post, options)
+            .update(req.params.post, filterProperties(req.body), options)
             .then(res.json.bind(res));
     };
 
@@ -95,6 +91,12 @@
     module.exports.destroy = function (req, res) {
         when.resolve(provider.delete(req.params.post)).done(res.json.bind(res), res.send.bind(res, 500));
     };
+
+    function filterProperties(properties) {
+        return _.pick(properties,
+            'slug', 'title', 'teaser', 'markdown', 'author', 'content', 'publishedAt',
+            'autoPublishOpt', 'autoSlugOpt', 'featured', 'page', 'labels');
+    }
 
     function increase (value) {
         return value + 1;

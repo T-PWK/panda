@@ -7,8 +7,9 @@
         provider         = require('../providers').postProvider,
         pagination       = require('../helpers/pagination'),
         paginationRegexp = new RegExp(cfg.get('app:paginationUrl').replace(':page', '\\d+')),
-        yearRegExp       = /^\d{4}$/,
-        monthDayRegExp   = /^\d{2}$/,
+        yearRegExp       = /^1|2\d{3}$/,
+        monthRegExp      = /^0|1\d$/,
+        dayRegExp        = /^0|1|2|3\d$/,
         pageNumberRegExp = /^\d+$/;
 
     exports.middleware = function (req, res, next) {
@@ -163,12 +164,13 @@
     };
 
     exports.monthParam = function (req, res, next, month) {
-        if (month.match(monthDayRegExp) && +month >= 1 && +month <= 12) { next(); }
+        if (month.match(monthRegExp) && moment([+req.params.year, +month-1]).isValid()) { next(); }
         else { next('route'); }
     };
 
     exports.dayParam = function (req, res, next, day) {
-        if (day.match(monthDayRegExp) && +day >= 1 && +day <= 31) { next(); }
+        if (day.match(dayRegExp) &&
+            moment([+req.params.year, +req.params.month-1, +req.params.day]).isValid()) { next(); }
         else { next('route'); }
     };
 

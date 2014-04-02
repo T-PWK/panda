@@ -9,7 +9,7 @@
                 .when('/posts/new', { templateUrl: 'editpost', controller: 'NewPostCtrl' })
                 .when('/posts/:type?', { templateUrl: 'posts', controller: 'PostsCtrl' })
                 .when('/pages', { redirectTo: '/pages/all' })
-                .when('/pages/:type?', { templateUrl: 'pages', controller: 'PagesCtrl' })
+                .when('/pages/:type?', { templateUrl: 'posts', controller: 'PagesCtrl' })
                 .when('/posts/:id/edit', { templateUrl: 'editpost', controller: 'PostEditCtrl' })
                 .when('/comments', { templateUrl: 'comments', controller: 'CommentsCtrl' })
                 .when('/settings', { redirectTo: '/settings/basic' })

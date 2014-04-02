@@ -96,7 +96,8 @@ module.exports = {
     },
     admin: {
         theme: 'default',
-        sessionCookieMaxAge: '00:10:00'
+        sessionCookieMaxAge: '00:10:00',
+        enable: true
     },
     url: "http://127.0.0.1:3000",
     server: {

@@ -1,7 +1,7 @@
-mixin post(id, name)
-    li(ng-if="postStats.#{id}")
-        a(href="#/posts/#{id}", ng-class="{'text-bold':crumb[1].id=='#{id}'}")
-            span.badge.pull-right {{postStats.#{id}}}
+mixin post(id, name, page)
+    li(ng-if="#{page?'pageStats':'postStats'}.#{id}")
+        a(href="#/#{page?'pages':'posts'}/#{id}", ng-class="{'text-bold':crumb[1].id=='#{id}'}")
+            span.badge.pull-right {{#{page?'pageStats':'postStats'}.#{id}}}
             = name
 
 ul.nav.nav-list
@@ -24,18 +24,10 @@ ul.nav.nav-list
             | Pages
             i.fa.fa-spinner.fa-spin.fa-fw.pull-right.text-info(ng-show="loadingPageStats")
         ul.nav.nav-list(ng-if="crumb[0].id === 'pages' && pageStats")
-            li: a(href="#/pages/all")
-                span.badge.pull-right {{pageStats.all}}
-                | All
-            li(ng-if="pageStats.scheduled"): a(href="#/pages/scheduled")
-                span.badge.pull-right {{pageStats.scheduled}}
-                | Scheduled
-            li(ng-if="pageStats.draft"): a(href="#/pages/draft")
-                span.badge.pull-right {{pageStats.draft}}
-                | Draft
-            li(ng-if="pageStats.live"): a(href="#/pages/live")
-                span.badge.pull-right {{pageStats.live}}
-                | Published
+            mixin post('all', 'All', true)
+            mixin post('draft', 'Draft', true)
+            mixin post('live', 'Published', true)
+            mixin post('scheduled', 'Scheduled', true)
 
     li: a(href="#/comments", ng-class="{'text-bold':crumb[0].id=='comments'}")
         i.fa.fa-comments.fa-fw
