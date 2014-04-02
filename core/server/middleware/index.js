@@ -57,7 +57,7 @@
 
         // Protect admin calls
         app.use('/admin', auth.adminLoginCheck);
-        app.use('/api', auth.apiLoginCheck);
+        app.use('/api/v1', auth.apiLoginCheck);
 
         // Set the router
         app.use(app.router);

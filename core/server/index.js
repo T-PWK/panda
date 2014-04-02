@@ -54,12 +54,16 @@
             middleware(app);
 
             // ## Routing
-            routes.auth(app);       // Set up authentication routes
-            routes.redirects(app);  // Set up redirect route
             routes.feeds(app);      // Set up RSS routes
+
+            if (cfg.get('admin:enable')) {
+                routes.auth(app);       // Set up authentication routes
+                routes.admin(app);      // Set up admin routes
+                routes.api(app);        // Set up API routes
+            }
+
+            routes.redirects(app);  // Set up redirect route
             routes.frontend(app);   // Set up Frontent routes
-            routes.admin(app);      // Set up admin routes
-            routes.api(app);        // Set up API routes
 
             // ## Server Startup
             app.listen(
