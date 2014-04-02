@@ -31,18 +31,19 @@
                 if (!$scope.postStats.all) reloadPostStats();
             });
 
+            $scope.$on('page:load', function(){
+                if (!$scope.pageStats.all) reloadPageStats();
+            });
+
             $scope.$on('post:delete', reloadPostStats);
             $scope.$on('post:create', reloadPostStats);
             $scope.$on('post:publish', reloadPostStats);
             $scope.$on('post:draft', reloadPostStats);
 
-            $scope.$on('page:load', function(){
-                if (!$scope.pageStats.all) reloadPageStats();
-            });
-
-            $scope.$on('page:delete', reloadPageStats);
-            $scope.$on('page:create', reloadPageStats);
-            $scope.$on('page:publish', reloadPageStats);
+            $scope.$on('post:delete', reloadPageStats);
+            $scope.$on('post:create', reloadPageStats);
+            $scope.$on('post:publish', reloadPageStats);
+            $scope.$on('post:draft', reloadPageStats);
 
             $scope.setLoading = function (loading) {
                 if (!loading) {
@@ -118,17 +119,12 @@
         }
     ]);
 
-    controllers.controller('PostsCtrl',
-        ['$scope', '$routeParams', '$q', 'Posts', 'PostsInfo', 'Constants', 'Utils',
-        function ($scope, $params, $q, Posts, Info, Config, Utils) {
-            $scope.setCrumb('posts', $params.type);
+    controllers.controller('PostListCtrl', ['$scope', '$routeParams', '$q', 'Posts', 'Utils', 'Constants',
+        function ($scope, $params, $q, Posts, Utils, Constants) {
             $scope.type = $params.type;
-
+            $scope.sizes = [10, 25, 50, 100];
             $scope.pg = Utils.pagination();
             $scope.select = Utils.selection();
-            $scope.sizes = [10, 25, 50, 100];
-
-            $scope.$emit('post:load'); // load post statistics
 
             $scope.$watch('postStats', function(stats) {
                 if (stats) {
@@ -145,7 +141,17 @@
             $scope.$on('post:draft', loadPosts);
             $scope.$on('post:delete', loadPosts);
 
-            loadPosts();
+            $scope.selectAll = function () {
+                var sel = $scope.select;
+                if (sel.all) {
+                    $scope.select.empty();
+                } else {
+                    forEach($scope.posts, function (post) {
+                        $scope.select.add(post.id, status(post));
+                    });
+                    sel.all = true;
+                }
+            };
 
             $scope.delete = function () {
                 $scope.setLoading('Deleting');
@@ -186,19 +192,7 @@
             };
 
             $scope.statusText = function (post) {
-                return Config.status[$scope.status(post)];
-            };
-
-            $scope.selectAll = function () {
-                var sel = $scope.select;
-                if (sel.all) {
-                    $scope.select.empty();
-                } else {
-                    forEach($scope.posts, function (post) {
-                        $scope.select.add(post.id, status(post));
-                    });
-                    sel.all = true;
-                }
+                return Constants.status[$scope.status(post)];
             };
 
             $scope.status = status;
@@ -208,18 +202,7 @@
                 $scope.pg.current = 1;
             };
 
-            function status(post) {
-                if (!post.published) return 'D';
-
-                var date = post.publishedAt;
-                if (!angular.isDate(date)) {
-                    date = new Date(date);
-                }
-                if (date > Date.now()) { // Convert string to date
-                    return 'S';
-                }
-                return 'A';
-            }
+            loadPosts();
 
             function postViewSetChange (newValue, oldValue) {
                 if (newValue !== oldValue) {
@@ -235,17 +218,41 @@
                     skip: $scope.pg.firstItem,
                     sortBy: $scope.sortBy,
                     type: $params.type,
-                    page: false
+                    page: $scope.page
                 }, function (posts) {
                     $scope.setLoading(false);
                     $scope.posts = posts;
                 });
             }
+
+            function status(post) {
+                if (!post.published) return 'D';
+
+                var date = post.publishedAt;
+                if (!angular.isDate(date)) {
+                    date = new Date(date);
+                }
+                if (date > Date.now()) { // Convert string to date
+                    return 'S';
+                }
+                return 'A';
+            }
         }
     ]);
 
-    controllers.controller('PagesCtrl', ['$scope',
-        function ($scope) {
+    controllers.controller('PostsCtrl', ['$scope', '$routeParams',
+        function ($scope, $params) {
+            $scope.page = false;
+            $scope.setCrumb('posts', $params.type);
+            $scope.$emit('post:load'); // load post statistics
+        }
+    ]);
+
+    controllers.controller('PagesCtrl', ['$scope', '$routeParams',
+        function ($scope, $params) {
+            $scope.page = true;
+            $scope.setCrumb('pages', $params.type);
+            $scope.$emit('page:load');  // load page statistics
         }
     ]);
 
@@ -398,11 +405,12 @@
     ]);
 
     controllers.controller('PostEditCtrl',
-        ['$scope', '$filter', '$sce', '$q', '$timeout', '$routeParams', 'Posts', 'Settings', 'MarkdownConverter',
-        function ($scope, $filter, $sce, $q, $timeout, $params, Posts, Settings, Converter) {
+        ['$scope', '$filter', '$sce', '$q', '$timeout', '$routeParams', 'Posts', 'Users', 'MarkdownConverter',
+        function ($scope, $filter, $sce, $q, $timeout, $params, Posts, Users, Converter) {
             $scope.opt = { customDate: '', editor: true, create: false };
             $scope.setCrumb('postedit');
             $scope.post = {};
+            $scope.user = Users.get();
 
             var editor = CodeMirror.fromTextArea(angular.element('#editor')[0], {
                 mode: "markdown",
@@ -433,12 +441,17 @@
 
             loadPost();
 
+            $scope.canSave = function () {
+                return $scope.user.$resolved && $scope.post.$resolved;
+            };
+
             $scope.postContent = function () {
                 return $sce.trustAsHtml($scope.post.content);
             };
 
             $scope.save = function () {
                 $scope.setLoading('Saving');
+                $scope.post.author = $scope.user.id;
                 $scope.post.$update(function () {
                     $scope.setLoading(false);
                 });
@@ -446,6 +459,7 @@
 
             $scope.publish = function () {
                 $scope.setLoading('Publishing');
+                $scope.post.author = $scope.user.id;
                 $scope.post.$update({id: $params.id, publish: true }, function () {
                     $scope.$emit('post:publish');
                     $scope.setLoading(false);
@@ -454,6 +468,7 @@
 
             $scope.draft = function() {
                 $scope.setLoading('Reverting to draft');
+                $scope.post.author = $scope.user.id;
                 Posts.update({ draft: true }, {id: $params.id}).$promise
                     .then(function(){
                         $scope.$emit('post:draft');

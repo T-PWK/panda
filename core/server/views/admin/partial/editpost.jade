@@ -154,8 +154,8 @@ mixin labelsForm
                     button.btn.btn-warning(ng-click="publish()", ng-if="!post.published && post.$resolved") Publish
                     button.btn.btn-warning(ng-click="draft()", ng-if="post.published && post.$resolved") Revert to Draft
                     button.btn.btn-default(ng-click="create()", ng-if="opt.create") Create
-                    button.btn.btn-default(ng-click="save()", ng-if="!opt.create") Save
-                    a.btn.btn-default(href="#/posts") Close
+                    button.btn.btn-default(ng-click="save()", ng-if="!opt.create", ng-disabled="!canSave()") Save
+                    a.btn.btn-default(ng-href="{{post.page?'#/pages':'#/posts'}}") Close
 
                 hr
                 .tab-content

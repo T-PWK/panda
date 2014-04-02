@@ -3,7 +3,7 @@ mixin sortMenu(id, title, icon)
         i.fa.fa-fw(class="#{icon}")
         = title
 
-.row
+.row(ng-controller="PostListCtrl")
     .col-md-3
         include includes/navigation
     .col-md-9
