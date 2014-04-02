@@ -480,23 +480,25 @@
 
     controllers.controller('SettingsCtrl', ['$scope', 'Settings',
         function ($scope, Settings) {
-            var hideLoading = bind($scope, $scope.setLoading, false);
-
             $scope.setLoading(true);
             $scope.setCrumb('settings', 'basic');
-            $scope.settings = Settings.get(hideLoading);
-
-            $scope.reset = function () {
-                $scope.setLoading(true);
-                $scope.settings = Settings.get(function () {
-                    hideLoading();
-                });
-            };
-
+            $scope.reset = loadSettings;
             $scope.save = function () {
                 $scope.setLoading('Saving');
-                $scope.settings.$save().then(hideLoading);
+                $scope.settings.$save()
+                    .then(bind($scope, $scope.setLoading, false))
+                    .catch(bind($scope, $scope.$emit, 'api:error'));
             };
+
+            loadSettings()
+
+            function loadSettings() {
+                $scope.setLoading(true);
+                Settings.get().$promise.then(function (settings) {
+                    $scope.settings = settings;
+                    $scope.setLoading();
+                });
+            }
         }
     ]);
 
@@ -524,10 +526,13 @@
 
             $scope.loadUser = function () {
                 $scope.setLoading(true);
-                $scope.master = Users.get(function (user) {
-                    $scope.user = copy(user);
-                    $scope.setLoading(false);
-                });
+                Users.get().$promise
+                    .then(function (user) {
+                        $scope.master = user;
+                        $scope.user = copy(user);
+                        $scope.setLoading(false);
+                    })
+                    .catch(bind($scope, $scope.$emit, 'api:error'));
             };
 
             $scope.resetUser = function() {
