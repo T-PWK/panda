@@ -39,11 +39,13 @@
             $scope.$on('post:create', reloadPostStats);
             $scope.$on('post:publish', reloadPostStats);
             $scope.$on('post:draft', reloadPostStats);
+            $scope.$on('post:edit', reloadPostStats);
 
             $scope.$on('post:delete', reloadPageStats);
             $scope.$on('post:create', reloadPageStats);
             $scope.$on('post:publish', reloadPageStats);
             $scope.$on('post:draft', reloadPageStats);
+            $scope.$on('post:edit', reloadPageStats);
 
             $scope.setLoading = function (loading) {
                 if (!loading) {
@@ -219,10 +221,12 @@
                     sortBy: $scope.sortBy,
                     type: $params.type,
                     page: $scope.page
-                }, function (posts) {
-                    $scope.setLoading(false);
-                    $scope.posts = posts;
-                });
+                }).$promise
+                    .then(function (posts) {
+                        $scope.setLoading(false);
+                        $scope.posts = posts;
+                    })
+                    .catch(bind($scope, $scope.$emit, 'api:error'));
             }
 
             function status(post) {
@@ -274,6 +278,7 @@
                     }
 
                     labels.push(label);
+                    labels.sort();
                 }
             };
 
@@ -453,6 +458,7 @@
                 $scope.setLoading('Saving');
                 $scope.post.author = $scope.user.id;
                 $scope.post.$update(function () {
+                    $scope.$emit('post:edit');
                     $scope.setLoading(false);
                 });
             };
@@ -473,7 +479,8 @@
                     .then(function(){
                         $scope.$emit('post:draft');
                         loadPost();
-                    });
+                    })
+                    .catch(bind($scope, $scope.$emit, 'api:error'));
             };
         }
     ]);
@@ -494,10 +501,12 @@
 
             function loadSettings() {
                 $scope.setLoading(true);
-                Settings.get().$promise.then(function (settings) {
-                    $scope.settings = settings;
-                    $scope.setLoading();
-                });
+                Settings.get().$promise
+                    .then(function (settings) {
+                        $scope.settings = settings;
+                        $scope.setLoading();
+                    })
+                    .catch(bind($scope, $scope.$emit, 'api:error'));
             }
         }
     ]);
@@ -654,19 +663,21 @@
 
                 $q.all(deletePromise)
                     .then(loadRedirects)
-                    .then(bind($scope, $scope.$emit, 'delete'));
+                    .then(bind($scope, $scope.$emit, 'delete'))
+                    .catch(bind($scope, $scope.$emit, 'api:error'));
             };
 
             $scope.refresh = loadRedirects;
 
             function loadRedirects () {
                 $scope.setLoading(true);
-                $scope.items = Redirects.query(
-                    function () {
+                Redirects.query().$promise
+                    .then(function(items){
+                        $scope.items = items;
                         $scope.setLoading(false);
                         $scope.deleting.empty();
-                    }
-                );
+                    })
+                    .catch(bind($scope, $scope.$emit, 'api:error'));
             }
     }]);
 
