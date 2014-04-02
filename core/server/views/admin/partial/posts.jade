@@ -1,3 +1,8 @@
+mixin sortMenu(id, title, icon)
+    li(ng-class="{active: sortBy=='#{id}'}"): a(href="", ng-click="setSortBy('#{id}')")
+        i.fa.fa-fw(class="#{icon}")
+        = title
+
 .row
     .col-md-3
         include includes/navigation
@@ -10,48 +15,26 @@
         .form-group(ng-if="posts.length")
             .btn-toolbar(role="toolbar")
                 .btn-group
-                    a.btn.btn-default(type="button", href="#/posts/new"): i.fa.fa-plus.fa-fw.text-primary
-                    button.btn.btn-default(type="button", ng-click="publish()", ng-hide="crumb[1].id=='live'||crumb[1].id=='scheduled'", ng-disabled="select.isEmpty()") Publish
-                    button.btn.btn-default(type="button", ng-click="draft()", ng-hide="crumb[1].id=='draft'", ng-disabled="select.isEmpty()") Revert to Draft
-                    button.btn.btn-default(type="button", ng-click="delete()", ng-disabled="select.isEmpty()"): i.fa.fa-trash-o.text-danger
+                    a.btn.btn-default(type="button", href="#/posts/new"): i.fa.fa-plus.text-primary
+                    button.btn.btn-default(type="button", ng-click="publish()", ng-hide="crumb[1].id=='live'||crumb[1].id=='scheduled'", ng-disabled="select.isEmpty() || !select.hasType('D')") Publish
+                    button.btn.btn-default(type="button", ng-click="draft()", ng-hide="crumb[1].id=='draft'", ng-disabled="select.isEmpty() || !select.hasType('A', 'S')") Revert to Draft
+                    button.btn.btn-default(type="button", ng-click="delete()", ng-disabled="select.isEmpty() || !select.hasType('D')"): i.fa.fa-trash-o.text-danger
 
                 .btn-group
                     button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
                         | Sort By&nbsp;
                         span.caret
                     ul.dropdown-menu
-                        li(ng-class="{active: sortBy=='title'}")
-                            a(href="", ng-click="setSortBy('title')")
-                                i.fa.fa-sort-alpha-asc
-                                |  Title
-                        li(ng-class="{active: sortBy=='-title'}")
-                            a(href="", ng-click="setSortBy('-title')")
-                                i.fa.fa-sort-alpha-desc
-                                |  Title
-                        li(ng-class="{active: sortBy=='commentsCount'}")
-                            a(href="", ng-click="setSortBy('commentsCount')")
-                                i.fa.fa-sort-numeric-asc
-                                |  Comments
-                        li(ng-class="{active: sortBy=='-commentsCount'}")
-                            a(href="", ng-click="setSortBy('-commentsCount')")
-                                i.fa.fa-sort-numeric-desc
-                                |  Comments
-                        li(ng-class="{active: sortBy=='publishedAt'}")
-                            a(href="", ng-click="setSortBy('publishedAt')")
-                                i.fa.fa-sort-numeric-asc
-                                |  Publication Date
-                        li(ng-class="{active: sortBy=='-publishedAt'}")
-                            a(href="", ng-click="setSortBy('-publishedAt')")
-                                i.fa.fa-sort-numeric-desc
-                                |  Publication Date
-                        li(ng-class="{active: sortBy=='createdAt'}")
-                            a(href="", ng-click="setSortBy('createdAt')")
-                                i.fa.fa-sort-numeric-asc
-                                |  Creation Date
-                        li(ng-class="{active: sortBy=='-createdAt'}")
-                            a(href="", ng-click="setSortBy('-createdAt')")
-                                i.fa.fa-sort-numeric-desc
-                                |  Creation Date
+                        mixin sortMenu('title', 'Title', 'fa-sort-alpha-asc')
+                        mixin sortMenu('-title', 'Title', 'fa-sort-alpha-desc')
+                        mixin sortMenu('commentsCount', 'Comments', 'fa-sort-numeric-asc')
+                        mixin sortMenu('-commentsCount', 'Comments', 'fa-sort-numeric-desc')
+                        mixin sortMenu('publishedAt', 'Publication Date', 'fa-sort-numeric-asc')
+                        mixin sortMenu('-publishedAt', 'Publication Date', 'fa-sort-numeric-desc')
+                        mixin sortMenu('createdAt', 'Creation Date', 'fa-sort-numeric-asc')
+                        mixin sortMenu('-createdAt', 'Creation Date', 'fa-sort-numeric-desc')
+                        mixin sortMenu('updatedAt', 'Last Update Date', 'fa-sort-numeric-asc')
+                        mixin sortMenu('-updatedAt', 'Last Update Date', 'fa-sort-numeric-desc')
 
                 .btn-group.pull-right
                     button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
@@ -67,7 +50,9 @@
                     button.btn.btn-default(type="button", ng-disabled="!pg.hasNext", ng-click="pg.next()") &raquo;
 
                 p.btn-group.pull-right(ng-show="pg.items") {{pg.from}}-{{pg.to}} of {{pg.items}}
-        p
+
+        .form-group(ng-show="!select.isEmpty()")
+            p(ng-pluralize, count="select.howMany()", when="{'0':'No posts selected', 'one':'{} post selected', 'other':'{} posts selected'}")
 
         .alert.alert-info.text-center(ng-if="!posts.length && !loading")
             | No posts. You can create your first post&nbsp;
@@ -88,7 +73,7 @@
                 th.col-sm-2 Publication
             tbody
                 tr(ng-repeat="post in posts | limitTo:pg.pageSize")
-                    td: i.btn-link.fa.fa-fw(ng-class="{'fa-square-o':!select.has(post.id),'fa-check-square-o':select.has(post.id)}", ng-click="select.toggle(post.id)")
+                    td: i.btn-link.fa.fa-fw(ng-class="{'fa-square-o':!select.has(post.id),'fa-check-square-o':select.has(post.id)}", ng-click="select.toggle(post.id, status(post))")
                     td: a(ng-href="#/posts/{{post.id}}/edit", ng-class="{'text-warning':!post.title}") {{post.title || '(Untitled post)'}}
                     td
                         i.fa.fa-bookmark-o.fa-fw(ng-if="post.featured", title="Featured")
