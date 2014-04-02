@@ -129,6 +129,7 @@
             $scope.sizes = [10, 25, 50, 100];
 
             $scope.$emit('post:load'); // load post statistics
+
             $scope.$watch('postStats', function(stats) {
                 if (stats) {
                     $scope.setCrumb(1, { data: stats[$params.type] });
@@ -136,65 +137,52 @@
                 }
             });
 
-            // Clear posts selection
-            $scope.$watch('pg.pageSize', clearSelection);
             $scope.$watch('pg.pageSize', postViewSetChange);
-
-            $scope.$watch('pg.current', clearSelection);
             $scope.$watch('pg.current', postViewSetChange);
-
-            $scope.$watch('sortBy', clearSelection);
             $scope.$watch('sortBy', postViewSetChange);
+
+            $scope.$on('post:publish', loadPosts);
+            $scope.$on('post:draft', loadPosts);
+            $scope.$on('post:delete', loadPosts);
 
             loadPosts();
 
             $scope.delete = function () {
                 $scope.setLoading('Deleting');
                 var deletePromises = [];
+
                 forEach($scope.posts, function (post) {
-                    if ($scope.select.has(post.id)) {
+                    // allow deletion of draft posts only
+                    if ($scope.select.has(post.id) && status(post) === 'D') {
                         deletePromises.push(post.$remove());
                     }
                 });
 
-                $q.all(deletePromises)
-                    .then(bind($scope.select.empty, $scope.select))
-                    .then(loadPosts)
-                    .then(bind($scope, $scope.setLoading))
-                    .then(bind($scope, $scope.$emit, 'post:delete'));
+                $q.all(deletePromises).then(bind($scope, $scope.$emit, 'post:delete'));
             };
 
             $scope.draft = function () {
                 $scope.setLoading('Reverting to draft');
                 var promises = [];
                 forEach($scope.posts, function (post) {
-                    console.info('checking ... ',post.id, $scope.status(post))
-                    if ($scope.select.has(post.id) && $scope.status(post) !== 'D') {
+                    if ($scope.select.has(post.id) && status(post) !== 'D') {
                         promises.push(Posts.update({ draft: true }, {id: post.id}).$promise);
                     }
                 });
 
-                $q.all(promises)
-                    .then(bind($scope.select, $scope.select.empty))
-                    .then(loadPosts)
-                    .then(bind($scope, $scope.setLoading))
-                    .then(bind($scope, $scope.$emit, 'post:draft'));
+                $q.all(promises).then(bind($scope, $scope.$emit, 'post:draft'));
             };
 
             $scope.publish = function () {
                 $scope.setLoading('Publishing');
                 var promises = [];
                 forEach($scope.posts, function (post) {
-                    if ($scope.select.has(post.id) && $scope.status(post) === 'D') {
+                    if ($scope.select.has(post.id) && status(post) === 'D') {
                         promises.push(Posts.update({ publish: true }, {id: post.id}).$promise);
                     }
                 });
 
-                $q.all(promises)
-                    .then(bind($scope.select, $scope.select.empty))
-                    .then(loadPosts)
-                    .then(bind($scope, $scope.setLoading))
-                    .then(bind($scope, $scope.$emit, 'post:publish'));
+                $q.all(promises).then(bind($scope, $scope.$emit, 'post:publish'));
             };
 
             $scope.statusText = function (post) {
@@ -204,16 +192,23 @@
             $scope.selectAll = function () {
                 var sel = $scope.select;
                 if (sel.all) {
-                    clearSelection();
+                    $scope.select.empty();
                 } else {
                     forEach($scope.posts, function (post) {
-                        addSelection(post.id);
+                        $scope.select.add(post.id, status(post));
                     });
                     sel.all = true;
                 }
             };
 
-            $scope.status = function (post) {
+            $scope.status = status;
+
+            $scope.setSortBy = function (sortBy) {
+                $scope.sortBy = sortBy;
+                $scope.pg.current = 1;
+            };
+
+            function status(post) {
                 if (!post.published) return 'D';
 
                 var date = post.publishedAt;
@@ -224,19 +219,6 @@
                     return 'S';
                 }
                 return 'A';
-            };
-
-            $scope.setSortBy = function (sortBy) {
-                $scope.sortBy = sortBy;
-                $scope.pg.current = 1;
-            };
-
-            function clearSelection () {
-                $scope.select.empty();
-            }
-
-            function addSelection (id) {
-                $scope.select.add(id);
             }
 
             function postViewSetChange (newValue, oldValue) {
@@ -247,6 +229,7 @@
 
             function loadPosts () {
                 $scope.setLoading(true);
+                $scope.select.empty();
                 Posts.query({
                     limit: $scope.pg.pageSize,
                     skip: $scope.pg.firstItem,
@@ -319,9 +302,28 @@
         }
     ]);
 
-    controllers.controller('SlugCtrl', ['$scope',
-        function ($scope) {
-            var unwatchTitle;
+    controllers.controller('SlugCtrl', ['$scope', '$q', 'Settings',
+        function ($scope, $q, Settings) {
+            var unwatchTitle,
+                permalinks = { page: '', post: '' },
+                tags = {
+                    ':slug': function (post) { return post.slug || ':slug:'; },
+                    ':year': function (post) { return moment(post.publishedAt).year(); },
+                    ':month': function (post) { return moment(post.publishedAt).format('MM'); },
+                    ':day': function (post) { return moment(post.publishedAt).format('DD'); }
+                };
+
+            $q.all([
+                Settings.get({ id:'app:postUrl' }).$promise,
+                Settings.get({ id:'app:pageUrl' }).$promise
+            ]).then(function(values){
+                permalinks.post = values[0].value;
+                permalinks.page = values[1].value;
+            });
+
+            $scope.$watch('post.slug', updatePermalinks);
+            $scope.$watch('post.page', updatePermalinks);
+            $scope.$watch('post.publishedAt', updatePermalinks);
 
             $scope.$watch('post.autoSlugOpt', function (autoSlugOpt) {
                 if ('undefined' === typeof autoSlugOpt) {
@@ -334,12 +336,31 @@
                 }
             });
 
+            $scope.fix = function (text) {
+                $scope.post.slug = _.str.slugify(text);
+            };
+
             function setSlugFromTitle (text) {
                 if (!text) {
                     $scope.post.slug = '';
                 } else {
                     $scope.post.slug = _.str.slugify(text);
                 }
+            }
+
+            function updatePermalinks () {
+                var $scope = arguments[2],
+                    url = ($scope.post.page) ? permalinks.page : permalinks.post,
+                    post = $scope.post;
+
+                url = url.replace(/(:[a-z]+)/g, function (match) {
+                    if (match in tags) {
+                        return tags[match](post);
+                    }
+                    return match;
+                });
+
+                $scope.permalink = url;
             }
         }
     ]);
@@ -383,23 +404,6 @@
             $scope.setCrumb('postedit');
             $scope.post = {};
 
-            var permalinks = { page: '', post: '' };
-
-            $q.all([
-                Settings.get({ id:'app:postUrl' }).$promise,
-                Settings.get({ id:'app:pageUrl' }).$promise
-            ]).then(function(values){
-                permalinks.post = values[0].value;
-                permalinks.page = values[1].value;
-            });
-
-            var tags = {
-                ':slug': function (post) { return post.slug || ':slug:'; },
-                ':year': function (post) { return moment(post.publishedAt).year(); },
-                ':month': function (post) { return moment(post.publishedAt).format('MM'); },
-                ':day': function (post) { return moment(post.publishedAt).format('DD'); }
-            };
-
             var editor = CodeMirror.fromTextArea(angular.element('#editor')[0], {
                 mode: "markdown",
                 showCursorWhenSelecting: true,
@@ -429,17 +433,13 @@
 
             loadPost();
 
-            $scope.$watch('post.slug', updatePermalinks);
-            $scope.$watch('post.page', updatePermalinks);
-            $scope.$watch('post.publishedAt', updatePermalinks);
-            
             $scope.postContent = function () {
                 return $sce.trustAsHtml($scope.post.content);
             };
 
             $scope.save = function () {
                 $scope.setLoading('Saving');
-                $scope.post.$update({draft:true}, function () {
+                $scope.post.$update(function () {
                     $scope.setLoading(false);
                 });
             };
@@ -460,21 +460,6 @@
                         loadPost();
                     });
             };
-
-            function updatePermalinks () {
-                var $scope = arguments[2],
-                    url = ($scope.post.page) ? permalinks.page : permalinks.post,
-                    post = $scope.post;
-
-                url = url.replace(/(:[a-z]+)/g, function (match) {
-                    if (match in tags) {
-                        return tags[match](post);
-                    }
-                    return match;
-                });
-
-                $scope.permalink = url;
-            }
         }
     ]);
 
