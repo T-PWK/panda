@@ -55,7 +55,7 @@ mixin sortMenu(id, title, icon)
             p(ng-pluralize, count="select.howMany()", when="{'0':'No posts selected', 'one':'{} post selected', 'other':'{} posts selected'}")
 
         .alert.alert-info.text-center(ng-if="!posts.length && !loading")
-            | No posts. You can create your first post&nbsp;
+            | No posts. You can create a post&nbsp;
             a(href="#/posts/new") here
 
         .text-center(ng-if="!posts.length && loading")
