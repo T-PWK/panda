@@ -48,12 +48,15 @@
             $scope.$on('post:edit', reloadPageStats);
 
             $scope.setLoading = function (loading) {
+                $scope.isLoading = loading;
                 if (!loading) {
-                    $timeout(function () {
-                        $scope.loading = false;
-                    }, 250);
+                    NProgress.done();
+//                    $timeout(function () {
+//                        $scope.loading = false;
+//                    }, 250);
                 } else {
-                    $scope.loading = (loading === true) ? 'Loading' : loading;
+                    NProgress.start();
+//                    $scope.loading = (loading === true) ? 'Loading' : loading;
                 }
             };
 
