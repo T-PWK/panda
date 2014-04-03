@@ -43,9 +43,11 @@
         if (req.isAuthenticated()) {
             req.session.access = Date.now(); // refreshing session
             fn();
-        } else if (str.startsWith(req.path, '/admin')) {
+        }
+        else if (str.startsWith(req.originalUrl, '/admin')) {
             res.redirect(302, '/login');
-        } else if (str.startsWith(req.path, '/api')) {
+        }
+        else {
             res.send(401);
         }
     };
