@@ -18,7 +18,7 @@ mixin warning(condition)
             .col-md-3: h4 Site Theme
             .col-md-8
                 form.form-horizontal(name="siteForm")
-                    fieldset(ng-disabled="loading")
+                    fieldset(ng-disabled="isLoading")
                         .form-group
                             label.col-sm-2.control-label(for="siteTheme") Name
                             .col-sm-10
@@ -36,7 +36,7 @@ mixin warning(condition)
             .col-md-3: h4 Admin Theme
             .col-md-8
                 form.form-horizontal(name="adminForm")
-                    fieldset(ng-disabled="loading")
+                    fieldset(ng-disabled="isLoading")
                         .form-group
                             label.col-sm-2.control-label(for="adminTheme") Name
                             .col-sm-10

@@ -23,7 +23,7 @@
                 .form-group.navbar-right
                     p.navbar-text(ng-pluralize, count="deleting.howMany()", when="{'0':'No items selected', 'one':'1 item selected', 'other':'{} items selected'}")
 
-            .text-center(ng-if="!items.length && loading")
+            .text-center(ng-if="!items.length && isLoading")
                 i.fa.fa-spinner.fa-spin
                 |  Loading &hellip;
 
@@ -56,7 +56,7 @@
                             i.fa(ng-class="{'internal':'fa-star-o','301':'fa-star','302':'fa-star-half-o'}[item.type]")
                             |  {{item.type||'internal'}}
 
-            .alert.alert-info.text-center(ng-if="!items.length && !loading") No redirects have been configured. You can create one in the form below.
+            .alert.alert-info.text-center(ng-if="!items.length && !isLoading") No redirects have been configured. You can create one in the form below.
 
         hr
 

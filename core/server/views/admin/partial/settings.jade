@@ -11,7 +11,7 @@
             .col-md-2: h4 Basic
             .col-md-9
                 form.form-horizontal(role="form", name="basicForm")
-                    fieldset(ng-disabled="loading")
+                    fieldset(ng-disabled="isLoading")
                         .form-group
                             label.col-sm-3.control-label(for="title") Title
                             .col-sm-9
@@ -29,7 +29,7 @@
             .col-md-2.text: h4 Posts
             .col-md-9
                 form.form-horizontal(role="form", name="postsForm")
-                    fieldset(ng-disabled="loading")
+                    fieldset(ng-disabled="isLoading")
                         .form-group(ng-class="{'has-error':basicForm.postpp.$invalid}")
                             label.col-sm-3.control-label(for="postspp") Posts per page
                             .col-sm-2
@@ -41,7 +41,7 @@
             .col-md-2: h4 Publishing
             .col-md-9
                 form.form-horizontal(role="form", name="pubForm")
-                    fieldset(ng-disabled="loading")
+                    fieldset(ng-disabled="isLoading")
                         .form-group
                             label.col-sm-3.control-label(for="address") Address
                             .col-sm-9
@@ -55,7 +55,7 @@
 
         hr
         .form-group
-            fieldset(ng-disabled="loading")
+            fieldset(ng-disabled="isLoading")
                 .row
                     .col-md-2
                     .col-md-9

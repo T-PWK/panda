@@ -11,7 +11,7 @@
             .col-md-2: h3 Basic
             .col-md-10
                 form.form-horizontal(role="form", name="userForm")
-                    fieldset(ng-disabled="loading")
+                    fieldset(ng-disabled="isLoading")
 
                         //- User name
                         .form-group(ng-class="{'has-error':userForm.name.$invalid && userForm.name.$dirty}")

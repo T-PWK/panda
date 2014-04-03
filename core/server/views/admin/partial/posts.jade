@@ -54,11 +54,11 @@ mixin sortMenu(id, title, icon)
         .form-group(ng-show="!select.isEmpty()")
             p(ng-pluralize, count="select.howMany()", when="{'0':'No posts selected', 'one':'{} post selected', 'other':'{} posts selected'}")
 
-        .alert.alert-info.text-center(ng-if="!posts.length && !loading")
+        .alert.alert-info.text-center(ng-if="!posts.length && !isLoading")
             | No posts. You can create a post&nbsp;
             a(href="#/posts/new") here
 
-        .text-center(ng-if="!posts.length && loading")
+        .text-center(ng-if="!posts.length && isLoading")
             i.fa.fa-spinner.fa-spin
             |  Loading &hellip;
 
