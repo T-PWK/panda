@@ -2,6 +2,13 @@ mixin post(id, name, page)
     li(ng-if="#{page?'pageStats':'postStats'}.#{id}")
         a(href="#/#{page?'pages':'posts'}/#{id}", ng-class="{'text-bold':crumb[1].id=='#{id}'}")
             span.badge.pull-right {{#{page?'pageStats':'postStats'}.#{id}}}
+            case id
+                when 'draft'
+                    i.fa.fa-fw.fa-edit
+                when 'scheduled'
+                    i.fa.fa-fw.fa-calendar
+                when 'live'
+                    i.fa.fa-fw.fa-globe
             = name
 
 ul.nav.nav-list
