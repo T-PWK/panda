@@ -1,9 +1,9 @@
 (function () {
     'use strict';
 
-    var flakeIdGen = require('flake-idgen'),
+    var FlakeIdGen = require('flake-idgen'),
         format = require('biguint-format'),
-        generator = new flakeIdGen();
+        generator = new FlakeIdGen();
 
     module.exports = function () {
         return format(generator.next(), 'dec');

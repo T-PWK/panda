@@ -186,8 +186,8 @@
         return Post.mapReduce({
             query: match,
             map: function () {
-                var type = this.published == false ? 'draft' :
-                        this.publishedAt > Date.now() ? 'scheduled' : 'live'
+                var type = this.published === false ? 'draft' :
+                        this.publishedAt > Date.now() ? 'scheduled' : 'live';
                 emit(type, 1);
             },
             reduce: function (key, values) {

@@ -16,8 +16,8 @@
         if (!req.user) return res.send(404);
 
         switch (req.params.user) {
-            case 'basic': return updateUser(req, res); break;
-            case 'password': return updatePassword(req, res); break;
+            case 'basic': return updateUser(req, res);
+            case 'password': return updatePassword(req, res);
             default: res.send(406);
         }
     };

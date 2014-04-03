@@ -14,10 +14,10 @@
      * Builds post or static page URL.
      * It is assumed that 'this' is the current resonse
      */
-    function postUrl(post, absolute) {
-        if (arguments.length < 2 && 'boolean' === typeof post) {
+    function postUrl(locals, post, absolute) {
+        if (arguments.length < 3 && 'boolean' === typeof post) {
             absolute = post;
-            post = this.locals.post;
+            post = locals.post;
         }
 
         var output = post.page ? cfg.get('app:pageUrl') : cfg.get('app:postUrl'),
@@ -56,12 +56,11 @@
 
     /*
      * Builds pagination URL
-     * It assumes that 'this' is current response
      */
-    function pageUrl(newer) {
-        var pagination = this.locals.pagination,
+    function pageUrl(locals, newer) {
+        var pagination = locals.pagination,
             page = newer ? pagination.newer : pagination.older,
-            ctx = this.locals.context.replace(pgnRegexp, '');
+            ctx = locals.context.replace(pgnRegexp, '');
 
         return 1 === page ? ('' === ctx ? '/' : ctx)
             : ('/' === ctx ? '' : ctx) + pgnUrl.replace(':page', page);
@@ -70,11 +69,11 @@
     /*
      * Formats given date. If the given date is a post then 'publishedAt' date is taken for formatting.
      */
-    function dateFormat(post, format) {
-        if (arguments.length < 2) {
+    function dateFormat(locals, post, format) {
+        if (arguments.length < 3) {
             if ('string' === typeof post) {
                 format = post;
-                post = this.locals.post;
+                post = locals.post;
             } else {
                 format = "YYYY-MM-DD";
             }
@@ -98,17 +97,17 @@
         }
     }
 
-    function labelsFormat(post, join) {
-        if (2 > arguments.length && 'string' === typeof post) {
+    function labelsFormat(locals, post, join) {
+        if (3 > arguments.length && 'string' === typeof post) {
             join = post;
-            post = this.locals.post;
+            post = locals.post;
         }
 
         return post.labels.join(join || ', ');
     }
 
-    function metaTitle() {
-        var post = this.locals.post,
+    function metaTitle(locals) {
+        var post = locals.post,
             tokens = {
                 ':blogtitle': function () {
                     return cfg.get('app:title');
@@ -142,15 +141,15 @@
         });
     }
 
-    function buildBodyClass() {
+    function buildBodyClass(res) {
         // Main page template
-        if ('/' === this.locals.context) return 'home-template';
+        if ('/' === res.locals.context) return 'home-template';
 
         // Any pagination template
-        if (+this.req.params.page) return 'archive-template';
+        if (+res.req.params.page) return 'archive-template';
 
         // Post or static page template (when res.locals.post is present)
-        var post = this.locals.post;
+        var post = res.locals.post;
         if (post) {
             var bodyClass = labelToClass(post.labels);
             bodyClass.push('post-template');
@@ -162,8 +161,8 @@
         }
     }
 
-    function buildPostClass(post) {
-        post = post || this.locals.post;
+    function buildPostClass(locals, post) {
+        post = post || locals.post;
 
         var postClass = ['post'];
 
@@ -174,26 +173,26 @@
         return postClass;
     }
 
-    function copyright() {
-        var res = this,
-            tags = {
+    function copyright(locals) {
+        var tags = {
                 ':year': function () {
                     return moment().format('YYYY');
                 },
                 ':url': function () {
-                    return res.locals.url;
+                    return locals.url;
                 },
                 ':title': function () {
-                    return res.locals.title;
+                    return locals.title;
                 }
             };
+
         return cfg.get('app:copyright').replace(/(:[a-z]+)/g, function (match) {
             if (match in tags) return tags[match]();
         });
     }
 
-    function author() {
-        return this.locals.post && this.locals.post.author;
+    function author(locals) {
+        return locals.post && locals.post.author;
     }
 
     function ifCheck(value, element, checkValue) {
@@ -248,19 +247,19 @@
             context:        { enumerable: true, value: req.path },
             title:          { enumerable: true, value: cfg.get('app:title') },
             description:    { enumerable: true, value: cfg.get('app:description') },
-            metaTitle:      { enumerable: true, get: metaTitle.bind(res) },
+            metaTitle:      { enumerable: true, get: metaTitle.bind(null, res.locals) },
             metaDescription:{ enumerable: true, get: metaDescription.bind(res) },
             now:            { enumerable: true, value: moment() },
             url:            { enumerable: true, value: cfg.get('url') },
-            copyright:      { enumerable: true, get: copyright.bind(res) },
-            $postClass:     { enumerable: true, value: buildPostClass.bind(res) },
-            $url:           { enumerable: true, value: postUrl.bind(res) },
-            $pageUrl:       { enumerable: true, value: pageUrl.bind(res) },
-            $labels:        { enumerable: true, value: labelsFormat.bind(res) },
-            $date:          { enumerable: true, value: dateFormat.bind(res) },
-            bodyClass:      { enumerable: true, get: buildBodyClass.bind(res) },
-            postClass:      { enumerable: true, get: buildPostClass.bind(res) },
-            author:         { enumerable: true, get: author.bind(res) },
+            copyright:      { enumerable: true, get: copyright.bind(null, res.locals) },
+            $postClass:     { enumerable: true, value: buildPostClass.bind(null, res.locals) },
+            $url:           { enumerable: true, value: postUrl.bind(null, res.locals) },
+            $pageUrl:       { enumerable: true, value: pageUrl.bind(null, res.locals) },
+            $labels:        { enumerable: true, value: labelsFormat.bind(null, res.locals) },
+            $date:          { enumerable: true, value: dateFormat.bind(null, res.locals) },
+            bodyClass:      { enumerable: true, get: buildBodyClass.bind(null, res) },
+            postClass:      { enumerable: true, get: buildPostClass.bind(null, res.locals) },
+            author:         { enumerable: true, get: author.bind(null, res.locals) },
             user:           { enumerable: true, value: req.user }
         });
 

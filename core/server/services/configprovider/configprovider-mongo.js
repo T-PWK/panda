@@ -75,7 +75,7 @@
                     save = lift(config.save.bind(config));
                 }
                 return save();
-            })
+            });
     };
 
 })();

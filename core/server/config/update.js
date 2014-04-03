@@ -10,7 +10,7 @@
             configs.forEach(function (config) {
                 cfg.set(config.key, config.value);
                 cfg.notify('set:'+config.key);
-            })
+            });
         });
     };
 

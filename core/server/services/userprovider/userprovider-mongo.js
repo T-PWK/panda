@@ -56,7 +56,7 @@
             })
             .then(function (hash) {
                 return User.findByIdAndUpdate(id, { updatedAt: new Date(), password: hash }).exec();
-            })
+            });
     };
 
     module.exports = UserProvider;
