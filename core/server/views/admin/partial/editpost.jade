@@ -145,6 +145,11 @@ mixin labelsForm
                     //- Page setup
                     mixin pageForm()
 
+                .alert.alert-warning(ng-show="status(post)=='A'")
+                    i.fa.fa-fw.fa-info-circle
+                    | Keep in mind that you are editing a live post and all changes will affect your blog
+
+
             .col-md-9
                 .btn-group
                     button.btn.btn-default(type="button", ng-click="opt.editor=true", ng-class="{active:opt.editor}")
@@ -163,10 +168,6 @@ mixin labelsForm
 
                 hr
 
-                .help-block(ng-show="status(post)=='A'")
-                    .text-warning.small
-                        i.fa.fa-fw.fa-info-circle
-                        | Keep in mind that you are editing a live post and all changes will affect your blog
 
                 .tab-content
                     .tab-pane(ng-class="{active:opt.editor}")
