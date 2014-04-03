@@ -4,3 +4,16 @@
 .navbar-img img {
     width: 46px;
 }
+
+#nprogress .bar {
+    background: #18bc9c;
+}
+
+#nprogress .peg {
+    box-shadow: 0 0 10px #18bc9c, 0 0 5px #18bc9c;
+}
+
+#nprogress .spinner-icon {
+    border-top-color: #18bc9c;
+    border-left-color: #18bc9c;
+}

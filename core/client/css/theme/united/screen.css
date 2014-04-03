@@ -8,3 +8,16 @@
 .navbar-img i.fa {
     color: #ffffff;
 }
+
+#nprogress .bar {
+    background: #ffffff;
+}
+
+#nprogress .peg {
+    box-shadow: 0 0 10px #ffffff, 0 0 5px #ffffff;
+}
+
+#nprogress .spinner-icon {
+    border-top-color: #ffffff;
+    border-left-color: #ffffff;
+}

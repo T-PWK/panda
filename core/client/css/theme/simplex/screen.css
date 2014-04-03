@@ -8,3 +8,16 @@
 .navbar-img .fa-3x {
     font-size: 2.2em;
 }
+
+#nprogress .bar {
+    background: #d9230f;
+}
+
+#nprogress .peg {
+    box-shadow: 0 0 10px #d9230f, 0 0 5px #d9230f;
+}
+
+#nprogress .spinner-icon {
+    border-top-color: #d9230f;
+    border-left-color: #d9230f;
+}
