@@ -11,7 +11,7 @@
     var controllers = angular.module('panda.controllers', ['panda.utils']);
 
     controllers.controller('RootCtrl', ['$scope', '$window', '$timeout', 'PostsInfo', 'Constants',
-        function ($scope, $window, $timeout, Info, Config) {
+        function ($scope, $window, $timeout, Info, Constants) {
             $scope.loading = false;
             $scope.crumb = [];
             $scope.postStats = {};
@@ -67,24 +67,11 @@
                 }
             };
 
-            $scope.status = status;
+            $scope.status = postStatus;
 
             $scope.statusText = function (post) {
-                return Constants.status[$scope.status(post)];
+                return Constants.status[postStatus(post)];
             };
-
-            function status(post) {
-                if (!post.published) return 'D';
-
-                var date = post.publishedAt;
-                if (!angular.isDate(date)) {
-                    date = new Date(date);
-                }
-                if (date > Date.now()) { // Convert string to date
-                    return 'S';
-                }
-                return 'A';
-            }
 
             function updateCrumbItem (args) {
                 if (isObject(args[1])) {
@@ -99,7 +86,7 @@
                 $scope.crumb = [];
                 forEach(args, function (id) {
                     if (angular.isString(id)) {
-                        this.push({ id: id, display: Config.pageNames[id] || id });
+                        this.push({ id: id, display: Constants.pageNames[id] || id });
                     }
                     else if (isObject(id)) {
                         this.push(copy(id));
@@ -168,7 +155,7 @@
                     $scope.select.empty();
                 } else {
                     forEach($scope.posts, function (post) {
-                        $scope.select.add(post.id, status(post));
+                        $scope.select.add(post.id, postStatus(post));
                     });
                     sel.all = true;
                 }
@@ -180,7 +167,7 @@
 
                 forEach($scope.posts, function (post) {
                     // allow deletion of draft posts only
-                    if ($scope.select.has(post.id) && status(post) === 'D') {
+                    if ($scope.select.has(post.id) && postStatus(post) === 'D') {
                         deletePromises.push(post.$remove());
                     }
                 });
@@ -192,7 +179,7 @@
                 $scope.setLoading('Reverting to draft');
                 var promises = [];
                 forEach($scope.posts, function (post) {
-                    if ($scope.select.has(post.id) && status(post) !== 'D') {
+                    if ($scope.select.has(post.id) && postStatus(post) !== 'D') {
                         promises.push(Posts.update({ draft: true }, {id: post.id}).$promise);
                     }
                 });
@@ -204,7 +191,7 @@
                 $scope.setLoading('Publishing');
                 var promises = [];
                 forEach($scope.posts, function (post) {
-                    if ($scope.select.has(post.id) && status(post) === 'D') {
+                    if ($scope.select.has(post.id) && postStatus(post) === 'D') {
                         promises.push(Posts.update({ publish: true }, {id: post.id}).$promise);
                     }
                 });
@@ -778,4 +765,18 @@
             }
         }
     ]);
+
+    function postStatus(post) {
+        if (!post.published) return 'D';
+
+        var date = post.publishedAt;
+        if (!angular.isDate(date)) {
+            date = new Date(date);
+        }
+        if (date > Date.now()) { // Convert string to date
+            return 'S';
+        }
+        return 'A';
+    }
+
 }());
