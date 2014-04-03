@@ -10,8 +10,7 @@ function gruntConfig (grunt) {
                 directives: {
                     node: true,
                     browser: false,
-                    todo: false,
-                    sloppy: false
+                    todo: true
                 },
                 files: {
                     src: [
@@ -20,6 +19,12 @@ function gruntConfig (grunt) {
                 }
             },
             client: {
+                directives: {
+                    node: false,
+                    browser: true,
+                    nomen: true,
+                    todo: true
+                },
                 options: {
                     globals: {
                         angular:false,  // angular library
