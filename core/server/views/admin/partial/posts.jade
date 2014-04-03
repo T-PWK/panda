@@ -77,7 +77,8 @@ mixin sortMenu(id, title, icon)
                     td: a(ng-href="#/posts/{{post.id}}/edit", ng-class="{'text-warning':!post.title}") {{post.title || '(Untitled post)'}}
                     td
                         i.fa.fa-bookmark-o.fa-fw(ng-if="post.featured", title="Featured")
-                        i.fa.fa-fw.text-warning(ng-if="status(post)!='A'" ng-class="{D:'fa-edit',S:'fa-calendar'}[status(post)]", title="{{statusText(post)}}")
+                        i.fa.fa-fw.text-warning(ng-if="status(post)!='A'", ng-class="{D:'fa-edit',S:'fa-calendar'}[status(post)]", title="{{statusText(post)}}")
+                        i.fa.fa-fw.fa-globe.text-success(ng-if="status(post)=='A'", title="{{statusText(post)}}")
                     td: a(ng-href="{{post.author.website}}", target="_blank") {{post.author.name}}
                     td
                         | {{post.labels.length || 0}} 
