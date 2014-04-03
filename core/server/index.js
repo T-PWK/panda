@@ -72,9 +72,9 @@
                 serverStartupInfo
             );
         }).otherwise(function (err) {
-                console.error(err.toString().red);
-                throw err;
-            });
+            console.error(err.toString().red);
+            throw err;
+        });
     }
 
     function init (app) {
