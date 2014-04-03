@@ -57,7 +57,21 @@
             );
         }])
         .factory('MarkdownConverter', [function () {
-            return new Showdown.converter();
+            marked.setOptions({
+                renderer: new marked.Renderer(),
+                gfm: true,
+                tables: true,
+                breaks: false,
+                pedantic: false,
+                sanitize: true,
+                smartLists: true,
+                smartypants: false
+            });
+            return {
+                makeHtml: function (value) {
+                    return marked(value);
+                }
+            };
         }])
         .filter('moment', [function () {
             return function (date, format) {
