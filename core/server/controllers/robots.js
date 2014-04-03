@@ -12,7 +12,7 @@
                 allow: cfg.get('app:robots:allow')
             },
             path = join(cfg.get('paths:coreShared'), 'robots.txt'),
-            locals = _.extend({}, robotsLocals, res.app.locals);
+            locals = _.extend({}, robotsLocals, res.locals);
 
         // Check if a file can be served from cache
         if (tpl) return res.type('txt').end(tpl(locals));
