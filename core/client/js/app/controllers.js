@@ -118,6 +118,11 @@
             $root.$on('user:update', function (event, user) {
                 $scope.user = user;
             });
+            $root.$on('cfg:host', function (event, host) {
+                if (host) {
+                    $scope.url = "http://" + host;
+                }
+            });
         }
     ]);
 
@@ -484,7 +489,10 @@
             $scope.save = function () {
                 $scope.setLoading('Saving');
                 $scope.settings.$save()
-                    .then(bind($scope, $scope.setLoading, false))
+                    .then(function (settings) {
+                        $scope.$emit('cfg:host', settings.host);
+                        $scope.setLoading();
+                    })
                     .catch(bind($scope, $scope.$emit, 'api:error'));
             };
 

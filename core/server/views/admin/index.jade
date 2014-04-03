@@ -34,7 +34,7 @@ block content
                     li: a(href="#/posts")
                         i.fa.fa-file-text.fa-fw
                         |  Posts
-                    li: a(href=url, target="_blank")
+                    li: a(href=url, ng-href="{{url}}", target="_blank")
                         i.fa.fa-eye.fa-fw
                         |  View Blog
                 ul.nav.navbar-nav.navbar-right
