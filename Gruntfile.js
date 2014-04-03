@@ -6,14 +6,20 @@ function gruntConfig (grunt) {
         // ### Config for grunt-contrib-jshint
         // JSHint all the things!
         jshint: {
-            server_code: {
-                src: [
-                    'core/server/**/*.js',
-                    'core/index.js',
-                    'core/server.js'
-                ]
+            server: {
+                directives: {
+                    node: true,
+                    browser: false,
+                    todo: false,
+                    sloppy: false
+                },
+                files: {
+                    src: [
+                        'core/server/**/*.js', 'core/index.js', 'core/server.js'
+                    ]
+                }
             },
-            client_code: {
+            client: {
                 options: {
                     globals: {
                         angular:false,  // angular library
