@@ -52,7 +52,7 @@
         updatePaths();
         updateThemePaths();
         generateSecrets();
-        miscUpdates();
+        miscTimes();
 
         // Update site theme paths upon theme:name change
         cfg.on('set:theme:name', updateThemePaths);
@@ -60,12 +60,9 @@
         return when.resolve();
     }
 
-    function miscUpdates() {
-        // If session cookie max age set in duration (string) convert it to milliseconds
-        if (_.isString(cfg.get('admin:sessionCookieMaxAge'))) {
-            cfg.set('admin:sessionCookieMaxAge',
-                moment.duration(cfg.get('admin:sessionCookieMaxAge')).as('milliseconds'));
-        }
+    function miscTimes() {
+        fromStringToMs('admin:sessionCookieMaxAge');
+        fromStringToMs('app:staticCacheAge');
     }
 
     function updatePaths () {
@@ -101,6 +98,13 @@
         }
 
         cfg.set('sessionSecret', randomValue(32));
+    }
+
+    function fromStringToMs (key) {
+        var cfgValue =  cfg.get(key);
+        if (_.isString(cfgValue)) {
+            cfg.set(key, moment.duration(cfgValue).as('milliseconds'));
+        }
     }
 
     module.exports.init = init;
