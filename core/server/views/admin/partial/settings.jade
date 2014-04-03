@@ -47,6 +47,11 @@
                             .col-sm-9
                                 input.form-control#address(placeholder="Address", type="text", required, ng-trim="true",
                                     ng-model="settings.host")
+                                p.help-block
+                                    i.fa.fa-fw.fa-info-circle
+                                    | Address accepts&nbsp;
+                                    em hostname[:port]
+                                    | &nbsp;format. Default port is 80.
 
         hr
         .form-group
