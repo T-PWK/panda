@@ -100,7 +100,7 @@
             status: {
                 'D': 'Draft',
                 'S': 'Scheduled',
-                'A': 'Active'
+                'A': 'Live'
             },
             pageNames: {
                 basic: 'Basic',
