@@ -4,7 +4,8 @@
     var passport        = require('passport'),
         LocalStrategy   = require('passport-local').Strategy,
         provider        = require('../providers').userProvider,
-        crypt           = require('bcryptjs');
+        crypt           = require('bcryptjs'),
+        str             = require('underscore.string');
 
     module.exports = function () {
         passport.use(
@@ -38,19 +39,13 @@
         });
     };
 
-    module.exports.adminLoginCheck = function (req, res, fn) {
+    module.exports.loginCheck = function (req, res, fn) {
         if (req.isAuthenticated()) {
             req.session.access = Date.now(); // refreshing session
             fn();
-        } else {
+        } else if (str.startsWith(req.path, '/admin')) {
             res.redirect(302, '/login');
-        }
-    };
-
-    module.exports.apiLoginCheck = function (req, res, fn) {
-        if (req.isAuthenticated()) {
-            fn();
-        } else {
+        } else if (str.startsWith(req.path, '/api')) {
             res.send(401);
         }
     };
