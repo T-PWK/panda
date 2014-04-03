@@ -34,9 +34,6 @@
         app.use('/shared', express.static(cfg.get('paths:sharedStatic'), { maxAge: cfg.get('app:staticCacheAge') }));
         app.use('/client' + (hash ? '/' + hash : ''), express.static(cfg.get('paths:clientStatic'), { maxAge: 86400000 }));
 
-        // robots.txt handler
-        app.use(require('./robots')());
-
         // Set 'Powered By' HTTP header
         app.use(require('./poweredBy'));
 

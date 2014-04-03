@@ -55,6 +55,7 @@
 
             // ## Routing
             routes.feeds(app);      // Set up RSS routes
+            routes.robots(app);     // Set up robots.txt route
 
             if (cfg.get('admin:enable')) {
                 routes.auth(app);       // Set up authentication routes
