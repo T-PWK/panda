@@ -67,6 +67,25 @@
                 }
             };
 
+            $scope.status = status;
+
+            $scope.statusText = function (post) {
+                return Constants.status[$scope.status(post)];
+            };
+
+            function status(post) {
+                if (!post.published) return 'D';
+
+                var date = post.publishedAt;
+                if (!angular.isDate(date)) {
+                    date = new Date(date);
+                }
+                if (date > Date.now()) { // Convert string to date
+                    return 'S';
+                }
+                return 'A';
+            }
+
             function updateCrumbItem (args) {
                 if (isObject(args[1])) {
                     angular.extend($scope.crumb[args[0]], args[1]);
@@ -121,8 +140,8 @@
         }
     ]);
 
-    controllers.controller('PostListCtrl', ['$scope', '$routeParams', '$q', 'Posts', 'Utils', 'Constants',
-        function ($scope, $params, $q, Posts, Utils, Constants) {
+    controllers.controller('PostListCtrl', ['$scope', '$routeParams', '$q', 'Posts', 'Utils',
+        function ($scope, $params, $q, Posts, Utils) {
             $scope.type = $params.type;
             $scope.sizes = [10, 25, 50, 100];
             $scope.pg = Utils.pagination();
@@ -193,12 +212,6 @@
                 $q.all(promises).then(bind($scope, $scope.$emit, 'post:publish'));
             };
 
-            $scope.statusText = function (post) {
-                return Constants.status[$scope.status(post)];
-            };
-
-            $scope.status = status;
-
             $scope.setSortBy = function (sortBy) {
                 $scope.sortBy = sortBy;
                 $scope.pg.current = 1;
@@ -227,19 +240,6 @@
                         $scope.posts = posts;
                     })
                     .catch(bind($scope, $scope.$emit, 'api:error'));
-            }
-
-            function status(post) {
-                if (!post.published) return 'D';
-
-                var date = post.publishedAt;
-                if (!angular.isDate(date)) {
-                    date = new Date(date);
-                }
-                if (date > Date.now()) { // Convert string to date
-                    return 'S';
-                }
-                return 'A';
             }
         }
     ]);
@@ -445,6 +445,10 @@
             }
 
             loadPost();
+
+            $scope.titleize = function () {
+                $scope.post.title = _.str.titleize($scope.post.title || '');
+            };
 
             $scope.canSave = function () {
                 return $scope.user.$resolved && $scope.post.$resolved;

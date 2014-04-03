@@ -118,16 +118,19 @@ mixin labelsForm
 //- # Page Content
 .row
     .col-md-12
-
         form.form-horizontal(name="form")
             .form-group(ng-class="{'has-error':form.$invalid && form.title.$dirty}")
                 label.col-sm-2.control-label(for="title") Page Title
                 .col-sm-10
-                    input.form-control#title(type="text", placeholder="Enter Post Title",
-                        ng-model="post.title", required, name="title", ng-maxlength="100")
+                    .input-group
+                        input.form-control#title(type="text", placeholder="Enter Post Title",
+                            ng-model="post.title", required, name="title", ng-maxlength="100")
+                        span.input-group-btn
+                            button.btn.btn-default(type="button", ng-click="titleize()"): i.fa.fa-font
         hr
+
         .row
-            .col-md-3 
+            .col-md-3
                 #accordion.panel-group
 
                     //- Labels (tags) setup
@@ -150,6 +153,7 @@ mixin labelsForm
                     button.btn.btn-default(type="button", ng-click="opt.editor=false", ng-class="{active:!opt.editor}")
                         i.fa.fa-eye
                         |  Preview
+
                 .btn-group.pull-right
                     button.btn.btn-warning(ng-click="publish()", ng-if="!post.published && post.$resolved") Publish
                     button.btn.btn-warning(ng-click="draft()", ng-if="post.published && post.$resolved") Revert to Draft
@@ -158,6 +162,12 @@ mixin labelsForm
                     a.btn.btn-default(ng-href="{{post.page?'#/pages':'#/posts'}}") Close
 
                 hr
+
+                .help-block(ng-show="status(post)=='A'")
+                    .text-warning.small
+                        i.fa.fa-fw.fa-info-circle
+                        | Keep in mind that you are editing a live post and all changes will affect your blog
+
                 .tab-content
                     .tab-pane(ng-class="{active:opt.editor}")
                         textarea.form-control#editor
