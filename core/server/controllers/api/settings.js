@@ -70,7 +70,10 @@
 
                 promises.push(
                     provider.saveConfig(propertyMap[property], value)
-                        .then(cfg.set.bind(cfg, propertyMap[property], value))
+                        .then(function () {
+                            cfg.set(propertyMap[property], value);
+                            cfg.notify('set:' + propertyMap[property]);
+                        })
                 );
             }
         });
