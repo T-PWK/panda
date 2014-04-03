@@ -1,6 +1,11 @@
-require('pkginfo')(module, 'version');
+(function () {
+    'use strict';
 
-module.exports = function (req, res, next) {
-    res.setHeader('X-Powered-By', 'Panda v' + exports.version);
-    next();
-};
+    require('pkginfo')(module, 'version');
+
+    module.exports = function (req, res, next) {
+        res.setHeader('X-Powered-By', 'Panda v' + exports.version);
+        next();
+    };
+
+})();
