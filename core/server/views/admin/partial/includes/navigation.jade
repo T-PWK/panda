@@ -40,6 +40,10 @@ ul.nav.nav-list
         i.fa.fa-comments.fa-fw
         |  Comments
 
+    li: a(href="#/images", ng-class="{'text-bold':crumb[0].id=='images'}")
+        i.fa.fa-picture-o.fa-fw
+        |  Images
+
     li: a(href="#/users", ng-class="{'text-bold':crumb[0].id=='users'}")
         i.fa.fa-user.fa-fw
         |  Users
@@ -49,13 +53,21 @@ ul.nav.nav-list
         |  Themes
 
     li.nav-header
+
         a(href="#/settings")
             i.fa.fa-wrench.fa-fw
             |  Settings
+
         ul.nav.nav-list(ng-if="crumb[0].id === 'settings'")
+
             li: a(href="#/settings/basic", ng-class="{'text-bold':crumb[1].id=='basic'}")
                 i.fa.fa-cog.fa-fw
                 |  Basic
+
+            li: a(href="#/settings/ips", ng-class="{'text-bold':crumb[1].id=='ips'}")
+                i.fa.fa-ban.fa-fw
+                |  IP Restrictions
+
             li: a(href="#/settings/redirects", ng-class="{'text-bold':crumb[1].id=='redirects'}")
                 i.fa.fa-share-square-o.fa-fw
                 |  Redirects
