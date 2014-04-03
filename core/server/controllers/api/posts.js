@@ -1,11 +1,16 @@
 (function () {
     'use strict';
 
-    var provider    = require('../../providers').postProvider,
-        when        = require('when'),
-        node        = require('when/node'),
-        format      = require('util').format,
-        _           = require('underscore');
+    var provider            = require('../../providers').postProvider,
+        cfg                 = require('nconf'),
+        when                = require('when'),
+        node                = require('when/node'),
+        downsize            = require('downsize'),
+        str                 = require('underscore.string'),
+        format              = require('util').format,
+        _                   = require('underscore'),
+        postAllowedProps    = ['slug', 'title', 'teaser', 'markdown', 'content', 'labels', 'publishedAt', 'author',
+            'autoPublishOpt', 'autoSlugOpt', 'featured', 'page'];
 
     module.exports.index = function (req, res) {
         var page = ('undefined' === typeof req.query.page) ? undefined : req.query.page.toLowerCase() === 'true';
@@ -65,7 +70,9 @@
     }
 
     module.exports.update = function (req, res) {
-        var options = {};
+        var options = {},
+            id      = req.params.post,
+            post    = _.pick(req.body, postAllowedProps);
 
         if (req.query.publish === 'true') {
             options.publish = true;
@@ -75,9 +82,14 @@
             options.draft = true;
         }
 
-        provider
-            .update(req.params.post, filterProperties(req.body), options)
-            .then(res.json.bind(res));
+        // Generate teaser if automated generation is enabled and content property is provided
+        if (cfg.get('admin:teaser:enable') && 'undefined' !== typeof post.content) {
+
+            // Post content is cleaned (stripped HTML tags and remove new lines and extra spaces
+            post.teaser = downsize(str.clean(str.stripTags(post.content)), cfg.get('admin:teaser:options'));
+        }
+
+        provider.update(id, post, options).then(res.json.bind(res));
     };
 
     module.exports.show = function (req, res) {
@@ -93,9 +105,7 @@
     };
 
     function filterProperties(properties) {
-        return _.pick(properties,
-            'slug', 'title', 'teaser', 'markdown', 'author', 'content', 'publishedAt',
-            'autoPublishOpt', 'autoSlugOpt', 'featured', 'page', 'labels');
+        return _.pick(properties, postAllowedProps);
     }
 
     function increase (value) {

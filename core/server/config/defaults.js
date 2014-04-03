@@ -95,9 +95,28 @@ module.exports = {
         }
     },
     admin: {
+        // Default admin theme
         theme: 'default',
+
+        // Admin console session span length in format [d.]hh:mm:ss[.ms]
         sessionCookieMaxAge: '00:10:00',
-        enable: true
+
+        // Enable / disable admin and API
+        enable: true,
+
+        // Settings for automated teaser generation
+        teaser: {
+            // Enable automated teaser generation
+            enable: true,
+
+            // Teaser generation options
+            // - words - number of words,
+            // - characters - number of characters
+            // - append - text to append if reducing size
+            options: {
+                words: 50
+            }
+        }
     },
     url: "http://127.0.0.1:3000",
     server: {

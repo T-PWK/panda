@@ -3,13 +3,16 @@
 (function(){
     'use strict';
 
-    var mongoose    = require('mongoose'),
-        moment      = require('moment'),
-        _           = require('underscore'),
-        when        = require('when'),
-        lift        = require('when/node').lift,
-        debug       = require('debug')('panda:postProvider'),
-        Post        = require('./../../models/mongoose/post');
+    var mongoose            = require('mongoose'),
+        moment              = require('moment'),
+        _                   = require('underscore'),
+        when                = require('when'),
+        lift                = require('when/node').lift,
+        debug               = require('debug')('panda:postProvider'),
+        Post                = require('./../../models/mongoose/post'),
+        postAllowedProps    =
+            ['slug', 'title', 'teaser', 'markdown', 'content', 'labels', 'publishedAt', 'author',
+             'autoPublishOpt', 'autoSlugOpt', 'featured', 'page'];
 
     var PostProvider = module.exports = function () {
         this.db = mongoose.connection;
@@ -66,9 +69,9 @@
     }
 
     PostProvider.prototype.findAll = function (options) {
-        options = options || {};
-
         debug('finding all posts %j', options);
+
+        options = options || {};
 
         var selection = addBasicSelection({}, options),
             query = addQueryOptions(Post.find(selection), options);
@@ -87,6 +90,8 @@
 
     PostProvider.prototype.findById = function (id, options) {
         options = options || {};
+
+        debug('finding post by id %j');
 
         return Post.findById(id).select(options.select || undefined).exec();
     };
@@ -118,6 +123,8 @@
     };
 
     PostProvider.prototype.findByLabel = function (options) {
+        debug('finding post by label %j', options && options.label);
+
         if (!options) {
             return when.reject();
         }
@@ -130,6 +137,8 @@
     PostProvider.prototype.count = function (opts) {
         opts = opts || {};
         var start, end = new Date(), month, query, cond = { page: false };
+
+        debug('fetching posts count %j', opts);
 
         if (opts.label) {
             cond.labels = opts.label;
@@ -239,11 +248,11 @@
     };
 
     PostProvider.prototype.update = function (id, properties, options) {
+        debug('updating post %j : %j', id, properties);
+
         if (!properties) return when.reject();
 
-        debug('updating post %j', id);
-
-        var post = filterProperties(properties);
+        var post = _.pick(properties, postAllowedProps);
 
         return Post.findById(id).exec()
             .then(function (item) {
@@ -269,24 +278,20 @@
     PostProvider.prototype.create = function (properties, options) {
         debug('creating post %j', properties);
 
-        var post = filterProperties(properties);
+        var post = _.pick(properties, postAllowedProps);
 
         if (options.publish) {
-            item.published = true;
+            post.published = true;
         }
 
         return Post.create(post);
     };
 
     PostProvider.prototype.delete = function (id) {
+        debug('deleting post %j', id);
+
         return Post.findByIdAndRemove(id).exec();
     };
-
-    function filterProperties(properties) {
-        return _.pick(properties,
-            'slug', 'title', 'teaser', 'markdown', 'author', 'content', 'publishedAt',
-            'autoPublishOpt', 'autoSlugOpt', 'featured', 'page', 'labels');
-    }
 
 })();
 
