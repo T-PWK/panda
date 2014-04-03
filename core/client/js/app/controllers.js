@@ -338,8 +338,8 @@
                 }
                 if(autoSlugOpt) {
                     unwatchTitle = $scope.$watch('post.title', setSlugFromTitle);
-                } else {
-                    unwatchTitle && unwatchTitle();
+                } else if(unwatchTitle) {
+                    unwatchTitle();
                 }
             });
 
@@ -499,7 +499,7 @@
                     .catch(bind($scope, $scope.$emit, 'api:error'));
             };
 
-            loadSettings()
+            loadSettings();
 
             function loadSettings() {
                 $scope.setLoading(true);

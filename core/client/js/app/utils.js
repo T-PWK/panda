@@ -125,7 +125,7 @@
             pagination: function(options) {
                 return new Pagination(options || {});
             }
-        }
+        };
     });
 
 })();
