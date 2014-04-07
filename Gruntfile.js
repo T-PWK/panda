@@ -11,7 +11,7 @@ function gruntConfig (grunt) {
 
         copy: {
             server: {
-                src: ['content/**', 'core/**', '!core/client/**'],
+                src: ['content/**', 'core/**', './*.*', '!core/client/css/**', '!core/client/js/**'],
                 dest: 'build',
                 expand: true
             }
@@ -63,6 +63,22 @@ function gruntConfig (grunt) {
                         '!core/client/css/theme/**/*.css'
                     ]
                 }
+            }
+        },
+
+        compress: {
+            release: {
+                options: {
+                    archive: 'build/panda-v<%= pkg.version %>.zip'
+                },
+                expand: true,
+                cwd: 'build',
+                src:['**']
+//                files: [
+//                    {
+//                        cwd: 'build', expand:true, src:['**']
+//                    }
+//                ]
             }
         },
 
@@ -128,22 +144,29 @@ function gruntConfig (grunt) {
     );
 
     grunt.registerTask(
+        'scripts',
+        'Compiles the JavaScript files.',
+        ['uglify']
+    )
+
+    grunt.registerTask(
         'build',
         'Compiles all of the assets and copies the files to the build directory.',
         ['clean', 'copy', 'stylesheet', 'scripts']
     );
 
     grunt.registerTask(
-        'scripts',
-        'Compiles the JavaScript files.',
-        ['uglify']
-    )
+        'release',
+        'Compiles all of the assets and copies the files to the build directory.',
+        ['build', 'compress']
+    );
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-compress');
 }
 
 module.exports = gruntConfig;
