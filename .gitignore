@@ -13,6 +13,7 @@ results
 
 npm-debug.log
 build
+release
 node_modules
 content/themes
 !content/themes/casper
