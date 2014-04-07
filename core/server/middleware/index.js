@@ -43,7 +43,10 @@
         app.use(express.cookieParser());
         app.use(express.urlencoded());
         app.use(express.json());
-        app.use(express.cookieSession({ cookie: { maxAge: cfg.get('admin:sessionCookieMaxAge') }, secret: cfg.get('sessionSecret') }));
+        app.use(express.cookieSession({
+            cookie: { maxAge: cfg.get('admin:sessionCookieMaxAge') },
+            secret: cfg.get('admin:sessionSecret')
+        }));
         app.use(require('connect-flash')());
 
         app.use(passport.initialize());
