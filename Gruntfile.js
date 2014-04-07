@@ -1,6 +1,11 @@
 
 function gruntConfig (grunt) {
+    var dirs = {
+        build: 'build'
+    };
+
     var config = {
+        dir: dirs,
         pkg: grunt.file.readJSON('package.json'),
 
         clean: {
@@ -45,9 +50,13 @@ function gruntConfig (grunt) {
         },
 
         cssmin: {
-            build: {
+            client: {
                 files: {
-                    'build/core/client/css/panda.min.css': ['core/client/css/*.css'],
+                    'build/core/client/css/panda.min.css': ['core/client/css/*.css']
+                }
+            },
+            themes: {
+                files: {
                     'build/core/client/css/theme/default.min.css':['core/client/css/theme/default/*.css'],
                     'build/core/client/css/theme/flatly.min.css':['core/client/css/theme/flatly/*.css'],
                     'build/core/client/css/theme/lumen.min.css':['core/client/css/theme/lumen/*.css'],
@@ -56,7 +65,11 @@ function gruntConfig (grunt) {
                     'build/core/client/css/theme/spacelab.min.css':['core/client/css/theme/spacelab/*.css'],
                     'build/core/client/css/theme/superhero.min.css':['core/client/css/theme/superhero/*.css'],
                     'build/core/client/css/theme/united.min.css':['core/client/css/theme/united/*.css'],
-                    'build/core/client/css/theme/yeti.min.css':['core/client/css/theme/yeti/*.css'],
+                    'build/core/client/css/theme/yeti.min.css':['core/client/css/theme/yeti/*.css']
+                }
+            },
+            vendor: {
+                files: {
                     'build/core/client/css/vendors.min.css': [
                         'core/client/css/**/*.css',
                         '!core/client/css/*.css',
@@ -74,11 +87,6 @@ function gruntConfig (grunt) {
                 expand: true,
                 cwd: 'build',
                 src:['**']
-//                files: [
-//                    {
-//                        cwd: 'build', expand:true, src:['**']
-//                    }
-//                ]
             }
         },
 
@@ -114,27 +122,59 @@ function gruntConfig (grunt) {
                     'core/client/js/app/**/*.js'
                 ]
             }
+        },
+
+        watch: {
+            themeStyles: {
+                files: 'core/client/css/theme/**/*.css',
+                tasks: ['cssmin:themes']
+            },
+            clientStyles: {
+                files: 'core/client/css/*.css',
+                tasks: ['cssmin:client']
+            }
+//            express: {
+//                files: 'core/server/**/*.js',
+//                tasks: [ 'express:dev' ],
+//                options: {
+//                    nospawn: true
+//                }
+//            }
+        },
+
+        express: {
+            options: {
+                script: 'build/index.js',
+                output: 'Panda v<%= pkg.version %> server is running'
+            },
+            dev: {
+                options: {
+                    node_env: 'development'
+                }
+            }
         }
     };
 
+
+    /**
+     * GRUNT CONFIG
+     * ========================
+     */
     grunt.initConfig(config);
 
-    grunt.registerTask('release', 
-        'Release task - creates a final built zip\n',
-        [] 
-    );
+    // Dynamically load all npm tasks
+    require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
+
+    /**
+     * TASKS
+     * ========================
+     */
 
     grunt.registerTask('help',
         'Outputs help information if you type `grunt help` instead of `grunt --help`',
         function () {
             console.log('Type `grunt --help` to get the details of available grunt tasks');
         }
-    );
-
-    grunt.registerTask(
-        'validate',
-        'Run code validation',
-        ['jshint']
     );
 
     grunt.registerTask(
@@ -161,12 +201,11 @@ function gruntConfig (grunt) {
         ['build', 'compress']
     );
 
-    grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks("grunt-contrib-copy");
-    grunt.loadNpmTasks('grunt-contrib-clean');
-    grunt.loadNpmTasks('grunt-contrib-cssmin');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-contrib-compress');
+    grunt.registerTask(
+        'default',
+        'Watches the project for changes, automatically rebuilds files and runs a server',
+        ['build', 'express', 'watch']
+    );
 }
 
 module.exports = gruntConfig;
