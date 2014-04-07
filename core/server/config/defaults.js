@@ -118,10 +118,10 @@ module.exports = {
             }
         }
     },
-    url: "http://127.0.0.1:3000",
+    url: "http://127.0.0.1:"+(process.env.PORT || 3000),
     server: {
         host: "127.0.0.1",
-        port: 3000
+        port: process.env.PORT || 3000
     },
     database: {
         type: "memory",
