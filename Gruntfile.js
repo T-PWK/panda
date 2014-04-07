@@ -16,7 +16,12 @@ function gruntConfig (grunt) {
 
         copy: {
             server: {
-                src: ['content/**', 'core/**', './*.*', '!core/client/css/**', '!core/client/js/**'],
+                src: ['content/**', 'core/**', './*.*', '!core/client/css/**', '!core/client/js/**', '!**/*.jade'],
+                dest: 'build',
+                expand: true
+            },
+            pages: {
+                src: ['core/**/*.jade'],
                 dest: 'build',
                 expand: true
             }
@@ -27,7 +32,7 @@ function gruntConfig (grunt) {
                 banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
                     '<%= grunt.template.today("yyyy-mm-dd") %> */'
             },
-            build: {
+            panda: {
                 files: {
                     'build/core/client/js/panda.min.js': ['core/client/js/app/*.js']
                 }
@@ -52,7 +57,7 @@ function gruntConfig (grunt) {
         cssmin: {
             client: {
                 files: {
-                    'build/core/client/css/panda.min.css': ['core/client/css/*.css']
+                    'build/core/client/css/panda.min.css': [ 'core/client/css/*.css' ]
                 }
             },
             themes: {
@@ -132,14 +137,22 @@ function gruntConfig (grunt) {
             clientStyles: {
                 files: 'core/client/css/*.css',
                 tasks: ['cssmin:client']
+            },
+            clientScript: {
+                files: 'core/client/js/app/*.js',
+                tasks: ['uglify:panda']
+            },
+            pages: {
+                files: 'core/server/views/**/*.jade',
+                tasks: ['copy:pages']
+            },
+            express: {
+                files: 'core/server/**/*.js',
+                tasks: [ 'copy:server', 'express:dev' ],
+                options: {
+                    nospawn: true
+                }
             }
-//            express: {
-//                files: 'core/server/**/*.js',
-//                tasks: [ 'express:dev' ],
-//                options: {
-//                    nospawn: true
-//                }
-//            }
         },
 
         express: {
