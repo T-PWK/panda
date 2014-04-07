@@ -99,7 +99,7 @@ module.exports = {
         theme: 'default',
 
         // Admin console session span length in format [d.]hh:mm:ss[.ms]
-        sessionCookieMaxAge: '00:10:00',
+        sessionCookieMaxAge: '00:30:00',
 
         // Enable / disable admin and API
         enable: true,
