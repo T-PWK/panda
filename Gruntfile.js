@@ -16,7 +16,7 @@ function gruntConfig (grunt) {
 
         copy: {
             server: {
-                src: ['content/**', 'core/**', './*.*', '!core/client/css/**', '!core/client/js/**', '!**/*.jade'],
+                src: ['content/**', 'core/**', './*.*', '!core/client/css/**', '!core/client/js/**', '!core/**/*.jade'],
                 dest: 'build',
                 expand: true
             },
