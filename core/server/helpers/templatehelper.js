@@ -260,7 +260,8 @@
             bodyClass:      { enumerable: true, get: buildBodyClass.bind(null, res) },
             postClass:      { enumerable: true, get: buildPostClass.bind(null, res.locals) },
             author:         { enumerable: true, get: author.bind(null, res.locals) },
-            user:           { enumerable: true, value: req.user }
+            user:           { enumerable: true, value: req.user },
+            adminTheme:     { enumerable: true, value: cfg.get('admin:theme') }
         });
 
         next();

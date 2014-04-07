@@ -1,9 +1,5 @@
 extends layout
 
-block prepend header
-    link(rel="stylesheet", href=$adminAsset('/client/css/codemirror/codemirror.css'))
-    link(rel="stylesheet", href=$adminAsset('/client/css/nprogress/nprogress.css'))
-
 block templates
     script(type="text/ng-template", id="overview"): include partial/overview
     script(type="text/ng-template", id="themes"): include partial/themes
@@ -66,17 +62,8 @@ block js
     script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.2/angular.min.js")
     script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.2/angular-route.min.js")
     script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.2/angular-resource.min.js")
-    script(src=$adminAsset("/client/js/lib/nprogress/nprogress.js"))
-    script(src=$adminAsset("/client/js/lib/moment/moment-2.5.1.min.js"))
-    script(src=$adminAsset("/client/js/lib/underscore/underscore-1.6.0.min.js"))
-    script(src=$adminAsset("/client/js/lib/underscore/underscore.string-2.3.2.min.js"))
-    script(src=$adminAsset("/client/js/lib/bootstrap/bootstrap.min.js"))
-    script(src=$adminAsset("/client/js/lib/codemirror/codemirror.js"))
-    script(src=$adminAsset("/client/js/lib/codemirror/mode/markdown/markdown.js"))
-    script(src=$adminAsset("/client/js/lib/marked/marked.js"))
-    script(src=$adminAsset("/client/js/app/application.js"))
-    script(src=$adminAsset("/client/js/app/controllers.js"))
-    script(src=$adminAsset("/client/js/app/utils.js"))
+    script(src=$adminAsset("/client/js/vendors.min.js"))
+    script(src=$adminAsset("/client/js/panda.min.js"))
     script.
         angular.element(document).ready(function(){
             angular.module('panda.config', []).value('Config', {adminTheme:'#{adminTheme}'});

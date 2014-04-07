@@ -695,21 +695,17 @@
                 admin: {
                     list: [], active: null, changed: false, selected: null,
                     afterSave: function () {
-                        var bootstrap = element('#adminBootstrap'),
-                            screen = element('#adminScreen');
+                        var adminStyle = element('#admin');
 
-                        $q.all([
-                            $http.get(updateHref(bootstrap.prop('href'))),
-                            $http.get(updateHref(screen.prop('href')))
-                        ]).then(function () {
-                            $timeout(function () {
-                                bootstrap.prop('href', updateHref(bootstrap.prop('href')));
-                                screen.prop('href', updateHref(screen.prop('href')));
-                            }, 250);
-                        });
+                        $http.get(updateHref(adminStyle.prop('href')))
+                            .then(function () {
+                                $timeout(function () {
+                                    adminStyle.prop('href', updateHref(adminStyle.prop('href')));
+                                }, 500);
+                            })
 
                         function updateHref (href) {
-                            return href.replace(/\/\w+\/([a-z.]+)$/, '/' + $scope.theme.admin.selected.id + '/$1');
+                            return href.replace(/\/(\w+)((?:\.\w+)+)$/, '/' + $scope.theme.admin.selected.id + '$2');
                         }
                     }
                 }

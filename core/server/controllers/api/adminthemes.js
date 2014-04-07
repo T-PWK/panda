@@ -27,21 +27,11 @@
                 active.active = true;
             }
         }
-
-        function nameToTheme (name) {
-            return {
-                id: name,
-                name: _s.titleize(_s.humanize(name))
-            };
-        }
-
-        function namesToThemes (fileNames) {
-            return fileNames.map(nameToTheme);
-        }
     };
 
     module.exports.update = function (req, res) {
         readdir(themesDir)
+            .then(namesToThemes)
             .then(checkThemes)
             .tap(provider.saveConfig.bind(provider, 'admin:theme'))
             .then(setAdminTheme)
@@ -51,7 +41,7 @@
             );
 
         function checkThemes (themes) {
-            return (themes.indexOf(req.params.admin) < 0) ? when.reject() : req.params.admin;
+            return _.findWhere(themes, {id: req.params.admin}) ? req.params.admin : when.reject();
         }
 
         function setAdminTheme (theme) {
@@ -59,6 +49,19 @@
             cfg.notify('set:admin:theme', theme);
         }
     };
+
+    function nameToTheme (name) {
+        var id = name.replace(/^(\w+)(\.\w+)*$/, '$1');
+        return {
+            id: id,
+            name: _s.titleize(_s.humanize(id))
+        };
+    }
+
+    function namesToThemes (fileNames) {
+        return fileNames.map(nameToTheme);
+    }
+
 
 }());
 
