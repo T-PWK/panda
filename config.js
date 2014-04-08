@@ -1,26 +1,35 @@
 // Panda configuration file
 
 var config = module.exports = {
-    // ### Environment ###
+
+    // ### Development Environment ###
     development: {
         app: {
-            urlFormat: "/:slug"
+            postUrl: "/:slug"
+        },
+        database: {
+            type: 'mongo',
+            connection: {
+                uri: 'mongodb://localhost'
+            }
         }
     },
+
+    // ### Production Environment ###
     production: {
         url: process.env.APP_URL,
         database: {
-            type: 'memory',
+            type: 'mongo',
             connection: {
-                uri: process.env.MONGOLAB_URI
+                uri: process.env.MONGOLAB_URI || process.env.MONGOHQ_URL
             }
         },
         server: {
-            host: '0.0.0.0',
-            port: process.env.PORT
+            host: '0.0.0.0'
         },
         app: {
-            urlFormat: '/:slug'
+            postUrl: '/:slug'
         }
     }
-}
+
+};
