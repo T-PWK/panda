@@ -51,12 +51,8 @@
                 $scope.isLoading = loading;
                 if (!loading) {
                     NProgress.done();
-//                    $timeout(function () {
-//                        $scope.loading = false;
-//                    }, 250);
                 } else {
                     NProgress.start();
-//                    $scope.loading = (loading === true) ? 'Loading' : loading;
                 }
             };
 
