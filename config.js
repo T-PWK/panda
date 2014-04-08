@@ -4,9 +4,9 @@ var config = module.exports = {
 
     // ### Development Environment ###
     development: {
-        app: {
-            postUrl: "/:slug"
-        },
+//        app: {
+//            postUrl: "/:slug"
+//        },
         database: {
             type: 'mongo',
             connection: {
@@ -18,6 +18,9 @@ var config = module.exports = {
     // ### Production Environment ###
     production: {
         url: process.env.APP_URL,
+//        app: {
+//            postUrl: '/:slug'
+//        },
         database: {
             type: 'mongo',
             connection: {
@@ -26,9 +29,6 @@ var config = module.exports = {
         },
         server: {
             host: '0.0.0.0'
-        },
-        app: {
-            postUrl: '/:slug'
         }
     }
 
