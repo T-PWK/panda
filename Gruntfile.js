@@ -71,7 +71,8 @@ function gruntConfig (grunt) {
             css: {
                 options: {},
                 src: [
-                    '<%= dir.dest.css %>/*.css'
+                    '<%= dir.dest.css %>/*.css',
+                    '<%= dir.dest.theme %>/*.css'
                 ],
                 dest: ['<%= dir.dest.views %>/admin/layout.jade']
             },
@@ -197,11 +198,11 @@ function gruntConfig (grunt) {
             },
             clientStyles: {
                 files: '<%= dir.src.css %>/*.css',
-                tasks: ['cssmin:client', 'hashres:css']
+                tasks: ['cssmin:client']
             },
             clientScript: {
                 files: '<%= dir.src.js %>/app/*.js',
-                tasks: ['clean:js', 'uglify:client', 'uglify:vendors', 'copy:pages', 'hashres:js']
+                tasks: ['uglify:client']
             },
             pages: {
                 files: '<%= dir.src.views %>/**/*.jade',
@@ -234,7 +235,7 @@ function gruntConfig (grunt) {
      * GRUNT CONFIG
      * ========================
      */
-    grunt.initConfig(config);
+    grunt.config.init(config);
 
     // Dynamically load all npm tasks
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
@@ -261,18 +262,18 @@ function gruntConfig (grunt) {
         'scripts',
         'Compiles the JavaScript files.',
         ['uglify']
-    )
+    );
 
     grunt.registerTask(
         'build',
         'Compiles all of the assets and copies the files to the build directory.',
-        ['clean:all', 'copy', 'stylesheet', 'scripts', 'hashres']
+        ['clean:all', 'copy', 'stylesheet', 'scripts']
     );
 
     grunt.registerTask(
         'release',
         'Compiles all of the assets and copies the files to the build directory.',
-        ['build', 'compress']
+        ['build', 'compress', 'hashres']
     );
 
     grunt.registerTask(
