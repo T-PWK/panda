@@ -1,15 +1,16 @@
 (function () {
     'use strict';
 
-    var when = require('when'),
-        mongoose = require('mongoose'),
-        cfg = require('nconf'),
-        PostProvider = require('./services/postprovider'),
-        ConfigProvider = require('./services/configprovider'),
-        UserProvider = require('./services/userprovider'),
-        configProvider = new ConfigProvider(),
-        postProvider = new PostProvider(),
-        userProvider = new UserProvider();
+    var when            = require('when'),
+        mongoose        = require('mongoose'),
+        cfg             = require('nconf'),
+        PostProvider    = require('./services/postprovider'),
+        ConfigProvider  = require('./services/configprovider'),
+        UserProvider    = require('./services/userprovider'),
+        themesProvider  = require('./services/themesprovider'),
+        configProvider  = new ConfigProvider(),
+        postProvider    = new PostProvider(),
+        userProvider    = new UserProvider();
 
     function initMongoDB() {
         var deferred = when.defer(),
@@ -29,9 +30,10 @@
     }
 
     module.exports = {
-        postProvider: postProvider,
+        postProvider:   postProvider,
         configProvider: configProvider,
-        userProvider: userProvider
+        userProvider:   userProvider,
+        themesProvider: themesProvider
     };
 
     module.exports.init = function () {
@@ -40,9 +42,10 @@
         return promise
             .then(function () {
                 return when.join(
-                    postProvider.init(),
                     configProvider.init(),
-                    userProvider.init()
+                    postProvider.init(),
+                    userProvider.init(),
+                    themesProvider.init()
                 );
             });
     };

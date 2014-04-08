@@ -1,14 +1,15 @@
 (function () {
     'use strict';
 
-    var moment = require('moment'),
-        util = require('util'),
-        cfg = require('nconf'),
-        _s = require('underscore.string'),
-        hash = cfg.get('hash'),
-        labelUrlFormat = cfg.get('app:labelUrl'),
-        pgnUrl = cfg.get('app:paginationUrl'),
-        pgnRegexp = new RegExp(pgnUrl.replace(':page', '\\d+'));
+    var moment          = require('moment'),
+        util            = require('util'),
+        cfg             = require('nconf'),
+        _s              = require('underscore.string'),
+        themesProvider  = require('../providers').themesProvider,
+        hash            = cfg.get('hash'),
+        labelUrlFormat  = cfg.get('app:labelUrl'),
+        pgnUrl          = cfg.get('app:paginationUrl'),
+        pgnRegexp       = new RegExp(pgnUrl.replace(':page', '\\d+'));
 
     /*
      * Builds post or static page URL.
@@ -261,7 +262,7 @@
             postClass:      { enumerable: true, get: buildPostClass.bind(null, res.locals) },
             author:         { enumerable: true, get: author.bind(null, res.locals) },
             user:           { enumerable: true, value: req.user },
-            adminTheme:     { enumerable: true, value: cfg.get('admin:theme') }
+            adminTheme:     { enumerable: true, value: themesProvider.getActiveAdminTheme() }
         });
 
         next();

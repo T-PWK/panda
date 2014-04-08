@@ -690,7 +690,7 @@
                 },
                 admin: {
                     list: [], active: null, changed: false, selected: null,
-                    afterSave: function () {
+                    afterSave: function (theme, type, serverTheme) {
                         var adminStyle = element('#admin');
 
                         $http.get(updateHref(adminStyle.prop('href')))
@@ -701,7 +701,7 @@
                             })
 
                         function updateHref (href) {
-                            return href.replace(/\/(\w+)((?:\.\w+)+)$/, '/' + $scope.theme.admin.selected.id + '$2');
+                            return href.replace(/\/\w+(\.\w+)+$/, '/' + serverTheme.data);
                         }
                     }
                 }
@@ -725,13 +725,13 @@
 
                 Themes.update({ id:theme[type].selected.id, type:type })
                     .$promise
-                    .then(bind($scope, $scope.setLoading, false))
-                    .then(bind(null, afterThemeSave, theme, type));
+                    .then(bind(null, afterThemeSave, theme, type))
+                    .then(bind($scope, $scope.setLoading, false));
             }
 
-            function afterThemeSave (theme, type) {
+            function afterThemeSave (theme, type, serverTheme) {
                 theme[type].active = theme[type].selected;
-                (theme[type].afterSave || function () {})(theme, type);
+                (theme[type].afterSave || function () {})(theme, type, serverTheme);
             }
 
             function resetTheme (theme, type) {
