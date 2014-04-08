@@ -50,6 +50,11 @@
             // Set the view engine
             app.set('view engine', 'jade');
 
+            // Minimize JSON output in production environment
+            if (true || cfg.get('production')) {
+                app.set('json spaces', 0);
+            }
+
             // ## Express Middleware Setup
             middleware(app);
 
