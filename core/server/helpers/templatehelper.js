@@ -6,7 +6,6 @@
         cfg             = require('nconf'),
         _s              = require('underscore.string'),
         themesProvider  = require('../providers').themesProvider,
-        hash            = cfg.get('hash'),
         labelUrlFormat  = cfg.get('app:labelUrl'),
         pgnUrl          = cfg.get('app:paginationUrl'),
         pgnRegexp       = new RegExp(pgnUrl.replace(':page', '\\d+'));
@@ -205,20 +204,7 @@
      * It assumes that 'this' is current application
      */
     function assets(asset) {
-        return '/assets' + ('/' === asset[0] ? '' : '/') + asset + '?v=ad2e223fd';
-    }
-
-    function adminTheme(asset) {
-        return adminAsset('/client/css/theme/' + cfg.get('admin:theme') + '/' + asset);
-    }
-
-    function adminAsset(asset) {
-        if (!hash) return asset;
-
-        var parts = asset.split('/');
-        parts.splice(2, 0, hash);
-
-        return parts.join('/');
+        return '/assets' + ('/' === asset[0] ? '' : '/') + asset + '?v=' + module.exports.version;
     }
 
     function isntEmpty(obj, prop) {
@@ -262,7 +248,7 @@
             postClass:      { enumerable: true, get: buildPostClass.bind(null, res.locals) },
             author:         { enumerable: true, get: author.bind(null, res.locals) },
             user:           { enumerable: true, value: req.user },
-            adminTheme:     { enumerable: true, value: themesProvider.getActiveAdminTheme() }
+            adminTheme:     { enumerable: true, get: themesProvider.getActiveAdminTheme.bind(themesProvider) }
         });
 
         next();
@@ -280,8 +266,6 @@
             $if:            { enumerable: true, value: ifCheck },
             $isntEmpty:     { enumerable: true, value: isntEmpty },
             $labelUrl:      { enumerable: true, value: labelUrl },
-            $adminTheme:    { enumerable: true, value: adminTheme },
-            $adminAsset:    { enumerable: true, value: adminAsset },
 
             // Update application locals with view settings like debug or pretty formatting
             pretty:         { enumerable: true, value: cfg.get('view:pretty') },
