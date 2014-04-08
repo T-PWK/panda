@@ -7,21 +7,26 @@ function gruntConfig (grunt) {
                 client: '<%= dir.build %>/core/client',
                 css: '<%= dir.dest.client %>/css',
                 theme: '<%= dir.dest.css %>/theme',
-                js: '<%= dir.dest.client %>/js'
+                js: '<%= dir.dest.client %>/js',
+                views: '<%= dir.build %>/core/server/views'
             },
             src: {
                 client: 'core/client',
                 css: '<%= dir.src.client %>/css',
                 theme: '<%= dir.src.css %>/theme',
                 js: '<%= dir.src.client %>/js',
-                jslib: '<%= dir.src.js %>/lib'
+                jslib: '<%= dir.src.js %>/lib',
+                views: 'core/server/views'
             }
         },
         pkg: grunt.file.readJSON('package.json'),
 
         clean: {
-            build: {
+            all: {
                 src: ['build']
+            },
+            js: {
+                src: [ '<%= dir.dest.js %>/*.js' ]
             }
         },
 
@@ -50,12 +55,41 @@ function gruntConfig (grunt) {
             }
         },
 
+        hashres: {
+            options: {
+                encoding: 'utf8',
+                fileNameFormat: '${name}.${hash}.${ext}',
+                renameFiles: true
+            },
+            images: {
+                options: {},
+                src: [
+                    '<%= dir.dest.client %>/**/*.{png,jpg,gif}'
+                ],
+                dest: ['<%= dir.dest.views %>/admin/login.jade']
+            },
+            css: {
+                options: {},
+                src: [
+                    '<%= dir.dest.css %>/*.css'
+                ],
+                dest: ['<%= dir.dest.views %>/admin/layout.jade']
+            },
+            js: {
+                options: {},
+                src: [
+                    '<%= dir.dest.js %>/*.js'
+                ],
+                dest: ['<%= dir.dest.views %>/admin/index.jade']
+            }
+        },
+
         uglify: {
             options: {
                 banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
                     '<%= grunt.template.today("yyyy-mm-dd") %> */'
             },
-            panda: {
+            client: {
                 files: {
                     '<%= dir.dest.js %>/panda.min.js': ['<%= dir.src.js %>/app/*.js']
                 }
@@ -163,14 +197,14 @@ function gruntConfig (grunt) {
             },
             clientStyles: {
                 files: '<%= dir.src.css %>/*.css',
-                tasks: ['cssmin:client']
+                tasks: ['cssmin:client', 'hashres:css']
             },
             clientScript: {
                 files: '<%= dir.src.js %>/app/*.js',
-                tasks: ['uglify:panda']
+                tasks: ['clean:js', 'uglify:client', 'uglify:vendors', 'copy:pages', 'hashres:js']
             },
             pages: {
-                files: 'core/server/views/**/*.jade',
+                files: '<%= dir.src.views %>/**/*.jade',
                 tasks: ['copy:pages']
             },
             express: {
@@ -232,7 +266,7 @@ function gruntConfig (grunt) {
     grunt.registerTask(
         'build',
         'Compiles all of the assets and copies the files to the build directory.',
-        ['clean', 'copy', 'stylesheet', 'scripts']
+        ['clean:all', 'copy', 'stylesheet', 'scripts', 'hashres']
     );
 
     grunt.registerTask(
