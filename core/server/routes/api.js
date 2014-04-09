@@ -2,11 +2,12 @@
     "use strict";
 
     var api     = require('../controllers/api'),
-        auth    = require('../middleware/authentication');
+        auth    = require('../middleware/authentication'),
+        ips     = require('../middleware/ips');
 
     module.exports = function (server) {
         // Posts API
-        server.all('/api/v1/*', auth.authCheck);
+        server.all('/api/v1/*', ips.adminIpCheck, auth.authCheck);
 
         server.resource('api/v1/posts', api.posts);
         server.resource('api/v1/posts/infos', api.postsinfo);
@@ -17,6 +18,9 @@
         // Themes API
         server.resource('api/v1/themes/site', api.themes);
         server.resource('api/v1/themes/admin', api.adminthemes);
+
+        // IP Restriction API
+        server.resource('api/v1/ips/:type', api.ips);
 
         // Redirects API
         server.resource('api/v1/config/redirects', api.redirects);

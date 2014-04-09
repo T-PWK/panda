@@ -97,7 +97,13 @@
             robots: {
                 disallow: ['/search', '/admin'],
                 allow: ['/']
-            }
+            },
+
+            // True if access to application should be restricted by IP
+            restrictByIp: false,
+
+            // Array of disallowed ips (e.g. ["127.0.0.1"])
+            disallowedIps: []
         },
         admin: {
             // Default admin theme
@@ -123,7 +129,13 @@
                 options: {
                     words: 50
                 }
-            }
+            },
+
+            // True if access to Admin console should be restricted by IP
+            restrictByIp: false,
+
+            // Array of disallowed ips (e.g. ["127.0.0.1"])
+            disallowedIps: []
         },
         url: "http://127.0.0.1:" + (process.env.PORT || 3000),
         server: {

@@ -9,5 +9,6 @@
     module.exports.redirects = require('./api/redirects');
     module.exports.settings = require('./api/settings');
     module.exports.users = require('./api/users');
+    module.exports.ips = require('./api/ips');
 
 }());
