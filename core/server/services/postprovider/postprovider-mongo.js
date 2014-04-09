@@ -91,7 +91,7 @@
     PostProvider.prototype.findById = function (id, options) {
         options = options || {};
 
-        debug('finding post by id %j');
+        debug('finding post by id %j', id);
 
         return Post.findById(id).select(options.select || undefined).exec();
     };
