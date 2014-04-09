@@ -1,10 +1,13 @@
 (function () {
     "use strict";
 
-    var api = require('../controllers/api');
+    var api     = require('../controllers/api'),
+        auth    = require('../middleware/authentication');
 
     module.exports = function (server) {
         // Posts API
+        server.all('/api/v1/*', auth.authCheck);
+
         server.resource('api/v1/posts', api.posts);
         server.resource('api/v1/posts/infos', api.postsinfo);
 

@@ -55,10 +55,6 @@
         // Set the template helper component
         tplHelper(app);
 
-        // Protect admin calls
-        app.use('/admin', auth.loginCheck);
-        app.use('/api/v1', auth.loginCheck);
-
         // Set the router
         app.use(app.router);
 
