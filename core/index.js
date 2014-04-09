@@ -7,7 +7,8 @@
         when    = require('when');
 
     function startPanda (app) {
-        when()
+        when
+            .resolve(require('./server/init')())
             .then(function () {
                 // Configuration initialization
                 return require('./server/config').init();
