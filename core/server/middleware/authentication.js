@@ -5,7 +5,7 @@
         LocalStrategy   = require('passport-local').Strategy,
         provider        = require('../providers').userProvider,
         crypt           = require('bcryptjs'),
-        str             = require('underscore.string');
+        str             = require('lodash');
 
     module.exports = function () {
         passport.use(
@@ -39,15 +39,17 @@
         });
     };
 
-    module.exports.loginCheck = function (req, res, fn) {
+    module.exports.authCheck = function (req, res, fn) {
         if (req.isAuthenticated()) {
             req.session.access = Date.now(); // refreshing session
             fn();
         }
-        else if (str.startsWith(req.originalUrl, '/admin')) {
+        else if (str.startsWith(req.path, '/admin')) {
+            // Redirect to login page
             res.redirect(302, '/login');
         }
         else {
+            // Unauthorized request
             res.send(401);
         }
     };
