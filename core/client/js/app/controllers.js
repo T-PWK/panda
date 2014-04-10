@@ -825,6 +825,23 @@
         }
     ]);
 
+    controllers.controller('ImgCtrl', ['$scope', '$upload',
+        function ($scope, $upload) {
+            $scope.setCrumb('images');
+
+            $scope.sayHello = function (files) {
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+
+                    $scope.upload = $upload.upload({
+                        url: '/api/v1/upload',
+                        file: file
+                    });
+                }
+            };
+        }
+    ]);
+
     function postStatus(post) {
         if (!post.published) return 'D';
 

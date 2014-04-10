@@ -9,6 +9,8 @@
         // Posts API
         server.all('/api/v1/*', ips.adminIpCheck, auth.authCheck);
 
+        server.post('/api/v1/upload', api.fileUpload);
+
         server.resource('api/v1/posts', api.posts);
         server.resource('api/v1/posts/infos', api.postsinfo);
 

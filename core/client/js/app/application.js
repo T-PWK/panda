@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    angular.module('panda', ['ngRoute', 'ngResource', 'panda.controllers', 'panda.utils']).
+    angular.module('panda', ['ngRoute', 'ngResource', 'panda.controllers', 'panda.utils', 'angularFileUpload']).
         config(['$routeProvider', function ($routeProvider) {
             $routeProvider
                 .when('/', { templateUrl: 'overview', controller: 'OverviewCtrl' })
@@ -18,6 +18,7 @@
                 .when('/settings/redirects', { templateUrl: 'redirects' })
                 .when('/users', { templateUrl: 'users', controller: 'UsersCtrl' })
                 .when('/themes', { templateUrl: 'themes', controller: 'ThemesCtrl' })
+                .when('/images', { templateUrl: 'images', controller: 'ImgCtrl' })
                 .otherwise({ redirectTo: '/' });
         }])
         .factory('Users', ['$resource', function($resource) {
@@ -133,7 +134,8 @@
                 themes: 'Themes',
                 redirects: 'Redirects',
                 'new': 'New',
-                ips: 'IP Restrictions'
+                ips: 'IP Restrictions',
+                images: 'Images'
             }
         });
 }());
