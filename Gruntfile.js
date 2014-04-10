@@ -99,7 +99,8 @@ function gruntConfig (grunt) {
                 banner: '\n',
                 files: {
                     '<%= dir.dest.js %>/vendors.min.js': [
-                        '<%= dir.src.jslib %>/underscore/underscore-1.6.0.min.js',
+//                        '<%= dir.src.jslib %>/underscore/underscore-1.6.0.min.js',
+                        '<%= dir.src.jslib %>/lodash/lodash.min.js',
                         '<%= dir.src.jslib %>/underscore/underscore.string-2.3.2.min.js',
                         '<%= dir.src.jslib %>/bootstrap/bootstrap.min.js',
                         '<%= dir.src.jslib %>/marked/marked.js',
