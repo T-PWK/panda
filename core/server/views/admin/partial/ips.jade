@@ -35,13 +35,13 @@ mixin info(id, name, label)
                             i.fa.fa-fw.fa-info-circle
                             | IP in quad-dotted notation e.g. 172.16.254.1
 
-                hr
-
                 .form-group
                     label.col-sm-3.control-label #{label}s
-                    .col-sm-8: .form-control-static: ul.list-inline: li(ng-repeat="ip in #{id}.ips")
-                        | {{ip}}
-                        i.fa.fa-fw.fa-trash-o.btn-link(ng-click="remove(#{id}, ip)")
+                    .col-sm-8: .form-control-static
+                        span(ng-if="!#{id}.ips.length") No IP have been added
+                        ul.list-inline: li(ng-repeat="ip in #{id}.ips")
+                            | {{ip}}
+                            i.fa.fa-fw.fa-trash-o.btn-link(ng-click="remove(#{id}, ip)")
 
                 .form-group
                     .col-sm-8.col-sm-offset-3
