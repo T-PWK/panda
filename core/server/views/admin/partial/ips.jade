@@ -1,0 +1,70 @@
+mixin info(id, name, label)
+    .row
+        .col-md-2: h4 #{name}
+        .col-md-9
+            form.form-horizontal(name="#{id}Form")
+
+                .form-group
+                    label.col-sm-3.control-label Enabled
+                    .col-sm-7: .checkbox: input(type="checkbox", ng-model="#{id}.enabled", name="enabled", ng-click="#{id}.dirty=true")
+
+                if 'admin' === id
+                    .row(ng-if="#{id}.enabled && !#{id}.ips.length")
+                        .col-sm-7.col-sm-offset-3
+                            .alert.alert-info
+                                i.fa.fa-fw.fa-info-circle
+                                | Note that IP restrictions to Admin Console will not be enabled unless allowed IPs are provided
+                    .form-group
+                        label.col-sm-3.control-label Current IP
+                        .col-sm-8: .form-control-static
+                            | {{#{id}.currentIp}}&nbsp;
+                            a(href="", ng-click="addIp(#{id}, #{id}.currentIp)", ng-if="!hasCurrent(#{id})"): i.fa.fa-fw.fa-plus-circle
+
+                .form-group(ng-class="{'has-error':#{id}Form.ip.$invalid && #{id}Form.ip.$dirty}")
+                    label.col-sm-3.control-label(for="#{id}Ip") IP
+                    .col-sm-7
+                        .input-group
+                            input.form-control(id="#{id}Ip", type="text", placeholder="#{label}", ng-model="#{id}.ip",
+                                name="ip", ng-trim="true", ng-pattern="ipAddress", ng-disabled="isLoading",
+                                ng-key-action="{13:'onEnter', 27:'onEsc'}", on-enter="addIp(#{id})", on-esc="resetIp(#{id}, #{id}Form)")
+                            span.input-group-btn
+                                button.btn.btn-default(type="button", ng-click="addIp(#{id})",
+                                    ng-disabled="! #{id}.ip"): i.fa.fa-plus
+                                button.btn.btn-default(type="button", ng-click="resetIp(#{id}, #{id}Form)"): i.fa.fa-trash-o
+                        p.help-block
+                            i.fa.fa-fw.fa-info-circle
+                            | IP in quad-dotted notation e.g. 172.16.254.1
+
+                hr
+
+                .form-group
+                    label.col-sm-3.control-label #{label}s
+                    .col-sm-8: .form-control-static: ul.list-inline: li(ng-repeat="ip in #{id}.ips")
+                        | {{ip}}
+                        i.fa.fa-fw.fa-trash-o.btn-link(ng-click="remove(#{id}, ip)")
+
+                .form-group
+                    .col-sm-8.col-sm-offset-3
+                        button.btn.btn-primary(ng-disabled="!#{id}.dirty", ng-click="save(#{id})") Save
+                        button.btn.btn-default(ng-disabled="!#{id}.dirty", ng-click="reset('#{id}')") Reset
+
+                .row(ng-if="#{id}.dirty")
+                    .col-sm-8.col-sm-offset-3
+                        p.text-warning
+                            i.fa.fa-fw.fa-info-circle
+                            |  Press Save to persist your changes
+
+.row
+    .col-md-3
+        include includes/navigation
+    .col-md-9
+        include includes/breadcrumb
+
+        .page-header
+            h1 IP Restrictions
+
+        mixin info('site', 'Site', 'Disallowed IP')
+
+        hr
+
+        mixin info('admin', 'Admin', 'Allowed IP')

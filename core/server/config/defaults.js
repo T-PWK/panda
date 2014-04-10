@@ -102,7 +102,7 @@
             // True if access to application should be restricted by IP
             restrictByIp: false,
 
-            // Array of disallowed ips (e.g. ["127.0.0.1"])
+            // Array of disallowed ips (e.g. ["127.0.0.1"]); access from ips in the list will NOT have access to the site
             disallowedIps: []
         },
         admin: {
@@ -134,8 +134,8 @@
             // True if access to Admin console should be restricted by IP
             restrictByIp: false,
 
-            // Array of disallowed ips (e.g. ["127.0.0.1"])
-            disallowedIps: []
+            // Array of allowed ips (e.g. ["127.0.0.1"]); access from ips in the list will have access to Admin console
+            allowedIps: []
         },
         url: "http://127.0.0.1:" + (process.env.PORT || 3000),
         server: {

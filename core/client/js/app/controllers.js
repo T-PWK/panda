@@ -679,6 +679,62 @@
             }
     }]);
 
+    controllers.controller('IpsCtrl', ['$scope', '$q', 'Ips',
+        function ($scope, $q, Ips) {
+
+            $scope.setCrumb('settings', 'ips');
+            $scope.setLoading(true);
+
+            $scope.ipAddress = /^(\d{1,3}\.){3}\d{1,3}$/;
+            $scope.stopLoading = bind($scope, $scope.setLoading, false);
+
+            $scope.site = {enabled: false, ips:[]};
+            $scope.admin = {enabled: false, ips:[]};
+
+            $q.all([ loadIps('admin'), loadIps('site') ]).then($scope.stopLoading);
+
+            $scope.remove = function (type, ip) {
+                _.pull(type.ips, ip);
+                type.dirty = true;
+            };
+
+            $scope.reset = function (type) {
+                $scope.setLoading(true);
+                loadIps(type).then($scope.stopLoading);
+            };
+
+            $scope.save = function (type) {
+                if (!type.dirty) return;
+                $scope.setLoading(true);
+
+                type.$save().then($scope.stopLoading);
+            };
+
+            $scope.addIp = function(type, ip) {
+                ip = ip || type.ip;
+                if(ip) {
+                    type.ips = _.chain(type.ips||[]).push(ip).sortBy().uniq(true).value();
+                    type.dirty = true;
+                }
+            };
+
+            $scope.hasCurrent = function (type) {
+                return _.indexOf(type.ips, type.currentIp, true) > -1;
+            };
+
+            $scope.resetIp = function (type, form) {
+                form.$setPristine();
+                type.ip = ''
+            };
+
+            function loadIps(type) {
+                return Ips.get({type:type})
+                    .$promise
+                    .then(function (info) { $scope[type] = info; })
+            }
+        }
+    ]);
+
     controllers.controller('ThemesCtrl', ['$scope', '$q', '$http', '$timeout', 'Themes',
         function ($scope, $q, $http, $timeout, Themes) {
             $scope.setCrumb('themes');

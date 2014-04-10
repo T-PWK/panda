@@ -12,7 +12,7 @@
         switch (type) {
             case 'admin':
                 enabledKey = 'admin:restrictByIp';
-                ipsKey = 'admin:disallowedIps';
+                ipsKey = 'admin:allowedIps';
                 break;
             case 'site':
                 enabledKey = 'app:restrictByIp';
@@ -21,7 +21,7 @@
             default : return res.send(404);
         }
 
-        return res.json({ type: type, enabled: cfg.get(enabledKey), ips: cfg.get(ipsKey) });
+        return res.json({ type: type, enabled: cfg.get(enabledKey), ips: cfg.get(ipsKey), currentIp: req.ip });
     };
 
     module.exports.create = function (req, res) {
@@ -30,7 +30,7 @@
         switch (type) {
             case 'admin':
                 enabledKey = 'admin:restrictByIp';
-                ipsKey = 'admin:disallowedIps';
+                ipsKey = 'admin:allowedIps';
                 break;
             case 'site':
                 enabledKey = 'app:restrictByIp';
@@ -39,9 +39,9 @@
             default : return res.send(404);
         }
 
-        if (!_.isUndefined(update.enable) && update.enable !== cfg.get(enabledKey)) {
-            update.enable = !!update.enable;
-            promises.push(persistChange(enabledKey, update.enable));
+        if (!_.isUndefined(update.enabled) && update.enabled !== cfg.get(enabledKey)) {
+            update.enabled = !!update.enabled;
+            promises.push(persistChange(enabledKey, update.enabled));
         }
 
         if (!_.isUndefined(update.ips) && _.isArray(update.ips)) {

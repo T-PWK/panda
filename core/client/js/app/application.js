@@ -14,6 +14,7 @@
                 .when('/comments', { templateUrl: 'comments', controller: 'CommentsCtrl' })
                 .when('/settings', { redirectTo: '/settings/basic' })
                 .when('/settings/basic', { templateUrl: 'settings', controller: 'SettingsCtrl' })
+                .when('/settings/ips', { templateUrl: 'ips', controller: 'IpsCtrl' })
                 .when('/settings/redirects', { templateUrl: 'redirects' })
                 .when('/users', { templateUrl: 'users', controller: 'UsersCtrl' })
                 .when('/themes', { templateUrl: 'themes', controller: 'ThemesCtrl' })
@@ -29,6 +30,9 @@
         }])
         .factory('Settings', ['$resource', function ($resource) {
             return $resource('/api/v1/settings/:id', { id:'@id' });
+        }])
+        .factory('Ips', ['$resource', function ($resource) {
+            return $resource('/api/v1/ips/:type', { type:'@type' });
         }])
         .factory('Posts', ['$resource', function ($resource) {
             return $resource('/api/v1/posts/:id',
@@ -90,7 +94,19 @@
                         scope.$apply(function(){
                             scope.$eval(attrs.ngEnter, {'event': event});
                         });
-
+                        event.preventDefault();
+                    }
+                });
+            };
+        })
+        .directive('ngKeyAction', function() {
+            return function(scope, element, attrs) {
+                element.bind("keydown keypress", function(event) {
+                    var actions = scope.$eval(attrs.ngKeyAction);
+                    if (event.which in actions) {
+                        scope.$apply(function(){
+                            scope.$eval(attrs[actions[event.which]], {'event': event});
+                        });
                         event.preventDefault();
                     }
                 });
@@ -116,7 +132,8 @@
                 users: 'Users',
                 themes: 'Themes',
                 redirects: 'Redirects',
-                'new': 'New'
+                'new': 'New',
+                ips: 'IP Restrictions'
             }
         });
 }());
