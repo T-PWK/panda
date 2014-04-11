@@ -33,7 +33,7 @@ function gruntConfig (grunt) {
         copy: {
             // Copy 'content' file tree
             content: {
-                src: [ 'content/**' ],
+                src: [ 'content/**', '!content/themes/**', 'content/themes/casper/**'  ],
                 dest: '<%= dir.build %>/',
                 expand: true
             },
@@ -99,7 +99,6 @@ function gruntConfig (grunt) {
                 banner: '\n',
                 files: {
                     '<%= dir.dest.js %>/vendors.min.js': [
-//                        '<%= dir.src.jslib %>/underscore/underscore-1.6.0.min.js',
                         '<%= dir.src.jslib %>/lodash/lodash.min.js',
                         '<%= dir.src.jslib %>/underscore/underscore.string-2.3.2.min.js',
                         '<%= dir.src.jslib %>/bootstrap/bootstrap.min.js',
