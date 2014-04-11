@@ -39,6 +39,7 @@
         // Update views path on theme paths view change
         cfg.on('set:theme:paths:views', function() {
             app.set('views', cfg.get('theme:paths:views'));
+            app.cache = {};
         });
 
         when().then(function () {
@@ -69,7 +70,7 @@
             }
 
             routes.redirects(app);  // Set up redirect route
-            routes.frontend(app);   // Set up Frontent routes
+            routes.frontend(app);   // Set up Frontend routes
 
             // ## Server Startup
             app.listen(
