@@ -138,7 +138,7 @@
             $scope.pg = Utils.pagination();
             $scope.select = Utils.selection();
 
-            $scope.$watch('postStats', function(stats) {
+            $scope.$watch($scope.page?'pageStats':'postStats', function(stats) {
                 if (stats) {
                     $scope.setCrumb(1, { data: stats[$params.type] });
                     $scope.pg.items = stats[$params.type];
