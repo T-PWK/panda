@@ -50,7 +50,8 @@
     "bcryptjs": "^0.7.12",
     "connect-flash": "^0.1.1",
     "downsize": "0.0.6",
-    "lodash": "^2.4.1"
+    "lodash": "^2.4.1",
+    "multiparty": "^3.2.4"
   },
   "engines": {
     "node": "0.10.x"

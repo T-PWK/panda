@@ -10,6 +10,6 @@
     module.exports.settings = require('./api/settings');
     module.exports.users = require('./api/users');
     module.exports.ips = require('./api/ips');
-    module.exports.fileUpload = require('./api/fileUpload');
+    module.exports.fileUpload = require('./api/fileupload');
 
 }());
