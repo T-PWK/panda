@@ -116,6 +116,7 @@
 
     var themesProvider = new ThemesProvider();
 
+    // Update active (site and admin) themes
     cfg.on('set:theme:name', themesProvider.selectActiveTheme.bind(themesProvider));
     cfg.on('set:admin:theme', themesProvider.selectActiveAdminTheme.bind(themesProvider));
 
