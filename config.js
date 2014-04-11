@@ -32,7 +32,7 @@ var config = module.exports = {
         database: {
             type: 'mongo',
             connection: {
-                uri: process.env.MONGOLAB_URI || process.env.MONGOHQ_URL
+                uri: process.env.MONGODB_URL || process.env.MONGOLAB_URI || process.env.MONGOHQ_URL
             }
         },
         server: {
