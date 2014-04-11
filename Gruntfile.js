@@ -42,6 +42,11 @@ function gruntConfig (grunt) {
                 dest: '<%= dir.build %>/',
                 expand: true
             },
+            config: {
+                src: [ 'config.json' ],
+                dest: '<%= dir.build %>/',
+                expand: true
+            },
             // Copy static resources from core/client tree; JS and CSS will be processed in a different task
             client: {
                 src: [ 'core/client/**/*.{png,gif,jpg}' ],
@@ -284,7 +289,7 @@ function gruntConfig (grunt) {
     grunt.registerTask(
         'default',
         'Watches the project for changes, automatically rebuilds files and runs a server',
-        ['build', 'copy:themes', 'express', 'watch']
+        ['build', 'copy:themes', 'copy:config', 'express', 'watch']
     );
 }
 
