@@ -49,7 +49,7 @@ function gruntConfig (grunt) {
                 expand: true
             },
             server: {
-                src: ['*.*', 'core/**', '!core/client/**', '!core/**/*.jade'],
+                src: ['*.*', '!config.json', 'core/**', '!core/client/**', '!core/**/*.jade'],
                 dest: '<%= dir.build %>/',
                 expand: true
             },
