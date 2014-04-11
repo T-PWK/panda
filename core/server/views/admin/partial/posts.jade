@@ -84,7 +84,6 @@ mixin sortMenu(id, title, icon)
                     td
                         | {{post.labels.length || 0}}
                         i.fa.fa-fw.text-muted(ng-class="{'fa-tag':post.labels.length===1,'fa-tags':post.labels.length>1}")
-                        i.fa.fa-fw.text-muted(ng-class="{'fa-tag':post.labels.length===1,'fa-tags':post.labels.length>1}")
                     td
                         | {{post.commentsCount || 0}}
                         i.fa.fa-fw.text-muted(ng-class="{'fa-comments-o':post.commentsCount,'fa-comment-o':post.commentsCount==0}")
