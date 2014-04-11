@@ -5,9 +5,7 @@
         cfg             = require('nconf'),
         _               = require('underscore'),
         moment          = require('moment'),
-        config          = require('../../../config'),
         path            = require('path'),
-        randomValue     = require('../utils').randomValue,
         EventEmitter    = require('events').EventEmitter,
         configEmitter   = new EventEmitter(),
         appRoot         = path.resolve(__dirname, '../../..'),
@@ -36,13 +34,16 @@
         // Make sure NODE_ENV is always setup as it is used by express
         var env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
+        var config = new cfg.Provider();
+        config.file({ file: path.join(__dirname, '../../../config.json') });
+
         // Set user environment as the first configuration component
         // and memory configuration to be updated during runtime
         cfg.env({ separator: '___' }).add('memory');
 
         // Use the current environment corresponding configuration
-        if (config[env]) {
-            cfg.add('userconf', { type:'literal', store:config[env] });
+        if (config.get(env)) {
+            cfg.add('userconf', { type:'literal', store:config.get(env) });
         }
 
         // Defauls not provided by previous configuration components
@@ -51,7 +52,6 @@
         updateFlags();
         updatePaths();
         updateThemePaths();
-        generateSecrets();
         miscTimes();
 
         // Update site theme paths upon theme:name change
@@ -90,12 +90,6 @@
         cfg.set('env', env);
         cfg.set('development', 'development' === env);
         cfg.set('production', 'production' === env);
-    }
-
-    function generateSecrets () {
-        if (cfg.get('development')) {
-//            cfg.set('hash', randomValue(6));
-        }
     }
 
     function fromStringToMs (key) {

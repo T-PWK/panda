@@ -137,7 +137,7 @@
             // Array of allowed ips (e.g. ["127.0.0.1"]); access from ips in the list will have access to Admin console
             allowedIps: []
         },
-        url: "http://127.0.0.1:" + (process.env.PORT || 3000),
+        url: process.env.APP_URL || "http://127.0.0.1:" + (process.env.PORT || 3000),
         server: {
             host: "127.0.0.1",
             port: process.env.PORT || 3000
@@ -146,7 +146,10 @@
             type: "memory",
             postsFile: 'posts.json',
             redirectsFile: 'redirects.json',
-            usersFile: 'users.json'
+            usersFile: 'users.json',
+            connection: {
+                uri: process.env.MONGODB_URL || process.env.MONGOLAB_URI || process.env.MONGOHQ_URL
+            }
         }
     };
 

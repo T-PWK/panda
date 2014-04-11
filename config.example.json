@@ -1,0 +1,21 @@
+{
+    "development": {
+        "admin": {
+            "sessionSecret": "Syst3mS3ssi0nS3cr3t"
+        },
+        "database": {
+            "type": "mongo",
+            "connection": {
+                "uri": "mongodb://localhost"
+            }
+        }
+    },
+    "production": {
+        "database": {
+            "type": "mongo"
+        },
+        "server": {
+            "host": "0.0.0.0"
+        }
+    }
+}
