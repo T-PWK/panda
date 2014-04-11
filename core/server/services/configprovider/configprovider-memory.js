@@ -82,4 +82,8 @@
         return when.resolve();
     };
 
+    ConfigProvider.prototype.findAllConfigs = function() {
+        return when.resolve([]);
+    };
+
 })();
