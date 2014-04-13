@@ -14,7 +14,7 @@
 
     exports.middleware = function (req, res, next) {
         when.join(
-                provider.labelsInfo(),
+                provider.labelsInfo({ live:true }),
                 provider.archiveInfo()
             )
             .spread(function (labels, archives) {
@@ -30,8 +30,8 @@
             skip = limit * (page - 1);
 
         when.join(
-                provider.findAll({ live:true, page:false, limit:limit, skip:skip }),
-                provider.count()
+                provider.findAll({ live:true, page:false, limit:limit, skip:skip, sortBy:'-publishedAt' }),
+                provider.count({ page:false, live: true })
             )
             .spread(function (posts, count) {
                 res.locals.posts = posts;
@@ -50,8 +50,8 @@
             skip = limit * (page - 1), year = +req.params.year;
 
         when.join(
-                provider.findByDate({ live: true, page: false, year: year, skip:skip, limit:limit }),
-                provider.count({ year: year })
+                provider.findByDate({ live:true, page:false, year:year, skip:skip, limit:limit }),
+                provider.count({ year:year, page:false, live:true })
             )
             .then(function (results) {
                 res.locals.posts = results[0];
@@ -70,8 +70,8 @@
             month = +req.params.month;
 
         when.join(
-                provider.findByDate({ live: true, page: false, month:month, year: year, skip:skip, limit:limit }),
-                provider.count({ month:month, year: year })
+                provider.findByDate({ live:true, page:false, month:month, year:year, skip:skip, limit:limit }),
+                provider.count({ month:month, year:year, page:false, live:true })
             )
             .spread(function (posts, count) {
                 res.locals.posts = posts;
@@ -94,7 +94,7 @@
 
         when.join(
                 provider.findByDate({ live:true, page:false, day:day, month:month, year: year, skip:skip, limit:limit }),
-                provider.count({ day:day, month:month, year: year })
+                provider.count({ day:day, month:month, year:year, page:false, live:true })
             )
             .then(function (results) {
                 res.locals.posts = results[0];
@@ -131,7 +131,7 @@
 
         when.join(
                 provider.findByLabel({ live:true, page:false, label:req.params.label, skip:skip, limit:limit }),
-                provider.count({ label: req.params.label })
+                provider.count({ label:req.params.label, page:false, live:true })
             )
             .spread(function (posts, count) {
                 res.locals.posts = posts;
