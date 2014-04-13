@@ -5,7 +5,7 @@
 
     var mongoose            = require('mongoose'),
         moment              = require('moment'),
-        _                   = require('underscore'),
+        _                   = require('lodash'),
         when                = require('when'),
         lift                = require('when/node').lift,
         debug               = require('debug')('panda:postProvider'),
@@ -14,9 +14,7 @@
             ['slug', 'title', 'teaser', 'markdown', 'content', 'labels', 'publishedAt', 'author',
              'autoPublishOpt', 'autoSlugOpt', 'featured', 'page'];
 
-    var PostProvider = module.exports = function () {
-        this.db = mongoose.connection;
-    };
+    var PostProvider = function () {};
 
     PostProvider.prototype.init = function () {
         debug('initializing');
@@ -37,7 +35,7 @@
         }
 
         return query
-            .sort(options.sortBy || '-publishedAt')
+            .sort(options.sortBy)
             .skip(options.skip)
             .limit(options.limit)
             .populate('author')
@@ -134,43 +132,45 @@
         return addQueryOptions(Post.find(selection), options).exec();
     };
 
-    PostProvider.prototype.count = function (opts) {
-        opts = opts || {};
-        var start, end = new Date(), month, query, cond = { page: false };
+    PostProvider.prototype.count = function (options) {
+        options = options || {};
 
-        debug('fetching posts count %j', opts);
+        debug('fetching posts count %j', options);
 
-        if (opts.label) {
-            cond.labels = opts.label;
+        var selection = addBasicSelection({}, options), query, end, start, month = options.month - 1;
+
+        if (options.label) {
+            selection.labels = options.label;
         }
 
-        // post published between start and end of the day
-        if (opts.day) {
-            month = opts.month - 1;
-            start = moment([opts.year, month, opts.day]).startOf('day').toDate();
-            end = moment([opts.year, month, opts.day]).endOf('day').toDate();
+        if (options.day) {
+            end = moment([options.year, month, options.day]).endOf('day').toDate();
+            start = moment([options.year, month, options.day]).startOf('day').toDate();
         }
-        // post published between start and end of the month
-        else if (opts.month) {
-            month = opts.month - 1;
-            start = moment([opts.year, month]).startOf('month').toDate();
-            end = moment([opts.year, month]).endOf('month').toDate();
+        else if (options.month) {
+            end = moment([options.year, month]).endOf('month').toDate();
+            start = moment([options.year, month]).startOf('month').toDate();
         }
-        // post published between start and end of the year
-        else if (opts.year) {
-            start = moment([opts.year]).startOf('year').toDate();
-            end = moment([opts.year]).endOf('year').toDate();
+        else if (options.year) {
+            end = moment([options.year]).endOf('year').toDate();
+            start = moment([options.year]).startOf('year').toDate();
         }
 
-        query = Post
-            .count(cond)
-            .where('publishedAt');
-
-        if (start) {
-            query = query.gte(start);
+        if (options.live) {
+            end = new Date(Math.min(_.now(), end || _.now()));
         }
-        if (end) {
-            query = query.lte(new Date(Math.min(end.valueOf(), Date.now())));
+
+        query = addQueryOptions(Post.count(selection), options);
+
+        if (start || end) {
+            query = query.where('publishedAt');
+
+            if (start) {
+                query = query.gte(start);
+            }
+            if (end) {
+                query = query.lte(end);
+            }
         }
 
         return query.exec();
@@ -292,6 +292,8 @@
 
         return Post.findByIdAndRemove(id).exec();
     };
+
+    module.exports = PostProvider;
 
 })();
 
