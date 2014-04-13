@@ -88,6 +88,13 @@
                 return input.slice(+start);
             };
         }])
+        .directive('ngTooltip', function(){
+            return function(scope, element, attrs) {
+                element.bind("mouseenter", function(event){
+                    element.tooltip('show');
+                });
+            }
+        })
         .directive('ngEnter', function() {
             return function(scope, element, attrs) {
                 element.bind("keydown keypress", function(event) {
