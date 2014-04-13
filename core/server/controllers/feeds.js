@@ -15,9 +15,9 @@
 
     module.exports.middleware = function (req, res, next) {
         when.join(
-            provider.getLabelsInfo(),
+            provider.labelsInfo({ live:true }),
             userProvider.findLeadUser(),
-            provider.count()
+            provider.count({ live:true })
         )
         .spread(function (labels, leadAuthor, totalPosts) {
             res.locals.labels       = labels;
@@ -29,7 +29,7 @@
 
     module.exports.rss = function (req, res) {
         when.join(
-            provider.findAll({ limit: rssPostPerPage })
+            provider.findAll({ live:true, limit:rssPostPerPage })
         )
         .spread(function (posts) {
 
@@ -47,7 +47,7 @@
 
     module.exports.atom = function (req, res) {
         when.join(
-            provider.findAll({ limit: atomPostPerPage })
+            provider.findAll({ live:true, limit:atomPostPerPage })
         )
         .spread(function (posts) {
 
@@ -61,6 +61,14 @@
         .catch(function (err) {
             res.send(500);
         });
+    };
+
+    module.exports.sitemap = function(req, res) {
+        when.resolve(provider.findAll({ live:true }))
+            .then(function(posts){
+                res.locals.posts = posts;
+                res.type('xml').render(view(req, 'sitemap'));
+            })
     };
 
     function maxUpdatedDate(posts) {
