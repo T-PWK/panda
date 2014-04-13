@@ -98,12 +98,13 @@
     }
 
     function labelsFormat(locals, post, join) {
+        console.info(arguments)
         if (3 > arguments.length && 'string' === typeof post) {
             join = post;
             post = locals.post;
         }
 
-        return post.labels.join(join || ', ');
+        return (post.labels || []).join(join || ', ');
     }
 
     function metaTitle(locals) {
