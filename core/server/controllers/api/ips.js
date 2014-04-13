@@ -7,7 +7,8 @@
         provider  = require('../../providers').configProvider;
 
     module.exports.index = function (req, res) {
-        var type = req.params.type, enabledKey, ipsKey;
+        var type = req.params.type, enabledKey, ipsKey,
+            ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
         switch (type) {
             case 'admin':
@@ -21,7 +22,7 @@
             default : return res.send(404);
         }
 
-        return res.json({ type: type, enabled: cfg.get(enabledKey), ips: cfg.get(ipsKey), currentIp: req.ip });
+        return res.json({ type:type, enabled:cfg.get(enabledKey), ips:cfg.get(ipsKey), currentIp:ip });
     };
 
     module.exports.create = function (req, res) {

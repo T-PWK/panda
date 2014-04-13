@@ -5,20 +5,24 @@
         _       = require('lodash');
 
     module.exports.adminIpCheck = function (req, res, fn) {
-        var ips = cfg.get('admin:allowedIps');
+        var ips = cfg.get('admin:allowedIps'),
+            ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
         if (cfg.get('admin:restrictByIp') === false || _.isEmpty(ips)) {
             return fn();
         }
 
-        _.indexOf(ips, req.ip, true) === -1 ? res.send(403) : fn();
+        _.indexOf(ips, ip, true) === -1 ? res.send(403) : fn();
     };
 
     module.exports.siteIpCheck = function (req, res, fn) {
         if (cfg.get('app:restrictByIp') === false) {
             return fn();
         }
-        _.indexOf(cfg.get('app:disallowedIps'), req.ip, true) > -1 ? res.send(403) : fn();
+
+        var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+
+        _.indexOf(cfg.get('app:disallowedIps'), ip, true) > -1 ? res.send(403) : fn();
     };
 
 }());
