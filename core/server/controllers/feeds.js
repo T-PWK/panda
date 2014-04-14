@@ -68,7 +68,7 @@
             .then(function(posts){
                 res.locals.posts = posts;
                 res.type('xml').render(view(req, 'sitemap'));
-            })
+            });
     };
 
     function maxUpdatedDate(posts) {
