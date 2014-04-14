@@ -29,7 +29,7 @@
 
     module.exports.rss = function (req, res) {
         when.join(
-            provider.findAll({ live:true, limit:rssPostPerPage })
+            provider.findAll({ live:true, limit:rssPostPerPage, sortBy: '-publishedAt' })
         )
         .spread(function (posts) {
 
@@ -47,7 +47,7 @@
 
     module.exports.atom = function (req, res) {
         when.join(
-            provider.findAll({ live:true, limit:atomPostPerPage })
+            provider.findAll({ live:true, limit:atomPostPerPage, sortBy: '-publishedAt' })
         )
         .spread(function (posts) {
 
@@ -68,7 +68,7 @@
             .then(function(posts){
                 res.locals.posts = posts;
                 res.type('xml').render(view(req, 'sitemap'));
-            });
+            })
     };
 
     function maxUpdatedDate(posts) {
