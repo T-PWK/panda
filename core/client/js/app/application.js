@@ -93,7 +93,7 @@
                 element.bind("mouseenter", function(event){
                     element.tooltip('show');
                 });
-            }
+            };
         })
         .directive('ngEnter', function() {
             return function(scope, element, attrs) {

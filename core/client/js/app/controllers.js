@@ -724,13 +724,13 @@
 
             $scope.resetIp = function (type, form) {
                 form.$setPristine();
-                type.ip = ''
+                type.ip = '';
             };
 
             function loadIps(type) {
                 return Ips.get({type:type})
                     .$promise
-                    .then(function (info) { $scope[type] = info; })
+                    .then(function (info) { $scope[type] = info; });
             }
         }
     ]);
@@ -754,7 +754,7 @@
                                 $timeout(function () {
                                     adminStyle.prop('href', updateHref(adminStyle.prop('href')));
                                 }, 500);
-                            })
+                            });
 
                         function updateHref (href) {
                             return href.replace(/\/\w+(\.\w+)+$/, '/' + serverTheme.data);
