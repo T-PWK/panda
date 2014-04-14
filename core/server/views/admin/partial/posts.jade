@@ -13,7 +13,7 @@ mixin sortMenu(id, title, icon)
             h1 Posts
 
         .row.form-group
-            .col-sm-8
+            .col-sm-7
                 .form-group(ng-if="posts.length")
                     .btn-toolbar(role="toolbar")
                         .btn-group
@@ -38,9 +38,7 @@ mixin sortMenu(id, title, icon)
                                 mixin sortMenu('updatedAt', 'Last Update Date', 'fa-sort-numeric-asc')
                                 mixin sortMenu('-updatedAt', 'Last Update Date', 'fa-sort-numeric-desc')
 
-                        p.btn-group(ng-show="!select.isEmpty()", ng-pluralize, count="select.howMany()", when="{'0':'No posts selected', 'one':'{} post selected', 'other':'{} posts selected'}")
-
-            .col-sm-4
+            .col-sm-5
                 .btn-toolbar.pull-right
                     p.btn-group(ng-show="pg.items") {{pg.from}}-{{pg.to}} of {{pg.items}}
                     .btn-group
@@ -70,7 +68,9 @@ mixin sortMenu(id, title, icon)
 
         table.table.table-striped(ng-if="posts.length")
             thead
-                th.col-sm-1: i.btn-link.fa.fa-fw(ng-class="{'fa-square-o':!select.all,'fa-check-square-o':select.all}", ng-click="selectAll()")
+                th.col-sm-1
+                    i.btn-link.fa.fa-fw(ng-class="{'fa-square-o':!select.all,'fa-check-square-o':select.all}", ng-click="selectAll()")
+                    span(ng-hide="select.isEmpty()") &nbsp;({{select.howMany()}})
                 th.col-sm-4 Title
                 th.col-sm-1 Info
                 th.col-sm-2 Author
