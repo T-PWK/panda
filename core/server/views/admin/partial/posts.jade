@@ -45,7 +45,12 @@ mixin sortMenu(id, title, icon)
                     p.btn-group(ng-show="pg.items") {{pg.from}}-{{pg.to}} of {{pg.items}}
                     .btn-group
                         button.btn.btn-default(type="button", ng-disabled="!pg.hasPrev", ng-click="pg.prev()") &laquo;
-                        button.btn.btn-default(type="button", ng-repeat="p in pg.pageRange", ng-click="pg.current=p", ng-class="{active:p==pg.current}") {{p}}
+                        .btn-group
+                            button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
+                                | {{pg.current}}&nbsp;
+                                span.caret
+                            ul.dropdown-menu.scrollable-menu
+                                li(ng-repeat="p in pg.pageRange", ng-class="{active:p==pg.current}"): a(href="", ng-click="pg.current=p") {{p}}
                         button.btn.btn-default(type="button", ng-disabled="!pg.hasNext", ng-click="pg.next()") &raquo;
                     .btn-group
                         button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")

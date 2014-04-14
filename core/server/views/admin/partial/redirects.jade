@@ -13,9 +13,14 @@
                     p.navbar-text Items {{pg.from}}-{{pg.to}} of {{pg.items}}
                 .form-group
                     .btn-group
-                        a.btn.btn-default(href="", ng-click="pg.prev()", ng-class="{disabled:!pg.hasPrev}") &laquo;
-                        a.btn.btn-default(ng-repeat="p in pg.pageRange", ng-class="{active:p==pg.current}", ng-click="pg.current=p") {{p}}
-                        a.btn.btn-default(href="", ng-click="pg.next()", ng-class="{disabled:!pg.hasNext}") &raquo;
+                        button.btn.btn-default(type="button", ng-click="pg.prev()", ng-class="{disabled:!pg.hasPrev}") &laquo;
+                        .btn-group
+                            button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
+                                | {{pg.current}}&nbsp;
+                                span.caret
+                            ul.dropdown-menu.scrollable-menu
+                                li(ng-repeat="p in pg.pageRange", ng-class="{active:p==pg.current}"): a(href="", ng-click="pg.current=p") {{p}}
+                        button.btn.btn-default(type="button", ng-click="pg.next()", ng-class="{disabled:!pg.hasNext}") &raquo;
 
                 .form-group.navbar-right
                     button.btn.btn-danger.navbar-btn(type="button", ng-click="delete()", ng-disabled="deleting.isEmpty()") Delete
