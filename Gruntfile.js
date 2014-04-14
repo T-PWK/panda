@@ -196,7 +196,8 @@ function gruntConfig (grunt) {
                     }
                 },
                 src: [
-                    'core/client/js/app/**/*.js'
+                    'core/client/js/app/**/*.js',
+                    '!core/client/js/app/angular-file-upload.js'
                 ]
             }
         },
