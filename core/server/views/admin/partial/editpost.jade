@@ -173,4 +173,4 @@ mixin labelsForm
                         textarea.form-control#editor
                     .tab-pane(ng-class="{active:!opt.editor}")
                         .panel.panel-default
-                            .panel-body(ng-bind-html="postContent()")
+                            #post-content-preview.panel-body(ng-bind-html="postContent()")

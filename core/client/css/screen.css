@@ -52,3 +52,7 @@ p.btn-group {
     max-height: 200px;
     overflow-x: hidden;
 }
+
+#post-content-preview img {
+    max-width: 100%;
+}
