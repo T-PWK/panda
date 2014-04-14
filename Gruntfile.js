@@ -277,19 +277,38 @@ function gruntConfig (grunt) {
     grunt.registerTask(
         'build',
         'Compiles all of the assets and copies the files to the build directory.',
-        ['clean:all', 'copy', 'stylesheet', 'scripts']
+        [
+            'clean:all',
+            'copy:content',
+            'copy:client',
+            'copy:server',
+            'copy:pages',
+            'stylesheet',
+            'scripts'
+        ]
     );
 
     grunt.registerTask(
         'release',
         'Compiles all of the assets and copies the files to the build directory.',
-        ['build', 'compress', 'hashres']
+        [
+            'jshint',
+            'build',
+            'hashres',
+            'compress'
+        ]
     );
 
     grunt.registerTask(
         'default',
         'Watches the project for changes, automatically rebuilds files and runs a server',
-        ['build', 'copy:themes', 'copy:config', 'express', 'watch']
+        [
+            'build',
+            'copy:themes',
+            'copy:config',
+            'express',
+            'watch'
+        ]
     );
 }
 

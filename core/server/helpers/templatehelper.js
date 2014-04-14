@@ -98,7 +98,6 @@
     }
 
     function labelsFormat(locals, post, join) {
-        console.info(arguments)
         if (3 > arguments.length && 'string' === typeof post) {
             join = post;
             post = locals.post;

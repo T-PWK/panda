@@ -13,15 +13,15 @@
     var ThemesProvider = function () {
         this.themes = [];
         this.adminThemes = [];
-        this.activeTheme;
-        this.activeAdminTheme;
+        this.activeTheme = null;
+        this.activeAdminTheme = null;
     };
 
     ThemesProvider.prototype.init = function () {
         var that = this;
 
         // Get reference to configProvider after initialization
-        configProvider  = require('../providers').configProvider;
+        configProvider = require('../providers').configProvider;
 
         return when
             .all([
@@ -37,22 +37,22 @@
             });
     };
 
-    ThemesProvider.prototype.getActiveTheme = function() {
+    ThemesProvider.prototype.getActiveTheme = function () {
         return this.activeTheme;
-    }
+    };
 
-    ThemesProvider.prototype.getActiveAdminTheme = function() {
+    ThemesProvider.prototype.getActiveAdminTheme = function () {
         return this.activeAdminTheme;
-    }
+    };
 
     ThemesProvider.prototype.selectActiveTheme = function () {
         selectThemes(this.themes, cfg.get('theme:name'));
-        this.activeTheme = _.find(this.themes, { active:true });
+        this.activeTheme = _.find(this.themes, { active: true });
     };
 
     ThemesProvider.prototype.selectActiveAdminTheme = function () {
         selectThemes(this.adminThemes, cfg.get('admin:theme'));
-        this.activeAdminTheme = _.find(this.adminThemes, { active:true });
+        this.activeAdminTheme = _.find(this.adminThemes, { active: true });
     };
 
     ThemesProvider.prototype.getAdminThemes = function () {
@@ -64,12 +64,12 @@
     };
 
     ThemesProvider.prototype.checkTheme = function (id) {
-        var theme = _.find(this.themes, { id:id });
+        var theme = _.find(this.themes, { id: id });
         return !!theme ? when.resolve(theme) : when.reject();
     };
 
     ThemesProvider.prototype.checkAdminTheme = function (id) {
-        var theme = _.find(this.adminThemes, { id:id });
+        var theme = _.find(this.adminThemes, { id: id });
         return !!theme ? when.resolve(theme) : when.reject();
     };
 
@@ -95,22 +95,22 @@
             });
     };
 
-    function selectThemes (themes, id) {
+    function selectThemes(themes, id) {
         _.each(themes, function (theme) {
             theme.active = theme.id == id;
         });
     }
 
-    function nameToTheme (name) {
+    function nameToTheme(name) {
         var id = name.replace(/^(\w+)(\.\w+)*$/, '$1');
         return {
-            id: id,
+            id:   id,
             name: _s.titleize(_s.humanize(id)),
             data: name
         };
     }
 
-    function namesToThemes (fileNames) {
+    function namesToThemes(fileNames) {
         return fileNames.map(nameToTheme);
     }
 
