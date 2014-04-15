@@ -54,7 +54,7 @@
                             i.fa(ng-class="{'internal':'fa-star-o','301':'fa-star','302':'fa-star-half-o'}[item.type]")
                             |  {{item.type||'internal'}}
 
-            .btn-toolbar.pull-right
+            .btn-toolbar.pull-right(ng-if="items.length")
                 p.btn-group Show rows:
 
                 //- Rows per screen selection
