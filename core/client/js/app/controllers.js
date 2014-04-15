@@ -137,6 +137,7 @@
             $scope.sizes = [10, 25, 50, 100];
             $scope.pg = Utils.pagination();
             $scope.select = Utils.selection();
+            $scope.search = { title: '' };
 
             $scope.$watch($scope.page?'pageStats':'postStats', function(stats) {
                 if (stats) {
@@ -153,6 +154,10 @@
             $scope.$on('post:draft', loadPosts);
             $scope.$on('post:delete', loadPosts);
 
+            $scope.showForm = function () {
+                return $scope[$scope.page?'pageStats':'postStats'][$params.type] > 0;
+            };
+
             $scope.selectAll = function () {
                 var sel = $scope.select;
                 if (sel.all) {
@@ -165,9 +170,14 @@
                 }
             };
 
-            $scope.search = function () {
+            $scope.doSearch = function () {
                 $scope.setLoading('Searching');
                 loadPosts();
+            };
+
+            $scope.doSearchReset = function () {
+                $scope.search.title = '';
+                $scope.doSearch();
             };
 
             $scope.delete = function () {
@@ -230,7 +240,7 @@
                     sortBy: $scope.sortBy,
                     type: $params.type,
                     page: $scope.page,
-                    title: $scope.title
+                    title: $scope.search.title
                 }).$promise
                     .then(function (posts) {
                         $scope.setLoading(false);

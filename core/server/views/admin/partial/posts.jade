@@ -12,7 +12,7 @@ mixin sortMenu(id, title, icon)
         .page-header
             h1 Posts
 
-        .row(ng-if="posts.length")
+        .row(ng-show="showForm()")
             .col-sm-6
                 .form-group
                     .btn-toolbar(role="toolbar")
@@ -40,11 +40,11 @@ mixin sortMenu(id, title, icon)
             .col-sm-5.col-sm-offset-1
                 .form-group
                     .input-group
-                        input.form-control(type="text", ng-model="title",
-                            ng-key-action="{27:'onEsc', 13:'onEnter'}", on-esc="title='';search()", on-enter="search()")
+                        input.form-control(type="text", ng-model="search.title",
+                            ng-key-action="{27:'onEsc', 13:'onEnter'}", on-esc="doSearchReset()", on-enter="doSearch()")
                         span.input-group-btn
-                            button.btn.btn-default(ng-click="title='';search()"): i.fa.fa-times-circle
-                            button.btn.btn-default(ng-click="search()"): i.fa.fa-search
+                            button.btn.btn-default(ng-click="doSearchReset()"): i.fa.fa-times-circle
+                            button.btn.btn-default(ng-click="doSearch()"): i.fa.fa-search
 
 
         .alert.alert-info.text-center(ng-if="!posts.length && !isLoading")
@@ -84,7 +84,7 @@ mixin sortMenu(id, title, icon)
                         i.fa.fa-fw.text-muted(ng-class="{'fa-comments-o':post.commentsCount,'fa-comment-o':post.commentsCount==0}")
                     td(ng-class="{S:'text-warning',D:'text-warning'}[status(post)]") {{post.publishedAt|date:'mediumDate'}}
 
-        .btn-toolbar.pull-right(ng-if="posts.length")
+        .btn-toolbar.pull-right(ng-show="posts.length")
             p.btn-group Show rows:
 
             //- Rows per screen selection
