@@ -9,20 +9,21 @@ mixin sortMenu(id, title, icon)
     .col-md-9
         include includes/breadcrumb
 
-        .page-header
-            h1 Posts
+        .page-header(ng-switch on="page")
+            h1(ng-switch-when="false") Posts
+            h1(ng-switch-when="true") Pages
 
         .row(ng-show="showForm()")
             .col-sm-6
                 .form-group
                     .btn-toolbar(role="toolbar")
                         .btn-group
-                            a.btn.btn-default(type="button", href="#/posts/new"): i.fa.fa-plus.text-primary
-                            button.btn.btn-default(type="button", ng-click="publish()", ng-hide="crumb[1].id=='live'||crumb[1].id=='scheduled'", ng-disabled="select.isEmpty() || !select.hasType('D')") Publish
-                            button.btn.btn-default(type="button", ng-click="draft()", ng-hide="crumb[1].id=='draft'", ng-disabled="select.isEmpty() || !select.hasType('A', 'S')") Revert to Draft
-                            button.btn.btn-default(type="button", ng-click="delete()", ng-disabled="select.isEmpty() || !select.hasType('D')"): i.fa.fa-trash-o.text-danger
+                            a.btn.btn-sm.btn-default(type="button", href="#/posts/new"): i.fa.fa-plus.text-primary
+                            button.btn.btn-sm.btn-default(type="button", ng-click="publish()", ng-hide="crumb[1].id=='live'||crumb[1].id=='scheduled'", ng-disabled="select.isEmpty() || !select.hasType('D')") Publish
+                            button.btn.btn-sm.btn-default(type="button", ng-click="draft()", ng-hide="crumb[1].id=='draft'", ng-disabled="select.isEmpty() || !select.hasType('A', 'S')") Revert to Draft
+                            button.btn.btn-sm.btn-default(type="button", ng-click="delete()", ng-disabled="select.isEmpty() || !select.hasType('D')"): i.fa.fa-trash-o.text-danger
                         .btn-group
-                            button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
+                            button.btn.btn-sm.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
                                 | Sort By&nbsp;
                                 span.caret
                             ul.dropdown-menu
@@ -39,17 +40,23 @@ mixin sortMenu(id, title, icon)
 
             .col-sm-5.col-sm-offset-1
                 .form-group
-                    .input-group
+                    .input-group.input-group-sm
                         input.form-control(type="text", ng-model="search.title",
                             ng-key-action="{27:'onEsc', 13:'onEnter'}", on-esc="doSearchReset()", on-enter="doSearch()")
                         span.input-group-btn
                             button.btn.btn-default(ng-click="doSearchReset()"): i.fa.fa-times-circle
                             button.btn.btn-default(ng-click="doSearch()"): i.fa.fa-search
 
+        .row(ng-if="!posts.length && !isLoading")
+            .col-sm-12(ng-switch on="page")
+                .text-center(ng-switch-when="false")
+                    | There are no posts.&nbsp;
+                    a(href="#/posts/new") Create a new post
+                .text-center(ng-switch-when="true")
+                    | There are no pages.&nbsp;
+                    a(href="#/posts/new") Create a new page
+                hr
 
-        .alert.alert-info.text-center(ng-if="!posts.length && !isLoading")
-            | No posts. You can create a post&nbsp;
-            a(href="#/posts/new") here
 
         .text-center(ng-if="!posts.length && isLoading")
             i.fa.fa-spinner.fa-spin
@@ -93,7 +100,7 @@ mixin sortMenu(id, title, icon)
                     | {{pg.pageSize}}&nbsp;
                     span.caret
                 ul.dropdown-menu
-                    li(ng-class="{active:pg.pageSize==s}", ng-repeat="s in sizes")
+                    li(ng-class="{active:pg.pageSize==s}", ng-repeat="s in [10, 25, 50, 100]")
                         a(href="", ng-click="pg.pageSize=s") {{s}}
 
             //- Items range

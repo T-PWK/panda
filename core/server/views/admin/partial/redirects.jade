@@ -78,9 +78,7 @@
                             li(ng-repeat="p in pg.pageRange", ng-class="{active:p==pg.current}"): a(href="", ng-click="pg.current=p") {{p}}
                     button.btn.btn-sm.btn-default(type="button", ng-click="pg.next()", ng-class="{disabled:!pg.hasNext}") &raquo;
 
-
-
-            .alert.alert-info.text-center(ng-if="!items.length && !isLoading") No redirects have been configured. You can create one in the form below.
+            .text-center(ng-if="!items.length && !isLoading") No redirects have been configured. You can create one in the form below.
 
         hr
 

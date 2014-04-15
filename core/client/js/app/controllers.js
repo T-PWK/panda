@@ -134,7 +134,6 @@
     controllers.controller('PostListCtrl', ['$scope', '$routeParams', '$q', 'Posts', 'Utils',
         function ($scope, $params, $q, Posts, Utils) {
             $scope.type = $params.type;
-            $scope.sizes = [10, 25, 50, 100];
             $scope.pg = Utils.pagination();
             $scope.select = Utils.selection();
             $scope.search = { title: '' };
