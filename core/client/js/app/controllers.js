@@ -634,6 +634,7 @@
         function ($scope, $rootScope, $q, Redirects, Utils) {
             $scope.deleting = Utils.selection();
             $scope.pg = Utils.pagination();
+            $scope.url = { $: '' };
 
             $rootScope.$on('load', loadRedirects);
 
