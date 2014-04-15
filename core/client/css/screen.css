@@ -56,3 +56,11 @@ p.btn-group {
 #post-content-preview img {
     max-width: 100%;
 }
+
+.space-r {
+    margin-right: 1em;
+}
+
+.space-r-2x {
+    margin-right: 2em;
+}

@@ -12,51 +12,29 @@ mixin sortMenu(id, title, icon)
         .page-header
             h1 Posts
 
-        .row.form-group
-            .col-sm-7
-                .form-group(ng-if="posts.length")
-                    .btn-toolbar(role="toolbar")
-                        .btn-group
-                            a.btn.btn-default(type="button", href="#/posts/new"): i.fa.fa-plus.text-primary
-                            button.btn.btn-default(type="button", ng-click="publish()", ng-hide="crumb[1].id=='live'||crumb[1].id=='scheduled'", ng-disabled="select.isEmpty() || !select.hasType('D')") Publish
-                            button.btn.btn-default(type="button", ng-click="draft()", ng-hide="crumb[1].id=='draft'", ng-disabled="select.isEmpty() || !select.hasType('A', 'S')") Revert to Draft
-                            button.btn.btn-default(type="button", ng-click="delete()", ng-disabled="select.isEmpty() || !select.hasType('D')"): i.fa.fa-trash-o.text-danger
+        .form-group(ng-if="posts.length")
+            .btn-toolbar(role="toolbar")
+                .btn-group
+                    a.btn.btn-sm.btn-default(type="button", href="#/posts/new"): i.fa.fa-plus.text-primary
+                    button.btn.btn-sm.btn-default(type="button", ng-click="publish()", ng-hide="crumb[1].id=='live'||crumb[1].id=='scheduled'", ng-disabled="select.isEmpty() || !select.hasType('D')") Publish
+                    button.btn.btn-sm.btn-default(type="button", ng-click="draft()", ng-hide="crumb[1].id=='draft'", ng-disabled="select.isEmpty() || !select.hasType('A', 'S')") Revert to Draft
+                    button.btn.btn-sm.btn-default(type="button", ng-click="delete()", ng-disabled="select.isEmpty() || !select.hasType('D')"): i.fa.fa-trash-o.text-danger
 
-                        .btn-group
-                            button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
-                                | Sort By&nbsp;
-                                span.caret
-                            ul.dropdown-menu
-                                mixin sortMenu('title', 'Title', 'fa-sort-alpha-asc')
-                                mixin sortMenu('-title', 'Title', 'fa-sort-alpha-desc')
-                                mixin sortMenu('commentsCount', 'Comments', 'fa-sort-numeric-asc')
-                                mixin sortMenu('-commentsCount', 'Comments', 'fa-sort-numeric-desc')
-                                mixin sortMenu('publishedAt', 'Publication Date', 'fa-sort-numeric-asc')
-                                mixin sortMenu('-publishedAt', 'Publication Date', 'fa-sort-numeric-desc')
-                                mixin sortMenu('createdAt', 'Creation Date', 'fa-sort-numeric-asc')
-                                mixin sortMenu('-createdAt', 'Creation Date', 'fa-sort-numeric-desc')
-                                mixin sortMenu('updatedAt', 'Last Update Date', 'fa-sort-numeric-asc')
-                                mixin sortMenu('-updatedAt', 'Last Update Date', 'fa-sort-numeric-desc')
-
-            .col-sm-5
-                .btn-toolbar.pull-right
-                    p.btn-group(ng-show="pg.items") {{pg.from}}-{{pg.to}} of {{pg.items}}
-                    .btn-group
-                        button.btn.btn-default(type="button", ng-disabled="!pg.hasPrev", ng-click="pg.prev()") &laquo;
-                        .btn-group
-                            button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
-                                | {{pg.current}}&nbsp;
-                                span.caret
-                            ul.dropdown-menu.scrollable-menu
-                                li(ng-repeat="p in pg.pageRange", ng-class="{active:p==pg.current}"): a(href="", ng-click="pg.current=p") {{p}}
-                        button.btn.btn-default(type="button", ng-disabled="!pg.hasNext", ng-click="pg.next()") &raquo;
-                    .btn-group
-                        button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
-                            | {{pg.pageSize}}&nbsp;
-                            span.caret
-                        ul.dropdown-menu
-                            li(ng-class="{active:pg.pageSize==s}", ng-repeat="s in sizes")
-                                a(href="", ng-click="pg.pageSize=s") {{s}}
+                .btn-group
+                    button.btn.btn-sm.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
+                        | Sort By&nbsp;
+                        span.caret
+                    ul.dropdown-menu
+                        mixin sortMenu('title', 'Title', 'fa-sort-alpha-asc')
+                        mixin sortMenu('-title', 'Title', 'fa-sort-alpha-desc')
+                        mixin sortMenu('commentsCount', 'Comments', 'fa-sort-numeric-asc')
+                        mixin sortMenu('-commentsCount', 'Comments', 'fa-sort-numeric-desc')
+                        mixin sortMenu('publishedAt', 'Publication Date', 'fa-sort-numeric-asc')
+                        mixin sortMenu('-publishedAt', 'Publication Date', 'fa-sort-numeric-desc')
+                        mixin sortMenu('createdAt', 'Creation Date', 'fa-sort-numeric-asc')
+                        mixin sortMenu('-createdAt', 'Creation Date', 'fa-sort-numeric-desc')
+                        mixin sortMenu('updatedAt', 'Last Update Date', 'fa-sort-numeric-asc')
+                        mixin sortMenu('-updatedAt', 'Last Update Date', 'fa-sort-numeric-desc')
 
         .alert.alert-info.text-center(ng-if="!posts.length && !isLoading")
             | No posts. You can create a post&nbsp;
@@ -94,3 +72,31 @@ mixin sortMenu(id, title, icon)
                         | {{post.commentsCount || 0}}
                         i.fa.fa-fw.text-muted(ng-class="{'fa-comments-o':post.commentsCount,'fa-comment-o':post.commentsCount==0}")
                     td(ng-class="{S:'text-warning',D:'text-warning'}[status(post)]") {{post.publishedAt|date:'mediumDate'}}
+
+        .btn-toolbar.pull-right(ng-if="posts.length")
+            p.btn-group Show rows:
+
+            //- Rows per screen selection
+            .btn-group.dropup.space-r
+                button.btn.btn-default.btn-sm.dropdown-toggle(type="button", data-toggle="dropdown")
+                    | {{pg.pageSize}}&nbsp;
+                    span.caret
+                ul.dropdown-menu
+                    li(ng-class="{active:pg.pageSize==s}", ng-repeat="s in sizes")
+                        a(href="", ng-click="pg.pageSize=s") {{s}}
+
+            //- Items range
+            p.btn-group(ng-show="pg.items") {{pg.from|number}}-{{pg.to|number}} of {{pg.items|number}}
+
+            //- Pagination
+            .btn-group
+                button.btn.btn-sm.btn-default(type="button", ng-disabled="!pg.hasPrev", ng-click="pg.prev()") &laquo;
+                .btn-group.dropup
+                    button.btn.btn-sm.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
+                        | {{pg.current|number}}&nbsp;
+                        span.caret
+                    ul.dropdown-menu.scrollable-menu
+                        li(ng-repeat="p in pg.pageRange", ng-class="{active:p==pg.current}"): a(href="", ng-click="pg.current=p") {{p|number}}
+                button.btn.btn-sm.btn-default(type="button", ng-disabled="!pg.hasNext", ng-click="pg.next()") &raquo;
+
+
