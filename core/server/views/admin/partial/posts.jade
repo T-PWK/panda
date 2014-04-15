@@ -12,9 +12,9 @@ mixin sortMenu(id, title, icon)
         .page-header
             h1 Posts
 
-        .row
+        .row(ng-if="posts.length")
             .col-sm-6
-                .form-group(ng-if="posts.length")
+                .form-group
                     .btn-toolbar(role="toolbar")
                         .btn-group
                             a.btn.btn-default(type="button", href="#/posts/new"): i.fa.fa-plus.text-primary
