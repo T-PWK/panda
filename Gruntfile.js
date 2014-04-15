@@ -37,8 +37,8 @@ function gruntConfig (grunt) {
                 dest: '<%= dir.build %>/',
                 expand: true
             },
-            themes: {
-                src: [ 'content/themes/**', '!content/themes/casper/**' ],
+            siteThemes: {
+                src: [ 'content/themes/**' ],
                 dest: '<%= dir.build %>/',
                 expand: true
             },
@@ -225,6 +225,10 @@ function gruntConfig (grunt) {
                 options: {
                     nospawn: true
                 }
+            },
+            siteThemes: {
+                files: 'content/themes/**',
+                tasks: [ 'copy:siteThemes' ]
             }
         },
 
@@ -305,7 +309,7 @@ function gruntConfig (grunt) {
         'Watches the project for changes, automatically rebuilds files and runs a server',
         [
             'build',
-            'copy:themes',
+            'copy:siteThemes',
             'copy:config',
             'express',
             'watch'
