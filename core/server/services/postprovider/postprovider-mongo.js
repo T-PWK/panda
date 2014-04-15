@@ -71,8 +71,15 @@
 
         options = options || {};
 
-        var selection = addBasicSelection({}, options),
-            query = addQueryOptions(Post.find(selection), options);
+        var selection = addBasicSelection({}, options), query;
+
+        // Perform search on title
+        if (!_.isBlank(options.title)) {
+            selection.title = new RegExp(options.title, 'i');
+            console.info('title is %s', options.title);
+        }
+
+        query = addQueryOptions(Post.find(selection), options);
 
         return query.exec();
     };
