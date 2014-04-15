@@ -131,23 +131,17 @@
         }
     ]);
 
-    controllers.controller('PostListCtrl', ['$scope', '$routeParams', '$q', 'Posts', 'Utils',
-        function ($scope, $params, $q, Posts, Utils) {
+    controllers.controller('PostListCtrl', ['$scope', '$routeParams', '$q', 'filterFilter', 'Posts', 'Utils',
+        function ($scope, $params, $q, filter, Posts, Utils) {
             $scope.type = $params.type;
             $scope.pg = Utils.pagination();
             $scope.select = Utils.selection();
             $scope.search = { title: '' };
 
-            $scope.$watch($scope.page?'pageStats':'postStats', function(stats) {
-                if (stats) {
-                    $scope.setCrumb(1, { data: stats[$params.type] });
-                    $scope.pg.items = stats[$params.type];
-                }
+            $scope.$watch('search.title', function(){
+                $scope.pg.items = filter($scope.posts, $scope.search);
+                console.info(filter($scope.posts, $scope.search));
             });
-
-            $scope.$watch('pg.pageSize', postViewSetChange);
-            $scope.$watch('pg.current', postViewSetChange);
-            $scope.$watch('sortBy', postViewSetChange);
 
             $scope.$on('post:publish', loadPosts);
             $scope.$on('post:draft', loadPosts);
@@ -169,14 +163,8 @@
                 }
             };
 
-            $scope.doSearch = function () {
-                $scope.setLoading('Searching');
-                loadPosts();
-            };
-
             $scope.doSearchReset = function () {
                 $scope.search.title = '';
-                $scope.doSearch();
             };
 
             $scope.delete = function () {
@@ -234,16 +222,14 @@
                 $scope.setLoading(true);
                 $scope.select.empty();
                 Posts.query({
-                    limit: $scope.pg.pageSize,
-                    skip: $scope.pg.firstItem,
-                    sortBy: $scope.sortBy,
                     type: $params.type,
-                    page: $scope.page,
-                    title: $scope.search.title
+                    page: $scope.page
                 }).$promise
                     .then(function (posts) {
                         $scope.setLoading(false);
                         $scope.posts = posts;
+                        $scope.pg.items = posts;
+                        $scope.setCrumb(1, { data: posts.length });
                     })
                     .catch(bind($scope, $scope.$emit, 'api:error'));
             }

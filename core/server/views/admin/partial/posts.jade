@@ -41,18 +41,18 @@ mixin sortMenu(id, title, icon)
             .col-sm-5.col-sm-offset-1
                 .form-group
                     .input-group.input-group-sm
-                        input.form-control(type="text", ng-model="search.title",
+                        input.form-control(type="text", ng-model="search.title", placeholder="Search by title",
                             ng-key-action="{27:'onEsc', 13:'onEnter'}", on-esc="doSearchReset()", on-enter="doSearch()")
                         span.input-group-btn
                             button.btn.btn-default(ng-click="doSearchReset()"): i.fa.fa-times-circle
-                            button.btn.btn-default(ng-click="doSearch()"): i.fa.fa-search
 
-        .row(ng-if="!posts.length && !isLoading")
-            .col-sm-12(ng-switch on="page")
-                .text-center(ng-switch-when="false")
+        .row(ng-if="!(posts | filter:search).length && !isLoading")
+            .col-sm-12
+                hr(ng-show="showForm()")
+                .text-center(ng-hide="page")
                     | There are no posts.&nbsp;
                     a(href="#/posts/new") Create a new post
-                .text-center(ng-switch-when="true")
+                .text-center(ng-show="page")
                     | There are no pages.&nbsp;
                     a(href="#/posts/new") Create a new page
                 hr
@@ -62,7 +62,7 @@ mixin sortMenu(id, title, icon)
             i.fa.fa-spinner.fa-spin
             |  Loading &hellip;
 
-        table.table.table-striped(ng-if="posts.length")
+        table.table.table-striped(ng-show="(posts | filter:search).length")
             thead
                 th.col-sm-1
                     i.btn-link.fa.fa-fw(ng-class="{'fa-square-o':!select.all,'fa-check-square-o':select.all}", ng-click="selectAll()")
@@ -74,7 +74,7 @@ mixin sortMenu(id, title, icon)
                 th.col-sm-1: i.fa.fa-comments-o(title="Comments")
                 th.col-sm-2 Publication
             tbody
-                tr(ng-repeat="post in posts | limitTo:pg.pageSize")
+                tr(ng-repeat="post in posts | filter:search | orderBy:sortBy | startFrom:pg.firstItem | limitTo:pg.pageSize")
                     td: i.btn-link.fa.fa-fw(ng-class="{'fa-square-o':!select.has(post.id),'fa-check-square-o':select.has(post.id)}", ng-click="select.toggle(post.id, status(post))")
                     td: a(ng-href="#/posts/{{post.id}}/edit", ng-class="{'text-warning':!post.title}") {{post.title || '(Untitled post)'}}
                     td
@@ -110,7 +110,7 @@ mixin sortMenu(id, title, icon)
             .btn-group
                 button.btn.btn-sm.btn-default(type="button", ng-disabled="!pg.hasPrev", ng-click="pg.prev()") &laquo;
                 .btn-group.dropup
-                    button.btn.btn-sm.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
+                    button.btn.btn-sm.btn-default.dropdown-toggle(type="button", data-toggle="dropdown", ng-disabled="!pg.items")
                         | {{pg.current|number}}&nbsp;
                         span.caret
                     ul.dropdown-menu.scrollable-menu
