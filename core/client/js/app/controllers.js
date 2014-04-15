@@ -165,6 +165,11 @@
                 }
             };
 
+            $scope.search = function () {
+                $scope.setLoading('Searching');
+                loadPosts();
+            };
+
             $scope.delete = function () {
                 $scope.setLoading('Deleting');
                 var deletePromises = [];
@@ -224,7 +229,8 @@
                     skip: $scope.pg.firstItem,
                     sortBy: $scope.sortBy,
                     type: $params.type,
-                    page: $scope.page
+                    page: $scope.page,
+                    title: $scope.title
                 }).$promise
                     .then(function (posts) {
                         $scope.setLoading(false);
