@@ -5,6 +5,8 @@ mixin slugForm
             .panel-title.btn-link
                 i.fa.fa-fw.fa-link
                 | Permalink
+                span.pull-right(ng-show="post.autoSlugOpt") Automatic
+                span.pull-right(ng-hide="post.autoSlugOpt") Custom
         #link.panel-collapse.collapse
             .panel-body
                 i.fa.fa-link.fa-fw
@@ -42,6 +44,7 @@ mixin pageForm
             .panel-title.btn-link
                 i.fa.fa-fw.fa-file-text-o
                 | Page
+                i.fa.fa-check.pull-right(ng-show="post.page")
         #page.panel-collapse.collapse
             .panel-body
                 .checkbox: label
@@ -59,6 +62,8 @@ mixin scheduleForm
             .panel-title.btn-link
                 i.fa.fa-fw.fa-clock-o
                 | Schedule
+                span.pull-right(ng-show="post.autoPublishOpt") Automatic
+                span.pull-right(ng-hide="post.autoPublishOpt") Manual
         #schedule.panel-collapse.collapse
             .panel-body
                 .radio: label
@@ -87,6 +92,7 @@ mixin labelsForm
             .panel-title.btn-link
                 i.fa.fa-fw.fa-tags
                 | Labels
+                span.pull-right(ng-show="post.labels.length") ({{post.labels.length}})
         #labels.panel-collapse.collapse
             .panel-body
                 .form-group
