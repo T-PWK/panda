@@ -14,9 +14,7 @@
                     .col-sm-3
                         button.btn.btn-sm.btn-danger(type="button", ng-click="delete()", ng-disabled="deleting.isEmpty()") Delete
                         button.btn.btn-sm.btn-default(type="button", ng-click="deleting.empty()", ng-disabled="deleting.isEmpty()") Reset
-                        button.btn.btn-sm.btn-success(type="button", ng-click="verify()", ng-disabled="items.length<2")
-                            i.fa.fa-fw.fa-spin.fa-spinner(ng-show="status.verify")
-                            | Verify
+                        button.btn.btn-sm.btn-success(type="button", ng-click="verify()", ng-disabled="items.length<2") Verify
                     .col-sm-4.col-sm-offset-5
                         .input-group.input-group-sm
                             input.form-control(type="text", ng-model="url.$", ng-key-action="{27:'onEsc'}", on-esc="url.$=''")
@@ -25,6 +23,15 @@
             .text-center(ng-if="!items.length && isLoading")
                 i.fa.fa-spinner.fa-spin
                 |  Loading &hellip;
+
+            .alert.alert-warning
+                i.fa.fa-fw.fa-exclamation-triangle
+                | Verification Issues
+                ul
+                    li(ng-repeat="i in verification.items")
+                        | {{i.item.from}}
+                        i.fa.fa-fw.fa-chain
+                        | {{i.chain.from}}
 
             //- List of redirects
             table.table.table-striped(ng-if="items.length")

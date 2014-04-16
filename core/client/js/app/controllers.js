@@ -637,7 +637,7 @@
             $scope.pg = Utils.pagination();
             $scope.url = { $: '' };
             $scope.status = { verify: false, save: false };
-            $scope.verification = [];
+            $scope.verification = { items: [] };
 
             $rootScope.$on('load', loadRedirects);
 
@@ -673,18 +673,15 @@
                 if (!$scope.items || $scope.items.length<2) {
                     return;
                 }
-                $scope.verification = [];
-                $scope.status.verify = true;
+                $scope.verification.items = [];
                 var chain;
 
                 $scope.items.forEach(function (item) {
                     chain = _.find($scope.items, { from: item.to });
                     if (chain) {
-                        $scope.verification.push({ item:item, chain:chain })
+                        $scope.verification.items.push({ item:item, chain:chain })
                     }
                 });
-                console.info($scope.verification)
-                $scope.status.verify = false;
             };
 
             $scope.refresh = loadRedirects;
