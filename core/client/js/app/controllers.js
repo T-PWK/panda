@@ -636,6 +636,8 @@
             $scope.deleting = Utils.selection();
             $scope.pg = Utils.pagination();
             $scope.url = { $: '' };
+            $scope.status = { verify: false, save: false };
+            $scope.verification = [];
 
             $rootScope.$on('load', loadRedirects);
 
@@ -665,6 +667,24 @@
                     .then(loadRedirects)
                     .then(bind($scope, $scope.$emit, 'delete'))
                     .catch(bind($scope, $scope.$emit, 'api:error'));
+            };
+
+            $scope.verify = function () {
+                if (!$scope.items || $scope.items.length<2) {
+                    return;
+                }
+                $scope.verification = [];
+                $scope.status.verify = true;
+                var chain;
+
+                $scope.items.forEach(function (item) {
+                    chain = _.find($scope.items, { from: item.to });
+                    if (chain) {
+                        $scope.verification.push({ item:item, chain:chain })
+                    }
+                });
+                console.info($scope.verification)
+                $scope.status.verify = false;
             };
 
             $scope.refresh = loadRedirects;

@@ -14,6 +14,9 @@
                     .col-sm-3
                         button.btn.btn-sm.btn-danger(type="button", ng-click="delete()", ng-disabled="deleting.isEmpty()") Delete
                         button.btn.btn-sm.btn-default(type="button", ng-click="deleting.empty()", ng-disabled="deleting.isEmpty()") Reset
+                        button.btn.btn-sm.btn-success(type="button", ng-click="verify()", ng-disabled="items.length<2")
+                            i.fa.fa-fw.fa-spin.fa-spinner(ng-show="status.verify")
+                            | Verify
                     .col-sm-4.col-sm-offset-5
                         .input-group.input-group-sm
                             input.form-control(type="text", ng-model="url.$", ng-key-action="{27:'onEsc'}", on-esc="url.$=''")
