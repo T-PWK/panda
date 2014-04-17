@@ -1,10 +1,10 @@
 (function () {
     'use strict';
 
-    var redirects = require('../controllers/redirects');
+    var redirectCtrl = require('../controllers/redirects');
 
     module.exports = function (server) {
-        server.get('/*', redirects);
+        server.get('*', redirectCtrl);
     };
 
 })();

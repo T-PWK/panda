@@ -23,7 +23,7 @@
             })
             .then(function () {
                 var panda = require('./server');
-                panda(app);
+                return panda(app);
             })
             .otherwise(function (err) {
                 console.log(("Panda server initialization error " + err).red);

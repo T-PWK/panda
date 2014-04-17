@@ -7,9 +7,7 @@
         colors      = require('colors'),
         path        = require('path'),
         cfg         = require('nconf'),
-        format      = require('util').format,
-        routes      = require('./routes'),
-        middleware  = require('./middleware');
+        format      = require('util').format;
 
     function serverStartupInfo () {
         console.log(
@@ -34,6 +32,27 @@
         });
     }
 
+    function updateServerSettings(app) {
+        // ### Express Initialisation ###
+        app.disable('x-powered-by');
+        app.set('views', cfg.get('theme:paths:views'));
+        app.set('admin views', path.join(__dirname, 'views'));
+
+        // Set the view engine
+        app.set('view engine', 'jade');
+
+        // Minimize JSON output in production environment
+        if (cfg.get('production')) {
+            app.set('json spaces', 0);
+        }
+
+        return app;
+    }
+
+    function listen(app) {
+        app.listen(cfg.get('server:port'), cfg.get('server:host'), serverStartupInfo);
+    }
+
     function setup (app) {
 
         // Update views path on theme paths view change
@@ -42,46 +61,14 @@
             app.cache = {};
         });
 
-        when().then(function () {
-            // ### Express Initialisation ###
-            app.disable('x-powered-by');
-            app.set('views', cfg.get('theme:paths:views'));
-            app.set('admin views', path.join(__dirname, 'views'));
-
-            // Set the view engine
-            app.set('view engine', 'jade');
-
-            // Minimize JSON output in production environment
-            if (true || cfg.get('production')) {
-                app.set('json spaces', 0);
-            }
-
-            // ## Express Middleware Setup
-            middleware(app);
-
-            // ## Routing
-            routes.feeds(app);      // Set up RSS routes
-            routes.robots(app);     // Set up robots.txt route
-
-            if (cfg.get('admin:enable')) {
-                routes.auth(app);       // Set up authentication routes
-                routes.admin(app);      // Set up admin routes
-                routes.api(app);        // Set up API routes
-            }
-
-            routes.redirects(app);  // Set up redirect route
-            routes.frontend(app);   // Set up Frontend routes
-
-            // ## Server Startup
-            app.listen(
-                cfg.get('server:port'),
-                cfg.get('server:host'),
-                serverStartupInfo
-            );
-        }).otherwise(function (err) {
-            console.error(err.toString().red);
-            throw err;
-        });
+        when.resolve(app)
+            .then(updateServerSettings)
+            .then(require('./middleware'))
+            .then(listen)
+            .otherwise(function (err) {
+                console.error(err.toString().red);
+                throw err;
+            });
     }
 
     function init (app) {
