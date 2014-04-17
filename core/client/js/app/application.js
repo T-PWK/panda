@@ -20,6 +20,8 @@
                 .when('/themes', { templateUrl: 'themes', controller: 'ThemesCtrl' })
                 .when('/images', { templateUrl: 'images', controller: 'ImgCtrl' })
                 .otherwise({ redirectTo: '/' });
+
+            NProgress.configure({ speed: 150 });
         }])
         .factory('Users', ['$resource', function($resource) {
             return $resource('/api/v1/user/:type', {type: '@type'},
