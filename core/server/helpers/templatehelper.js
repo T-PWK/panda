@@ -227,7 +227,7 @@
         return true;
     }
 
-    function initRequest(req, res, next) {
+    function initRequestLocals(req, res, next) {
         // Set default response local variables
 
         Object.defineProperties(res.locals, {
@@ -254,7 +254,7 @@
         next();
     }
 
-    function init(app) {
+    function initAppLocals(app) {
         // Set default application local variables as well as template helper functions
         Object.defineProperties(app.locals, {
             custom:         { enumerable: true, value: cfg.get('theme:custom') },
@@ -273,10 +273,10 @@
         });
 
         // Initialize reqest / response specific variables
-        app.use(initRequest);
+        app.use(initRequestLocals);
     }
 
-    module.exports = init;
+    module.exports = initAppLocals;
     require('pkginfo')(module, 'version');
 
 })();
