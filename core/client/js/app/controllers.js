@@ -1,8 +1,7 @@
 (function () {
     'use strict';
 
-    var isDefined   = angular.isDefined,
-        bind        = angular.bind,
+    var bind        = angular.bind,
         forEach     = angular.forEach,
         isObject    = angular.isObject,
         copy        = angular.copy,
@@ -167,7 +166,7 @@
                 $scope.search.title = '';
             };
 
-            $scope.delete = function () {
+            $scope.remove = function () {
                 $scope.setLoading('Deleting');
                 var deletePromises = [];
 
@@ -211,12 +210,6 @@
             };
 
             loadPosts();
-
-            function postViewSetChange (newValue, oldValue) {
-                if (newValue !== oldValue) {
-                    loadPosts();
-                }
-            }
 
             function loadPosts () {
                 $scope.setLoading(true);
@@ -648,7 +641,23 @@
             $scope.setCrumb('settings', 'redirects');
             loadRedirects();
 
-            $scope.delete = function () {
+            $scope.clearVerification = function () {
+                $scope.verification.items = [];
+            };
+
+            $scope.hasVerification = function () {
+                return !!$scope.verification.items.length;
+            };
+
+            $scope.clrSearch = function () {
+                $scope.url.$ = '';
+            };
+
+            $scope.hasSearch = function () {
+                return !$scope.url.$.length;
+            };
+
+            $scope.remove = function () {
                 $scope.setLoading('Deleting');
                 if ($scope.deleting.isEmpty()) {
                     return;
@@ -673,6 +682,7 @@
                 if (!$scope.items || $scope.items.length<2) {
                     return;
                 }
+                $scope.setLoading('Verification');
                 $scope.verification.items = [];
                 var chain;
 
@@ -682,6 +692,7 @@
                         $scope.verification.items.push({ item:item, chain:chain })
                     }
                 });
+                $scope.setLoading(false);
             };
 
             $scope.refresh = loadRedirects;
