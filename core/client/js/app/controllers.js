@@ -139,7 +139,6 @@
 
             $scope.$watch('search.title', function(){
                 $scope.pg.items = filter($scope.posts, $scope.search);
-                console.info(filter($scope.posts, $scope.search));
             });
 
             $scope.$on('post:publish', loadPosts);

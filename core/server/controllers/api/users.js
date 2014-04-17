@@ -39,7 +39,6 @@
         // Check if the given password matches the saved password
         crypt.compare(password.current, user.password, function (err, result) {
             if (err || !result) {
-                console.info('password check with db error');
                 return res.send(400);
             }
             when.resolve(provider.updatePassword(user.id, password['new'])).done(

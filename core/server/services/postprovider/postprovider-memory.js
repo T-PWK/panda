@@ -64,9 +64,6 @@
 
         this.dummyData.push(post);
 
-        console.info('created post ... ', post);
-        console.info('all posts', this.dummyData.length);
-
         return when.resolve(post.id);
     };
 
