@@ -21,7 +21,7 @@
                 .when('/images', { templateUrl: 'images', controller: 'ImgCtrl' })
                 .otherwise({ redirectTo: '/' });
 
-            NProgress.configure({ speed: 150 });
+            NProgress.configure({ speed: 200, trickleRate: 0.05, trickleSpeed: 250  });
         }])
         .factory('Users', ['$resource', function($resource) {
             return $resource('/api/v1/user/:type', {type: '@type'},
@@ -87,7 +87,7 @@
         }])
         .filter('startFrom', [function () {
             return function (input, start) {
-                return input.slice(+start);
+                return input ? input.slice(+start) : input;
             };
         }])
         .directive('ngTooltip', function(){
