@@ -21,7 +21,7 @@ mixin sortMenu(id, title, icon)
                             a.btn.btn-sm.btn-default(type="button", href="#/posts/new"): i.fa.fa-plus.text-primary
                             button.btn.btn-sm.btn-default(type="button", ng-click="publish()", ng-hide="crumb[1].id=='live'||crumb[1].id=='scheduled'", ng-disabled="select.isEmpty() || !select.hasType('D')") Publish
                             button.btn.btn-sm.btn-default(type="button", ng-click="draft()", ng-hide="crumb[1].id=='draft'", ng-disabled="select.isEmpty() || !select.hasType('A', 'S')") Revert to Draft
-                            button.btn.btn-sm.btn-default(type="button", ng-click="delete()", ng-disabled="select.isEmpty() || !select.hasType('D')"): i.fa.fa-trash-o.text-danger
+                            button.btn.btn-sm.btn-default(type="button", ng-click="remove()", ng-disabled="select.isEmpty() || !select.hasType('D')"): i.fa.fa-trash-o.text-danger
                         .btn-group
                             button.btn.btn-sm.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
                                 | Sort By&nbsp;
