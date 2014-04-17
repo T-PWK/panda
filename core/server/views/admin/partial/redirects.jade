@@ -12,26 +12,40 @@
             .form-group(ng-if="items.length")
                 .row
                     .col-sm-3
-                        button.btn.btn-sm.btn-danger(type="button", ng-click="delete()", ng-disabled="deleting.isEmpty()") Delete
+                        button.btn.btn-sm.btn-danger(type="button", ng-click="remove()", ng-disabled="deleting.isEmpty()") Delete
                         button.btn.btn-sm.btn-default(type="button", ng-click="deleting.empty()", ng-disabled="deleting.isEmpty()") Reset
                         button.btn.btn-sm.btn-success(type="button", ng-click="verify()", ng-disabled="items.length<2") Verify
                     .col-sm-4.col-sm-offset-5
                         .input-group.input-group-sm
-                            input.form-control(type="text", ng-model="url.$", ng-key-action="{27:'onEsc'}", on-esc="url.$=''")
-                            span.input-group-addon: i.fa.fa-search
+                            input.form-control(type="text", ng-model="url.$", ng-key-action="{27:'onEsc'}", on-esc="clrSearch()")
+                            span.input-group-btn
+                                button.btn.btn-default(type="button", ng-disabled="hasSearch()", ng-click="clrSearch()"): i.fa.fa-times-circle
 
             .text-center(ng-if="!items.length && isLoading")
                 i.fa.fa-spinner.fa-spin
                 |  Loading &hellip;
 
-            .alert.alert-warning
-                i.fa.fa-fw.fa-exclamation-triangle
-                | Verification Issues
-                ul
-                    li(ng-repeat="i in verification.items")
-                        | {{i.item.from}}
-                        i.fa.fa-fw.fa-chain
-                        | {{i.chain.from}}
+            .alert.alert-warning(ng-if="hasVerification()")
+                button.close(type="button", ng-click="clearVerification()") &times;
+                .form-group
+                    i.fa.fa-fw.fa-exclamation-triangle
+                    | Verification Issues - chain redirects found
+                table.table.table-condensed
+                    thead
+                        tr
+                            th.col-sm-1 #
+                            th.col-sm-5 From
+                            th.col-sm-5 To
+                    tbody
+                        tr(ng-repeat-start="i in verification.items")
+                            td(rowspan="2")
+                                | {{$index+1}}
+                                a.alert-link(href="", ng-click="url.$=i.item.to"): span.pull-right.i.fa.fa-eye
+                            td {{i.item.from}}
+                            td {{i.item.to}}
+                        tr(ng-repeat-end)
+                            td {{i.chain.from}}
+                            td {{i.chain.to}}
 
             //- List of redirects
             table.table.table-striped(ng-if="items.length")
