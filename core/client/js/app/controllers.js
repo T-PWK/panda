@@ -688,7 +688,7 @@
                 $scope.items.forEach(function (item) {
                     chain = _.find($scope.items, { from: item.to });
                     if (chain) {
-                        $scope.verification.items.push({ item:item, chain:chain })
+                        $scope.verification.items.push({ item:item, chain:chain });
                     }
                 });
                 $scope.setLoading(false);
