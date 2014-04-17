@@ -15,8 +15,8 @@
     module.exports.index = function (req, res) {
         var page = ('undefined' === typeof req.query.page) ? undefined : req.query.page.toLowerCase() === 'true';
 
-        provider
-            .findAll({
+        when.resolve(
+            provider.findAll({
                 page: page,
                 limit: +req.query.limit,
                 skip: +req.query.skip,
@@ -25,7 +25,7 @@
                 title: req.query.title,
                 select: 'id title commentsCount featured page labels updatedAt createdAt publishedAt author published'
             })
-            .then(res.json.bind(res));
+        ).then(res.json.bind(res));
     };
 
     module.exports.create = function (req, res) {
