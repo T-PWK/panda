@@ -37,17 +37,16 @@
     };
 
     module.exports.show = function (req, res) {
-        debug('reading configuration value %j', req.param.setting);
+        debug('reading configuration value %j', req.params.id);
 
-        return (req.setting) ? res.json({ key: req.params.setting, value: req.setting }) : res.send(404);
+        return (req.setting) ? res.json({ key: req.params.id, value: req.setting }) : res.send(404);
     };
 
-    module.exports.load = function (id, fn) {
+    module.exports.load = function (req, res, fn, id) {
         if (_.contains(allowedReadSettings, id)) {
-            fn(null, cfg.get(id));
-        } else {
-            fn();
+            req.setting = cfg.get(id);
         }
+        fn();
     };
 
     module.exports.create = function (req, res) {

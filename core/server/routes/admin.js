@@ -1,15 +1,29 @@
 (function () {
     'use strict';
 
-    var admin   = require('../controllers/admin'),
-        auth    = require('../middleware/authentication'),
-        ips     = require('../middleware/ips');
+    var express     = require('express'),
+        admin       = require('../controllers/admin'),
+        auth        = require('../middleware/authentication'),
+        ips         = require('../middleware/ips');
 
-    module.exports = function (server) {
-        server.get('/login', ips.adminIpCheck, admin.login);
-        server.get('/logout', ips.adminIpCheck, admin.logout);
-        server.get('/admin', ips.adminIpCheck, auth.authCheck, admin.index);
-        server.get('/admin/partial/:name', ips.adminIpCheck, auth.authCheck, admin.partial);
+    module.exports = function (app) {
+        var loginRoute  = express.Router(),
+            logoutRoute = express.Router(),
+            adminRoute  = express.Router();
+
+        loginRoute.use(ips.adminIpCheck)
+            .route('/').get(admin.loginView).post(admin.login);
+
+        logoutRoute.use(ips.adminIpCheck)
+            .get('/', admin.logout);
+
+        adminRoute.use(ips.adminIpCheck).use(auth.authCheck)
+            .get('/', admin.index)
+            .get('/partial/:name', admin.partial)
+
+        app.use('/login', loginRoute);
+        app.use('/logout', logoutRoute);
+        app.use('/admin', adminRoute);
     };
 
 })();

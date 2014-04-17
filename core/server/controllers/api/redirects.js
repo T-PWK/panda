@@ -14,7 +14,7 @@
     };
 
     module.exports.show = function (req, res) {
-        when.resolve(provider.findRedirectById(req.params.redirect))
+        when.resolve(provider.findRedirectById(req.params.id))
             .done(
                 res.json.bind(res),
                 res.send.bind(res, 500)
@@ -22,7 +22,7 @@
     };
 
     module.exports.update = function (req, res) {
-        when.resolve(provider.updateRedirect(req.params.redirect, req.body))
+        when.resolve(provider.updateRedirect(req.params.id, req.body))
             .done(
                 res.send.bind(res, 200),
                 res.send.bind(res, 500)
@@ -30,7 +30,7 @@
     };
 
     module.exports.destroy = function (req, res) {
-        when.resolve(provider.deleteRedirect(req.params.redirect))
+        when.resolve(provider.deleteRedirect(req.params.id))
             .done(
                 res.json.bind(res),
                 res.send.bind(res, 500)

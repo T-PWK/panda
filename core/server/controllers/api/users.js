@@ -15,7 +15,7 @@
     module.exports.update = function (req, res) {
         if (!req.user) return res.send(404);
 
-        switch (req.params.user) {
+        switch (req.params.type) {
             case 'basic': return updateUser(req, res);
             case 'password': return updatePassword(req, res);
             default: res.send(406);

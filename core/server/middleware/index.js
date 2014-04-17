@@ -1,7 +1,8 @@
 (function () {
     'use strict';
 
-    var favicon         = require('static-favicon'),
+    var express         = require('express'),
+        favicon         = require('static-favicon'),
         logger          = require('morgan'),
         serveStatic     = require('serve-static'),
         compress        = require('compression'),
@@ -12,7 +13,7 @@
         staticHanlder   = require('./static'),
         auth            = require('./authentication'),
         errorHandler    = require('errorhandler'),
-        cookieParser    = require('cookie-parser'),//TODO: remove
+//        cookieParser    = require('cookie-parser'),//TODO: remove
         cookieSession   = require('cookie-session'),
         sessionFlush    = require('connect-flash'),
         bodyParser      = require('body-parser'),

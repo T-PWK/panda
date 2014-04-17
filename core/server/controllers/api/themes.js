@@ -12,7 +12,7 @@
     };
 
     module.exports.update = function (req, res) {
-        when.resolve(themesProvider.updateTheme(req.params.site))
+        when.resolve(themesProvider.updateTheme(req.params.id))
             .done(
                 res.json.bind(res),
                 res.send.bind(res, 400)

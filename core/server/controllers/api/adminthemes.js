@@ -13,7 +13,7 @@
     };
 
     module.exports.update = function (req, res) {
-        when.resolve(themesProvider.updateAdminTheme(req.params.admin))
+        when.resolve(themesProvider.updateAdminTheme(req.params.id))
             .done(
                 res.json.bind(res),
                 res.send.bind(res, 400)

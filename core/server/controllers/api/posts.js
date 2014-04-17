@@ -97,8 +97,10 @@
         return (req.post) ? res.json(req.post) : res.send(404);
     };
 
-    module.exports.load = function (id, fn) {
-        node.liftCallback(fn)(provider.findById(id));
+    module.exports.load = function (req, res, fn, id) {
+        when.resolve(provider.findById(id))
+            .then(function(post){ req.post = post; })
+            .then(fn);
     };
 
     module.exports.destroy = function (req, res) {
