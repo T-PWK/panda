@@ -135,7 +135,7 @@
             $scope.type = $params.type;
             $scope.pg = Utils.pagination();
             $scope.select = Utils.selection();
-            $scope.search = { title: '' };
+            $scope.search = { title: undefined };
 
             $scope.$watch('search.title', function(){
                 $scope.pg.items = filter($scope.posts, $scope.search);
@@ -162,7 +162,7 @@
             };
 
             $scope.doSearchReset = function () {
-                $scope.search.title = '';
+                $scope.search.title = undefined;
             };
 
             $scope.remove = function () {
