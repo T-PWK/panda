@@ -9,7 +9,7 @@
         res.render(join(cfg.get('paths:adminViews'), 'admin'));
     };
 
-    module.exports.loginView = function (req, res) {
+    module.exports.loginView = function loginView (req, res) {
         res.render(join(cfg.get('paths:adminViews'), 'admin/login'),
             { messages: req.flash('error') }
         );

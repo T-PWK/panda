@@ -4,7 +4,7 @@
     var cfg = require('nconf'),
         _   = require('lodash');
 
-    module.exports.adminIpCheck = function (req, res, fn) {
+    module.exports.adminIpCheck = function adminIpCheck (req, res, fn) {
         var ips = cfg.get('admin:allowedIps'),
             ip  = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
@@ -19,7 +19,7 @@
         }
     };
 
-    module.exports.siteIpCheck = function (req, res, fn) {
+    module.exports.siteIpCheck = function siteIpCheck (req, res, fn) {
         if (cfg.get('app:restrictByIp') === false) {
             return fn();
         }
