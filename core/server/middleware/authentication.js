@@ -44,7 +44,7 @@
             req.session.access = Date.now(); // refreshing session
             fn();
         }
-        else if (str.startsWith(req.path, '/admin')) {
+        else if (str.startsWith(req.originalUrl, '/admin')) {
             // Redirect to login page
             res.redirect(302, '/login');
         }

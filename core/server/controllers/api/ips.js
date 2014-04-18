@@ -6,6 +6,15 @@
         when    = require('when'),
         provider  = require('../../providers').configProvider;
 
+    module.exports.paramType = function(req, res, fn, type) {
+        if (_.contains(['admin', 'site'], type)) {
+            fn();
+        }
+        else {
+            fn('route')
+        }
+    };
+
     module.exports.index = function (req, res) {
         var type = req.params.type, enabledKey, ipsKey,
             ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
@@ -19,7 +28,8 @@
                 enabledKey = 'app:restrictByIp';
                 ipsKey = 'app:disallowedIps';
                 break;
-            default : return res.send(404);
+            default :
+                return res.send(404);
         }
 
         return res.json({ type:type, enabled:cfg.get(enabledKey), ips:cfg.get(ipsKey), currentIp:ip });
@@ -37,7 +47,8 @@
                 enabledKey = 'app:restrictByIp';
                 ipsKey = 'app:disallowedIps';
                 break;
-            default : return res.send(404);
+            default :
+                return res.send(404);
         }
 
         if (!_.isUndefined(update.enabled) && update.enabled !== cfg.get(enabledKey)) {
