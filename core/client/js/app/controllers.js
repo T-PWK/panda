@@ -401,10 +401,18 @@
             $scope.post = {};
             $scope.user = Users.get();
 
-            var editor = CodeMirror.fromTextArea(angular.element('#editor')[0], {
+
+
+            var editor = CodeMirror.fromTextArea(element('#editor')[0], {
                 mode: "markdown",
                 showCursorWhenSelecting: true,
-                lineWrapping: true
+                lineWrapping: true,
+                extraKeys: {
+                    "Ctrl-1": "h1", "Ctrl-2": "h2", "Ctrl-3": "h3", "Ctrl-4": "h4", "Ctrl-5": "h5", "Ctrl-6": "h6",
+                    "Ctrl-B": "bold", "Meta-B": "bold", "Ctrl-I": "italic", "Meta-I": "italic", "Ctrl-Alt-U": "strike",
+                    "Ctrl-L": "link", "Ctrl-P": "image",
+                    "Ctrl-Q": "blockquote"
+                }
             });
             
             editor.on('change', function () {

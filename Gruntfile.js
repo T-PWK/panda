@@ -116,7 +116,8 @@ function gruntConfig (grunt) {
                         '<%= dir.src.jslib %>/nprogress/nprogress.js',
                         '<%= dir.src.jslib %>/moment/moment-2.5.1.min.js',
                         '<%= dir.src.jslib %>/codemirror/codemirror.js',
-                        '<%= dir.src.jslib %>/codemirror/mode/markdown/markdown.js'
+                        '<%= dir.src.jslib %>/codemirror/mode/markdown/markdown.js',
+                        '<%= dir.src.jslib %>/codemirror/addon/commands.js'
                     ]
                 }
             }
