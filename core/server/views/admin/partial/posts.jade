@@ -45,7 +45,7 @@ mixin sortMenu(id, title, icon)
                                     span.caret
                                 ul.dropdown-menu.scrollable-menu
                                     li: a(href="", ng-click="filterByLabel()"): strong All labels
-                                    li(ng-repeat="label in (labels | orderBy:'label')")
+                                    li(ng-repeat="label in (allLabels | orderBy:'label')")
                                         a(href="", ng-click="filterByLabel(label.label)") {{label.label}} ({{label.count}})
                         input.form-control(type="text", ng-model="search.title", placeholder="Filter by title",
                             ng-key-action="{27:'onEsc', 13:'onEnter'}", on-esc="doSearchReset()", on-enter="doSearch()")

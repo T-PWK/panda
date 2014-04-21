@@ -15,7 +15,7 @@
             $scope.crumb = [];
             $scope.postStats = {};
             $scope.pageStats = {};
-            $scope.labels = [];
+            $scope.allLabels = [];
 
             // Redirect to login page in case of session expiration
             $scope.$on('api:error', function (event, error) {
@@ -113,7 +113,7 @@
 
             function reloadLabels () {
                  Labels.query(function (labels) {
-                     $scope.labels = labels;
+                     $scope.allLabels = labels;
                 });
             }
         }
@@ -267,9 +267,9 @@
         }
     ]);
 
-    controllers.controller('LabelsCtrl', ['$scope', 'Labels',
-        function ($scope, Labels) {
-            $scope.allLabels = Labels.query();
+    controllers.controller('LabelsCtrl', ['$scope',
+        function ($scope) {
+            $scope.$emit('labels:load');
 
             $scope.addLabel = function (label) {
                 if (angular.isArray(label)) {
