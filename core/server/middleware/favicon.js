@@ -47,10 +47,10 @@ var crypto = require('crypto');
  */
 
 module.exports = function favicon(path, options) {
-    var options = options || {}
-        , path = path || __dirname + '/favicon.ico'
-        , maxAge = options.maxAge || 86400000
-        , icon; // favicon cache
+    options = options || {};
+    path = path || __dirname + '/favicon.ico';
+    var maxAge = options.maxAge || 86400000,
+        icon; // favicon cache
 
     return function favicon(req, res) {
         if (icon) {
@@ -80,4 +80,4 @@ function md5(str, encoding) {
         .createHash('md5')
         .update(str, 'utf8')
         .digest(encoding || 'hex');
-};
+}

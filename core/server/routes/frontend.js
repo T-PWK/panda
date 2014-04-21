@@ -35,7 +35,7 @@
             .get('/:year/:month', frontend.month)                                               // Year / month
             .get('/:year/:month' + cfg.get('app:paginationUrl'), frontend.month)                // Year / month / pagination
             .get('/:year/:month/:day', frontend.day)                                            // Year / month /day
-            .get('/:year/:month/:day' + cfg.get('app:paginationUrl'), frontend.day)             // Year / month /day / pagination
+            .get('/:year/:month/:day' + cfg.get('app:paginationUrl'), frontend.day);            // Year / month /day / pagination
 
         app.use('/', route);
     };

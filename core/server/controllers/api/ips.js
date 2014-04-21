@@ -11,7 +11,7 @@
             fn();
         }
         else {
-            fn('route')
+            fn('route');
         }
     };
 
