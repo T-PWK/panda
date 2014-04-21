@@ -158,24 +158,36 @@ mixin labelsForm
 
             .col-md-9
                 .btn-group
-                    button.btn.btn-default(type="button", ng-click="opt.editor=true", ng-class="{active:opt.editor}")
+                    button.btn.btn-sm.btn-default(type="button", ng-click="opt.editor=true", ng-class="{active:opt.editor}")
                         i.fa.fa-edit
                         |  Editor
-                    button.btn.btn-default(type="button", ng-click="opt.editor=false", ng-class="{active:!opt.editor}")
+                    button.btn.btn-sm.btn-default(type="button", ng-click="opt.editor=false", ng-class="{active:!opt.editor}")
                         i.fa.fa-eye
                         |  Preview
 
                 .btn-group.pull-right
-                    button.btn.btn-warning(ng-click="publish()", ng-if="!post.published && post.$resolved") Publish
-                    button.btn.btn-warning(ng-click="draft()", ng-if="post.published && post.$resolved") Revert to Draft
-                    button.btn.btn-default(ng-click="create()", ng-if="opt.create") Create
-                    button.btn.btn-default(ng-click="save()", ng-if="!opt.create", ng-disabled="!canSave()") Save
-                    a.btn.btn-default(ng-href="{{post.page?'#/pages':'#/posts'}}") Close
+                    button.btn.btn-sm.btn-warning(ng-click="publish()", ng-if="!post.published && post.$resolved") Publish
+                    button.btn.btn-sm.btn-warning(ng-click="draft()", ng-if="post.published && post.$resolved") Revert to Draft
+                    button.btn.btn-sm.btn-default(ng-click="create()", ng-if="opt.create") Create
+                    button.btn.btn-sm.btn-default(ng-click="save()", ng-if="!opt.create", ng-disabled="!canSave()") Save
+                    a.btn.btn-sm.btn-default(ng-href="{{post.page?'#/pages':'#/posts'}}") Close
 
                 hr
 
                 .tab-content
                     .tab-pane(ng-class="{active:opt.editor}")
+                        .form-group
+                            .btn-toolbar(role="toolbar")
+                                .btn-group
+                                    button.btn.btn-sm.btn-default(type="button"): i.fa.fa-bold
+                                    button.btn.btn-sm.btn-default(type="button"): i.fa.fa-italic
+                                    button.btn.btn-sm.btn-default(type="button"): i.fa.fa-strikethrough
+                                .btn-group
+                                    button.btn.btn-sm.btn-default(type="button"): i.fa.fa-list
+                                    button.btn.btn-sm.btn-default(type="button"): i.fa.fa-list-ol
+                                .btn-group
+                                    button.btn.btn-sm.btn-default(type="button"): i.fa.fa-link
+                                    button.btn.btn-sm.btn-default(type="button"): i.fa.fa-picture-o
                         textarea.form-control#editor
                     .tab-pane(ng-class="{active:!opt.editor}")
                         .panel.panel-default
