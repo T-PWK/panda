@@ -22,17 +22,12 @@ mixin sortMenu(id, title, icon)
                             button.btn.btn-sm.btn-default(type="button", ng-click="publish()", ng-hide="crumb[1].id=='live'||crumb[1].id=='scheduled'", ng-disabled="select.isEmpty() || !select.hasType('D')") Publish
                             button.btn.btn-sm.btn-default(type="button", ng-click="draft()", ng-hide="crumb[1].id=='draft'", ng-disabled="select.isEmpty() || !select.hasType('A', 'S')") Revert to Draft
                             button.btn.btn-sm.btn-default(type="button", ng-click="remove()", ng-disabled="select.isEmpty() || !select.hasType('D')"): i.fa.fa-trash-o.text-danger
+
                         .btn-group
                             button.btn.btn-sm.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
                                 | Sort By&nbsp;
                                 span.caret
                             ul.dropdown-menu
-                                mixin sortMenu('title', 'Title', 'fa-sort-alpha-asc')
-                                mixin sortMenu('-title', 'Title', 'fa-sort-alpha-desc')
-                                mixin sortMenu('commentsCount', 'Comments', 'fa-sort-numeric-asc')
-                                mixin sortMenu('-commentsCount', 'Comments', 'fa-sort-numeric-desc')
-                                mixin sortMenu('publishedAt', 'Publication Date', 'fa-sort-numeric-asc')
-                                mixin sortMenu('-publishedAt', 'Publication Date', 'fa-sort-numeric-desc')
                                 mixin sortMenu('createdAt', 'Creation Date', 'fa-sort-numeric-asc')
                                 mixin sortMenu('-createdAt', 'Creation Date', 'fa-sort-numeric-desc')
                                 mixin sortMenu('updatedAt', 'Last Update Date', 'fa-sort-numeric-asc')
@@ -41,7 +36,18 @@ mixin sortMenu(id, title, icon)
             .col-sm-5.col-sm-offset-1
                 .form-group
                     .input-group.input-group-sm
-                        input.form-control(type="text", ng-model="search.title", placeholder="Search by title",
+                        span.input-group-btn
+                            .btn-group
+                                button.btn.btn-sm.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
+                                    i.fa.fa-tags(ng-hide="search.labels")
+                                    span(ng-show="search.labels") {{search.labels}}
+                                    | &nbsp;
+                                    span.caret
+                                ul.dropdown-menu.scrollable-menu
+                                    li: a(href="", ng-click="filterByLabel()"): strong All labels
+                                    li(ng-repeat="label in (labels | orderBy:'label')")
+                                        a(href="", ng-click="filterByLabel(label.label)") {{label.label}} ({{label.count}})
+                        input.form-control(type="text", ng-model="search.title", placeholder="Filter by title",
                             ng-key-action="{27:'onEsc', 13:'onEnter'}", on-esc="doSearchReset()", on-enter="doSearch()")
                         span.input-group-btn
                             button.btn.btn-default(ng-click="doSearchReset()"): i.fa.fa-times-circle
@@ -57,7 +63,6 @@ mixin sortMenu(id, title, icon)
                     a(href="#/posts/new") Create a new page
                 hr
 
-
         .text-center(ng-if="!posts.length && isLoading")
             i.fa.fa-spinner.fa-spin
             |  Loading &hellip;
@@ -67,14 +72,24 @@ mixin sortMenu(id, title, icon)
                 th.col-sm-1
                     i.btn-link.fa.fa-fw(ng-class="{'fa-square-o':!select.all,'fa-check-square-o':select.all}", ng-click="selectAll()")
                     span(ng-hide="select.isEmpty()") &nbsp;({{select.howMany()}})
-                th.col-sm-4 Title
+                th.col-sm-4
+                    | Title
+                    i.fa.fa-fw(ng-class="sortCls('title')",ng-click="setSortBy('title')")
                 th.col-sm-1 Info
-                th.col-sm-2 Author
-                th.col-sm-1: i.fa.fa-tags(title="Tags")
-                th.col-sm-1: i.fa.fa-comments-o(title="Comments")
-                th.col-sm-2 Publication
+                th.col-sm-2
+                    | Author
+                    i.fa.fa-fw.fa-sort(ng-class="sortCls('author.name')", ng-click="setSortBy('author.name')")
+                th.col-sm-1
+                    i.fa.fa-tags(title="Tags")
+                    i.fa.fa-fw.fa-sort(ng-class="sortCls('labels.length')", ng-click="setSortBy('labels.length')")
+                th.col-sm-1
+                    i.fa.fa-comments-o(title="Comments")
+                    i.fa.fa-fw.fa-sort(ng-class="sortCls('commentsCount')", ng-click="setSortBy('commentsCount')")
+                th.col-sm-2
+                    | Publication
+                    i.fa.fa-fw.fa-sort(ng-class="sortCls('publishedAt')", ng-click="setSortBy('publishedAt')")
             tbody
-                tr(ng-repeat="post in posts | filter:search | orderBy:sortBy | startFrom:pg.firstItem | limitTo:pg.pageSize")
+                tr(ng-repeat="post in posts | filter:search | orderBy:sortBy:reverse | startFrom:pg.firstItem | limitTo:pg.pageSize")
                     td: i.btn-link.fa.fa-fw(ng-class="{'fa-square-o':!select.has(post.id),'fa-check-square-o':select.has(post.id)}", ng-click="select.toggle(post.id, status(post))")
                     td: a(ng-href="#/posts/{{post.id}}/edit", ng-class="{'text-warning':!post.title}") {{post.title || '(Untitled post)'}}
                     td

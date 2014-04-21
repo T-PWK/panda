@@ -9,12 +9,13 @@
 
     var controllers = angular.module('panda.controllers', ['panda.utils']);
 
-    controllers.controller('RootCtrl', ['$scope', '$window', '$timeout', 'PostsInfo', 'Constants',
-        function ($scope, $window, $timeout, Info, Constants) {
+    controllers.controller('RootCtrl', ['$scope', '$window', '$timeout', 'PostsInfo', 'Labels', 'Constants',
+        function ($scope, $window, $timeout, Info, Labels, Constants) {
             $scope.loading = false;
             $scope.crumb = [];
             $scope.postStats = {};
             $scope.pageStats = {};
+            $scope.labels = [];
 
             // Redirect to login page in case of session expiration
             $scope.$on('api:error', function (event, error) {
@@ -25,6 +26,8 @@
 
             // Reload current window
             $scope.$on('location:reload', bind($window.location, $window.location.reload));
+
+            $scope.$on('labels:load', reloadLabels);
 
             $scope.$on('post:load', function(){
                 if (!$scope.postStats.all) reloadPostStats();
@@ -107,6 +110,12 @@
                     $scope.loadingPageStats = false;
                 });
             }
+
+            function reloadLabels () {
+                 Labels.query(function (labels) {
+                     $scope.labels = labels;
+                });
+            }
         }
     ]);
 
@@ -136,10 +145,13 @@
             $scope.pg = Utils.pagination();
             $scope.select = Utils.selection();
             $scope.search = { title: undefined };
+            $scope.reverse = false;
 
             $scope.$watch('search.title', function(){
                 $scope.pg.items = filter($scope.posts, $scope.search);
             });
+
+            $scope.$emit('labels:load');
 
             $scope.$on('post:publish', loadPosts);
             $scope.$on('post:draft', loadPosts);
@@ -147,6 +159,12 @@
 
             $scope.showForm = function () {
                 return $scope[$scope.page?'pageStats':'postStats'][$params.type] > 0;
+            };
+
+            $scope.sortCls = function(sort) {
+                if ($scope.sortBy != sort) return 'fa-sort';
+                if ($scope.sortBy == sort && $scope.reverse) return 'fa-sort-asc';
+                if ($scope.sortBy == sort && !$scope.reverse) return 'fa-sort-desc';
             };
 
             $scope.selectAll = function () {
@@ -159,6 +177,10 @@
                     });
                     sel.all = true;
                 }
+            };
+
+            $scope.filterByLabel = function (label) {
+                $scope.search.labels = label;
             };
 
             $scope.doSearchReset = function () {
@@ -204,6 +226,7 @@
             };
 
             $scope.setSortBy = function (sortBy) {
+                $scope.reverse = ($scope.sortBy === sortBy) ? !$scope.reverse : false;
                 $scope.sortBy = sortBy;
                 $scope.pg.current = 1;
             };
