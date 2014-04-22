@@ -49,12 +49,13 @@
             .delete('/:id', api.redirects.destroy);
 
         posts
-            .param('post', api.posts.load)
+            .param('id', api.posts.load)
             .get('/', api.posts.index)
             .post('/', api.posts.create)
             .get('/infos/:info', api.postsinfo.show)
-            .get('/:post', api.posts.show)
-            .put('/:post', api.posts.update);
+            .get('/:id', api.posts.show)
+            .put('/:id', api.posts.update)
+            .delete('/:id', api.posts.destroy);
 
         apiRoutes
             .use(ips.adminIpCheck)
