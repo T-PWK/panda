@@ -16,11 +16,11 @@
 
         CachePostProvider.prototype.labelsInfo = function (options) {
             var key = (options && options.live) ? ':labels:live' : ':labels:all';
-            return cachedValue.call(this, key, CachePostProvider.super_.prototype.labelsInfo, options);
+            return cachedValue.call(this, this, key, CachePostProvider.super_.prototype.labelsInfo, options);
         };
 
         CachePostProvider.prototype.archiveInfo = function (options) {
-            return cachedValue.call(this, ':archive', CachePostProvider.super_.prototype.archiveInfo, options);
+            return cachedValue.call(this, this, ':archive', CachePostProvider.super_.prototype.archiveInfo, options);
         };
 
         CachePostProvider.prototype.postStatsInfo = function (options) {
@@ -29,7 +29,7 @@
                 key += options.page ? ':page': ':post';
             }
 
-            return cachedValue.call(this, key, CachePostProvider.super_.prototype.postStatsInfo, options);
+            return cachedValue.call(this, this, key, CachePostProvider.super_.prototype.postStatsInfo, options);
         };
 
         CachePostProvider.prototype.create = function (properties, options) {
@@ -48,18 +48,17 @@
         };
 
         return CachePostProvider;
-    }
+    };
 
-    function cachedValue (key, fn) {
-        console.info(this.cache)
-        var cache   = this.cache,
+    function cachedValue (self, key, fn) {
+        var cache   = self.cache,
             info    = cache.get(key),
             args    = Array.prototype.slice.call(arguments);
 
         if (info) {
             return when.resolve(info);
         } else {
-            return when.resolve(fn.apply(this, args.slice(2)))
+            return when.resolve(fn.apply(self, args.slice(3)))
                 .tap(function (info) {
                     cache.set(key, info);
                 });
