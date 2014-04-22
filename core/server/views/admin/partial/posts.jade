@@ -23,16 +23,6 @@ mixin sortMenu(id, title, icon)
                             button.btn.btn-sm.btn-default(type="button", ng-click="draft()", ng-hide="crumb[1].id=='draft'", ng-disabled="select.isEmpty() || !select.hasType('A', 'S')") Revert to Draft
                             button.btn.btn-sm.btn-default(type="button", ng-click="remove()", ng-disabled="select.isEmpty() || !select.hasType('D')"): i.fa.fa-trash-o.text-danger
 
-                        .btn-group
-                            button.btn.btn-sm.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
-                                | Sort By&nbsp;
-                                span.caret
-                            ul.dropdown-menu
-                                mixin sortMenu('createdAt', 'Creation Date', 'fa-sort-numeric-asc')
-                                mixin sortMenu('-createdAt', 'Creation Date', 'fa-sort-numeric-desc')
-                                mixin sortMenu('updatedAt', 'Last Update Date', 'fa-sort-numeric-asc')
-                                mixin sortMenu('-updatedAt', 'Last Update Date', 'fa-sort-numeric-desc')
-
             .col-sm-5.col-sm-offset-1
                 .form-group
                     .input-group.input-group-sm
