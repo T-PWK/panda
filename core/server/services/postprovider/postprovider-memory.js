@@ -17,21 +17,6 @@
         this.dummyData = [];
     };
 
-// PostProvider
-// init
-// loadFiles - init
-// create (properties)
-
-// findAll (properties)
-// findBySlug (slug)
-// findById (id)
-// findByDate (properties)
-// findByLabel
-// count (properties)
-// archiveInfo
-// labelsInfo
-// postCountInfo
-
     PostProvider.prototype.init = function () {
         return this.loadFiles();
     };
@@ -182,7 +167,7 @@
     }
 
     PostProvider.prototype.postCountInfo = function (opts) {
-        var items, now = Date.now(),
+        var now = Date.now(),
             chain = updateSelection(_.chain(this.dummyData), opts),
             count = chain.reduce(function (count, post) {
                 if (!post.publishedAt) count.draft++;
