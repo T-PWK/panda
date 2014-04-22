@@ -293,7 +293,7 @@
         return Post.create(post);
     };
 
-    PostProvider.prototype.delete = function (id) {
+    PostProvider.prototype.remove = function (id) {
         debug('deleting post %j', id);
 
         return Post.findByIdAndRemove(id).exec();
