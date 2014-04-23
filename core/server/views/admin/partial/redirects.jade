@@ -14,7 +14,7 @@
                     .col-sm-3
                         button.btn.btn-sm.btn-danger(type="button", ng-click="remove()", ng-disabled="deleting.isEmpty()") Delete
                         button.btn.btn-sm.btn-default(type="button", ng-click="deleting.empty()", ng-disabled="deleting.isEmpty()") Reset
-                        button.btn.btn-sm.btn-success(type="button", ng-click="verify()", ng-disabled="items.length<2") Verify
+                        button.btn.btn-sm.btn-default(type="button", ng-click="verify()", ng-disabled="items.length<2") Verify
                     .col-sm-4.col-sm-offset-5
                         .input-group.input-group-sm
                             input.form-control(type="text", ng-model="url.$", ng-key-action="{27:'onEsc'}", on-esc="clrSearch()")
@@ -55,22 +55,19 @@
                             i.fa.fa-fw.fa-times-circle
                             | ({{deleting.howMany()|number}})
                         th.col-sm-5
-                            a(href="", ng-click="order='from'")
-                                | From&nbsp;
-                            a(href="", ng-click="order='-from'")
-                                i.fa.fa-sort-alpha-desc
+                            | From&nbsp;
+                            a(href="", ng-click="setSortBy('from')")
+                                i.fa(ng-class="sortCls('from')")
                         th.col-sm-4
-                            a(href="", ng-click="order='to'")
-                                | To&nbsp;
-                            a(href="", ng-click="order='-to'")
-                                i.fa.fa-sort-alpha-desc
+                            | To&nbsp;
+                            a(href="", ng-click="setSortBy('to')")
+                                i.fa(ng-class="sortCls('to')")
                         th.col-sm-2
-                            a(href="", ng-click="order='type'")
-                                | Type&nbsp;
-                            a(href="", ng-click="order='-type'")
-                                i.fa.fa-sort-alpha-desc
+                            | Type&nbsp;
+                            a(href="", ng-click="setSortBy('type')")
+                                i.fa(ng-class="sortCls('type')")
                 tbody
-                    tr(ng-repeat="item in items | filter:url | orderBy:order | startFrom:pg.firstItem | limitTo:pg.pageSize")
+                    tr(ng-repeat="item in items | filter:url | orderBy:sortBy:reverse | startFrom:pg.firstItem | limitTo:pg.pageSize")
                         td: i.btn-link.fa.fa-fw(ng-class="{'fa-square-o':!deleting.has(item.id),'fa-check-square-o':deleting.has(item.id)}", ng-click="deleting.toggle(item.id)")
                         td: a(href="", ng-click="$emit('edit', item)") {{item.from}}
                         td {{item.to}}

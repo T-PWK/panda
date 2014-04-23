@@ -162,9 +162,9 @@
             };
 
             $scope.sortCls = function(sort) {
-                if ($scope.sortBy != sort) return 'fa-sort';
-                if ($scope.sortBy == sort && $scope.reverse) return 'fa-sort-asc';
-                if ($scope.sortBy == sort && !$scope.reverse) return 'fa-sort-desc';
+                if (!_.contains(sort, $scope.sortBy)) return 'fa-sort';
+                if (_.contains(sort, $scope.sortBy) && !$scope.reverse) return 'fa-caret-up';
+                if (_.contains(sort, $scope.sortBy) && $scope.reverse) return 'fa-caret-down';
             };
 
             $scope.selectAll = function () {
@@ -225,8 +225,8 @@
                 $q.all(promises).then(bind($scope, $scope.$emit, 'post:publish'));
             };
 
-            $scope.setSortBy = function (sortBy) {
-                $scope.reverse = ($scope.sortBy === sortBy) ? !$scope.reverse : false;
+            $scope.setSortBy = function (sortBy, reverse) {
+                $scope.reverse = angular.isUndefined(reverse) ? ($scope.sortBy === sortBy) ? !$scope.reverse : false : reverse;
                 $scope.sortBy = sortBy;
                 $scope.pg.current = 1;
             };
@@ -661,6 +661,7 @@
             $scope.url = { $: '' };
             $scope.status = { verify: false, save: false };
             $scope.verification = { items: [] };
+            $scope.reverse = false;
 
             $rootScope.$on('load', loadRedirects);
 
@@ -670,6 +671,18 @@
 
             $scope.setCrumb('settings', 'redirects');
             loadRedirects();
+
+            $scope.setSortBy = function (sortBy, reverse) {
+                $scope.reverse = angular.isUndefined(reverse) ? ($scope.sortBy === sortBy) ? !$scope.reverse : false : reverse;
+                $scope.sortBy = sortBy;
+                $scope.pg.current = 1;
+            };
+
+            $scope.sortCls = function(sort) {
+                if (!_.contains(sort, $scope.sortBy)) return 'fa-sort';
+                if (_.contains(sort, $scope.sortBy) && !$scope.reverse) return 'fa-caret-up';
+                if (_.contains(sort, $scope.sortBy) && $scope.reverse) return 'fa-caret-down';
+            };
 
             $scope.clearVerification = function () {
                 $scope.verification.items = [];
