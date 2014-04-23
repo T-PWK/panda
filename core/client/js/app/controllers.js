@@ -324,7 +324,6 @@
     controllers.controller('SlugCtrl', ['$scope', '$q', 'Settings',
         function ($scope, $q, Settings) {
             var unwatchTitle,
-                permalinks = { page: '', post: '' },
                 tags = {
                     ':slug': function (post) { return post.slug || ':slug:'; },
                     ':year': function (post) { return moment(post.publishedAt).year(); },
@@ -333,16 +332,18 @@
                 };
 
             $q.all([
-                Settings.get({ id:'app:postUrl' }).$promise,
-                Settings.get({ id:'app:pageUrl' }).$promise
-            ]).then(function(values){
-                permalinks.post = values[0].value;
-                permalinks.page = values[1].value;
-            });
-
-            $scope.$watch('post.slug', updatePermalinks);
-            $scope.$watch('post.page', updatePermalinks);
-            $scope.$watch('post.publishedAt', updatePermalinks);
+                Settings.get({ id: 'app:postUrl' }).$promise,
+                Settings.get({ id: 'app:pageUrl' }).$promise
+            ])
+                .then(function (values) {
+                    $scope.permalinks = {
+                        post: values[0].value,
+                        page: values[1].value
+                    }
+                    $scope.$watch('post.slug', updatePermalinks);
+                    $scope.$watch('post.page', updatePermalinks);
+                    $scope.$watch('post.publishedAt', updatePermalinks);
+                });
 
             $scope.$watch('post.autoSlugOpt', function (autoSlugOpt) {
                 if ('undefined' === typeof autoSlugOpt) {
@@ -368,8 +369,7 @@
             }
 
             function updatePermalinks () {
-                var $scope = arguments[2],
-                    url = ($scope.post.page) ? permalinks.page : permalinks.post,
+                var url = ($scope.post.page) ? $scope.permalinks.page : $scope.permalinks.post,
                     post = $scope.post;
 
                 url = url.replace(/(:[a-z]+)/g, function (match) {
@@ -450,8 +450,7 @@
 
             function loadPost() {
                 $scope.setLoading(true);
-                Posts.get({ id:$params.id }, function (post) {
-                    $scope.post = post;
+                $scope.post = Posts.get({ id:$params.id }, function (post) {
                     $scope.setLoading();
                     $timeout(function () {
                         editor.setValue(post.markdown || '');
