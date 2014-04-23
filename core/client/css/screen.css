@@ -64,3 +64,7 @@ p.btn-group {
 .space-r-2x {
     margin-right: 2em;
 }
+
+.btn-link.fa:hover {
+    text-decoration: none;
+}
