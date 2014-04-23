@@ -72,7 +72,7 @@
 
     module.exports.update = function (req, res) {
         var options = {},
-            id      = req.params.post,
+            id      = req.params.id,
             post    = _.pick(req.body, postAllowedProps);
 
         if (req.query.publish === 'true') {
@@ -104,7 +104,7 @@
     };
 
     module.exports.destroy = function (req, res) {
-        when.resolve(provider.delete(req.params.post)).done(res.json.bind(res), res.send.bind(res, 500));
+        when.resolve(provider.remove(req.params.id)).done(res.json.bind(res), res.send.bind(res, 500));
     };
 
     function filterProperties(properties) {

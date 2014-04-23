@@ -76,7 +76,7 @@ function gruntConfig (grunt) {
                 src: [
                     '<%= dir.dest.client %>/**/*.{png,jpg,gif}'
                 ],
-                dest: ['<%= dir.dest.views %>/admin/login.jade']
+                dest: ['<%= dir.dest.views %>/admin/{login,index}.jade']
             },
             css: {
                 options: {},

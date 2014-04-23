@@ -137,6 +137,15 @@
             // Array of allowed ips (e.g. ["127.0.0.1"]); access from ips in the list will have access to Admin console
             allowedIps: []
         },
+        cache: {
+            posts: {
+                enable: false,          // enable / disable cache - cache is disabled as default
+                options: {
+                    max: 100,           // maximum number of items in cache - defaulted to 100 items
+                    maxAge: 1000*60     // expiration time (in milliseconds) - defaulted to 60 seconds
+                }
+            }
+        },
         url: process.env.APP_URL || "http://127.0.0.1:" + (process.env.PORT || 3000),
         server: {
             host: "127.0.0.1",

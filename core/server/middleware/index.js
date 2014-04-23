@@ -12,6 +12,7 @@
         errorHandler    = require('errorhandler'),
         cookieSession   = require('cookie-session'),
         sessionFlush    = require('connect-flash'),
+        responseTime    = require('response-time'),
         favicon         = require('./favicon'),
         staticHandler   = require('./static'),
         auth            = require('./authentication'),
@@ -33,8 +34,10 @@
         app.use(logger(cfg.get('development') ? 'dev' : undefined));
 
         if (cfg.get('app:httpCompression')) {
-            app.use(compress());
+            app.use(compress({ threshold: '2kb' }));
         }
+
+        app.use(responseTime());
 
         // Set theme static files
         app.use('/assets', staticHandler);

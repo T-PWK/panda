@@ -6,6 +6,7 @@
         ips         = require('../middleware/ips'),
         poweredBy   = require('../middleware/poweredBy'),
         nocache     = require('../middleware/nocache'),
+        mobile      = require('../middleware/mobile'),
         frontend    = require('../controllers/frontend'),
         redirects   = require('../controllers/redirects');
 
@@ -17,6 +18,7 @@
             .use(ips.siteIpCheck)
             .use(poweredBy)
             .use(nocache)
+            .use(mobile)
             .use(frontend.middleware)
             .param('year', frontend.yearParam)
             .param('month', frontend.monthParam)
