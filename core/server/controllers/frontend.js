@@ -12,7 +12,7 @@
         dayRegExp        = /^0|1|2|3\d$/,
         pageNumberRegExp = /^\d+$/;
 
-    exports.middleware = function (req, res, next) {
+    module.exports.middleware = function (req, res, next) {
         when.join(
                 provider.labelsInfo({ live:true }),
                 provider.archiveInfo()
@@ -24,7 +24,7 @@
             .then(next);
     };
 
-    exports.index = function(req, res) {
+    module.exports.index = function(req, res) {
         var limit = cfg.get('app:postsPerPage'),
             page = req.params.page || 1,
             skip = limit * (page - 1);
@@ -44,14 +44,15 @@
             });
     };
 
-    exports.year = function (req, res) {
+    module.exports.year = function (req, res) {
         var limit = cfg.get('app:postsPerPage'),
             page = req.params.page || 1,
             skip = limit * (page - 1), year = +req.params.year;
 
         when.join(
-                provider.findByDate({ live:true, page:false, year:year, skip:skip, limit:limit }),
-                provider.count({ year:year, page:false, live:true })
+                provider.findByDate({
+                    live: true, page: false, year: year, skip: skip, limit: limit, sortBy: '-publishedAt' }),
+                provider.count({ year: year, page: false, live: true })
             )
             .then(function (results) {
                 res.locals.posts = results[0];
@@ -62,7 +63,7 @@
             });
     };
 
-    exports.month = function (req, res) {
+    module.exports.month = function (req, res) {
         var limit = cfg.get('app:postsPerPage'),
             page = req.params.page || 1,
             skip = limit * (page - 1),
@@ -70,8 +71,11 @@
             month = +req.params.month;
 
         when.join(
-                provider.findByDate({ live:true, page:false, month:month, year:year, skip:skip, limit:limit }),
-                provider.count({ month:month, year:year, page:false, live:true })
+                provider.findByDate({
+                    live: true, page: false,
+                    month: month, year: year,
+                    skip: skip, limit: limit, sortBy: '-publishedAt' }),
+                provider.count({ month: month, year: year, page: false, live: true })
             )
             .spread(function (posts, count) {
                 res.locals.posts = posts;
@@ -84,7 +88,7 @@
             });
     };
 
-    exports.day = function (req, res) {
+    module.exports.day = function (req, res) {
         var limit = cfg.get('app:postsPerPage'),
             page = req.params.page || 1,
             skip = limit * (page - 1),
@@ -93,8 +97,13 @@
             day = +req.params.day;
 
         when.join(
-                provider.findByDate({ live:true, page:false, day:day, month:month, year: year, skip:skip, limit:limit }),
-                provider.count({ day:day, month:month, year:year, page:false, live:true })
+                provider.findByDate({
+                    live: true, page: false,
+                    day: day, month: month, year: year,
+                    skip: skip, limit: limit,
+                    sortBy: '-publishedAt'
+                }),
+                provider.count({ day: day, month: month, year: year, page: false, live: true })
             )
             .then(function (results) {
                 res.locals.posts = results[0];
@@ -108,30 +117,37 @@
             });
     };
 
-    exports.post = function (req, res, next) {
-        when(
-            provider.findBySlug(req.params.slug, { live:true })
-        ).then(function (post) {
+    module.exports.post = function (req, res, next) {
+        when.resolve(
+                provider.findBySlug(req.params.slug, { live: true })
+            )
+            .then(function (post) {
 
                 // if there is no post with the given slug, check if there is no other route
                 // which could handle that request e.g. /:year
-                if (!post) { return next('route'); }
+                if (!post) {
+                    return next('route');
+                }
 
                 res.locals.post = post;
                 res.render(post.page ? 'page' : 'post');
-            }).otherwise(function (error) {
+            })
+            .otherwise(function () {
                 res.send(500);
             });
     };
 
-    exports.searchByLabel = function (req, res) {
+    module.exports.searchByLabel = function (req, res) {
         var limit = cfg.get('app:postsPerPage'),
             page = req.params.page || 1,
             skip = limit * (page - 1);
 
         when.join(
-                provider.findByLabel({ live:true, page:false, label:req.params.label, skip:skip, limit:limit }),
-                provider.count({ label:req.params.label, page:false, live:true })
+                provider.findByLabel({
+                    live: true, page: false,
+                    label: req.params.label,
+                    skip: skip, limit: limit, sortBy: '-publishedAt' }),
+                provider.count({ label: req.params.label, page: false, live: true })
             )
             .spread(function (posts, count) {
                 res.locals.posts = posts;
@@ -142,9 +158,13 @@
             });
     };
 
-    exports.pageParam = function (req, res, next, page) {
-        if (!page.match(pageNumberRegExp)) { return next('route'); }
-        if (+page > 1) { next(); }
+    module.exports.pageParam = function (req, res, next, page) {
+        if (!page.match(pageNumberRegExp)) {
+            return next('route');
+        }
+        if (+page > 1) {
+            next();
+        }
         else {
             // Redirect to URL with no pagination if page 1 is used e.g. /page/1
             var path = req.path.replace(paginationRegexp, '');
@@ -153,25 +173,40 @@
         }
     };
 
-    exports.formatParam = function (req, res, next, format) {
-        if (['html', 'json'].indexOf(format) >= 0) { next(); }
-        else { next('route'); }
+    module.exports.formatParam = function (req, res, next, format) {
+        if (['html', 'json'].indexOf(format) >= 0) {
+            next();
+        }
+        else {
+            next('route');
+        }
     };
 
-    exports.yearParam = function (req, res, next, year) {
-        if (year.match(yearRegExp)) { next(); }
-        else { next('route'); }
+    module.exports.yearParam = function (req, res, next, year) {
+        if (year.match(yearRegExp)) {
+            next();
+        }
+        else {
+            next('route');
+        }
     };
 
-    exports.monthParam = function (req, res, next, month) {
-        if (month.match(monthRegExp) && moment([+req.params.year, +month-1]).isValid()) { next(); }
-        else { next('route'); }
+    module.exports.monthParam = function (req, res, next, month) {
+        if (month.match(monthRegExp) && moment([+req.params.year, +month - 1]).isValid()) {
+            next();
+        }
+        else {
+            next('route');
+        }
     };
 
-    exports.dayParam = function (req, res, next, day) {
-        if (day.match(dayRegExp) &&
-            moment([+req.params.year, +req.params.month-1, +req.params.day]).isValid()) { next(); }
-        else { next('route'); }
+    module.exports.dayParam = function (req, res, next, day) {
+        if (day.match(dayRegExp) && moment([+req.params.year, +req.params.month - 1, +req.params.day]).isValid()) {
+            next();
+        }
+        else {
+            next('route');
+        }
     };
 
 }());
