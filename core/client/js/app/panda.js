@@ -119,12 +119,12 @@
                     return 'S';
                 }
                 return 'A';
-            }
+            };
         }])
         .filter('name', [function(){
             return function (name) {
                 return pageNames[name];
-            }
+            };
         }])
         .directive('ngTooltip', function(){
             return function(scope, element) {

@@ -661,10 +661,12 @@
 
             $scope.reset = resetForm;
 
-            function resetForm () {
+            function resetForm() {
                 $scope.isEdit = false;
                 $scope.item = { from: '', to: '', type: '302' };
-                $scope.form && $scope.form.$setPristine();
+                if ($scope.form) {
+                    $scope.form.$setPristine();
+                }
             }
     }]);
 
