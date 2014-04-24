@@ -1,6 +1,8 @@
 (function () {
     'use strict';
 
+    // #### Selection ####
+
     function Selection() {
         this.items = {};
         this.types = {};
@@ -52,6 +54,35 @@
             else { this.add(item, type); }
         }
     };
+
+    // #### Ordering ####
+
+    function Ordering(options) {
+        options = options || {};
+
+        this.option = options.option;
+        this.desc = options.desc || false;
+        this.classes = options.classes;
+        this.orderBy = '';
+    }
+
+    Ordering.prototype.icon = function(opt) {
+        if (!this.is(opt)) return this.classes.none;
+        if (this.is(opt) && !this.desc) return this.classes.up;
+        if (this.is(opt) && this.desc) return this.classes.down;
+    };
+
+    Ordering.prototype.by = function (opt, desc) {
+        this.desc = angular.isUndefined(desc) ? (this.option === opt) ? !this.desc : false : desc;
+        this.option = opt;
+        this.orderBy = (this.desc ? '-' : '') + this.option;
+    };
+
+    Ordering.prototype.is = function (opt) {
+        return _.contains(opt, this.option);
+    };
+
+    // #### Pagination ####
 
     function Pagination(options) {
         this._items = options.items || 0;
@@ -124,6 +155,9 @@
             },
             pagination: function(options) {
                 return new Pagination(options || {});
+            },
+            ordering: function(options) {
+                return new Ordering(options);
             }
         };
     });
