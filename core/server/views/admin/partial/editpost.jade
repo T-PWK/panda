@@ -11,7 +11,8 @@ mixin slugForm
             .panel-body
                 i.fa.fa-link.fa-fw
                 | Permalink
-                br
+                a.pull-right(ng-href="{{permalink}}", ng-show="status(post)=='A'", target="_blank")
+                    i.fa.fa-fw.fa-external-link-square
                 span.help-block {{permalink}}
                 hr
                 form(name="slugForm")
