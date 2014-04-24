@@ -19,7 +19,7 @@
                             i.fa.fa-fw.fa-spinner.fa-spin
                             | Loading
                         ul.nav.nav-list
-                            li(ng-repeat="(name, count) in postStats"): a(ng-href="#/posts/{{name}}")
+                            li(ng-repeat="(name, count) in postStats", ng-show="count"): a(ng-href="#/posts/{{name}}")
                                 | {{name|name}}
                                 span.badge.pull-right {{count}}
 
