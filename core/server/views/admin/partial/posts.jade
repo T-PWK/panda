@@ -35,7 +35,7 @@ mixin sortMenu(id, title, icon)
                                     span.caret
                                 ul.dropdown-menu.scrollable-menu
                                     li: a(href="", ng-click="filterByLabel()"): strong All labels
-                                    li(ng-repeat="label in (allLabels | orderBy:'label')")
+                                    li(ng-repeat="label in (labels | orderBy:'label')")
                                         a(href="", ng-click="filterByLabel(label.label)") {{label.label}} ({{label.count}})
                         input.form-control(type="text", ng-model="search.title", placeholder="Filter by title",
                             ng-key-action="{27:'onEsc', 13:'onEnter'}", on-esc="doSearchReset()", on-enter="doSearch()")
@@ -64,54 +64,45 @@ mixin sortMenu(id, title, icon)
                     span(ng-hide="select.isEmpty()") &nbsp;({{select.howMany()}})
                 th.col-sm-4
                     | Title
-                    i.fa.fa-fw.btn-link(ng-class="sortCls('title')",ng-click="setSortBy('title')")
+                    i.fa.fa-fw.btn-link(ng-class="order.icon('title')", ng-click="order.by('title')")
                 th.col-sm-1 Info
                 th.col-sm-2
                     | Author
-                    i.fa.fa-fw.btn-link(ng-class="sortCls('author.name')", ng-click="setSortBy('author.name')")
+                    i.fa.fa-fw.btn-link(ng-class="order.icon('author.name')", ng-click="order.by('author.name')")
                 th.col-sm-1
                     i.fa.fa-tags(title="Tags")
-                    i.fa.fa-fw.btn-link(ng-class="sortCls('labels.length')", ng-click="setSortBy('labels.length')")
+                    i.fa.fa-fw.btn-link(ng-class="order.icon('labels.length')", ng-click="order.by('labels.length')")
                 th.col-sm-1
                     i.fa.fa-comments-o(title="Comments")
-                    i.fa.fa-fw.btn-link(ng-class="sortCls('commentsCount')", ng-click="setSortBy('commentsCount')")
+                    i.fa.fa-fw.btn-link(ng-class="order.icon('commentsCount')", ng-click="order.by('commentsCount')")
                 th.col-sm-2
                     div.dropdown
                         | Publication
-                        i.dropdown-toggle.btn-link.fa.fa-fw(data-toggle="dropdown",ng-class="sortCls(['publishedAt','updatedAt','createdAt'])")
+                        i.dropdown-toggle.btn-link.fa.fa-fw(data-toggle="dropdown", ng-class="order.icon(['publishedAt','updatedAt','createdAt'])")
                         ul.dropdown-menu(role="menu")
-                            li: a(href="", ng-click="setSortBy('publishedAt', false)")
-                                i.fa.fa-fw.fa-sort-numeric-asc
-                                | Publication
-                            li: a(href="", ng-click="setSortBy('publishedAt', true)")
-                                i.fa.fa-fw.fa-sort-numeric-desc
-                                | Publication
-                            li: a(href="", ng-click="setSortBy('updatedAt', false)")
-                                i.fa.fa-fw.fa-sort-numeric-asc
-                                | Last Update
-                            li: a(href="", ng-click="setSortBy('updatedAt', true)")
-                                i.fa.fa-fw.fa-sort-numeric-desc
-                                | Last Update
-                            li: a(href="", ng-click="setSortBy('createdAt', false)")
-                                i.fa.fa-fw.fa-sort-numeric-asc
-                                | Creation
-                            li: a(href="", ng-click="setSortBy('createdAt', true)")
-                                i.fa.fa-fw.fa-sort-numeric-desc
-                                | Creation
+                            li: a(href="", ng-click="order.by('publishedAt')")
+                                i.fa.fa-fw.fa-calendar
+                                | Publication Date
+                            li: a(href="", ng-click="order.by('updatedAt')")
+                                i.fa.fa-fw.fa-calendar
+                                | Last Update Date
+                            li: a(href="", ng-click="order.by('createdAt')")
+                                i.fa.fa-fw.fa-calendar
+                                | Creation Date
 
             tbody
-                tr(ng-repeat="post in posts | filter:search | orderBy:sortBy:reverse | startFrom:pg.firstItem | limitTo:pg.pageSize")
+                tr(ng-repeat="post in posts | filter:search | orderBy:order.option:order.desc | startFrom:pg.firstItem | limitTo:pg.pageSize")
                     td: i.btn-link.fa.fa-fw(ng-class="{'fa-square-o':!select.has(post.id),'fa-check-square-o':select.has(post.id)}", ng-click="select.toggle(post.id, status(post))")
                     td: a(ng-href="#/posts/{{post.id}}/edit", ng-class="{'text-warning':!post.title}") {{post.title || '(Untitled post)'}}
                     td
-                        i.fa.fa-bookmark-o.fa-fw(ng-if="post.featured", title="Featured")
                         i.fa.fa-fw.text-warning(ng-if="status(post)!='A'", ng-class="{D:'fa-edit',S:'fa-calendar'}[status(post)]", title="{{statusText(post)}}")
                         i.fa.fa-fw.fa-globe.text-success(ng-if="status(post)=='A'", title="{{statusText(post)}}")
+                        i.fa.fa-bookmark-o.fa-fw(ng-if="post.featured", title="Featured")
                     td: a(ng-href="{{post.author.website}}", target="_blank") {{post.author.name}}
                     td
                         | {{post.labels.length || 0}}
-                        i.fa.fa-fw.text-muted(ng-class="{'fa-tag':post.labels.length===1,'fa-tags':post.labels.length>1}",
-                            title="{{post.labels.join(', ')}}", ng-tooltip, data-placement="top")
+                        i.fa.fa-fw.fa-tags.text-muted(ng-if="post.labels.length", title="{{post.labels.join(', ')}}",
+                            ng-tooltip, data-placement="top")
                     td
                         | {{post.commentsCount || 0}}
                         i.fa.fa-fw.text-muted(ng-class="{'fa-comments-o':post.commentsCount,'fa-comment-o':post.commentsCount==0}")
@@ -126,7 +117,7 @@ mixin sortMenu(id, title, icon)
                     | {{pg.pageSize}}&nbsp;
                     span.caret
                 ul.dropdown-menu
-                    li(ng-class="{active:pg.pageSize==s}", ng-repeat="s in [10, 25, 50, 100]")
+                    li(ng-class="{active:pg.pageSize==s}", ng-repeat="s in [10, 25, 50, 100, 500]")
                         a(href="", ng-click="pg.pageSize=s") {{s}}
 
             //- Items range

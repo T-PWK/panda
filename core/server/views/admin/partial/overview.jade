@@ -10,28 +10,44 @@
         .row
             .col-sm-6
                 .panel.panel-default
-                    .panel-body Sample
+                    .panel-heading: h3.panel-title
+                        | Posts
+                        i.fa.fa-file-text-o.pull-right
+                    .panel-body
+                        span(ng-hide="postStats.all") No posts
+                        span(ng-hide="postStats.$resolved")
+                            i.fa.fa-fw.fa-spinner.fa-spin
+                            | Loading
+                        ul.nav.nav-list
+                            li(ng-repeat="(name, count) in postStats"): a(ng-href="#/posts/{{name}}")
+                                | {{name|name}}
+                                span.badge.pull-right {{count}}
+
             .col-sm-6
                 .panel.panel-default
-                    .panel-body Sample
+                    .panel-heading
+                        h3.panel-title
+                            | Pages
+                            i.fa.fa-file-o.pull-right
+                    .panel-body
+                        span(ng-hide="pageStats.all") No pages
+                        span(ng-hide="pageStats.$resolved")
+                            i.fa.fa-fw.fa-spinner.fa-spin
+                            | Loading
+                        ul.nav.nav-list
+                            li(ng-repeat="(name, count) in pageStats", ng-show="count"): a(ng-href="#/pages/{{name}}")
+                                | {{name|name}}
+                                span.badge.pull-right {{count}}
+
         .row
             .col-sm-6
                 .panel.panel-default
-                    .panel-body Sample
-            .col-sm-6
-                .panel.panel-default
-                    .panel-body Sample
-        .row
-            .col-sm-6
-                .panel.panel-default
-                    .panel-body Sample
-            .col-sm-6
-                .panel.panel-default
-                    .panel-body Sample
-        .row
-            .col-sm-6
-                .panel.panel-default
-                    .panel-body Sample
-            .col-sm-6
-                .panel.panel-default
-                    .panel-body Sample
+                    .panel-heading: h3.panel-title
+                        | Redirects
+                        i.fa.fa-share-square-o.pull-right
+                    .panel-body
+                        ul.nav.nav-list
+                            li: a(href="#/settings/redirects")
+                                | Redirects
+                                span.badge.pull-right(ng-show="redirects.$resolved") {{redirects.length}}
+                                i.fa.fa-fw.fa-spinner.fa-spin.pull-right(ng-hide="redirects.$resolved")

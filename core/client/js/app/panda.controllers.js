@@ -5,7 +5,8 @@
         forEach     = angular.forEach,
         isObject    = angular.isObject,
         copy        = angular.copy,
-        element     = angular.element;
+        element     = angular.element,
+        isUndefined = angular.isUndefined;
 
     var controllers = angular.module('panda.controllers', ['panda.utils']);
 
@@ -13,9 +14,9 @@
         function ($scope, $window, $timeout, Info, Labels, Constants) {
             $scope.loading = false;
             $scope.crumb = [];
+            $scope.allLabels = [];
             $scope.postStats = {};
             $scope.pageStats = {};
-            $scope.allLabels = [];
 
             // Redirect to login page in case of session expiration
             $scope.$on('api:error', function (event, error) {
@@ -26,7 +27,6 @@
 
             // Reload current window
             $scope.$on('location:reload', bind($window.location, $window.location.reload));
-
             $scope.$on('labels:load', reloadLabels);
 
             $scope.$on('post:load', function(){
@@ -51,11 +51,7 @@
 
             $scope.setLoading = function (loading) {
                 $scope.isLoading = loading;
-                if (!loading) {
-                    NProgress.done();
-                } else {
-                    NProgress.start();
-                }
+                NProgress[!loading ? 'done' : 'start']();
             };
 
             $scope.setCrumb = function (props) {
@@ -133,9 +129,21 @@
         }
     ]);
 
-    controllers.controller('OverviewCtrl', ['$scope',
-        function ($scope) {
+    controllers.controller('OverviewCtrl', ['$scope', 'Redirects', 'Constants',
+        function ($scope, Redirects, Constants) {
             $scope.setCrumb('overview');
+            $scope.setLoading(true);
+
+            $scope.$emit('post:load');
+            $scope.$emit('page:load');
+
+            $scope.redirects = Redirects.query();
+
+            $scope.translate = function(name) {
+                return Constants.pageNames[name];
+            };
+
+            $scope.setLoading(false);
         }
     ]);
 
@@ -144,14 +152,28 @@
             $scope.type = $params.type;
             $scope.pg = Utils.pagination();
             $scope.select = Utils.selection();
-            $scope.search = { title: undefined };
-            $scope.reverse = false;
+            $scope.order = Utils.ordering({
+                classes: {none: 'fa-sort', up: 'fa-caret-up', down: 'fa-caret-down'}});
+            $scope.search = {};
+            $scope.labels = [];
 
-            $scope.$watch('search.title', function(){
+            $scope.$watchCollection('search', function(){
                 $scope.pg.items = filter($scope.posts, $scope.search);
             });
 
-            $scope.$emit('labels:load');
+            $scope.$watch('order.orderBy', function () {
+                $scope.pg.current = 1;
+            });
+
+            $scope.$watch('posts', function () {
+                $scope.labels = _.chain($scope.posts)
+                    .flatten('labels')
+                    .countBy()
+                    .reduce(function (labels, count, label) {
+                        labels.push({label: label, count: count});
+                        return labels;
+                    }, []).value();
+            });
 
             $scope.$on('post:publish', loadPosts);
             $scope.$on('post:draft', loadPosts);
@@ -159,12 +181,6 @@
 
             $scope.showForm = function () {
                 return $scope[$scope.page?'pageStats':'postStats'][$params.type] > 0;
-            };
-
-            $scope.sortCls = function(sort) {
-                if (!_.contains(sort, $scope.sortBy)) return 'fa-sort';
-                if (_.contains(sort, $scope.sortBy) && !$scope.reverse) return 'fa-caret-up';
-                if (_.contains(sort, $scope.sortBy) && $scope.reverse) return 'fa-caret-down';
             };
 
             $scope.selectAll = function () {
@@ -184,7 +200,7 @@
             };
 
             $scope.doSearchReset = function () {
-                $scope.search.title = undefined;
+                $scope.search = {};
             };
 
             $scope.remove = function () {
@@ -225,22 +241,15 @@
                 $q.all(promises).then(bind($scope, $scope.$emit, 'post:publish'));
             };
 
-            $scope.setSortBy = function (sortBy, reverse) {
-                $scope.reverse = angular.isUndefined(reverse) ? ($scope.sortBy === sortBy) ? !$scope.reverse : false : reverse;
-                $scope.sortBy = sortBy;
-                $scope.pg.current = 1;
-            };
-
             loadPosts();
 
-            function loadPosts () {
+            function loadPosts() {
                 $scope.setLoading(true);
                 $scope.select.empty();
                 Posts.query({
                     type: $params.type,
                     page: $scope.page
-                }).$promise
-                    .then(function (posts) {
+                }).$promise.then(function (posts) {
                         $scope.setLoading(false);
                         $scope.posts = posts;
                         $scope.pg.items = posts;
@@ -253,16 +262,18 @@
 
     controllers.controller('PostsCtrl', ['$scope', '$routeParams',
         function ($scope, $params) {
-            $scope.page = false;
             $scope.setCrumb('posts', $params.type);
+            $scope.page = false;
+
             $scope.$emit('post:load'); // load post statistics
         }
     ]);
 
     controllers.controller('PagesCtrl', ['$scope', '$routeParams',
         function ($scope, $params) {
-            $scope.page = true;
             $scope.setCrumb('pages', $params.type);
+            $scope.page = true;
+
             $scope.$emit('page:load');  // load page statistics
         }
     ]);
@@ -304,7 +315,7 @@
             };
 
             $scope.$watch('post.autoPublishOpt', function (opt) {
-                if ('undefined' === typeof opt) {
+                if (isUndefined(opt)) {
                     return;
                 }
                 $scope.opt.customSchedule = (opt ? moment() : moment($scope.post.publishedAt)).format('lll');
@@ -325,10 +336,18 @@
         function ($scope, $q, Settings) {
             var unwatchTitle,
                 tags = {
-                    ':slug': function (post) { return post.slug || ':slug:'; },
-                    ':year': function (post) { return moment(post.publishedAt).year(); },
-                    ':month': function (post) { return moment(post.publishedAt).format('MM'); },
-                    ':day': function (post) { return moment(post.publishedAt).format('DD'); }
+                    ':slug': function (post) {
+                        return post.slug || ':slug:';
+                    },
+                    ':year': function (post) {
+                        return moment(post.publishedAt).year();
+                    },
+                    ':month': function (post) {
+                        return moment(post.publishedAt).format('MM');
+                    },
+                    ':day': function (post) {
+                        return moment(post.publishedAt).format('DD');
+                    }
                 };
 
             $q.all([
@@ -339,14 +358,14 @@
                     $scope.permalinks = {
                         post: values[0].value,
                         page: values[1].value
-                    }
+                    };
                     $scope.$watch('post.slug', updatePermalinks);
                     $scope.$watch('post.page', updatePermalinks);
                     $scope.$watch('post.publishedAt', updatePermalinks);
                 });
 
             $scope.$watch('post.autoSlugOpt', function (autoSlugOpt) {
-                if ('undefined' === typeof autoSlugOpt) {
+                if (isUndefined(autoSlugOpt)) {
                     return;
                 }
                 if(autoSlugOpt) {
@@ -419,12 +438,10 @@
     controllers.controller('PostEditCtrl',
         ['$scope', '$filter', '$sce', '$q', '$timeout', '$routeParams', 'Posts', 'Users', 'MarkdownConverter',
         function ($scope, $filter, $sce, $q, $timeout, $params, Posts, Users, Converter) {
-            $scope.opt = { customDate: '', editor: true, create: false };
             $scope.setCrumb('postedit');
+            $scope.opt = { customDate: '', editor: true, create: false };
             $scope.post = {};
             $scope.user = Users.get();
-
-
 
             var editor = CodeMirror.fromTextArea(element('#editor')[0], {
                 mode: "markdown",
@@ -508,6 +525,7 @@
             $scope.setLoading(true);
             $scope.setCrumb('settings', 'basic');
             $scope.reset = loadSettings;
+
             $scope.save = function () {
                 $scope.setLoading('Saving');
                 $scope.settings.$save()
@@ -606,10 +624,9 @@
     controllers.controller('RedirectEditCtrl', ['$scope', '$rootScope', 'Redirects',
         function ($scope, $rootScope, Redirects) {
             $scope.path = /^(\/[a-zA-Z0-9-_.]+)*\/?$/;
-            $scope.isEdit = false;
-            $scope.item = { type: 'internal' };
+            resetForm();
 
-            $rootScope.$on('delete', reset);
+            $rootScope.$on('delete', resetForm);
             $rootScope.$on('edit', function (event, item) {
                 $scope.item = copy(item);
                 $scope.isEdit = true;
@@ -623,33 +640,31 @@
             };
 
             $scope.create = function () {
-                var item = $scope.item;
-                if (!item || $scope.isEdit || $scope.form.$invalid) return;
+                if (!$scope.item || $scope.isEdit || $scope.form.$invalid) return;
 
                 $scope.setLoading('Creating');
 
-                Redirects.create(item).$promise
+                Redirects.create($scope.item).$promise
                     .then(bind($scope, $scope.reset))
                     .then(bind($scope, $scope.$emit, 'load'));
             };
 
             $scope.update = function () {
-                var item = $scope.item;
-                if (!item || !$scope.isEdit || $scope.form.$invalid) return;
+                if (!$scope.item || !$scope.isEdit || $scope.form.$invalid) return;
 
                 $scope.setLoading('Updating');
 
-                item.$update()
+                $scope.item.$update()
                     .then(bind($scope, $scope.reset))
                     .then(bind($scope, $scope.$emit, 'load'));
             };
 
-            $scope.reset = reset;
+            $scope.reset = resetForm;
 
-            function reset () {
+            function resetForm () {
                 $scope.isEdit = false;
-                $scope.item = { from: '', to: '', type: 'internal' };
-                $scope.form.$setPristine();
+                $scope.item = { from: '', to: '', type: '302' };
+                $scope.form && $scope.form.$setPristine();
             }
     }]);
 
@@ -657,12 +672,18 @@
         function ($scope, $rootScope, $q, Redirects, Utils) {
             $scope.deleting = Utils.selection();
             $scope.pg = Utils.pagination();
+            $scope.order = Utils.ordering({
+                classes: {none: 'fa-sort', up: 'fa-caret-up', down: 'fa-caret-down'}
+            });
             $scope.url = { $: '' };
             $scope.status = { verify: false, save: false };
             $scope.verification = { items: [] };
-            $scope.reverse = false;
 
             $rootScope.$on('load', loadRedirects);
+
+            $scope.$watch('order.orderBy', function(){
+                $scope.pg.current = 1;
+            });
 
             $scope.$watchCollection("items", function (items) {
                 $scope.pg.items = items && items.length || 0;
@@ -670,18 +691,6 @@
 
             $scope.setCrumb('settings', 'redirects');
             loadRedirects();
-
-            $scope.setSortBy = function (sortBy, reverse) {
-                $scope.reverse = angular.isUndefined(reverse) ? ($scope.sortBy === sortBy) ? !$scope.reverse : false : reverse;
-                $scope.sortBy = sortBy;
-                $scope.pg.current = 1;
-            };
-
-            $scope.sortCls = function(sort) {
-                if (!_.contains(sort, $scope.sortBy)) return 'fa-sort';
-                if (_.contains(sort, $scope.sortBy) && !$scope.reverse) return 'fa-caret-up';
-                if (_.contains(sort, $scope.sortBy) && $scope.reverse) return 'fa-caret-down';
-            };
 
             $scope.clearVerification = function () {
                 $scope.verification.items = [];
@@ -785,7 +794,7 @@
             $scope.addIp = function(type, ip) {
                 ip = ip || type.ip;
                 if(ip) {
-                    type.ips = _.chain(type.ips||[]).push(ip).sortBy().uniq(true).value();
+                    type.ips = _.chain(type.ips||[]).push(ip).sort().uniq(true).value();
                     type.dirty = true;
                 }
             };
@@ -914,7 +923,7 @@
         }
     ]);
 
-    function postStatus(post) {
+    function postStatus(post) { //TODO: convert to Angular filter or factory
         if (!post.published) return 'D';
 
         var date = post.publishedAt;

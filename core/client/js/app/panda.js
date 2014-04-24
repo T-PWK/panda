@@ -1,6 +1,25 @@
 (function () {
     'use strict';
 
+    var pageNames = {
+        basic:     'Basic',
+        overview:  'Overview',
+        posts:     'Posts',
+        pages:     'Pages',
+        comments:  'Comments',
+        settings:  'Settings',
+        all:       'All',
+        scheduled: 'Scheduled',
+        draft:     'Draft',
+        live:      'Published',
+        users:     'Users',
+        themes:    'Themes',
+        redirects: 'Redirects',
+        'new':     'New',
+        ips:       'IP Restrictions',
+        images:    'Images'
+    };
+
     angular.module('panda', ['ngRoute', 'ngResource', 'panda.controllers', 'panda.utils', 'angularFileUpload']).
         config(['$routeProvider', function ($routeProvider) {
             $routeProvider
@@ -26,7 +45,7 @@
         .factory('Users', ['$resource', function($resource) {
             return $resource('/api/v1/user/:type', {type: '@type'},
                 {
-                    update: { method: 'PUT', params: { type: 'basic' } },
+                    update:         { method: 'PUT', params: { type: 'basic' } },
                     updatePassword: { method: 'PUT', params: { type: 'password' } }
                 }
             );
@@ -58,20 +77,18 @@
         .factory('Themes', ['$resource', function ($resource) {
             return $resource('/api/v1/themes/:type/:id',
                 { id: '@id' },
-                {
-                    update: { method: 'PUT', params: { type: '@type'} }
-                }
+                { update: { method: 'PUT', params: { type: '@type'} } }
             );
         }])
         .factory('MarkdownConverter', [function () {
             marked.setOptions({
-                renderer: new marked.Renderer(),
-                gfm: true,
-                tables: true,
-                breaks: false,
-                pedantic: false,
-                sanitize: true,
-                smartLists: true,
+                renderer:    new marked.Renderer(),
+                gfm:         true,
+                tables:      true,
+                breaks:      false,
+                pedantic:    false,
+                sanitize:    true,
+                smartLists:  true,
                 smartypants: false
             });
             return {
@@ -89,6 +106,25 @@
             return function (input, start) {
                 return input ? input.slice(+start) : input;
             };
+        }])
+        .filter('status', [function () {
+            return function (post) {
+                if (!post.published) return 'D';
+
+                var date = post.publishedAt;
+                if (!angular.isDate(date)) {
+                    date = new Date(date);
+                }
+                if (date > _.now()) { // Convert string to date
+                    return 'S';
+                }
+                return 'A';
+            }
+        }])
+        .filter('name', [function(){
+            return function (name) {
+                return pageNames[name];
+            }
         }])
         .directive('ngTooltip', function(){
             return function(scope, element) {
@@ -128,23 +164,6 @@
                 'S': 'Scheduled',
                 'A': 'Live'
             },
-            pageNames: {
-                basic: 'Basic',
-                overview: 'Overview',
-                posts: 'Posts',
-                pages: 'Pages',
-                comments: 'Comments',
-                settings: 'Settings',
-                all: 'All',
-                scheduled: 'Scheduled',
-                draft: 'Draft',
-                live: 'Published',
-                users: 'Users',
-                themes: 'Themes',
-                redirects: 'Redirects',
-                'new': 'New',
-                ips: 'IP Restrictions',
-                images: 'Images'
-            }
+            pageNames: pageNames
         });
 }());

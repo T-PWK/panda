@@ -56,18 +56,18 @@
                             | ({{deleting.howMany()|number}})
                         th.col-sm-5
                             | From&nbsp;
-                            a(href="", ng-click="setSortBy('from')")
-                                i.fa(ng-class="sortCls('from')")
+                            a(href="", ng-click="order.by('from')")
+                                i.fa(ng-class="order.icon('from')")
                         th.col-sm-4
                             | To&nbsp;
-                            a(href="", ng-click="setSortBy('to')")
-                                i.fa(ng-class="sortCls('to')")
+                            a(href="", ng-click="order.by('to')")
+                                i.fa(ng-class="order.icon('to')")
                         th.col-sm-2
                             | Type&nbsp;
-                            a(href="", ng-click="setSortBy('type')")
-                                i.fa(ng-class="sortCls('type')")
+                            a(href="", ng-click="order.by('type')")
+                                i.fa(ng-class="order.icon('type')")
                 tbody
-                    tr(ng-repeat="item in items | filter:url | orderBy:sortBy:reverse | startFrom:pg.firstItem | limitTo:pg.pageSize")
+                    tr(ng-repeat="item in items | filter:url | orderBy:order.option:order.desc | startFrom:pg.firstItem | limitTo:pg.pageSize")
                         td: i.btn-link.fa.fa-fw(ng-class="{'fa-square-o':!deleting.has(item.id),'fa-check-square-o':deleting.has(item.id)}", ng-click="deleting.toggle(item.id)")
                         td: a(href="", ng-click="$emit('edit', item)") {{item.from}}
                         td {{item.to}}
