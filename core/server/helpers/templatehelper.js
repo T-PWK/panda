@@ -2,8 +2,8 @@
     'use strict';
 
     var moment          = require('moment'),
-        util            = require('util'),
         cfg             = require('nconf'),
+        _               = require('lodash'),
         _s              = require('underscore.string'),
         themesProvider  = require('../providers').themesProvider,
         labelUrlFormat  = cfg.get('app:labelUrl'),
@@ -71,7 +71,7 @@
      */
     function dateFormat(locals, post, format) {
         if (arguments.length < 3) {
-            if ('string' === typeof post) {
+            if (_.isString(post)) {
                 format = post;
                 post = locals.post;
             } else {
@@ -79,7 +79,7 @@
             }
         }
 
-        var date = util.isDate(post) || moment.isMoment(post) ? post : post && post.publishedAt;
+        var date = (_.isDate(post) || moment.isMoment(post)) ? post : post.publishedAt;
 
         if (!date) return '';
 
@@ -220,7 +220,7 @@
         if (!value) {
             return false;
         }
-        if ('string' === typeof value || util.isArray(value)) {
+        if (_.isString(value) || _.isArray(value)) {
             return value.length > 0;
         }
 
@@ -231,24 +231,24 @@
         // Set default response local variables
 
         Object.defineProperties(res.locals, {
-            context:        { enumerable: true, value: req.path },
-            title:          { enumerable: true, value: cfg.get('app:title') },
-            description:    { enumerable: true, value: cfg.get('app:description') },
-            metaTitle:      { enumerable: true, get: metaTitle.bind(null, res.locals) },
-            metaDescription:{ enumerable: true, get: metaDescription.bind(res) },
-            now:            { enumerable: true, value: moment() },
-            url:            { enumerable: true, value: cfg.get('url') },
-            copyright:      { enumerable: true, get: copyright.bind(null, res.locals) },
-            $postClass:     { enumerable: true, value: buildPostClass.bind(null, res.locals) },
-            $url:           { enumerable: true, value: postUrl.bind(null, res.locals) },
-            $pageUrl:       { enumerable: true, value: pageUrl.bind(null, res.locals) },
-            $labels:        { enumerable: true, value: labelsFormat.bind(null, res.locals) },
-            $date:          { enumerable: true, value: dateFormat.bind(null, res.locals) },
-            bodyClass:      { enumerable: true, get: buildBodyClass.bind(null, res) },
-            postClass:      { enumerable: true, get: buildPostClass.bind(null, res.locals) },
-            author:         { enumerable: true, get: author.bind(null, res.locals) },
-            user:           { enumerable: true, value: req.user },
-            adminTheme:     { enumerable: true, get: themesProvider.getActiveAdminTheme.bind(themesProvider) }
+            context:         { enumerable: true, value: req.path },
+            title:           { enumerable: true, value: cfg.get('app:title') },
+            description:     { enumerable: true, value: cfg.get('app:description') },
+            metaTitle:       { enumerable: true, get: metaTitle.bind(null, res.locals) },
+            metaDescription: { enumerable: true, get: metaDescription.bind(res) },
+            now:             { enumerable: true, value: moment() },
+            url:             { enumerable: true, value: cfg.get('url') },
+            copyright:       { enumerable: true, get: copyright.bind(null, res.locals) },
+            $postClass:      { enumerable: true, value: buildPostClass.bind(null, res.locals) },
+            $url:            { enumerable: true, value: postUrl.bind(null, res.locals) },
+            $pageUrl:        { enumerable: true, value: pageUrl.bind(null, res.locals) },
+            $labels:         { enumerable: true, value: labelsFormat.bind(null, res.locals) },
+            $date:           { enumerable: true, value: dateFormat.bind(null, res.locals) },
+            bodyClass:       { enumerable: true, get: buildBodyClass.bind(null, res) },
+            postClass:       { enumerable: true, get: buildPostClass.bind(null, res.locals) },
+            author:          { enumerable: true, get: author.bind(null, res.locals) },
+            user:            { enumerable: true, value: req.user },
+            adminTheme:      { enumerable: true, get: themesProvider.getActiveAdminTheme.bind(themesProvider) }
         });
 
         next();
@@ -257,19 +257,19 @@
     function appLocals(app) {
         // Set default application local variables as well as template helper functions
         Object.defineProperties(app.locals, {
-            custom:         { enumerable: true, value: cfg.get('theme:custom') },
-            cover:          { enumerable: true, value: cfg.get('theme:cover') },
-            logo:           { enumerable: true, value: cfg.get('theme:logo') },
-            version:        { enumerable: true, value: module.exports.version },
-            $encode:        { enumerable: true, value: encode },
-            $assets:        { enumerable: true, value: assets.bind(app) },
-            $if:            { enumerable: true, value: ifCheck },
-            $isntEmpty:     { enumerable: true, value: isntEmpty },
-            $labelUrl:      { enumerable: true, value: labelUrl },
+            custom:     { enumerable: true, value: cfg.get('theme:custom') },
+            cover:      { enumerable: true, value: cfg.get('theme:cover') },
+            logo:       { enumerable: true, value: cfg.get('theme:logo') },
+            version:    { enumerable: true, value: module.exports.version },
+            $encode:    { enumerable: true, value: encode },
+            $assets:    { enumerable: true, value: assets.bind(app) },
+            $if:        { enumerable: true, value: ifCheck },
+            $isntEmpty: { enumerable: true, value: isntEmpty },
+            $labelUrl:  { enumerable: true, value: labelUrl },
 
             // Update application locals with view settings like debug or pretty formatting
-            pretty:         { enumerable: true, value: cfg.get('view:pretty') },
-            debug:          { enumerable: true, value: cfg.get('view:debug') }
+            pretty:     { enumerable: true, value: cfg.get('view:pretty') },
+            debug:      { enumerable: true, value: cfg.get('view:debug') }
         });
 
         // Initialize reqest / response specific variables
