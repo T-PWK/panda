@@ -2,23 +2,28 @@
     'use strict';
 
     var pageNames = {
-        basic:     'Basic',
-        overview:  'Overview',
-        posts:     'Posts',
-        pages:     'Pages',
-        comments:  'Comments',
-        settings:  'Settings',
-        all:       'All',
-        scheduled: 'Scheduled',
-        draft:     'Draft',
-        live:      'Published',
-        users:     'Users',
-        themes:    'Themes',
-        redirects: 'Redirects',
-        'new':     'New',
-        ips:       'IP Restrictions',
-        images:    'Images'
-    };
+            basic:     'Basic',
+            overview:  'Overview',
+            posts:     'Posts',
+            pages:     'Pages',
+            comments:  'Comments',
+            settings:  'Settings',
+            all:       'All',
+            scheduled: 'Scheduled',
+            draft:     'Draft',
+            live:      'Published',
+            users:     'Users',
+            themes:    'Themes',
+            redirects: 'Redirects',
+            'new':     'New',
+            ips:       'IP Restrictions',
+            images:    'Images'
+        },
+        status = {
+            'D': 'Draft',
+            'S': 'Scheduled',
+            'A': 'Live'
+        };
 
     angular.module('panda', ['ngRoute', 'ngResource', 'panda.controllers', 'panda.utils', 'angularFileUpload']).
         config(['$routeProvider', function ($routeProvider) {
@@ -121,6 +126,11 @@
                 return 'A';
             };
         }])
+        .filter('statusText', ['statusFilter', function(statusFilter){
+            return function(post) {
+                return status[statusFilter(post)];
+            }
+        }])
         .filter('name', [function(){
             return function (name) {
                 return pageNames[name];
@@ -159,11 +169,7 @@
             };
         })
         .value('Constants', {
-            status: {
-                'D': 'Draft',
-                'S': 'Scheduled',
-                'A': 'Live'
-            },
+            status: status,
             pageNames: pageNames
         });
 }());

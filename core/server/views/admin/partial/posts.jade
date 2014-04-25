@@ -92,11 +92,11 @@ mixin sortMenu(id, title, icon)
 
             tbody
                 tr(ng-repeat="post in posts | filter:search | orderBy:order.option:order.desc | startFrom:pg.firstItem | limitTo:pg.pageSize")
-                    td: i.btn-link.fa.fa-fw(ng-class="{'fa-square-o':!select.has(post.id),'fa-check-square-o':select.has(post.id)}", ng-click="select.toggle(post.id, status(post))")
+                    td: i.btn-link.fa.fa-fw(ng-class="{'fa-square-o':!select.has(post.id),'fa-check-square-o':select.has(post.id)}", ng-click="select.toggle(post.id, (post|status))")
                     td: a(ng-href="#/posts/{{post.id}}/edit", ng-class="{'text-warning':!post.title}") {{post.title || '(Untitled post)'}}
                     td
-                        i.fa.fa-fw.text-warning(ng-if="status(post)!='A'", ng-class="{D:'fa-edit',S:'fa-calendar'}[status(post)]", title="{{statusText(post)}}")
-                        i.fa.fa-fw.fa-globe.text-success(ng-if="status(post)=='A'", title="{{statusText(post)}}")
+                        i.fa.fa-fw.text-warning(ng-if="(post|status)!='A'", ng-class="{D:'fa-edit',S:'fa-calendar'}[(post|status)]", title="{{post|statusText}}")
+                        i.fa.fa-fw.fa-globe.text-success(ng-if="(post|status)=='A'", title="{{post|statusText}}")
                         i.fa.fa-bookmark-o.fa-fw(ng-if="post.featured", title="Featured")
                     td: a(ng-href="{{post.author.website}}", target="_blank") {{post.author.name}}
                     td
@@ -106,7 +106,7 @@ mixin sortMenu(id, title, icon)
                     td
                         | {{post.commentsCount || 0}}
                         i.fa.fa-fw.text-muted(ng-class="{'fa-comments-o':post.commentsCount,'fa-comment-o':post.commentsCount==0}")
-                    td(ng-class="{S:'text-warning',D:'text-warning'}[status(post)]") {{post.publishedAt|date:'mediumDate'}}
+                    td(ng-class="{S:'text-warning',D:'text-warning'}[(post|status)]") {{post.publishedAt|date:'mediumDate'}}
 
         .btn-toolbar.pull-right(ng-show="posts.length")
             p.btn-group Show rows:

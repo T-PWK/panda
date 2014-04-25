@@ -12,7 +12,7 @@
 
     /*
      * Builds post or static page URL.
-     * It is assumed that 'this' is the current resonse
+     * It is assumed that 'this' is the current response
      */
     function postUrl(locals, post, absolute) {
         if (arguments.length < 3 && 'boolean' === typeof post) {

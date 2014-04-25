@@ -64,12 +64,6 @@
                 }
             };
 
-            $scope.status = postStatus;
-
-            $scope.statusText = function (post) {
-                return Constants.status[postStatus(post)];
-            };
-
             function updateCrumbItem (args) {
                 if (isObject(args[1])) {
                     angular.extend($scope.crumb[args[0]], args[1]);
@@ -147,8 +141,9 @@
         }
     ]);
 
-    controllers.controller('PostListCtrl', ['$scope', '$routeParams', '$q', 'filterFilter', 'Posts', 'Utils',
-        function ($scope, $params, $q, filter, Posts, Utils) {
+    controllers.controller('PostListCtrl',
+        ['$scope', '$routeParams', '$q', 'filterFilter', 'statusFilter', 'Posts', 'Utils',
+        function ($scope, $params, $q, filter, status, Posts, Utils) {
             $scope.type = $params.type;
             $scope.pg = Utils.pagination();
             $scope.select = Utils.selection();
@@ -189,7 +184,7 @@
                     $scope.select.empty();
                 } else {
                     forEach($scope.posts, function (post) {
-                        $scope.select.add(post.id, postStatus(post));
+                        $scope.select.add(post.id, status(post));
                     });
                     sel.all = true;
                 }
@@ -209,7 +204,7 @@
 
                 forEach($scope.posts, function (post) {
                     // allow deletion of draft posts only
-                    if ($scope.select.has(post.id) && postStatus(post) === 'D') {
+                    if ($scope.select.has(post.id) && status(post) === 'D') {
                         deletePromises.push(post.$remove());
                     }
                 });
@@ -221,7 +216,7 @@
                 $scope.setLoading('Reverting to draft');
                 var promises = [];
                 forEach($scope.posts, function (post) {
-                    if ($scope.select.has(post.id) && postStatus(post) !== 'D') {
+                    if ($scope.select.has(post.id) && status(post) !== 'D') {
                         promises.push(Posts.update({ draft: true }, {id: post.id}).$promise);
                     }
                 });
@@ -233,7 +228,7 @@
                 $scope.setLoading('Publishing');
                 var promises = [];
                 forEach($scope.posts, function (post) {
-                    if ($scope.select.has(post.id) && postStatus(post) === 'D') {
+                    if ($scope.select.has(post.id) && status(post) === 'D') {
                         promises.push(Posts.update({ publish: true }, {id: post.id}).$promise);
                     }
                 });
@@ -924,18 +919,5 @@
             };
         }
     ]);
-
-    function postStatus(post) { //TODO: convert to Angular filter or factory
-        if (!post.published) return 'D';
-
-        var date = post.publishedAt;
-        if (!angular.isDate(date)) {
-            date = new Date(date);
-        }
-        if (date > Date.now()) { // Convert string to date
-            return 'S';
-        }
-        return 'A';
-    }
 
 }());

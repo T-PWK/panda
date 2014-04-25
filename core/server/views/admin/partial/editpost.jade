@@ -26,7 +26,7 @@ mixin slugForm
             .panel-body
                 i.fa.fa-link.fa-fw
                 | Permalink
-                a.pull-right(ng-href="{{permalink}}", ng-show="status(post)=='A'", target="_blank")
+                a.pull-right(ng-href="{{permalink}}", ng-show="(post|status)=='A'", target="_blank")
                     i.fa.fa-fw.fa-external-link-square
                 span.help-block {{permalink}}
                 hr
@@ -170,7 +170,7 @@ mixin labelsForm
                     //- Post info
                     mixin info()
 
-                .alert.alert-warning(ng-show="status(post)=='A'")
+                .alert.alert-warning(ng-show="(post|status)=='A'")
                     i.fa.fa-fw.fa-info-circle
                     | Keep in mind that you are editing a live post and all changes will affect your blog
 
