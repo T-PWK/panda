@@ -129,7 +129,7 @@
         .filter('statusText', ['statusFilter', function(statusFilter){
             return function(post) {
                 return status[statusFilter(post)];
-            }
+            };
         }])
         .filter('name', [function(){
             return function (name) {
