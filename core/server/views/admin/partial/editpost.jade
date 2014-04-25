@@ -1,4 +1,19 @@
 //- # Mixins
+mixin info
+    .panel.panel-default
+        .panel-heading(data-toggle="collapse", data-parent="#accordion", data-target="#info")
+            .panel-title.btn-link
+                i.fa.fa-fw.fa-info-circle
+                | Info
+        #info.panel-collapse.collapse
+            .panel-body
+                dl
+                    dt Creation Date
+                    dd {{post.createdAt|date:'medium'}}
+                    dt Update Date
+                    dd {{post.updatedAt|date:'medium'}}
+
+
 mixin slugForm
     .panel.panel-default(ng-controller="SlugCtrl")
         .panel-heading(data-toggle="collapse", data-parent="#accordion", data-target="#link")
@@ -151,6 +166,9 @@ mixin labelsForm
 
                     //- Page setup
                     mixin pageForm()
+
+                    //- Post info
+                    mixin info()
 
                 .alert.alert-warning(ng-show="status(post)=='A'")
                     i.fa.fa-fw.fa-info-circle
