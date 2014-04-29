@@ -208,7 +208,7 @@
         });
     };
 
-    PostProvider.prototype.archiveInfo = function (opts) {
+    PostProvider.prototype.archiveInfo = function () {
         function processArchives (archives) {
             archives.forEach(function (archive) {
                 archive.date = moment([archive._id.year, archive._id.month - 1]);
@@ -246,7 +246,7 @@
                 { $match: match },                                  // limit by publication date
                 { $project: { labels: 1, _id: 0 } },                // operate on labels only
                 { $unwind: "$labels" },                             // convert labels to independent objects
-                { $group: { _id: "$labels", count: { $sum: 1 } } }, // aggregate labels and count number of occurences
+                { $group: { _id: "$labels", count: { $sum: 1 } } }, // aggregate labels and count number of occurrences
                 { $sort: { count: -1 } },                           // sort label object by count descending
                 { $project: { count: 1, label: "$_id", _id: 0 } }   // make sure we have label and count properties
             ).exec()
@@ -258,21 +258,38 @@
 
         if (!properties) return when.reject();
 
-        var post = _.pick(properties, postAllowedProps);
+        var updates = _.pick(properties, postAllowedProps),
+            publishedAt;
 
         return Post.findById(id).exec()
             .then(function (item) {
+
                 if (!item) return when.reject();
 
-                _.extend(item, post, { updatedAt: new Date() });
+                publishedAt = item.publishedAt;
 
+                _.extend(item, updates, {updatedAt: _.now()});
+
+                // Set current date to publication date if post is in draft state and set to auto publication
+                if (item.autoPublishOpt && !item.published) {
+                    item.publishedAt = _.now();
+                }
+
+                // Do not change publication date for already published post with auto publication date
+                if (item.published && item.autoPublishOpt) {
+                    item.publishedAt = publishedAt;
+                }
+
+                // Publish post
                 if (options.publish && !item.published) {
                     item.published = true;
                 }
 
+                // Revert to draft
                 if (options.draft) {
                     item.published = false;
                 }
+
                 return lift(item.save.bind(item))();
             })
             .then(function (result) {
