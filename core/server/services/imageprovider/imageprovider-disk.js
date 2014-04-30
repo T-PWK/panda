@@ -1,16 +1,21 @@
 // ImageProvider using local disk
 
-(function(){
+(function () {
     'use strict';
 
-    var cfg     = require('nconf'),
-        when    = require('when');
+    var when = require('when');
 
-    var ImageProvider = function () {};
+    var ImageProvider = function () {
+    };
 
     ImageProvider.prototype.init = function () {
         return when.resolve();
     };
+
+    ImageProvider.prototype.all = function () {
+        return when.resolve([]);
+    };
+
 
     module.exports = ImageProvider;
 

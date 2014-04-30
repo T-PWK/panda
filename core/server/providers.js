@@ -12,7 +12,7 @@
         configProvider  = new ConfigProvider(),
         postProvider    = new PostProvider(),
         userProvider    = new UserProvider(),
-        imageProvider   = new ImageProvider();
+        imageProvider   = new ImageProvider(cfg.get('admin:images'));
 
     function initMongoDB() {
         var deferred = when.defer(),

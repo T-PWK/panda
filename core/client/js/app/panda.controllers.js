@@ -903,9 +903,17 @@
         }
     ]);
 
-    controllers.controller('ImgCtrl', ['$scope', '$upload',
-        function ($scope, $upload) {
+    controllers.controller('ImgCtrl', ['$scope', '$upload', 'Images',
+        function ($scope, $upload, Images) {
             $scope.setCrumb('images');
+            $scope.setLoading(true);
+            $scope.images = Images.query(function () {
+                $scope.setLoading(false);
+            });
+
+            $scope.setCurrent = function (index) {
+                $scope.current = $scope.images[index];
+            };
 
             $scope.sayHello = function (files) {
                 for (var i = 0; i < files.length; i++) {

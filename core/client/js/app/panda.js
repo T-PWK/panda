@@ -79,6 +79,9 @@
         .factory('Labels', ['$resource', function ($resource) {
             return $resource('/api/v1/labels');
         }])
+        .factory('Images', ['$resource', function ($resource) {
+            return $resource('/api/v1/images');
+        }])
         .factory('Themes', ['$resource', function ($resource) {
             return $resource('/api/v1/themes/:type/:id',
                 { id: '@id' },
