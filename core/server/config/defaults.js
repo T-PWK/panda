@@ -135,7 +135,13 @@
             restrictByIp: false,
 
             // Array of allowed ips (e.g. ["127.0.0.1"]); access from ips in the list will have access to Admin console
-            allowedIps: []
+            allowedIps: [],
+
+            images: {
+                // Available types: azure, disk
+                type: 'disk'
+
+            }
         },
         cache: {
             posts: {
