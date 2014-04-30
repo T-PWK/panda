@@ -69,7 +69,7 @@
             }))
             .use(passport.initialize())
             .use(passport.session())
-//            .use(auth.authCheck)
+            .use(auth.authCheck)
             .use(bodyParser())
             .post('/upload', api.fileUpload)
             .get('/labels', api.labels.index)
