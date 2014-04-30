@@ -8,9 +8,11 @@
         ConfigProvider  = require('./services/configprovider'),
         UserProvider    = require('./services/userprovider'),
         themesProvider  = require('./services/themesprovider'),
+        ImageProvider   = require('./services/imageprovider'),
         configProvider  = new ConfigProvider(),
         postProvider    = new PostProvider(),
-        userProvider    = new UserProvider();
+        userProvider    = new UserProvider(),
+        imageProvider   = new ImageProvider();
 
     function initMongoDB() {
         var deferred = when.defer(),
@@ -30,10 +32,11 @@
     }
 
     module.exports = {
-        postProvider:   postProvider,
+        postProvider: postProvider,
         configProvider: configProvider,
-        userProvider:   userProvider,
-        themesProvider: themesProvider
+        userProvider: userProvider,
+        themesProvider: themesProvider,
+        imageProvider: imageProvider
     };
 
     module.exports.init = function () {
@@ -45,7 +48,8 @@
                     configProvider.init(),
                     postProvider.init(),
                     userProvider.init(),
-                    themesProvider.init()
+                    themesProvider.init(),
+                    imageProvider.init()
                 );
             });
     };

@@ -18,7 +18,11 @@
             themes      = express.Router(),
             ipRoutes    = express.Router(),
             settings    = express.Router(),
+            images      = express.Router(),
             users       = express.Router();
+
+        images
+            .get('/', api.images.index);
 
         settings
             .param('id', api.settings.load)
@@ -65,7 +69,7 @@
             }))
             .use(passport.initialize())
             .use(passport.session())
-            .use(auth.authCheck)
+//            .use(auth.authCheck)
             .use(bodyParser())
             .post('/upload', api.fileUpload)
             .get('/labels', api.labels.index)
@@ -74,7 +78,8 @@
             .use('/themes', themes)
             .use('/ips', ipRoutes)
             .use('/settings', settings)
-            .use('/redirects', redirects);
+            .use('/redirects', redirects)
+            .use('/images', images);
 
         app.use('/api/v1', apiRoutes);
     };

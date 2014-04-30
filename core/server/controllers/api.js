@@ -11,5 +11,6 @@
     module.exports.users = require('./api/users');
     module.exports.ips = require('./api/ips');
     module.exports.fileUpload = require('./api/fileupload');
+    module.exports.images = require('./api/images');
 
 }());
