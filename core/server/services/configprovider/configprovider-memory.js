@@ -1,13 +1,13 @@
 (function () {
     'use strict';
 
-    var when = require('when'),
-        path = require('path'),
-        fs = require('fs'),
-        node = require('when/node'),
-        cfg = require('nconf'),
-        _ = require('underscore'),
-        idGen = require('../idgenerator');
+    var when    = require('when'),
+        path    = require('path'),
+        fs      = require('fs'),
+        node    = require('when/node'),
+        cfg     = require('nconf'),
+        _       = require('underscore'),
+        idGen   = require('../idgenerator');
 
     var ConfigProvider = module.exports = function () {
         this.redirects = [];
