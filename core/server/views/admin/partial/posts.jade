@@ -101,8 +101,7 @@ mixin sortMenu(id, title, icon)
                     td: a(ng-href="{{post.author.website}}", target="_blank") {{post.author.name}}
                     td
                         | {{post.labels.length || 0}}
-                        i.fa.fa-fw.fa-tags.text-muted(ng-if="post.labels.length", title="{{post.labels.join(', ')}}",
-                            ng-tooltip, data-placement="top")
+                        i.fa.fa-fw.fa-tags.text-muted(ng-if="post.labels.length", tooltip="{{post.labels.join(', ')}}")
                     td
                         | {{post.commentsCount || 0}}
                         i.fa.fa-fw.text-muted(ng-class="{'fa-comments-o':post.commentsCount,'fa-comment-o':post.commentsCount==0}")
