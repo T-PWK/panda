@@ -905,8 +905,8 @@
         }
     ]);
 
-    controllers.controller('ImgCtrl', ['$scope', '$upload', 'Images',
-        function ($scope, $upload, Images) {
+    controllers.controller('ImgCtrl', ['$scope', '$upload', '$timeout', 'Images',
+        function ($scope, $upload, $timeout, Images) {
             $scope.setCrumb('images');
             $scope.setLoading(true);
             $scope.images = Images.query(function () {
@@ -917,16 +917,62 @@
                 $scope.current = $scope.images[index];
             };
 
-            $scope.sayHello = function (files) {
-                for (var i = 0; i < files.length; i++) {
-                    var file = files[i];
+            $scope.onFileSelect = function ($files) {
+                $scope.selectedFiles = $files;
+                $scope.progress = [];
+                $scope.upload = [];
+                $scope.uploadResult = [];
+//                $scope.dataUrls = [];
 
-                    $scope.upload = $upload.upload({
+//                forEach($files, function ($file, idx) {
+//                    if (window.FileReader && $file.type.indexOf('image') > -1) {
+//                        var fileReader = new FileReader();
+//                        fileReader.readAsDataURL($file);
+//                        setPreview(fileReader, idx);
+//                    }
+//                });
+
+                $timeout(function(){
+                    forEach($files, function($file, index){
+                        $scope.start(index);
+                    })
+                }, 2000)
+            };
+
+            $scope.abort = function(index) {
+                $scope.upload[index].abort();
+                $scope.upload[index] = null;
+            };
+
+            $scope.start = function (index) {
+                $scope.progress[index] = 0;
+
+                $scope.upload[index] = $upload
+                    .upload({
                         url: '/api/v1/upload',
-                        file: file
-                    });
+                        file: $scope.selectedFiles[index]
+                    })
+                    .then(completion, null, progress);
+
+                function completion() {
+                    $scope.progress[index] = 100;
+                }
+
+                function progress(evt) {
+                    $scope.progress[index] = parseInt(100.0 * evt.loaded / evt.total);
                 }
             };
+
+
+
+//            function setPreview(reader, index) {
+//                reader.onload = function (e) {
+//                    $timeout(function () {
+//                        $scope.dataUrls[index] = e.target.result;
+//                    });
+//                };
+//            }
+
         }
     ]);
 

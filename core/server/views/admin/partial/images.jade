@@ -9,10 +9,38 @@
 
         .row
             .col-sm-12
-                input(type="file", ng-file-select="sayHello($files)", multiple)
+                input(type="file", ng-file-select="onFileSelect($files)", multiple)
         .row
             .col-sm-12
-                .alert.alert-info(ng-file-drop="sayHello($files)", ng-file-drag-over-class="alert-warning") Drop files here
+                .alert.alert-info(ng-file-drop="onFileSelect($files)", ng-file-drag-over-class="alert-warning")
+                    | Drop files here
+        .row
+            .col-sm-12
+                table.table.table-striped
+                    thead
+                        th.col-sm-1 ID
+                        th.col-sm-5 Name
+                        th.col-sm-1 Size
+                        th.col-sm-3 Progress
+                        th.col-sm-2
+                    tbody
+                        tr(ng-repeat="file in selectedFiles")
+                            td {{$index+1}}
+                            td {{file.name}}
+                            td {{file.size/1024|number:1}}KB
+                            td: .progress: .progress-bar(role="progressbar", aria-valuenow="{{progress[$index]}}",
+                                aria-valuemin="0", aria-valuemax="100", style="width: {{progress[$index]}}%;",
+                                ng-class="{'progress-bar-success':progress[$index]==100}")
+                                    | {{progress[$index]}}%
+                            td.text-danger
+                                a(href="", ng-click="remove($index)")
+                                    i.fa.fa-fw.fa-times-circle
+                                    | Delete
+        .row
+            .col-sm-12
+                div(ng-repeat="file in selectedFiles")
+                    | {{$index+1}}: {{file.name}} - size: {{file.size}} - type: {{file.type}}
+                    img(ng-show="dataUrls[$index]", ng-src="{{dataUrls[$index]}}", alt="{{file.name}}", style="max-height:50px;max-width:100px;")
 
         .row(ng-if="!images.length && isLoading")
             .col-sm-12
