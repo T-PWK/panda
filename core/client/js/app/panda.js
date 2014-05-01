@@ -25,7 +25,7 @@
             'A': 'Live'
         };
 
-    angular.module('panda', ['ngRoute', 'ngResource', 'panda.controllers', 'panda.utils', 'angularFileUpload']).
+    angular.module('panda', ['ngRoute', 'ngResource', 'panda.controllers', 'panda.utils', 'angularFileUpload', 'ui.bootstrap']).
         config(['$routeProvider', function ($routeProvider) {
             $routeProvider
                 .when('/', { templateUrl: 'overview', controller: 'OverviewCtrl' })
