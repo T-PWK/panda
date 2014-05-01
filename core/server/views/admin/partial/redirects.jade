@@ -11,11 +11,11 @@
 
             .form-group(ng-if="items.length")
                 .row
-                    .col-sm-3
+                    .col-sm-5
                         button.btn.btn-sm.btn-danger(type="button", ng-click="remove()", ng-disabled="deleting.isEmpty()") Delete
                         button.btn.btn-sm.btn-default(type="button", ng-click="deleting.empty()", ng-disabled="deleting.isEmpty()") Reset
                         button.btn.btn-sm.btn-default(type="button", ng-click="verify()", ng-disabled="items.length<2") Verify
-                    .col-sm-4.col-sm-offset-5
+                    .col-sm-4.col-sm-offset-3
                         .input-group.input-group-sm
                             input.form-control(type="text", ng-model="url.$", ng-key-action="{27:'onEsc'}", on-esc="clrSearch()")
                             span.input-group-btn
@@ -90,14 +90,8 @@
                 p.btn-group {{pg.from|number}}-{{pg.to|number}} of {{pg.items|number}}
 
                 .btn-group
-                    button.btn.btn-sm.btn-default(type="button", ng-click="pg.prev()", ng-class="{disabled:!pg.hasPrev}") &laquo;
-                    .btn-group.dropup
-                        button.btn.btn-sm.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
-                            | {{pg.current}}&nbsp;
-                            span.caret
-                        ul.dropdown-menu.scrollable-menu
-                            li(ng-repeat="p in pg.pageRange", ng-class="{active:p==pg.current}"): a(href="", ng-click="pg.current=p") {{p}}
-                    button.btn.btn-sm.btn-default(type="button", ng-click="pg.next()", ng-class="{disabled:!pg.hasNext}") &raquo;
+                    pagination.pagination-sm(page="pg.current", total-items="pg.items", items-per-page="pg.pageSize",
+                        previous-text="«", next-text="»", rotate="true", max-size="5")
 
             .text-center(ng-if="!items.length && !isLoading") No redirects have been configured. You can create one in the form below.
 

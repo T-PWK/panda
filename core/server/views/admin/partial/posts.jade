@@ -124,13 +124,5 @@ mixin sortMenu(id, title, icon)
 
             //- Pagination
             .btn-group
-                button.btn.btn-sm.btn-default(type="button", ng-disabled="!pg.hasPrev", ng-click="pg.prev()") &laquo;
-                .btn-group.dropup
-                    button.btn.btn-sm.btn-default.dropdown-toggle(type="button", data-toggle="dropdown", ng-disabled="!pg.items")
-                        | {{pg.current|number}}&nbsp;
-                        span.caret
-                    ul.dropdown-menu.scrollable-menu
-                        li(ng-repeat="p in pg.pageRange", ng-class="{active:p==pg.current}"): a(href="", ng-click="pg.current=p") {{p|number}}
-                button.btn.btn-sm.btn-default(type="button", ng-disabled="!pg.hasNext", ng-click="pg.next()") &raquo;
-
-
+                pagination.pagination-sm(page="pg.current", total-items="pg.items", items-per-page="pg.pageSize",
+                    previous-text="«", next-text="»", rotate="true", max-size="5")
