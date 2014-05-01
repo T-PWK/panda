@@ -73,6 +73,6 @@ p.btn-group {
     margin-top: 0;
 }
 
-.pagination a {
+.pagination a, .accordion-toggle {
     cursor: pointer;
 }

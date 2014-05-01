@@ -283,6 +283,8 @@
                 }
                 else { add(label); }
 
+                $scope.labels = [];
+
                 function add (label) {
                     var labels = $scope.post.labels || ($scope.post.labels = []);
 
