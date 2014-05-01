@@ -22,17 +22,17 @@
         }
     };
 
-    function updateUser (req, res) {
+    function updateUser(req, res) {
         when.resolve(provider.updateUser(req.user.id, req.body))
             .then(sendUser.bind(null, res));
     }
 
-    function updatePassword (req, res) {
+    function updatePassword(req, res) {
         var user = req.user,
-            password = _.pick(req.body, 'current', 'new', 'verify');
+            password = _.pick(req.body, 'current', 'change', 'verify');
 
         // New password does not match password verification
-        if (password['new'] !== password.verify) {
+        if (password.change !== password.verify) {
             return res.send(400);
         }
 
@@ -41,14 +41,14 @@
             if (err || !result) {
                 return res.send(400);
             }
-            when.resolve(provider.updatePassword(user.id, password['new'])).done(
+            when.resolve(provider.updatePassword(user.id, password.change)).done(
                 res.send.bind(res, 200),
                 res.send.bind(res, 400)
             );
         });
     }
 
-    function sendUser (res, user) {
+    function sendUser(res, user) {
         res.json(_.pick(user, 'id', 'name', 'email', 'image', 'location', 'website', 'bio', 'lead', 'createdAt', 'updatedAt'));
     }
 
