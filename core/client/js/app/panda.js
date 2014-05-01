@@ -139,13 +139,6 @@
                 return pageNames[name];
             };
         }])
-        .directive('ngTooltip', function(){
-            return function(scope, element) {
-                element.bind("mouseenter", function(){
-                    element.tooltip('show');
-                });
-            };
-        })
         .directive('ngEnter', function() {
             return function(scope, element, attrs) {
                 element.bind("keydown keypress", function(event) {
