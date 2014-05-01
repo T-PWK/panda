@@ -4,3 +4,7 @@
 .navbar-img img {
     width: 38px;
 }
+
+.btn-group .pagination {
+    margin-top: 7px;
+}

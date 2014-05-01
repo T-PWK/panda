@@ -68,3 +68,11 @@ p.btn-group {
 .btn-link.fa:hover {
     text-decoration: none;
 }
+
+.btn-group .pagination {
+    margin-top: 0;
+}
+
+.pagination a {
+    cursor: pointer;
+}
