@@ -111,7 +111,9 @@ function gruntConfig (grunt) {
                     '<%= dir.dest.js %>/vendors.min.js': [
                         '<%= dir.src.jslib %>/lodash/lodash.min.js',
                         '<%= dir.src.jslib %>/underscore/underscore.string-2.3.2.min.js',
-                        '<%= dir.src.jslib %>/bootstrap/bootstrap.js',
+                        '<%= dir.src.jslib %>/bootstrap/bootstrap.min.js',
+                        '<%= dir.src.jslib %>/ui.bootstrap/ui-bootstrap-tpls-0.10.0.min.js',
+                        '<%= dir.src.jslib %>/angularFileUpload/angular-file-upload.js',
                         '<%= dir.src.jslib %>/marked/marked.js',
                         '<%= dir.src.jslib %>/nprogress/nprogress.js',
                         '<%= dir.src.jslib %>/moment/moment-2.5.1.min.js',
