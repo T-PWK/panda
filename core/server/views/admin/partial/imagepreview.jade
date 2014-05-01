@@ -1,0 +1,14 @@
+.modal-header
+    button.close(ng-click="close()") &times;
+    h4.modal-title Image Preview
+.modal-body
+    img.img-responsive.center-block(ng-src="{{image.url}}", alt="{{image.name}}")
+.modal-footer
+    .pull-left
+        dl.dl-horizontal.text-left
+            dt Image Name
+            dd {{image.name}}
+            dt Image URL
+            dd {{image.url}}
+            dt Image Size
+            dd {{image.size/1024|number:1}}KB

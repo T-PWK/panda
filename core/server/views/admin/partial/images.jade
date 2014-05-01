@@ -21,17 +21,16 @@
                         th.col-sm-1 ID
                         th.col-sm-5 Name
                         th.col-sm-1 Size
-                        th.col-sm-3 Progress
+                        th.col-sm-1 Type
+                        th.col-sm-2 Progress
                         th.col-sm-2
                     tbody
                         tr(ng-repeat="file in selectedFiles")
                             td {{$index+1}}
                             td {{file.name}}
                             td {{file.size/1024|number:1}}KB
-                            td: .progress: .progress-bar(role="progressbar", aria-valuenow="{{progress[$index]}}",
-                                aria-valuemin="0", aria-valuemax="100", style="width: {{progress[$index]}}%;",
-                                ng-class="{'progress-bar-success':progress[$index]==100}")
-                                    | {{progress[$index]}}%
+                            td {{file.type}}
+                            td: progressbar(value="progress[$index]") {{progress[$index]|number:0}}%
                             td.text-danger
                                 a(href="", ng-click="remove($index)")
                                     i.fa.fa-fw.fa-times-circle
@@ -50,23 +49,5 @@
 
         .row
             .col-lg-3.col-sm-4.col-xs-6(ng-repeat="img in images")
-                a.thumbnail(href="", ng-click="setCurrent($index)", data-toggle="modal", data-target=".image-preview")
-                    img.img-responsive.img-rounded(ng-src="{{img.url}}", alt="{{img.name}}", title="{{img.name}}", ng-tooltip, data-placement="top")
-
-.modal.fade.image-preview(tabindex="-1", role="dialog", aria-labelledby="myLargeModalLabel", aria-hidden="true")
-    .modal-dialog.modal-lg
-        .modal-content
-            .modal-header
-                button.close(type="button", data-dismiss="modal", aria-hidden="true") &times;
-                h4.modal-title Image Preview
-            .modal-body
-                img.img-responsive.center-block(ng-src="{{current.url}}", alt="{{current.name}}")
-            .modal-footer
-                .pull-left
-                    dl.dl-horizontal.text-left
-                        dt Image Name
-                        dd {{current.name}}
-                        dt Image URL
-                        dd {{current.url}}
-                        dt Image Size
-                        dd {{current.size/1024|number:1}}KB
+                a.thumbnail(href="", ng-click="open($index)")
+                    img.img-responsive.img-rounded(ng-src="{{img.url}}", alt="{{img.name}}", title="{{img.name}}", tooltip="{{img.name}}")

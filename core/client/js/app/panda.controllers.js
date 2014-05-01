@@ -905,17 +905,38 @@
         }
     ]);
 
-    controllers.controller('ImgCtrl', ['$scope', '$upload', '$timeout', 'Images',
-        function ($scope, $upload, $timeout, Images) {
+    controllers.controller('ImagePreviewCtrl', ['$scope', '$modalInstance', 'image',
+        function($scope, $modalInstance, image) {
+            $scope.image = image;
+
+            $scope.close = function(){
+                $modalInstance.close();
+            }
+        }
+    ]);
+
+    controllers.controller('ImgCtrl', ['$scope', '$upload', '$timeout', '$modal', 'Images',
+        function ($scope, $upload, $timeout, $modal, Images) {
             $scope.setCrumb('images');
             $scope.setLoading(true);
             $scope.images = Images.query(function () {
                 $scope.setLoading(false);
             });
 
-            $scope.setCurrent = function (index) {
-                $scope.current = $scope.images[index];
+            $scope.open = function (index) {
+                $modal.open({
+                    templateUrl: 'imagepreview',
+                    controller: 'ImagePreviewCtrl',
+                    size: 'lg',
+                    resolve: {
+                        image: function() {
+                            return $scope.images[index];
+                        }
+                    }
+                });
             };
+
+
 
             $scope.onFileSelect = function ($files) {
                 $scope.selectedFiles = $files;
