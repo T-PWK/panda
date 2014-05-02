@@ -93,13 +93,13 @@
                         label.col-sm-2.control-label(for="change") New Password
                         .col-sm-6
                             input.form-control#change(type="password", name="change", ng-model="passwd.change",
-                                ng-maxlength="100", ng-minlength="6", ng-required="passReq", data-toggle="popover",
-                                data-placement="right", data-trigger="focus", data-selector="#popoverdata")
+                                ng-maxlength="100", ng-minlength="6", ng-required="passReq")
                         .col-sm-4.text-danger(ng-show="passForm.change.$invalid && passForm.change.$dirty")
                             i.fa.fa-fw.fa-exclamation-triangle
                             span(ng-show="passForm.change.$error.minlength") New password must be at least 6 characters long
                             span(ng-show="passForm.change.$error.required && passForm.change.$dirty") New password must not be empty
 
+                    //- Password strength indicator
                     .form-group(collapse="!passwd.change")
                         .col-sm-6.col-sm-offset-2
                             p
