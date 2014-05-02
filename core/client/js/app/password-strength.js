@@ -1,6 +1,8 @@
 (function () {
     "use strict";
 
+    /* jshint -W030 */
+
     var module = angular.module('password', []),
         checks = [
             /* alphaLower */ {
@@ -70,8 +72,6 @@
                         break;
                     }
                 }
-
-                (idx == -1) && (idx == 0);
 
                 return {
                     score:score,

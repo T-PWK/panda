@@ -553,8 +553,8 @@
         }
     ]);
 
-    controllers.controller('UsersCtrl', ['$scope', '$timeout', 'Users', 'Password',
-        function ($scope, $timeout, Users, Password) {
+    controllers.controller('UsersCtrl', ['$scope', '$timeout', 'Users',
+        function ($scope, $timeout, Users) {
             $scope.setCrumb('users');
             $scope.setLoading(true);
 
@@ -627,7 +627,7 @@
                 });
             };
         }
-    ])
+    ]);
 
     controllers.controller('RedirectEditCtrl', ['$scope', '$rootScope', 'Redirects',
         function ($scope, $rootScope, Redirects) {
@@ -922,7 +922,7 @@
 
             $scope.close = function(){
                 $modalInstance.close();
-            }
+            };
         }
     ]);
 
@@ -966,8 +966,8 @@
                 $timeout(function(){
                     forEach($files, function($file, index){
                         $scope.start(index);
-                    })
-                }, 2000)
+                    });
+                }, 2000);
             };
 
             $scope.abort = function(index) {

@@ -8,8 +8,8 @@
             .then(function (images) {
                 res.json(images);
             }).otherwise(function (err) {
-                console.error(err)
-                res.json([])
+                console.error(err);
+                res.json([]);
             });
     };
 
