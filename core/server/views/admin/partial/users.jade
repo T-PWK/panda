@@ -77,7 +77,7 @@
         .row
             .col-md-2: h3 Password
             .col-md-10
-                form.form-horizontal(name="passForm")
+                form.form-horizontal(name="passForm", ng-controller="PasswordCtrl")
 
                     //- Current / old password
                     .form-group(ng-class="{'has-error':passForm.current.$invalid && passForm.current.$dirty}")
@@ -99,6 +99,13 @@
                             i.fa.fa-fw.fa-exclamation-triangle
                             span(ng-show="passForm.change.$error.minlength") New password must be at least 6 characters long
                             span(ng-show="passForm.change.$error.required && passForm.change.$dirty") New password must not be empty
+
+                    .form-group(collapse="!passwd.change")
+                        .col-sm-6.col-sm-offset-2
+                            p
+                                | New Password Strength:
+                                strong {{passwd.strength.verdict}}
+                            progressbar(value="passwd.strength.progress", type="{{passwd.strength.type}}")
 
                     //- Password verification
                     .form-group(ng-class="{'has-error':passForm.verify.$invalid && passForm.verify.$dirty,'has-success':passForm.verify.$valid && passForm.verify.$dirty}")

@@ -557,16 +557,10 @@
         function ($scope, $timeout, Users, Password) {
             $scope.setCrumb('users');
             $scope.setLoading(true);
-            $scope.passReq=true;
 
             $scope.$watch('master.name', function (name, oldName) {
                 if (!name || !oldName || name == oldName) { return; }
                 angular.element('.user-name').text(name);
-            });
-
-            $scope.$watch('passwd.verify', function (value) {
-                if (!value) return;
-                $scope.passForm.verify.$setValidity('match', value === $scope.passwd.change);
             });
 
             $scope.loadUser = function () {
@@ -594,12 +588,31 @@
                     });
             };
 
+            $scope.loadUser();
+        }
+    ]);
+
+    controllers.controller('PasswordCtrl', ['$scope', '$timeout', 'Users', 'Password',
+        function ($scope, $timeout, Users, Password) {
+            $scope.passReq=true;
+            $scope.passwd = { };
+
+            $scope.$watch('passwd.verify', function (value) {
+                if (!value) return;
+                $scope.passForm.verify.$setValidity('match', value === $scope.passwd.change);
+            });
+
+            $scope.$watch('passwd.change', function (passwd) {
+                if (!passwd) return;
+                $scope.passwd.strength = Password.checkStrength(passwd);
+            });
+
             $scope.savePasswd = function() {
                 $scope.setLoading('Changing password');
                 Users.updatePassword(_.pick($scope.passwd, 'change', 'verify', 'current'))
                     .$promise
-                        .then(bind($scope, $scope.resetPasswd()))
-                        .then(bind($scope, $scope.setLoading()));
+                    .then(bind($scope, $scope.resetPasswd()))
+                    .then(bind($scope, $scope.setLoading()));
             };
 
             $scope.resetPasswd = function() {
@@ -613,10 +626,8 @@
                     $scope.passReq = true;
                 });
             };
-
-            $scope.loadUser();
         }
-    ]);
+    ])
 
     controllers.controller('RedirectEditCtrl', ['$scope', '$rootScope', 'Redirects',
         function ($scope, $rootScope, Redirects) {
@@ -919,6 +930,7 @@
         function ($scope, $upload, $timeout, $modal, Images) {
             $scope.setCrumb('images');
             $scope.setLoading(true);
+
             $scope.images = Images.query(function () {
                 $scope.setLoading(false);
             });
@@ -935,8 +947,6 @@
                     }
                 });
             };
-
-
 
             $scope.onFileSelect = function ($files) {
                 $scope.selectedFiles = $files;
@@ -983,8 +993,6 @@
                     $scope.progress[index] = parseInt(100.0 * evt.loaded / evt.total);
                 }
             };
-
-
 
 //            function setPreview(reader, index) {
 //                reader.onload = function (e) {
