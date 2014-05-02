@@ -1,4 +1,4 @@
-.row
+.row(ng-file-drop)
     .col-md-3
         include includes/navigation
     .col-md-9
@@ -9,45 +9,67 @@
 
         .row
             .col-sm-12
-                input(type="file", ng-file-select="onFileSelect($files)", multiple)
+                input(type="file", ng-file-select, multiple)
         .row
             .col-sm-12
-                .alert.alert-info(ng-file-drop="onFileSelect($files)", ng-file-drag-over-class="alert-warning")
-                    | Drop files here
+                h3 Upload queue
+                p Queue length: {{ uploader.queue.length }}
         .row
             .col-sm-12
-                table.table.table-striped
+                table.table
                     thead
-                        th.col-sm-1 ID
-                        th.col-sm-5 Name
+                        th.col-sm-6 Name
                         th.col-sm-1 Size
-                        th.col-sm-1 Type
-                        th.col-sm-2 Progress
-                        th.col-sm-2
+                        th.col-sm-1 Progress
+                        th.col-sm-1 Status
+                        th.col-sm-3 Actions
                     tbody
-                        tr(ng-repeat="file in selectedFiles")
-                            td {{$index+1}}
-                            td {{file.name}}
-                            td {{file.size/1024|number:1}}KB
-                            td {{file.type}}
-                            td: progressbar(value="progress[$index]") {{progress[$index]|number:0}}%
-                            td.text-danger
-                                a(href="", ng-click="remove($index)")
-                                    i.fa.fa-fw.fa-times-circle
-                                    | Delete
+                        tr(ng-repeat="item in uploader.queue")
+                            td: strong {{item.file.name}}
+                            td(nowrap) {{ item.file.size/1024/1024|number:2 }} MB
+                            td: progressbar(value="item.progress")
+                            td.text-center
+                                i.fa.fa-check-circle-o(ng-show="item.isSuccess")
+                                i.fa.fa-ban(ng-show="item.isCancel")
+                                i.fa.fa-times-circle-o(ng-show="item.isError")
+                            td(nowrap)
+                                button.btn.btn-success.btn-xs(ng-click="item.upload()", ng-disabled="item.isReady || item.isUploading || item.isSuccess")
+                                    i.fa.fa-fw.fa-upload
+                                    | Upload
+                                button.btn.btn-warning.btn-xs(ng-click="item.cancel()", ng-disabled="!item.isUploading")
+                                    i.fa.fa-fw.fa-ban
+                                    | Cancel
+                                button.btn.btn-danger.btn-xs(ng-click="item.remove()", ng-disabled="item.isReady || item.isUploading || item.isSuccess")
+                                    i.fa.fa-fw.fa-trash-o
+                                    | Remove
+        .row
+            .col-sm-2 Queue progress:
+            .col-sm-8: progressbar(value="uploader.progress")
         .row
             .col-sm-12
-                div(ng-repeat="file in selectedFiles")
-                    | {{$index+1}}: {{file.name}} - size: {{file.size}} - type: {{file.type}}
-                    img(ng-show="dataUrls[$index]", ng-src="{{dataUrls[$index]}}", alt="{{file.name}}", style="max-height:50px;max-width:100px;")
+                button.btn.btn-success.btn-sm(type="button", ng-click="uploader.uploadAll()", ng-disabled="!uploader.getNotUploadedItems().length")
+                    i.fa.fa-fw.fa-upload
+                    | Upload all
+                button.btn.btn-warning.btn-sm(type="button", ng-click="uploader.cancelAll()", ng-disabled="!uploader.isUploading")
+                    i.fa.fa-fw.fa-ban
+                    | Cancel all
+                button.btn.btn-danger.btn-sm(type="button", ng-click="uploader.clearQueue()", ng-disabled="!uploader.queue.length")
+                    i.fa.fa-fw.fa-trash-o
+                    | Remove all
 
-        .row(ng-if="!images.length && isLoading")
-            .col-sm-12
-                .text-center
-                    i.fa.fa-fw.fa-spinner.fa-spin
-                    | Loading images
-
-        .row
-            .col-lg-3.col-sm-4.col-xs-6(ng-repeat="img in images")
-                a.thumbnail(href="", ng-click="open($index)")
-                    img.img-responsive.img-rounded(ng-src="{{img.url}}", alt="{{img.name}}", title="{{img.name}}", tooltip="{{img.name}}")
+        //.row
+        //    .col-sm-12
+        //        div(ng-repeat="file in selectedFiles")
+        //            | {{$index+1}}: {{file.name}} - size: {{file.size}} - type: {{file.type}}
+        //            img(ng-show="dataUrls[$index]", ng-src="{{dataUrls[$index]}}", alt="{{file.name}}", style="max-height:50px;max-width:100px;")
+        //
+        //.row(ng-if="!images.length && isLoading")
+        //    .col-sm-12
+        //        .text-center
+        //            i.fa.fa-fw.fa-spinner.fa-spin
+        //            | Loading images
+        //
+        //.row
+        //    .col-lg-3.col-sm-4.col-xs-6(ng-repeat="img in images")
+        //        a.thumbnail(href="", ng-click="open($index)")
+        //            img.img-responsive.img-rounded(ng-src="{{img.url}}", alt="{{img.name}}", title="{{img.name}}", tooltip="{{img.name}}")

@@ -926,14 +926,31 @@
         }
     ]);
 
-    controllers.controller('ImgCtrl', ['$scope', '$upload', '$timeout', '$modal', 'Images',
-        function ($scope, $upload, $timeout, $modal, Images) {
-            $scope.setCrumb('images');
-            $scope.setLoading(true);
+    controllers.controller('ImgCtrl', ['$scope', '$fileUploader', '$timeout', '$modal', 'Images',
+        function ($scope, $fileUploader, $timeout, $modal, Images) {
+            'use strict';
 
-            $scope.images = Images.query(function () {
-                $scope.setLoading(false);
+            $scope.setCrumb('images');
+//            $scope.setLoading(true);
+
+            var uploader = $scope.uploader = $fileUploader.create({
+                scope: $scope, // to automatically update the html. Default: $rootScope
+                url: '/api/v1/upload',
+                formData: [
+                    { key: 'value' }
+                ],
+                filters: [
+                    function (item) { // first user filter
+                        console.info('filter1');
+                        return true;
+                    }
+                ]
             });
+
+            // Temporarily commented out
+//            $scope.images = Images.query(function () {
+//                $scope.setLoading(false);
+//            });
 
             $scope.open = function (index) {
                 $modal.open({
@@ -978,12 +995,12 @@
             $scope.start = function (index) {
                 $scope.progress[index] = 0;
 
-                $scope.upload[index] = $upload
-                    .upload({
-                        url: '/api/v1/upload',
-                        file: $scope.selectedFiles[index]
-                    })
-                    .then(completion, null, progress);
+//                $scope.upload[index] = $upload
+//                    .upload({
+//                        url: '/api/v1/upload',
+//                        file: $scope.selectedFiles[index]
+//                    })
+//                    .then(completion, null, progress);
 
                 function completion() {
                     $scope.progress[index] = 100;
