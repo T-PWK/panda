@@ -37,17 +37,25 @@
             }
         ],
         scores = [ 0, 10, 15, 25, 45 ],
-        verdicts = [ 'Too Short', 'Very weak', 'Weak', 'Good', 'Strong', 'Very strong'],
-        progress = [ '0%', '10%', '30%', '60%', '80%', '100%' ];
+        verdicts = [ 'Very weak', 'Weak', 'Good', 'Strong', 'Very strong'],
+        progress = [ 10, 30, 60, 80, 100 ];
 
     module.factory('Password', function () {
         return {
             checkStrength: function (password) {
                 var score = 0, minChars = 6, len = password.length, diff = len - minChars, idx = -1;
 
+                if (diff < 0) {
+                    return {
+                        score:-100,
+                        verdict: 'Too Short',
+                        progress: 0,
+                        type: 'danger'
+                    };
+                }
+
                 // Calculate initial score based on password length
-                (diff < 0 && (score -= 100)) || (diff >= 5 && (score += 18)) || (diff >= 3 && (score +=
-                    12)) || (diff === 2 && (score += 6));
+                (diff >= 5 && (score += 18)) || (diff >= 3 && (score += 12)) || (diff === 2 && (score += 6));
 
                 angular.forEach(checks, function (check) {
                     password.match(check.re) && (score += check.score);
@@ -56,14 +64,20 @@
                 // Score bonus for length per character
                 score && (score += len);
 
-                angular.forEach(scores, function (value, index) {
-                    (idx < 0) && (score < value) && (idx = index);
-                });
+                for(var i = scores.length - 1; i >= 0; i--) {
+                    if (score >= scores[i]) {
+                        idx = i;
+                        break;
+                    }
+                }
+
+                (idx == -1) && (idx == 0);
 
                 return {
                     score:score,
                     verdict: verdicts[idx],
-                    progress: progress[idx]
+                    progress: progress[idx],
+                    type: progress[idx] > 60 ? 'success' : progress[idx] > 30 ? 'warning' : 'danger'
                 };
             }
         };
