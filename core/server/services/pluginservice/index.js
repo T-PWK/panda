@@ -43,7 +43,7 @@
                     instance = instantiatePlugin(id);
 
                     if (!instance.id) { instance.id = id; }
-                    if (!instance.name) { instance.name = str.humanize(path.basename(id, '.js')); }
+                    if (!instance.name) { instance.name = idToName(id); }
 
                     self.plugins.push(instance);
                 });
@@ -70,7 +70,10 @@
                 return _.pick(plugin, 'id', 'name', 'description', 'version');
             }),
             disabled: _.map(this.disabled, function (plugin) {
-                return {id: plugin};
+                return {
+                    id: plugin,
+                    name: idToName(plugin)
+                };
             })
         };
     };
@@ -86,6 +89,10 @@
     PluginService.prototype.footer = function (req, res) {
         return execute(this.plugins, 'footer', req, res);
     };
+
+    function idToName(id) {
+        return str.titleize(str.humanize(path.basename(id, '.js')))
+    }
 
     function execute(plugins, operation, req, res) {
         return when

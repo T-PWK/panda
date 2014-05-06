@@ -46,11 +46,11 @@
                 table.table.table-striped(ng-if="info.disabled.length")
                     thead
                         tr
-                            th ID
+                            th Name
                             th Actions
                     tbody
                         tr(ng-repeat="plugin in info.disabled")
-                            td.col-sm-11: strong {{plugin.id}}
+                            td.col-sm-11: strong {{plugin.name}}
                             td.col-sm-1
                                 button.btn.btn-success.btn-xs(type="button", ng-click="start(plugin)")
                                     span(ng-hide="plugin.starting") Start
