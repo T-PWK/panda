@@ -9,6 +9,8 @@
         UserProvider    = require('./services/userprovider'),
         themesProvider  = require('./services/themesprovider'),
         ImageProvider   = require('./services/imageprovider'),
+        PluginService   = require('./services/pluginservice'),
+        pluginService   = new PluginService(),
         configProvider  = new ConfigProvider(),
         postProvider    = new PostProvider(),
         userProvider    = new UserProvider(),
@@ -45,6 +47,7 @@
         return promise
             .then(function () {
                 return when.join(
+                    pluginService.init(),
                     configProvider.init(),
                     postProvider.init(),
                     userProvider.init(),

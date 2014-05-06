@@ -11,6 +11,7 @@
         appRoot         = path.resolve(__dirname, '../../..'),
         adminViews      = path.resolve(appRoot, 'core/server/views'),
         themesRoot      = path.resolve(appRoot, 'content/themes'),
+        pluginRoot      = path.resolve(appRoot, 'content/plugins'),
         dataRoot        = path.resolve(appRoot, 'content/data'),
         clientRoot      = path.resolve(appRoot, 'core/client'),
         sharedRoot      = path.resolve(appRoot, 'content/shared'),
@@ -68,6 +69,7 @@
     function updatePaths () {
         cfg.set('paths:data', dataRoot);
         cfg.set('paths:themes', themesRoot);
+        cfg.set('paths:plugins', pluginRoot);
         cfg.set('paths:adminViews', adminViews);
         cfg.set('paths:sharedStatic', sharedRoot);
         cfg.set('paths:clientStatic', clientRoot);
