@@ -40,12 +40,7 @@
 
                 // Instantiate every enabled plugin
                 plugins.forEach(function (id) {
-                    instance = instantiatePlugin(id);
-
-                    if (!instance.id) { instance.id = id; }
-                    if (!instance.name) { instance.name = idToName(id); }
-
-                    self.plugins.push(instance);
+                    self.plugins.push(instantiatePlugin(id));
                 });
 
                 return self.plugins;
@@ -60,8 +55,43 @@
             });
 
         function instantiatePlugin (plugin) {
-            return require(path.join(pluginDir, plugin));
+            var instance = require(path.join(pluginDir, plugin));
+
+            if (!instance.id) { instance.id = plugin; }
+            if (!instance.name) { instance.name = idToName(plugin); }
+
+            return instance;
         }
+    };
+
+    PluginService.prototype.stop = function (id) {
+        var plugin = _.find(this.plugins, {id: id});
+
+        if (!plugin) {
+            return when.reject();
+        }
+
+    };
+
+    PluginService.prototype.start = function (id) {
+        var plugin = _.find(this.disabled, id), self = this;
+
+        if (!plugin) {
+            return when.reject();
+        }
+
+        return when.resolve(id)
+            .then(function (id) {
+                return instantiatePlugin(id);
+            })
+            .then(function (instance) {
+                self.plugins.push = instance;
+                self.disabled = _.without(self.disabled, id);
+
+                if (instance.start) {
+                    instance.start();
+                }
+            });
     };
 
     PluginService.prototype.info = function () {

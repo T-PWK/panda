@@ -8,9 +8,25 @@
     };
 
     module.exports.update = function (req, res) {
-        setTimeout(function () {
-            res.json(plugins.info());
-        }, 2000)
+        var action;
+        switch (req.query.act) {
+            case 'start':
+                action = plugins.start.bind(plugins);
+                break;
+            case 'stop':
+                action = plugins.start.bind(plugins);
+                break;
+        }
+
+        if (action) {
+            action
+                .then(
+                res.json.bind(res, {})
+            );
+
+        } else {
+            res.send(400);
+        }
 
     };
 
