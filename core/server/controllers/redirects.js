@@ -1,10 +1,10 @@
 (function () {
     'use strict';
 
-    var configProvider = require('../providers').configProvider;
+    var provider = require('../providers').redirectsProvider;
 
     module.exports = function (req, res, next) {
-        configProvider
+        provider
             .findRedirectByUrl(req.path)
             .then(function (redirect) {
                 if (!redirect) return next('route');
