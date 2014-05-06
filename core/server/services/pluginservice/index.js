@@ -43,8 +43,7 @@
                     instance = instantiatePlugin(id);
 
                     if (!instance.id) { instance.id = id; }
-                    if (!instance.name) { instance.name = str.humanize(id); }
-                    if (!instance.version) { instance.version = '0.0.0' }
+                    if (!instance.name) { instance.name = str.humanize(path.basename(id, '.js')); }
 
                     self.plugins.push(instance);
                 });
@@ -70,7 +69,9 @@
             plugins: _.map(this.plugins, function (plugin) {
                 return _.pick(plugin, 'id', 'name', 'description', 'version');
             }),
-            disabled: this.disabled
+            disabled: _.map(this.disabled, function (plugin) {
+                return {id: plugin};
+            })
         };
     };
 

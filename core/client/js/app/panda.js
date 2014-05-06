@@ -17,7 +17,8 @@
             redirects: 'Redirects',
             'new':     'New',
             ips:       'IP Restrictions',
-            images:    'Images'
+            images:    'Images',
+            plugins:   'Plugins'
         },
         status = {
             'D': 'Draft',
@@ -84,7 +85,7 @@
             return $resource('/api/v1/images');
         }])
         .factory('Plugins', ['$resource', function ($resource) {
-            return $resource('/api/v1/plugins');
+            return $resource('/api/v1/plugins/:id', {id: '@id'});
         }])
         .factory('Themes', ['$resource', function ($resource) {
             return $resource('/api/v1/themes/:type/:id',

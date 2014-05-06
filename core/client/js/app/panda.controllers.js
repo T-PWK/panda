@@ -929,13 +929,28 @@
     controllers.controller('PluginsCtrl', ['$scope', 'Plugins',
         function ($scope, Plugins) {
             $scope.setCrumb('plugins');
-            $scope.info = Plugins.get();
-            //
+            loadPluginsInfo();
+
+            $scope.start = function (plugin) {
+                plugin.starting = true;
+                Plugins.save({id: plugin.id, act: 'start'}, loadPluginsInfo);
+            };
+
+            $scope.stop = function (plugin) {
+                plugin.stopping = true;
+                Plugins.save({id: plugin.id, act: 'stop'}, loadPluginsInfo);
+            };
+
+            function loadPluginsInfo() {
+                Plugins.get(function (info) {
+                    $scope.info = info;
+                });
+            }
         }
     ]);
 
     controllers.controller('ImgCtrl', ['$scope', '$fileUploader', '$timeout', '$modal', 'Images',
-        function ($scope, $fileUploader, $timeout, $modal, Images) {
+        function ($scope, $fileUploader, $timeout, $modal) {
             'use strict';
 
             $scope.setCrumb('images');
