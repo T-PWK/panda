@@ -10,7 +10,10 @@
         .row
             .col-sm-2: h3 Active
             .col-sm-10
-                table.table.table-striped
+                .alert.alert-info(ng-if="!info.plugins.length")
+                    i.fa.fa-fw.fa-info-circle
+                    | There is no Active plugins
+                table.table.table-striped(ng-if="info.plugins.length")
                     thead
                         tr
                             th.col-sm-4 Name
@@ -37,7 +40,10 @@
         .row
             .col-sm-2: h3 Inactive
             .col-sm-10
-                table.table
+                .alert.alert-info(ng-if="!info.disabled.length")
+                    i.fa.fa-fw.fa-info-circle
+                    | There is no Inactive plugins
+                table.table.table-striped(ng-if="info.disabled.length")
                     thead
                         tr
                             th ID
