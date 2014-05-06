@@ -1,0 +1,48 @@
+.row
+    .col-md-3
+        ng-include(src="'navigation'")
+    .col-md-9
+        ng-include(src="'breadcrumb'")
+
+        .page-header
+            h1 Plugins
+
+        .row
+            .col-sm-2: h3 Active
+            .col-sm-10
+                table.table.table-striped
+                    thead
+                        tr
+                            th.col-sm-1 #
+                            th.col-sm-3 Name
+                            th.col-sm-5 Description
+                            th.col-sm-2 Version
+                            th.col-sm-1 Actions
+                    tbody
+                        tr(ng-repeat="plugin in info.plugins")
+                            td {{$index+1}}
+                            td {{plugin.name}}
+                            td {{plugin.description}}
+                            td {{plugin.version}}
+                            td
+                                button.btn.btn-danger.btn-xs(type="button", ng-click="stop(plugin.id)") Stop
+
+        .row
+            hr
+
+        .row
+            .col-sm-2: h3 Inactive
+            .col-sm-10
+                table.table
+                    thead
+                        tr
+                            th #
+                            th ID
+                            th Actions
+                    tbody
+                        tr(ng-repeat="plugin in info.disabled")
+                            td.col-sm-1 {{$index+1}}
+                            td.col-sm-10 {{plugin}}
+                            td.col-sm-1
+                                button.btn.btn-success.btn-xs(type="button", ng-click="start(plugin)") Start
+
