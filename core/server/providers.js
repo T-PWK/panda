@@ -35,7 +35,8 @@
         userProvider:       userProvider,
         themesProvider:     themesProvider,
         imageProvider:      imageProvider,
-        redirectsProvider:  redirectsProvider
+        redirectsProvider:  redirectsProvider,
+        pluginService:      pluginService
     };
 
     module.exports.init = function () {
