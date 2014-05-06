@@ -926,6 +926,14 @@
         }
     ]);
 
+    controllers.controller('PluginsCtrl', ['$scope', 'Plugins',
+        function ($scope, Plugins) {
+            $scope.setCrumb('plugins');
+            $scope.info = Plugins.get();
+            //
+        }
+    ]);
+
     controllers.controller('ImgCtrl', ['$scope', '$fileUploader', '$timeout', '$modal', 'Images',
         function ($scope, $fileUploader, $timeout, $modal, Images) {
             'use strict';

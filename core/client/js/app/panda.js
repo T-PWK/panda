@@ -41,6 +41,7 @@
                 .when('/settings/ips', { templateUrl: 'ips', controller: 'IpsCtrl' })
                 .when('/settings/redirects', { templateUrl: 'redirects' })
                 .when('/users', { templateUrl: 'users', controller: 'UsersCtrl' })
+                .when('/plugins', { templateUrl: 'plugins', controller: 'PluginsCtrl' })
                 .when('/themes', { templateUrl: 'themes', controller: 'ThemesCtrl' })
                 .when('/images', { templateUrl: 'images', controller: 'ImgCtrl' })
                 .otherwise({ redirectTo: '/' });
@@ -81,6 +82,9 @@
         }])
         .factory('Images', ['$resource', function ($resource) {
             return $resource('/api/v1/images');
+        }])
+        .factory('Plugins', ['$resource', function ($resource) {
+            return $resource('/api/v1/plugins');
         }])
         .factory('Themes', ['$resource', function ($resource) {
             return $resource('/api/v1/themes/:type/:id',
