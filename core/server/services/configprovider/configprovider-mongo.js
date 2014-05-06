@@ -1,11 +1,10 @@
 (function () {
     'use strict';
 
-    var when        = require('when'),
-        lift        = require('when/node').lift,
+    var lift        = require('when/node').lift,
+        cfg         = require('nconf'),
         _           = require('underscore'),
         debug       = require('debug')('panda:configProvider'),
-        Redirect    = require('./../../models/mongoose/redirect'),
         Config      = require('./../../models/mongoose/config');
 
     var ConfigProvider = module.exports = function () {};
@@ -13,7 +12,15 @@
     ConfigProvider.prototype.init = function () {
         debug('initialization');
 
-        return when.resolve();
+        // Performs configuration updates with database values
+        return this
+            .findAllConfigs()
+            .then(function (configs) {
+                configs.forEach(function (config) {
+                    cfg.set(config.key, config.value);
+                    cfg.notify('set:' + config.key);
+                });
+            });
     };
 
     ConfigProvider.prototype.findAllConfigs = function () {

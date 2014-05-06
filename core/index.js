@@ -18,10 +18,6 @@
                 return require('./server/providers').init();
             })
             .then(function () {
-                // Config updates from the storage
-                return require('./server/config/update').init();
-            })
-            .then(function () {
                 var panda = require('./server');
                 return panda(app);
             })
