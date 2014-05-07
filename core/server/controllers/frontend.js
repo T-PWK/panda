@@ -5,6 +5,7 @@
         when             = require('when'),
         moment           = require('moment'),
         provider         = require('../providers').postProvider,
+        plugins          = require('../providers').pluginService,
         pagination       = require('../helpers/pagination'),
         paginationRegexp = new RegExp(cfg.get('app:paginationUrl').replace(':page', '\\d+')),
         yearRegExp       = /^1|2\d{3}$/,
@@ -13,15 +14,7 @@
         pageNumberRegExp = /^\d+$/;
 
     module.exports.middleware = function (req, res, next) {
-        when.join(
-                provider.labelsInfo({ live:true }),
-                provider.archiveInfo()
-            )
-            .spread(function (labels, archives) {
-                res.locals.labels = labels;
-                res.locals.archives = archives;
-            })
-            .then(next);
+        plugins.request(req, res).finally(next);
     };
 
     module.exports.index = function(req, res) {

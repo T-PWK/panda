@@ -929,23 +929,28 @@
     controllers.controller('PluginsCtrl', ['$scope', 'Plugins',
         function ($scope, Plugins) {
             $scope.setCrumb('plugins');
-            loadPluginsInfo();
+
+            $scope.loadPlugins = function () {
+                $scope.setLoading(true);
+                Plugins.get(function (info) {
+                    $scope.setLoading();
+                    $scope.info = info;
+                });
+            };
 
             $scope.start = function (plugin) {
+                $scope.setLoading(true);
                 plugin.starting = true;
-                Plugins.save({id: plugin.id, act: 'start'}, loadPluginsInfo);
+                Plugins.start({id: plugin.id}, bind($scope, $scope.loadPlugins));
             };
 
             $scope.stop = function (plugin) {
+                $scope.setLoading(true);
                 plugin.stopping = true;
-                Plugins.save({id: plugin.id, act: 'stop'}, loadPluginsInfo);
+                Plugins.stop({id: plugin.id}, bind($scope, $scope.loadPlugins));
             };
 
-            function loadPluginsInfo() {
-                Plugins.get(function (info) {
-                    $scope.info = info;
-                });
-            }
+            $scope.loadPlugins();
         }
     ]);
 

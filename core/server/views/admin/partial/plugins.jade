@@ -10,10 +10,10 @@
         .row
             .col-sm-2: h3 Active
             .col-sm-10
-                .alert.alert-info(ng-if="!info.plugins.length")
+                .alert.alert-info(ng-if="!info.active.length")
                     i.fa.fa-fw.fa-info-circle
-                    | There is no Active plugins
-                table.table.table-striped(ng-if="info.plugins.length")
+                    | There are no active plugins
+                table.table.table-striped(ng-if="info.active.length")
                     thead
                         tr
                             th.col-sm-4 Name
@@ -21,7 +21,7 @@
                             th.col-sm-2 Version
                             th.col-sm-1 Actions
                     tbody
-                        tr(ng-repeat="plugin in info.plugins")
+                        tr(ng-repeat="plugin in info.active")
                             td: strong {{plugin.name}}
                             td
                                 | {{plugin.description}}
@@ -30,7 +30,7 @@
                                 | {{plugin.version}}
                                 strong(ng-if="!plugin.version") n/a
                             td
-                                button.btn.btn-danger.btn-xs(type="button", ng-click="stop(plugin)")
+                                button.btn.btn-danger.btn-xs(type="button", ng-click="stop(plugin)", ng-disabled="isLoading")
                                     span(ng-hide="plugin.stopping") Stop
                                     span(ng-show="plugin.stopping"): i.fa.fa-spin.fa-spinner
 
@@ -40,18 +40,18 @@
         .row
             .col-sm-2: h3 Inactive
             .col-sm-10
-                .alert.alert-info(ng-if="!info.disabled.length")
+                .alert.alert-info(ng-if="!info.inactive.length")
                     i.fa.fa-fw.fa-info-circle
-                    | There is no Inactive plugins
-                table.table.table-striped(ng-if="info.disabled.length")
+                    | There are no inactive plugins
+                table.table.table-striped(ng-if="info.inactive.length")
                     thead
                         tr
-                            th Name
-                            th Actions
+                            th.col-sm-11 Name
+                            th.col-sm-1 Actions
                     tbody
-                        tr(ng-repeat="plugin in info.disabled")
-                            td.col-sm-11: strong {{plugin.name}}
-                            td.col-sm-1
-                                button.btn.btn-success.btn-xs(type="button", ng-click="start(plugin)")
+                        tr(ng-repeat="plugin in info.inactive")
+                            td: strong {{plugin.name}}
+                            td
+                                button.btn.btn-success.btn-xs(type="button", ng-click="start(plugin)", ng-disabled="isLoading")
                                     span(ng-hide="plugin.starting") Start
                                     span(ng-show="plugin.starting"): i.fa.fa-spin.fa-spinner

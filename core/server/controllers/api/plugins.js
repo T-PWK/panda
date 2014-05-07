@@ -8,26 +8,26 @@
     };
 
     module.exports.update = function (req, res) {
-        var action;
-        switch (req.query.act) {
+        var action,
+            operation = (req.query.op || '').toLowerCase();
+
+        switch (operation) {
             case 'start':
-                action = plugins.start.bind(plugins);
+                action = plugins.startAndPersist.bind(plugins);
                 break;
             case 'stop':
-                action = plugins.start.bind(plugins);
+                action = plugins.stopAndPersist.bind(plugins);
                 break;
         }
 
         if (action) {
-            action
-                .then(
-                res.json.bind(res, {})
+            action(req.params.id).done(
+                res.send.bind(res, 200, ''),
+                res.send.bind(res, 400)
             );
-
         } else {
             res.send(400);
         }
-
     };
 
 }());

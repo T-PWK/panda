@@ -239,6 +239,8 @@
             now:             { enumerable: true, value: moment() },
             url:             { enumerable: true, value: cfg.get('url') },
             copyright:       { enumerable: true, get: copyright.bind(null, res.locals) },
+            header:          { enumerable: true, value: res.locals.__header__ },
+            footer:          { enumerable: true, value: res.locals.__footer__ },
             $postClass:      { enumerable: true, value: buildPostClass.bind(null, res.locals) },
             $url:            { enumerable: true, value: postUrl.bind(null, res.locals) },
             $pageUrl:        { enumerable: true, value: pageUrl.bind(null, res.locals) },

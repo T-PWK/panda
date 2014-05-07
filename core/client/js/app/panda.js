@@ -85,7 +85,13 @@
             return $resource('/api/v1/images');
         }])
         .factory('Plugins', ['$resource', function ($resource) {
-            return $resource('/api/v1/plugins/:id', {id: '@id'});
+            return $resource('/api/v1/plugins/:id',
+                {id: '@id'},
+                {
+                    start: { method: 'POST', params: { op: 'start' } },
+                    stop: { method: 'POST', params: { op: 'stop' } }
+                }
+            );
         }])
         .factory('Themes', ['$resource', function ($resource) {
             return $resource('/api/v1/themes/:type/:id',
