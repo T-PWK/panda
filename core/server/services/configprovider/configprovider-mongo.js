@@ -13,8 +13,7 @@
         debug('initialization');
 
         // Performs configuration updates with database values
-        return this
-            .findAllConfigs()
+        return this.findAllConfigs()
             .then(function (configs) {
                 configs.forEach(function (config) {
                     cfg.set(config.key, config.value);
