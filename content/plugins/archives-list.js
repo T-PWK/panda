@@ -6,7 +6,7 @@
     require('pkginfo')(module, 'version');
 
     module.exports.name = "Archive List Plugin";
-    module.exports.description = "Generates archives list from the live posts and assigns it to the 'archive' template variable";
+    module.exports.description = "Generates archives list from the live posts and assigns it to the 'archive' template variable.";
     module.exports.author = "Panda";
 
     module.exports.start = function () {

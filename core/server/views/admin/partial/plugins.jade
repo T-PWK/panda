@@ -1,4 +1,4 @@
-mixin list(id, msg, btnLabel, action, actSpinId)
+mixin list(id, msg, btnLabel, btnClass, action, actSpinId)
     .alert.alert-info(ng-if="!info.#{id}.length")
         i.fa.fa-fw.fa-info-circle
         | #{msg}
@@ -11,15 +11,18 @@ mixin list(id, msg, btnLabel, action, actSpinId)
                 th.col-sm-1 Actions
         tbody
             tr(ng-repeat="plugin in info.#{id}")
-                td: strong {{plugin.name}}
                 td
-                    | {{plugin.description|limitTo:50}}{{plugin.description.length>50?'...':''}}
+                    i.fa.fa-fw.fa-info-circle.btn-link(popover-title="{{plugin.name}} {{plugin.version?'v':''}}{{plugin.version}}",
+                        popover="{{plugin.description}}", popover-trigger="mouseenter")
+                    strong {{plugin.name}}
+                td
+                    span(tooltip="{{plugin.description}}") {{plugin.description|limitTo:50}}{{plugin.description.length>50?'...':''}}
                     strong(ng-if="!plugin.description") n/a
                 td
                     | {{plugin.version}}
                     strong(ng-if="!plugin.version") n/a
                 td
-                    button.btn.btn-danger.btn-xs(type="button", ng-click="#{action}(plugin)", ng-disabled="isLoading")
+                    button.btn.btn-xs(class="btn-#{btnClass}", type="button", ng-click="#{action}(plugin)", ng-disabled="isLoading")
                         span(ng-hide="plugin.#{actSpinId}") #{btnLabel}
                         span(ng-show="plugin.#{actSpinId}"): i.fa.fa-spin.fa-spinner
 
@@ -37,12 +40,11 @@ mixin list(id, msg, btnLabel, action, actSpinId)
 
         .row
             .col-sm-12
-                mixin list('active', 'There are no active plugins', 'Stop', 'stop', 'stopping')
-
+                mixin list('active', 'There are no active plugins', 'Stop', 'danger', 'stop', 'stopping')
 
         .page-header
             h3 Inactive
 
         .row
             .col-sm-12
-                mixin list('inactive', 'There are no inactive plugins', 'Start', 'start', 'starting')
+                mixin list('inactive', 'There are no inactive plugins', 'Start', 'success', 'start', 'starting')
