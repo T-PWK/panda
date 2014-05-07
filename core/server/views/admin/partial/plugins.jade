@@ -16,7 +16,7 @@ mixin list(id, msg, btnLabel, btnClass, action, actSpinId)
                         popover="{{plugin.description}}", popover-trigger="mouseenter")
                     strong {{plugin.name}}
                 td
-                    span(tooltip="{{plugin.description}}") {{plugin.description|limitTo:50}}{{plugin.description.length>50?'...':''}}
+                    | {{plugin.description|limitTo:50}}{{plugin.description.length>50?'...':''}}
                     strong(ng-if="!plugin.description") n/a
                 td
                     | {{plugin.version}}
