@@ -1,3 +1,28 @@
+mixin list(id, msg, btnLabel, action, actSpinId)
+    .alert.alert-info(ng-if="!info.#{id}.length")
+        i.fa.fa-fw.fa-info-circle
+        | #{msg}
+    table.table.table-striped(ng-if="info.#{id}.length")
+        thead
+            tr
+                th.col-sm-4 Name
+                th.col-sm-6 Description
+                th.col-sm-1 Version
+                th.col-sm-1 Actions
+        tbody
+            tr(ng-repeat="plugin in info.#{id}")
+                td: strong {{plugin.name}}
+                td
+                    | {{plugin.description|limitTo:50}}{{plugin.description.length>50?'...':''}}
+                    strong(ng-if="!plugin.description") n/a
+                td
+                    | {{plugin.version}}
+                    strong(ng-if="!plugin.version") n/a
+                td
+                    button.btn.btn-danger.btn-xs(type="button", ng-click="#{action}(plugin)", ng-disabled="isLoading")
+                        span(ng-hide="plugin.#{actSpinId}") #{btnLabel}
+                        span(ng-show="plugin.#{actSpinId}"): i.fa.fa-spin.fa-spinner
+
 .row
     .col-md-3
         ng-include(src="'navigation'")
@@ -7,51 +32,17 @@
         .page-header
             h1 Plugins
 
-        .row
-            .col-sm-2: h3 Active
-            .col-sm-10
-                .alert.alert-info(ng-if="!info.active.length")
-                    i.fa.fa-fw.fa-info-circle
-                    | There are no active plugins
-                table.table.table-striped(ng-if="info.active.length")
-                    thead
-                        tr
-                            th.col-sm-4 Name
-                            th.col-sm-5 Description
-                            th.col-sm-2 Version
-                            th.col-sm-1 Actions
-                    tbody
-                        tr(ng-repeat="plugin in info.active")
-                            td: strong {{plugin.name}}
-                            td
-                                | {{plugin.description}}
-                                strong(ng-if="!plugin.description") n/a
-                            td
-                                | {{plugin.version}}
-                                strong(ng-if="!plugin.version") n/a
-                            td
-                                button.btn.btn-danger.btn-xs(type="button", ng-click="stop(plugin)", ng-disabled="isLoading")
-                                    span(ng-hide="plugin.stopping") Stop
-                                    span(ng-show="plugin.stopping"): i.fa.fa-spin.fa-spinner
+        .page-header
+            h3 Active
 
         .row
-            hr
+            .col-sm-12
+                mixin list('active', 'There are no active plugins', 'Stop', 'stop', 'stopping')
+
+
+        .page-header
+            h3 Inactive
 
         .row
-            .col-sm-2: h3 Inactive
-            .col-sm-10
-                .alert.alert-info(ng-if="!info.inactive.length")
-                    i.fa.fa-fw.fa-info-circle
-                    | There are no inactive plugins
-                table.table.table-striped(ng-if="info.inactive.length")
-                    thead
-                        tr
-                            th.col-sm-11 Name
-                            th.col-sm-1 Actions
-                    tbody
-                        tr(ng-repeat="plugin in info.inactive")
-                            td: strong {{plugin.name}}
-                            td
-                                button.btn.btn-success.btn-xs(type="button", ng-click="start(plugin)", ng-disabled="isLoading")
-                                    span(ng-hide="plugin.starting") Start
-                                    span(ng-show="plugin.starting"): i.fa.fa-spin.fa-spinner
+            .col-sm-12
+                mixin list('inactive', 'There are no inactive plugins', 'Start', 'start', 'starting')

@@ -1,22 +1,19 @@
 (function () {
     "use strict";
 
-    var when        = require('when'),
-        provider    = require('../../core/server/providers').postProvider;
+    var when = require('when'), provider;
 
     require('pkginfo')(module, 'version');
 
-    function Plugin() {
-        this.description = "Generates archives list from the live posts and assigns it to the 'archive' template variable";
-        this.author = "Panda";
-        this.version = module.exports.version;
-    }
+    module.exports.name = "Archive List Plugin";
+    module.exports.description = "Generates archives list from the live posts and assigns it to the 'archive' template variable";
+    module.exports.author = "Panda";
 
-    Plugin.prototype.request = function (req, res) {
-        return provider.archiveInfo().then(function (archive) { res.locals.archives = archive; });
+    module.exports.start = function () {
+        provider = require('../../core/server/providers').postProvider;
     };
 
-    module.exports.plugin = function () {
-        return new Plugin();
+    module.exports.request = function (req, res) {
+        return provider.archiveInfo().then(function (archive) { res.locals.archives = archive; });
     };
 }());

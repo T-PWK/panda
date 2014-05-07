@@ -1,22 +1,20 @@
 (function () {
     "use strict";
 
-    var when        = require('when'),
-        provider    = require('../../core/server/providers').postProvider;
+    var when = require('when'), provider;
 
     require('pkginfo')(module, 'version');
 
-    function Plugin() {
-        this.description = "Generates labels list from the live posts and assigns it to the 'archive' template variable";
-        this.author = "Panda";
-        this.version = module.exports.version;
-    }
+    module.exports.name = "Labels List Plugin";
+    module.exports.description = "Generates labels list from the live posts and assigns it to the 'archive' template variable";
+    module.exports.author = "Panda";
 
-    Plugin.prototype.request = function (req, res) {
+    module.exports.start = function () {
+        provider = require('../../core/server/providers').postProvider;
+    };
+
+    module.exports.request = function (req, res) {
         return provider.labelsInfo({ live:true }).then(function (labels) { res.locals.labels = labels; });
     };
 
-    module.exports.plugin = function () {
-        return new Plugin();
-    };
 }());

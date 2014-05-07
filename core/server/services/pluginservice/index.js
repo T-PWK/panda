@@ -14,7 +14,6 @@
         configProvider;
 
     function PluginService() {
-        this.available  = []; // Available plugin ids
         this.active     = []; // Active plugin instances
         this.inactive   = []; // Inactive plugin descriptions
     }
@@ -33,14 +32,12 @@
                 return _.without(ids, 'README');
             })
             .tap(function (ids) {
-                self.available = ids;
-
                 // Set all plugins as inactive and then enable the ones from the 'enabled' list
                 _.forEach(ids, self.addInactive.bind(self));
             })
-            .then(function () {
+            .then(function (ids) {
                 // Returns list of available plugin ids ready to be started
-                return _.intersection(self.available, cfg.get('plugins:enabled') || []);
+                return _.intersection(ids, cfg.get('plugins:enabled') || []);
             })
             .then(function (ids) {
                 // Convert list of ids into a list of plugin startup promises
@@ -51,7 +48,7 @@
     };
 
     PluginService.prototype.addInactive = function (id) {
-        this.inactive.push({id: id, name: idToName(id)});
+        this.inactive.push(instantiatePlugin(id));
     };
 
     PluginService.prototype.stopAndPersist = function (id) {
@@ -106,26 +103,27 @@
             return when.reject({id: id, msg: 'No inactive'});
         }
 
-        return when.resolve(id)
-            .then(instantiatePlugin)
-            .tap(function (instance) {
-                if (_.isFunction(instance.start)) {
-                    return instance.start();
+        return when.resolve(plugin)
+            .tap(function (plugin) {
+                if (_.isFunction(plugin.start)) {
+                    return plugin.start();
                 }
             })
-            .tap(function (instance) {
-                self.active.push(instance);
-                _.remove(self.inactive, {id: instance.id});
+            .tap(function (plugin) {
+                self.active.push(plugin);
+                _.remove(self.inactive, {id: plugin.id});
             });
     };
 
     PluginService.prototype.info = function () {
         return {
-            active: _.map(this.active, function (plugin) {
-                return _.pick(plugin, 'id', 'name', 'description', 'version', 'author');
-            }),
-            inactive: this.inactive
+            active: _.map(this.active, properties),
+            inactive: _.map(this.inactive, properties)
         };
+
+        function properties(plugin) {
+            return _.pick(plugin, 'id', 'name', 'description', 'version', 'author');
+        }
     };
 
     PluginService.prototype.request = function (req, res) {
@@ -151,10 +149,10 @@
     }
 
     function instantiatePlugin (id) {
-        var instance = require(path.join(pluginDir, id)).plugin(id);
+        var instance = require(path.join(pluginDir, id));
 
-        instance.id = id;
-        instance.name = idToName(id);
+        if (!instance.id) { instance.id = id; }
+        if (!instance.name) { instance.name = idToName(id); }
 
         return instance;
     }
