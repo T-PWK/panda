@@ -10,7 +10,7 @@ mixin list(id, msg, btnLabel, btnClass, action, actSpinId)
                 th.col-sm-1 Version
                 th.col-sm-1 Actions
         tbody
-            tr(ng-repeat="plugin in info.#{id}")
+            tr(ng-repeat="plugin in info.#{id} | orderBy:'name'")
                 td
                     i.fa.fa-fw.fa-info-circle.btn-link(ng-click="showInfo(plugin)")
                     strong {{plugin.name}}
