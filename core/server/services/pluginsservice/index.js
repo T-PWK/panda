@@ -93,6 +93,9 @@
 
         return when.resolve(plugin)
             .tap(function (plugin) {
+                plugin.status = 'S';
+            })
+            .tap(function (plugin) {
                 if (_.isFunction(plugin.stop)) {
                     return plugin.stop();
                 }
@@ -114,6 +117,9 @@
 
         return when.resolve(plugin)
             .tap(function (plugin) {
+                plugin.status = 'A';
+            })
+            .tap(function (plugin) {
                 if (_.isFunction(plugin.start)) {
                     return plugin.start();
                 }
@@ -131,7 +137,7 @@
         };
 
         function properties(plugin) {
-            return _.pick(plugin, 'code', 'name', 'description', 'version', 'author', 'teaser');
+            return _.pick(plugin, 'code', 'name', 'description', 'version', 'author', 'teaser', 'status');
         }
     };
 

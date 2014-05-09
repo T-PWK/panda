@@ -6,7 +6,8 @@ mixin list(id, msg, btnLabel, btnClass, action, actSpinId)
         thead
             tr
                 th.col-sm-4 Name
-                th.col-sm-6 Description
+                th.col-sm-5 Description
+                th.col-sm-1
                 th.col-sm-1 Version
                 th.col-sm-1 Actions
         tbody
@@ -14,12 +15,21 @@ mixin list(id, msg, btnLabel, btnClass, action, actSpinId)
                 td
                     i.fa.fa-fw.fa-info-circle.btn-link(ng-click="showInfo(plugin)")
                     strong {{plugin.name}}
+
                 td
-                    | {{plugin.teaser}}
+                    | {{plugin.teaser|limitTo:40}}...
                     strong(ng-if="!plugin.description") n/a
+
+                td
+                    i.fa.fa-stop.text-danger(ng-show="!plugin.status || plugin.status == 'I'")
+                    i.fa.fa-play.text-success(ng-show="plugin.status=='A'")
+                    i.fa.fa-exclamation-triangle.text-danger(ng-show="plugin.status=='E'")
+                    i.fa.fa-exclamation-triangle.text-warning(ng-show="plugin.status=='W'")
+
                 td
                     | {{plugin.version}}
                     strong(ng-if="!plugin.version") n/a
+
                 td
                     button.btn.btn-xs(class="btn-#{btnClass}", type="button", ng-click="#{action}(plugin)", ng-disabled="isLoading")
                         span(ng-hide="plugin.#{actSpinId}") #{btnLabel}
