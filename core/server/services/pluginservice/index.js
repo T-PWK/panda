@@ -172,6 +172,6 @@
             });
     }
 
-    module.exports = PluginService;
+    module.exports = new PluginService();
 
 }());

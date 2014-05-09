@@ -14,7 +14,15 @@
                 return require('./server/config').init();
             })
             .then(function () {
-                // Data providers initialization
+                // Database layer initialization
+                return require('./server/services/database').init();
+            })
+            .then(function () {
+                // Configuration service initialization
+                return require('./server/services/configprovider').init();
+            })
+            .then(function () {
+                // Initialization of other data providers
                 return require('./server/providers').init();
             })
             .then(function () {

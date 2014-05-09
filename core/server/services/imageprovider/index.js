@@ -12,6 +12,5 @@
             break;
     }
 
-    module.exports = ImageProvider;
-
+    module.exports = new ImageProvider(cfg.get('admin:images'));
 })();

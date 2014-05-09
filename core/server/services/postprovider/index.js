@@ -11,6 +11,6 @@
         PostProvider = cachedPostProvider(PostProvider);
     }
 
-    module.exports = PostProvider;
+    module.exports = new PostProvider();
 
 })();
