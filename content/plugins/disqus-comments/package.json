@@ -1,7 +1,7 @@
 {
     "name": "Disqus Comment Synchronizer",
     "version": "0.0.1",
-    "description": "Synchronizes Disqus comments.",
+    "description": "Synchronizes Disqus comments",
     "author": "Panda",
     "main": "index.js"
 }
