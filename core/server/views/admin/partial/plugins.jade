@@ -15,7 +15,7 @@ mixin list(id, msg, btnLabel, btnClass, action, actSpinId)
                     i.fa.fa-fw.fa-info-circle.btn-link(ng-click="showInfo(plugin)")
                     strong {{plugin.name}}
                 td
-                    | {{plugin.description|limitTo:50}}{{plugin.description.length>50?'...':''}}
+                    | {{plugin.teaser}}
                     strong(ng-if="!plugin.description") n/a
                 td
                     | {{plugin.version}}
