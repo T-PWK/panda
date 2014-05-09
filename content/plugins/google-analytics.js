@@ -39,7 +39,7 @@
             tpl = null;
         },
 
-        footerHook: function (req, res) {
+        footerHook: function () {
             var data = cfg.get('theme:custom:ga');
             return (!data || !data.ua || !data.domain) ? '' : tpl(data);
         }
