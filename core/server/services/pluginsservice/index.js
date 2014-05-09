@@ -129,18 +129,14 @@
         return execute(this.active, 'request',  req, res);
     };
 
-    PluginService.prototype.header = function (req, res) {
-        return execute(this.active, 'header', req, res)
-            .then(function (headers) {
-                res.locals.__header__ = headers.join('');
-            });
-    };
-
-    PluginService.prototype.footer = function (req, res) {
-        return execute(this.active, 'footer', req, res)
-            .then(function (headers) {
-                res.locals.__footer__ = headers.join('');
-            });
+    PluginService.prototype.pageHooks = function (name, req, res) {
+        var hookName = name + 'Hook';
+        return _.chain(this.active)
+            .filter(function (plugin) {
+                return _.isFunction(plugin[hookName]);
+            })
+            .invoke(hookName, req, res)
+            .value();
     };
 
     function idToName(id) {
