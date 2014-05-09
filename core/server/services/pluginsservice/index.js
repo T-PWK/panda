@@ -28,7 +28,7 @@
         return node.call(fs.readdir, pluginDir)
             .then(function (ids) {
                 // Remove non-plugin files
-                return _.without(ids, 'README');
+                return _.without(ids, 'README', 'README.md');
             })
             .tap(function (ids) {
                 // Set all plugins as inactive and then enable the ones from the 'enabled' list
