@@ -27,7 +27,6 @@
 
         return node.call(fs.readdir, pluginDir)
             .then(function (ids) {
-
                 // Remove non-plugin files
                 return _.without(ids, 'README');
             })
@@ -145,7 +144,7 @@
     };
 
     function idToName(id) {
-        return str.titleize(str.humanize(path.basename(id, '.js')))
+        return str.titleize(str.humanize(path.basename(id, '.js')));
     }
 
     function instantiatePlugin (id) {
@@ -165,7 +164,7 @@
             .then(function (plugins) {
                 return plugins.map(function (plugin) {
                     return plugin[operation].bind(plugin);
-                })
+                });
             })
             .then(function (tasks) {
                 return parallel(tasks, req, res);

@@ -956,7 +956,6 @@
 
     controllers.controller('ImgCtrl', ['$scope', '$fileUploader', '$timeout', '$modal', 'Images',
         function ($scope, $fileUploader, $timeout, $modal) {
-            'use strict';
 
             $scope.setCrumb('images');
 //            $scope.setLoading(true);
