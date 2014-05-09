@@ -229,7 +229,7 @@
     }
 
     function pageHooks(name, req, res) {
-        return pluginsService.pageHooks(name, req, res);
+        return pluginsService.pageHooks(name, req, res).join('');
     }
 
     function reqLocals(req, res, next) {
