@@ -121,7 +121,7 @@
         };
 
         function properties(plugin) {
-            return _.pick(plugin, 'id', 'name', 'description', 'version', 'author');
+            return _.pick(plugin, 'id', 'name', 'description', 'version', 'author', 'teaser');
         }
     };
 
@@ -148,6 +148,11 @@
 
         if (!instance.id) { instance.id = id; }
         if (!instance.name) { instance.name = idToName(id); }
+        if (!instance.teaser) {
+            var cleanDescription = str.clean(str.stripTags(instance.description || ''));
+            instance.teaser = cleanDescription.substr(0, 50);
+            instance.teaser += cleanDescription.length > 50 ? '...' : '';
+        }
 
         return instance;
     }
