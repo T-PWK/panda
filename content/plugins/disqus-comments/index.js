@@ -5,8 +5,9 @@
 
     module.exports = {
         start: function () {
-            return when.resolve().delay(1000);
+            return when.resolve().delay(2000);
         },
+
         stop: function () {
             return when.resolve().delay(1000);
         }

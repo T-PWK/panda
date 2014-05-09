@@ -6,9 +6,12 @@
 
     module.exports = {
         name: "Archive List Plugin",
+
         description: "Generates archives list from the live posts and assigns it to the <code>archive</code> template variable",
+
         author: {
-            name: "Panda Team"
+            name: "Panda Team",
+            url: "https://github.com/T-PWK/panda"
         },
 
         request: function (req, res) {

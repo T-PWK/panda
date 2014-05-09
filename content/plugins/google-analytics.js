@@ -18,9 +18,17 @@
 
     module.exports = {
         name: "Google Analytics Plugin",
-        description: "Generated Google Analytics JavaScript code at the bottom of a page",
+
+        description: "Generates Google Analytics web tracking code in a page.<br>" +
+            "The plugin requires following properties under <code>theme:custom:ga</code> configuration key:" +
+            "<ul><li><strong>ua</strong> - Google Analytics user account number (format: UA-XXXXXXXX-Y)</li>" +
+            "<li><strong>domain</strong> - website domain name e.g. mydomain.com</li></ul>" +
+            "More information on setting up Google Analytics web tracking code can be found " +
+            "<a href=\"https://support.google.com/analytics/answer/1008080\" target=\"_blank\">here</a>.",
+
         author: {
-            name: "Panda Team"
+            name: "Panda Team",
+            url: "https://github.com/T-PWK/panda"
         },
 
         start: function () {
