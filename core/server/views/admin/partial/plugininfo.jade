@@ -1,0 +1,16 @@
+.modal-header
+    button.close(ng-click="close()") &times;
+    h4.modal-title Plugin Details
+.modal-body
+    .row
+        .col-sm-12
+            .pull-left
+                dl.dl-horizontal.text-left
+                    dt Name
+                    dd {{plugin.name}}
+                    dt Description
+                    dd {{plugin.description}}
+                    dt(ng-if="plugin.author") Author
+                    dd(ng-if="plugin.author") {{plugin.author.name}}
+
+.modal-footer: span(ng-if="plugin.version") v{{plugin.version}}

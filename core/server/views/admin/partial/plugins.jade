@@ -12,8 +12,7 @@ mixin list(id, msg, btnLabel, btnClass, action, actSpinId)
         tbody
             tr(ng-repeat="plugin in info.#{id}")
                 td
-                    i.fa.fa-fw.fa-info-circle.btn-link(popover-title="{{plugin.name}} {{plugin.version?'v':''}}{{plugin.version}}",
-                        popover="{{plugin.description}}", popover-trigger="mouseenter")
+                    i.fa.fa-fw.fa-info-circle.btn-link(ng-click="showInfo(plugin)")
                     strong {{plugin.name}}
                 td
                     | {{plugin.description|limitTo:50}}{{plugin.description.length>50?'...':''}}

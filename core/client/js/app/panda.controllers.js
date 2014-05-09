@@ -926,8 +926,16 @@
         }
     ]);
 
-    controllers.controller('PluginsCtrl', ['$scope', 'Plugins',
-        function ($scope, Plugins) {
+    controllers.controller('PluginInfoCtrl', ['$scope', '$modalInstance',
+        function ($scope, $instance) {
+            $scope.close = function(){
+                $instance.close();
+            };
+        }
+    ]);
+
+    controllers.controller('PluginsCtrl', ['$scope', '$modal', 'Plugins',
+        function ($scope, $modal, Plugins) {
             $scope.setCrumb('plugins');
 
             $scope.loadPlugins = function () {
@@ -951,6 +959,16 @@
             };
 
             $scope.loadPlugins();
+
+            $scope.showInfo = function (plugin) {
+                $scope.plugin = plugin;
+
+                var modalInstance = $modal.open({
+                    templateUrl: 'plugininfo',
+                    controller: 'PluginInfoCtrl',
+                    scope: $scope
+                });
+            };
         }
     ]);
 
