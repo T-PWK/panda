@@ -6,7 +6,7 @@
 
     module.exports = {
         name: "Labels List Plugin",
-        description: "Generates labels list from the live posts and assigns it to the 'labels' template variable",
+        description: "Generates labels list from the live posts and assigns it to the <code>labels</code> template variable",
         author: {
             name: "Panda Team"
         },
