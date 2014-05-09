@@ -7,7 +7,9 @@
     module.exports = {
         name: "Labels List Plugin",
         description: "Generates labels list from the live posts and assigns it to the 'labels' template variable",
-        author: "Panda",
+        author: {
+            name: "Panda Team"
+        },
 
         request: function (req, res) {
             return provider.labelsInfo({ live: true }).then(function (labels) {

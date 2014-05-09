@@ -7,7 +7,9 @@
     module.exports = {
         name: "Archive List Plugin",
         description: "Generates archives list from the live posts and assigns it to the 'archive' template variable",
-        author: "Panda",
+        author: {
+            name: "Panda Team"
+        },
 
         request: function (req, res) {
             return provider.archiveInfo().then(function (archive) {
