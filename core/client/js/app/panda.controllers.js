@@ -949,13 +949,13 @@
             $scope.start = function (plugin) {
                 $scope.setLoading(true);
                 plugin.starting = true;
-                Plugins.start({id: plugin.id}, bind($scope, $scope.loadPlugins));
+                Plugins.start({id: plugin.code}, bind($scope, $scope.loadPlugins));
             };
 
             $scope.stop = function (plugin) {
                 $scope.setLoading(true);
                 plugin.stopping = true;
-                Plugins.stop({id: plugin.id}, bind($scope, $scope.loadPlugins));
+                Plugins.stop({id: plugin.code}, bind($scope, $scope.loadPlugins));
             };
 
             $scope.loadPlugins();

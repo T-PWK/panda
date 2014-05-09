@@ -13,6 +13,6 @@
         }
     };
 
-    require('pkginfo')(module, ['version', 'description', 'name', 'author']);
+    require('pkginfo')(module, ['version', 'description', 'name', 'author', 'code']);
 
 }());

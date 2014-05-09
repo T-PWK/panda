@@ -26,58 +26,69 @@
         var self = this;
 
         return node.call(fs.readdir, pluginDir)
-            .then(function (ids) {
+            .then(function (codes) {
                 // Remove non-plugin files
-                return _.without(ids, 'README', 'README.md');
+                return _.without(codes, 'README', 'README.md');
             })
-            .tap(function (ids) {
+            .then(function (codes) {
                 // Set all plugins as inactive and then enable the ones from the 'enabled' list
-                _.forEach(ids, self.addInactive.bind(self));
+                _.forEach(codes, self.instantiatePlugin.bind(self));
+
+                // From now on use plugin codes
+                return _.pluck(self.inactive, 'code');
             })
-            .then(function (ids) {
-                // Returns list of available plugin ids ready to be started
-                return _.intersection(ids, cfg.get('plugins:enabled') || []);
+            .then(function (codes) {
+                // Returns list of available plugin codes ready to be started
+                return _.intersection(codes, cfg.get('plugins:enabled') || []);
             })
-            .then(function (ids) {
-                // Convert list of ids into a list of plugin startup promises
-                return when.all(_.map(ids, function (id) {
-                    return self.start(id);
+            .then(function (codes) {
+                // Convert list of codes into a list of plugin startup promises
+                return when.all(_.map(codes, function (code) {
+                    return self.start(code);
                 }));
             });
     };
 
-    PluginService.prototype.addInactive = function (id) {
-        this.inactive.push(instantiatePlugin(id));
+    PluginService.prototype.addInactive = function (plugin) {
+        if (_.isArray(plugin)) {
+            Array.prototype.push.apply(this.inactive, plugin);
+        } else {
+            this.inactive.push(plugin);
+        }
     };
 
-    PluginService.prototype.stopAndPersist = function (id) {
-        return this.stop(id)
+    PluginService.prototype.instantiatePlugin = function (code) {
+        this.inactive.push(instantiatePlugin(code));
+    };
+
+    PluginService.prototype.stopAndPersist = function (code) {
+        return this.stop(code)
             .tap(function () {
-                return configProvider.saveConfig(
-                    'plugins:enabled',
-                    _.chain(cfg.get('plugins:enabled') || []).without(id).uniq().sort().value()
-                );
+                var plugins = _.chain(cfg.get('plugins:enabled') || []).without(code).uniq().sort().value();
+                cfg.set('plugins:enabled', plugins);
+
+                return configProvider.saveConfig('plugins:enabled', plugins);
             });
     };
 
-    PluginService.prototype.startAndPersist = function (id) {
-        return this.start(id)
+    PluginService.prototype.startAndPersist = function (code) {
+        return this.start(code)
             .tap(function () {
-                return configProvider.saveConfig(
-                    'plugins:enabled',
-                    _.chain(cfg.get('plugins:enabled') || []).push(id).uniq().sort().value()
-                );
+                var plugins = _.chain(cfg.get('plugins:enabled') || []).push(code).uniq().sort().value();
+                cfg.set('plugins:enabled', plugins);
+
+                return configProvider.saveConfig('plugins:enabled', plugins);
             });
     };
 
-    PluginService.prototype.stop = function (id) {
-        debug('stopping plugin %j', id);
+    PluginService.prototype.stop = function (code) {
+        debug('stopping plugin %j', code);
 
         var self    = this,
-            plugin  = _.find(this.active, {id: id});
+            plugin  = _.find(this.active, {code: code});
 
         if (!plugin) {
-            return when.reject({id: id, msg: 'No active plugin'});
+            return when.reject({code: code, msg: 'No active plugin'});
         }
 
         return when.resolve(plugin)
@@ -87,19 +98,18 @@
                 }
             })
             .tap(function (plugin) {
-                _.remove(self.active, {id: plugin.id});
-                self.addInactive(plugin.id);
+                self.addInactive(_.remove(self.active, {code: plugin.code}));
             });
     };
 
-    PluginService.prototype.start = function (id) {
-        debug('starting plugin %j', id);
+    PluginService.prototype.start = function (code) {
+        debug('starting plugin %j', code);
 
         var self    = this,
-            plugin  = _.find(this.inactive, {id: id});
+            plugin  = _.find(this.inactive, {code: code});
 
         if (!plugin) {
-            return when.reject({id: id, msg: 'No inactive'});
+            return when.reject({code: code, msg: 'No inactive'});
         }
 
         return when.resolve(plugin)
@@ -110,7 +120,7 @@
             })
             .tap(function (plugin) {
                 self.active.push(plugin);
-                _.remove(self.inactive, {id: plugin.id});
+                _.remove(self.inactive, {code: plugin.code});
             });
     };
 
@@ -121,7 +131,7 @@
         };
 
         function properties(plugin) {
-            return _.pick(plugin, 'id', 'name', 'description', 'version', 'author', 'teaser');
+            return _.pick(plugin, 'code', 'name', 'description', 'version', 'author', 'teaser');
         }
     };
 
@@ -139,15 +149,15 @@
             .value();
     };
 
-    function idToName(id) {
-        return str.titleize(str.humanize(path.basename(id, '.js')));
+    function codeToName(code) {
+        return str.titleize(str.humanize(path.basename(code, '.js')));
     }
 
-    function instantiatePlugin (id) {
-        var instance = require(path.join(pluginDir, id));
+    function instantiatePlugin (code) {
+        var instance = require(path.join(pluginDir, code));
 
-        if (!instance.id) { instance.id = id; }
-        if (!instance.name) { instance.name = idToName(id); }
+        if (!instance.code) { instance.code = code; }
+        if (!instance.name) { instance.name = codeToName(code); }
         if (!instance.teaser) {
             var cleanDescription = str.clean(str.stripTags(instance.description || ''));
             instance.teaser = cleanDescription.substr(0, 50);

@@ -5,6 +5,8 @@
         provider = require('../../core/server/providers').postsProvider;
 
     module.exports = {
+        code: 'panda-archives-list',
+
         name: "Archive List Plugin",
 
         description: "Generates archives list from the live posts and assigns it to the <code>archive</code> template variable",

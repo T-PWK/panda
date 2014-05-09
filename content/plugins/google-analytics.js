@@ -17,6 +17,8 @@
             "</script>";
 
     module.exports = {
+        code: 'panda-google-analytics',
+
         name: "Google Analytics Plugin",
 
         description: "Generates Google Analytics web tracking code in a page.<br>" +

@@ -1,4 +1,5 @@
 {
+    "code": "disqus-comments-synchronizer",
     "name": "Disqus Comments Synchronizer",
     "version": "0.0.1",
     "description": "Synchronizes Disqus comments",
