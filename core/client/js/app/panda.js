@@ -150,6 +150,11 @@
                 return pageNames[name];
             };
         }])
+        .filter('unsafe', ['$sce', function ($sce) {
+            return function (val) {
+                return $sce.trustAsHtml(val);
+            };
+        }])
         .directive('ngEnter', function() {
             return function(scope, element, attrs) {
                 element.bind("keydown keypress", function(event) {
