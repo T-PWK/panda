@@ -7,7 +7,7 @@
         crypt       = require('bcryptjs'),
         genSalt     = node.lift(crypt.genSalt),
         hash        = node.lift(crypt.hash),
-        debug       = require('debug')('panda:userProvider'),
+        debug       = require('debug')('panda:usersProvider'),
         User        = require('./../../models/mongoose/user');
 
     var UserProvider = function () {};

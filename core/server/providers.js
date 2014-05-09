@@ -6,20 +6,20 @@
 
     module.exports = {
 
-        postProvider:       require('./services/postprovider'),
+        postsProvider:       require('./services/postsprovider'),
         configProvider:     require('./services/configprovider'),
-        userProvider:       require('./services/userprovider'),
+        usersProvider:       require('./services/usersprovider'),
         themesProvider:     require('./services/themesprovider'),
         imageProvider:      require('./services/imageprovider'),
         redirectsProvider:  require('./services/redirectsprovider'),
-        pluginService:      require('./services/pluginservice'),
+        pluginsService:      require('./services/pluginsservice'),
 
         init: function () {
             return when.join(
-                this.pluginService.init(),
+                this.pluginsService.init(),
                 this.redirectsProvider.init(),
-                this.postProvider.init(),
-                this.userProvider.init(),
+                this.postsProvider.init(),
+                this.usersProvider.init(),
                 this.themesProvider.init(),
                 this.imageProvider.init()
             );

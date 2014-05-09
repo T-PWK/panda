@@ -4,8 +4,8 @@
     var when            = require('when'),
         cfg             = require('nconf'),
         join            = require('path').join,
-        provider        = require('../providers').postProvider,
-        userProvider    = require('../providers').userProvider,
+        provider        = require('../providers').postsProvider,
+        userProvider    = require('../providers').usersProvider,
         atomPostPerPage = cfg.get('app:feeds:atom:postsPerPage'),
         rssPostPerPage  = cfg.get('app:feeds:rss:postsPerPage');
 

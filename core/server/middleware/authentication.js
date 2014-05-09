@@ -3,7 +3,7 @@
 
     var passport        = require('passport'),
         LocalStrategy   = require('passport-local').Strategy,
-        provider        = require('../providers').userProvider,
+        provider        = require('../providers').usersProvider,
         crypt           = require('bcryptjs'),
         str             = require('lodash');
 

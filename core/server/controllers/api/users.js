@@ -4,7 +4,7 @@
     var when        = require('when'),
         _           = require('underscore'),
         crypt       = require('bcryptjs'),
-        provider    = require('../../providers').userProvider;
+        provider    = require('../../providers').usersProvider;
 
     module.exports.index = function(req, res) {
         if (!req.user) return res.send(404);

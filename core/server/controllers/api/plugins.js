@@ -1,7 +1,7 @@
 (function () {
     "use strict";
 
-    var plugins = require('../../providers').pluginService;
+    var plugins = require('../../providers').pluginsService;
 
     module.exports.index = function (req, res) {
         res.json(plugins.info());

@@ -9,7 +9,7 @@
         cfg             = require('nconf'),
         _               = require('lodash'),
         str             = require('underscore.string'),
-        debug           = require('debug')('panda:pluginService'),
+        debug           = require('debug')('panda:pluginsService'),
         pluginDir       = cfg.get('paths:plugins'),
         configProvider;
 

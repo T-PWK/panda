@@ -2,7 +2,7 @@
     "use strict";
 
     var when     = require('when'),
-        provider = require('../../core/server/providers').postProvider;
+        provider = require('../../core/server/providers').postsProvider;
 
     module.exports = {
         name: "Archive List Plugin",

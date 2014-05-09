@@ -8,7 +8,7 @@
         _                   = require('lodash'),
         when                = require('when'),
         lift                = require('when/node').lift,
-        debug               = require('debug')('panda:postProvider'),
+        debug               = require('debug')('panda:postsProvider'),
         Post                = require('./../../models/mongoose/post'),
         postAllowedProps    =
             ['slug', 'title', 'teaser', 'markdown', 'content', 'labels', 'publishedAt', 'author',
