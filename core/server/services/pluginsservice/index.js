@@ -93,7 +93,7 @@
 
         return when.resolve(plugin)
             .tap(function (plugin) {
-                plugin.status = 'S';
+                plugin.status = 'I';
             })
             .tap(function (plugin) {
                 if (_.isFunction(plugin.stop)) {
