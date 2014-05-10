@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    var provider = require('../../providers').postProvider;
+    var provider = require('../../providers').postsProvider;
 
     module.exports.show = function (req, res) {
         switch (req.params.info) {

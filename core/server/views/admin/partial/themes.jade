@@ -7,15 +7,15 @@ mixin warning(condition)
 
 .row
     .col-md-3
-        include includes/navigation
+        ng-include(src="'navigation'")
     .col-md-9
-        include includes/breadcrumb
+        ng-include(src="'breadcrumb'")
 
         .page-header
             h1 Themes
 
         .row
-            .col-md-2: h4 Site
+            .col-md-2: h3 Site
             .col-md-8
                 form.form-horizontal(name="siteForm")
                     fieldset(ng-disabled="isLoading")
@@ -33,7 +33,7 @@ mixin warning(condition)
         hr
 
         .row
-            .col-md-2: h4 Admin
+            .col-md-2: h3 Admin
             .col-md-8
                 form.form-horizontal(name="adminForm")
                     fieldset(ng-disabled="isLoading")

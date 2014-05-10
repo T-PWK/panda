@@ -6,6 +6,7 @@
         _               = require('lodash'),
         _s              = require('underscore.string'),
         themesProvider  = require('../providers').themesProvider,
+        pluginsService  = require('../providers').pluginsService,
         labelUrlFormat  = cfg.get('app:labelUrl'),
         pgnUrl          = cfg.get('app:paginationUrl'),
         pgnRegexp       = new RegExp(pgnUrl.replace(':page', '\\d+'));
@@ -227,6 +228,10 @@
         return true;
     }
 
+    function pageHooks(name, req, res) {
+        return pluginsService.pageHooks(name, req, res).join('');
+    }
+
     function reqLocals(req, res, next) {
         // Set default response local variables
 
@@ -239,6 +244,8 @@
             now:             { enumerable: true, value: moment() },
             url:             { enumerable: true, value: cfg.get('url') },
             copyright:       { enumerable: true, get: copyright.bind(null, res.locals) },
+            $header:         { enumerable: true, value: pageHooks.bind(null, 'header', req, res) },
+            $footer:         { enumerable: true, value: pageHooks.bind(null, 'footer', req, res) },
             $postClass:      { enumerable: true, value: buildPostClass.bind(null, res.locals) },
             $url:            { enumerable: true, value: postUrl.bind(null, res.locals) },
             $pageUrl:        { enumerable: true, value: pageUrl.bind(null, res.locals) },

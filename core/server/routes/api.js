@@ -19,7 +19,12 @@
             ipRoutes    = express.Router(),
             settings    = express.Router(),
             images      = express.Router(),
-            users       = express.Router();
+            users       = express.Router(),
+            plugins     = express.Router();
+
+        plugins
+            .get('/', api.plugins.index)
+            .post('/:id', api.plugins.update);
 
         images
             .get('/', api.images.index);
@@ -79,7 +84,8 @@
             .use('/ips', ipRoutes)
             .use('/settings', settings)
             .use('/redirects', redirects)
-            .use('/images', images);
+            .use('/images', images)
+            .use('/plugins', plugins);
 
         app.use('/api/v1', apiRoutes);
     };

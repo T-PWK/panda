@@ -56,9 +56,9 @@ mixin info(id, name, label)
 
 .row
     .col-md-3
-        include includes/navigation
+        ng-include(src="'navigation'")
     .col-md-9
-        include includes/breadcrumb
+        ng-include(src="'breadcrumb'")
 
         .page-header
             h1 IP Restrictions

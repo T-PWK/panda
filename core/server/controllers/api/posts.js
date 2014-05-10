@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    var provider            = require('../../providers').postProvider,
+    var provider            = require('../../providers').postsProvider,
         cfg                 = require('nconf'),
         when                = require('when'),
         node                = require('when/node'),

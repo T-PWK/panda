@@ -1,0 +1,59 @@
+mixin list(id, msg, btnLabel, btnClass, action, actSpinId)
+    .alert.alert-info(ng-if="!info.#{id}.length")
+        i.fa.fa-fw.fa-info-circle
+        | #{msg}
+    table.table.table-striped(ng-if="info.#{id}.length")
+        thead
+            tr
+                th.col-sm-4 Name
+                th.col-sm-5 Description
+                th.col-sm-1
+                th.col-sm-1 Version
+                th.col-sm-1 Actions
+        tbody
+            tr(ng-repeat="plugin in info.#{id} | orderBy:'name'")
+                td
+                    i.fa.fa-fw.fa-info-circle.btn-link(ng-click="showInfo(plugin)")
+                    strong {{plugin.name}}
+
+                td
+                    | {{plugin.teaser|limitTo:40}}...
+                    strong(ng-if="!plugin.description") n/a
+
+                td
+                    i.fa.fa-stop.text-danger(ng-show="!plugin.status || plugin.status == 'I'")
+                    i.fa.fa-play.text-success(ng-show="plugin.status=='A'")
+                    i.fa.fa-exclamation-triangle.text-danger(ng-show="plugin.status=='E'")
+                    i.fa.fa-exclamation-triangle.text-warning(ng-show="plugin.status=='W'")
+
+                td
+                    | {{plugin.version}}
+                    strong(ng-if="!plugin.version") n/a
+
+                td
+                    button.btn.btn-xs(class="btn-#{btnClass}", type="button", ng-click="#{action}(plugin)", ng-disabled="isLoading")
+                        span(ng-hide="plugin.#{actSpinId}") #{btnLabel}
+                        span(ng-show="plugin.#{actSpinId}"): i.fa.fa-spin.fa-spinner
+
+.row
+    .col-md-3
+        ng-include(src="'navigation'")
+    .col-md-9
+        ng-include(src="'breadcrumb'")
+
+        .page-header
+            h1 Plugins
+
+        .page-header
+            h3 Active
+
+        .row
+            .col-sm-12
+                mixin list('active', 'There are no active plugins', 'Stop', 'danger', 'stop', 'stopping')
+
+        .page-header
+            h3 Inactive
+
+        .row
+            .col-sm-12
+                mixin list('inactive', 'There are no inactive plugins', 'Start', 'success', 'start', 'starting')

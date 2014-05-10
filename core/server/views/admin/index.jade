@@ -1,6 +1,8 @@
 extends layout
 
 block templates
+    script(type="text/ng-template", id="navigation"): include partial/includes/navigation
+    script(type="text/ng-template", id="breadcrumb"): include partial/includes/breadcrumb
     script(type="text/ng-template", id="overview"): include partial/overview
     script(type="text/ng-template", id="themes"): include partial/themes
     script(type="text/ng-template", id="posts"): include partial/posts
@@ -13,6 +15,8 @@ block templates
     script(type="text/ng-template", id="upload-images"): include partial/images
     script(type="text/ng-template", id="browse-images"): include partial/images
     script(type="text/ng-template", id="imagepreview"): include partial/imagepreview
+    script(type="text/ng-template", id="plugins"): include partial/plugins
+    script(type="text/ng-template", id="plugininfo"): include partial/plugininfo
 
 block content
 

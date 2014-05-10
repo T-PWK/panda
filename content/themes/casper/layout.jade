@@ -26,6 +26,8 @@ html
         //- TODO: add canonical
         link(rel="canonical", href=url)
 
+        != $header()
+
     body(class=bodyClass)
 
         //- Everything else gets inserted here
@@ -51,4 +53,4 @@ html
         script(type="text/javascript", src=$assets("/js/jquery.fitvids.js"))
         script(type="text/javascript", src=$assets("/js/index.js"))
 
-
+        != $footer()

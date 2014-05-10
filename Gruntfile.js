@@ -12,11 +12,13 @@ function gruntConfig (grunt) {
             },
             src: {
                 client: 'core/client',
+                server: 'core/server',
                 css: '<%= dir.src.client %>/css',
                 theme: '<%= dir.src.css %>/theme',
                 js: '<%= dir.src.client %>/js',
                 jslib: '<%= dir.src.js %>/lib',
-                views: 'core/server/views'
+                views: '<%= dir.src.server %>/views',
+                plugins: 'content/plugins'
             }
         },
         pkg: grunt.file.readJSON('package.json'),
@@ -55,6 +57,11 @@ function gruntConfig (grunt) {
             },
             server: {
                 src: ['*.*', '!config.json', 'core/**', '!core/client/**', '!core/**/*.jade'],
+                dest: '<%= dir.build %>/',
+                expand: true
+            },
+            plugins: {
+                src: ['<%= dir.src.plugins %>/**', '!<%= dir.src.plugins %>/README' ],
                 dest: '<%= dir.build %>/',
                 expand: true
             },
@@ -222,8 +229,8 @@ function gruntConfig (grunt) {
                 tasks: ['copy:pages']
             },
             express: {
-                files: 'core/server/**/*.js',
-                tasks: [ 'copy:server', 'express:dev' ],
+                files: ['<%= dir.src.server %>/**/*.js', '<%= dir.src.plugins %>/**/*.js'],
+                tasks: [ 'copy:server', 'copy:plugins', 'express:dev' ],
                 options: {
                     nospawn: true
                 }

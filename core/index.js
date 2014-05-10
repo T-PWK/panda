@@ -14,12 +14,16 @@
                 return require('./server/config').init();
             })
             .then(function () {
-                // Data providers initialization
-                return require('./server/providers').init();
+                // Database layer initialization
+                return require('./server/services/database').init();
             })
             .then(function () {
-                // Config updates from the storage
-                return require('./server/config/update').init();
+                // Configuration service initialization
+                return require('./server/services/configprovider').init();
+            })
+            .then(function () {
+                // Initialization of other data providers
+                return require('./server/providers').init();
             })
             .then(function () {
                 var panda = require('./server');

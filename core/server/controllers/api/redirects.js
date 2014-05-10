@@ -2,7 +2,7 @@
     'use strict';
 
     var when        = require('when'),
-        provider    = require('../../providers').configProvider;
+        provider    = require('../../providers').redirectsProvider;
 
     module.exports.index = function (req, res) {
         when.resolve(

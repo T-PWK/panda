@@ -1,57 +1,29 @@
 (function () {
     'use strict';
 
-    var when            = require('when'),
-        mongoose        = require('mongoose'),
-        cfg             = require('nconf'),
-        PostProvider    = require('./services/postprovider'),
-        ConfigProvider  = require('./services/configprovider'),
-        UserProvider    = require('./services/userprovider'),
-        themesProvider  = require('./services/themesprovider'),
-        ImageProvider   = require('./services/imageprovider'),
-        configProvider  = new ConfigProvider(),
-        postProvider    = new PostProvider(),
-        userProvider    = new UserProvider(),
-        imageProvider   = new ImageProvider(cfg.get('admin:images'));
-
-    function initMongoDB() {
-        var deferred = when.defer(),
-            db = mongoose.connection;
-
-        mongoose.connect(cfg.get('database:connection:uri'));
-
-        db.once('open', function () {
-            deferred.resolve();
-        });
-
-        db.once('error', function (err) {
-            deferred.reject(err);
-        });
-
-        return deferred.promise;
-    }
+    var when    = require('when'),
+        cfg     = require('nconf');
 
     module.exports = {
-        postProvider: postProvider,
-        configProvider: configProvider,
-        userProvider: userProvider,
-        themesProvider: themesProvider,
-        imageProvider: imageProvider
-    };
 
-    module.exports.init = function () {
-        var promise = ('mongo' === cfg.get('database:type')) ? when(initMongoDB()) : when.resolve();
+        postsProvider:       require('./services/postsprovider'),
+        configProvider:     require('./services/configprovider'),
+        usersProvider:       require('./services/usersprovider'),
+        themesProvider:     require('./services/themesprovider'),
+        imageProvider:      require('./services/imageprovider'),
+        redirectsProvider:  require('./services/redirectsprovider'),
+        pluginsService:      require('./services/pluginsservice'),
 
-        return promise
-            .then(function () {
-                return when.join(
-                    configProvider.init(),
-                    postProvider.init(),
-                    userProvider.init(),
-                    themesProvider.init(),
-                    imageProvider.init()
-                );
-            });
+        init: function () {
+            return when.join(
+                this.pluginsService.init(),
+                this.redirectsProvider.init(),
+                this.postsProvider.init(),
+                this.usersProvider.init(),
+                this.themesProvider.init(),
+                this.imageProvider.init()
+            );
+        }
     };
 
 })();

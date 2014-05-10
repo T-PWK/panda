@@ -926,9 +926,54 @@
         }
     ]);
 
+    controllers.controller('PluginInfoCtrl', ['$scope', '$modalInstance',
+        function ($scope, $instance) {
+            $scope.close = function(){
+                $instance.close();
+            };
+        }
+    ]);
+
+    controllers.controller('PluginsCtrl', ['$scope', '$modal', 'Plugins',
+        function ($scope, $modal, Plugins) {
+            $scope.setCrumb('plugins');
+
+            $scope.loadPlugins = function () {
+                $scope.setLoading(true);
+                Plugins.get(function (info) {
+                    $scope.setLoading();
+                    $scope.info = info;
+                });
+            };
+
+            $scope.start = function (plugin) {
+                $scope.setLoading(true);
+                plugin.starting = true;
+                Plugins.start({id: plugin.code}, bind($scope, $scope.loadPlugins));
+            };
+
+            $scope.stop = function (plugin) {
+                $scope.setLoading(true);
+                plugin.stopping = true;
+                Plugins.stop({id: plugin.code}, bind($scope, $scope.loadPlugins));
+            };
+
+            $scope.loadPlugins();
+
+            $scope.showInfo = function (plugin) {
+                $scope.plugin = plugin;
+
+                var modalInstance = $modal.open({
+                    templateUrl: 'plugininfo',
+                    controller: 'PluginInfoCtrl',
+                    scope: $scope
+                });
+            };
+        }
+    ]);
+
     controllers.controller('ImgCtrl', ['$scope', '$fileUploader', '$timeout', '$modal', 'Images',
-        function ($scope, $fileUploader, $timeout, $modal, Images) {
-            'use strict';
+        function ($scope, $fileUploader, $timeout, $modal) {
 
             $scope.setCrumb('images', 'upload');
 //            $scope.setLoading(true);

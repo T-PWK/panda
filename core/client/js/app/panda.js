@@ -19,7 +19,8 @@
             ips:        'IP Restrictions',
             images:     'Images',
             upload:     'Upload',
-            browse:     'Browse'
+            browse:     'Browse',
+            plugins:    'Plugins'
         },
         status = {
             'D': 'Draft',
@@ -43,6 +44,7 @@
                 .when('/settings/ips', { templateUrl: 'ips', controller: 'IpsCtrl' })
                 .when('/settings/redirects', { templateUrl: 'redirects' })
                 .when('/users', { templateUrl: 'users', controller: 'UsersCtrl' })
+                .when('/plugins', { templateUrl: 'plugins', controller: 'PluginsCtrl' })
                 .when('/themes', { templateUrl: 'themes', controller: 'ThemesCtrl' })
                 .when('/images/upload', { templateUrl: 'upload-images', controller: 'ImgCtrl' })
                 .when('/images/browse', { templateUrl: 'browse-images', controller: 'ImgCtrl' })
@@ -84,6 +86,15 @@
         }])
         .factory('Images', ['$resource', function ($resource) {
             return $resource('/api/v1/images');
+        }])
+        .factory('Plugins', ['$resource', function ($resource) {
+            return $resource('/api/v1/plugins/:id',
+                {id: '@id'},
+                {
+                    start: { method: 'POST', params: { op: 'start' } },
+                    stop: { method: 'POST', params: { op: 'stop' } }
+                }
+            );
         }])
         .factory('Themes', ['$resource', function ($resource) {
             return $resource('/api/v1/themes/:type/:id',
@@ -140,6 +151,11 @@
         .filter('name', [function(){
             return function (name) {
                 return pageNames[name];
+            };
+        }])
+        .filter('unsafe', ['$sce', function ($sce) {
+            return function (val) {
+                return $sce.trustAsHtml(val);
             };
         }])
         .directive('ngEnter', function() {
