@@ -2,22 +2,24 @@
     'use strict';
 
     var pageNames = {
-            basic:     'Basic',
-            overview:  'Overview',
-            posts:     'Posts',
-            pages:     'Pages',
-            comments:  'Comments',
-            settings:  'Settings',
-            all:       'All',
-            scheduled: 'Scheduled',
-            draft:     'Draft',
-            live:      'Published',
-            users:     'Users',
-            themes:    'Themes',
-            redirects: 'Redirects',
-            'new':     'New',
-            ips:       'IP Restrictions',
-            images:    'Images'
+            basic:      'Basic',
+            overview:   'Overview',
+            posts:      'Posts',
+            pages:      'Pages',
+            comments:   'Comments',
+            settings:   'Settings',
+            all:        'All',
+            scheduled:  'Scheduled',
+            draft:      'Draft',
+            live:       'Published',
+            users:      'Users',
+            themes:     'Themes',
+            redirects:  'Redirects',
+            'new':      'New',
+            ips:        'IP Restrictions',
+            images:     'Images',
+            upload:     'Upload',
+            browse:     'Browse'
         },
         status = {
             'D': 'Draft',
@@ -42,7 +44,8 @@
                 .when('/settings/redirects', { templateUrl: 'redirects' })
                 .when('/users', { templateUrl: 'users', controller: 'UsersCtrl' })
                 .when('/themes', { templateUrl: 'themes', controller: 'ThemesCtrl' })
-                .when('/images', { templateUrl: 'images', controller: 'ImgCtrl' })
+                .when('/images/upload', { templateUrl: 'upload-images', controller: 'ImgCtrl' })
+                .when('/images/browse', { templateUrl: 'browse-images', controller: 'ImgCtrl' })
                 .otherwise({ redirectTo: '/' });
 
             NProgress.configure({ speed: 200, trickleRate: 0.05, trickleSpeed: 250  });
