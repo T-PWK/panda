@@ -1,9 +1,20 @@
 .modal-header
     button.close(ng-click="close()") &times;
-    h4.modal-title {{plugin.name}}
+    h4.modal-title
+        i.fa.fa-fw.fa-stop.text-danger(ng-show="!plugin.status || plugin.status == 'I'")
+        i.fa.fa-fw.fa-play.text-success(ng-show="plugin.status=='A'")
+        i.fa.fa-fw.fa-exclamation-triangle.text-danger(ng-show="plugin.status=='E'")
+        i.fa.fa-fw.fa-exclamation-triangle.text-warning(ng-show="plugin.status=='W'")
+        | {{plugin.name}}
 .modal-body
+
     .row
         .col-sm-12(ng-bind-html="plugin.description | unsafe")
+
+    .row(ng-if="plugin.messages.length")
+        .col-sm-12
+            hr
+            alert(ng-repeat="message in plugin.messages") {{message.msg}}
 
 .modal-footer
     span(ng-if="plugin.version") v{{plugin.version}}
