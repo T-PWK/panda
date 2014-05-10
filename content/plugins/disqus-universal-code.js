@@ -7,10 +7,13 @@
 
         // Disqus Universal Code to embed forum script
         threadSrc   = "<script type=\"text/javascript\">if(typeof DISQUS !== 'object') {" +
-            "(function () { var s = document.createElement('script'); s.async = true;" +
+            "(function () { " +
+            "var s = document.createElement('script'); s.async = true;" +
             "s.type = 'text/javascript';" +
             "s.src = '//${shortname}.disqus.com/embed.js';" +
-            "(document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s); }());" +
+            "(document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s); " +
+            "}());" +
+            "}" +
             "</script>",
 
         // Disqus Universal Code to embed number of comments count script
