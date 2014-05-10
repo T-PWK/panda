@@ -34,7 +34,17 @@
         },
 
         start: function () {
-            return when.try(function () { tpl = _.template(source); });
+                var data = cfg.get('theme:custom:ga');
+                if (!data || !data.ua || !data.domain) {
+                    this.status = 'W';
+                    this.messages = [
+                        {msg: "Plugin could not start up properly due to missing configuration."}
+                    ];
+
+                    return when.resolve();
+                }
+
+                return when.try(function () { tpl = _.template(source); });
         },
 
         stop: function () {

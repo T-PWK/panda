@@ -44,6 +44,15 @@
         },
 
         start: function () {
+            if (!cfg.get('theme:custom:disqus:shortname')) {
+                this.status = "W";
+                this.messages = [
+                    {msg: "Plugin could not start up properly due to missing configuration."}
+                ];
+
+                return when.resolve();
+            }
+
             return when.try(function () {
                 threadTpl = _.template(threadSrc);
                 countTpl = _.template(countSrc);

@@ -6,6 +6,7 @@
         job;
 
     module.exports = {
+
         start: function () {
             return when
                 .try(function () {
@@ -19,7 +20,7 @@
                 .try(function () {
                     job.stop();
                 })
-                .delay(1000);
+                .delay(2000);
         }
     };
 

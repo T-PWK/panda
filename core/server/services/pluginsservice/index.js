@@ -137,7 +137,7 @@
         };
 
         function properties(plugin) {
-            return _.pick(plugin, 'code', 'name', 'description', 'version', 'author', 'teaser', 'status');
+            return _.pick(plugin, 'code', 'name', 'description', 'version', 'author', 'teaser', 'status', 'messages');
         }
     };
 
