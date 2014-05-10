@@ -30,10 +30,10 @@
 
         name: "Disqus Universal Code Plugin",
 
-        description: "Disqus Universal Code Plugin embeds JavaScript code which loads and displays Disqus as well as number of comments on your site." +
-            " More on Universal Embed Code can be found <a href=\"http://help.disqus.com/customer/portal/articles/472097-universal-embed-code\", target=\"_blank\">here</a>." +
-            "The plugin requires following properties under <code>theme:custom:disqus</code> configuration key:" +
-            "<ul><li><strong>shortname</strong> - forum short name</li></ul>",
+        description: "<p>Disqus Universal Code Plugin embeds JavaScript code which loads and displays Disqus as well as number of comments on your site.</p>" +
+            "<p>The plugin requires following properties under <code>theme:custom:disqus</code> configuration key:" +
+            "<ul><li><strong>shortname</strong> - forum short name</li></ul></p>"+
+            "<p>More on Universal Embed Code can be found <a href=\"http://help.disqus.com/customer/portal/articles/472097-universal-embed-code\", target=\"_blank\">here</a>.</p>",
 
         author: {
             name: "Panda Team",

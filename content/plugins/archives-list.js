@@ -9,7 +9,7 @@
 
         name: "Archive List Plugin",
 
-        description: "Generates archives list from the live posts and assigns it to the <code>archive</code> template variable",
+        description: "<p>Generates archives list from the live posts and assigns it to the <code>archive</code> template variable.</p>",
 
         author: {
             name: "Panda Team",

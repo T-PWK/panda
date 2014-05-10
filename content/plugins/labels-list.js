@@ -9,7 +9,7 @@
 
         name: "Labels List Plugin",
 
-        description: "Generates labels list from the live posts and assigns it to the <code>labels</code> template variable",
+        description: "<p>Generates labels list from the live posts and assigns it to the <code>labels</code> template variable.</p>",
 
         author: {
             name: "Panda Team",
