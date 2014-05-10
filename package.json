@@ -61,7 +61,8 @@
     "lru-cache": "^2.5.0",
     "response-time": "^1.0.0",
     "mobile-detect": "^0.1.0",
-    "azure": "~0.9.6"
+    "azure": "~0.9.6",
+    "mime": "~1.2.11"
   },
   "engines": {
     "node": "0.10.x"
