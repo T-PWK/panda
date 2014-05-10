@@ -6,6 +6,7 @@
     var when    = require('when'),
         node    = require('when/node'),
         url     = require('url'),
+        mime    = require('mime'),
         _       = require('lodash'),
         azure   = require('azure');
 
@@ -36,6 +37,23 @@
                 size: blob.properties['content-length']
             };
         }
+    };
+
+    ImageProvider.prototype.createFromStream = function(name, size, part){
+
+        var options = {
+            contentTypeHeader: mime.lookup(name)
+        };
+
+        console.info('name', name, options)
+
+        this.blob.createBlockBlobFromStream(this.options.container, name, part, size, options, function(error) {
+            if (error) {
+                console.info('error', error);
+            } else {
+                console.info('File %s uploaded to Azure Blob successfully', name);
+            }
+        });
     };
 
     module.exports = ImageProvider;
