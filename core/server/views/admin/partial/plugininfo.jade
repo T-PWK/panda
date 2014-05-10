@@ -1,18 +1,13 @@
 .modal-header
     button.close(ng-click="close()") &times;
-    h4.modal-title Plugin Details
+    h4.modal-title {{plugin.name}}
 .modal-body
     .row
-        .col-sm-12
-            .pull-left
-                dl.dl-horizontal.text-left
-                    dt Name
-                    dd {{plugin.name}}
-                    dt Description
-                    dd(ng-bind-html="plugin.description | unsafe")
+        .col-sm-12(ng-bind-html="plugin.description | unsafe")
 
 .modal-footer
     span(ng-if="plugin.version") v{{plugin.version}}
     span.pull-left(ng-if="plugin.author")
         span Author: {{plugin.author.name}}
-        a(ng-if="plugin.author.url", ng-href="{{plugin.author.url}}", target="_blank"): i.fa.fa-fw.fa-external-link-square
+        a(ng-if="plugin.author.url", ng-href="{{plugin.author.url}}", target="_blank")
+            sup: i.fa.fa-fw.fa-external-link-square
