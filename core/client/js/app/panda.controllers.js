@@ -930,7 +930,7 @@
         function ($scope, $fileUploader, $timeout, $modal, Images) {
             'use strict';
 
-            $scope.setCrumb('images');
+            $scope.setCrumb('images', 'upload');
 //            $scope.setLoading(true);
 
             var uploader = $scope.uploader = $fileUploader.create({
