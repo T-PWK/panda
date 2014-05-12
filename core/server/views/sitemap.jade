@@ -11,4 +11,4 @@ urlset(xmlns="http://www.sitemaps.org/schemas/sitemap/0.9")
     mixin url(url+'/', $date(now))
 
     each post in posts
-        mixin url($url(post, true), $date(post))
+        mixin url($url(post, true), $date(post.updatedAt))
