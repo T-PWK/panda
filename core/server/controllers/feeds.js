@@ -63,13 +63,13 @@
         });
     };
 
-    module.exports.sitemap = function(req, res) {
-        when.resolve(provider.findAll({ live:true }))
-            .then(function(posts){
-                res.locals.posts = posts;
-                res.type('xml').render(view(req, 'sitemap'));
-            });
-    };
+//    module.exports.sitemap = function(req, res) {
+//        when.resolve(provider.findAll({ live:true }))
+//            .then(function(posts){
+//                res.locals.posts = posts;
+//                res.type('xml').render(view(req, 'sitemap'));
+//            });
+//    };
 
     function maxUpdatedDate(posts) {
         var dates = posts.map(function (post) {

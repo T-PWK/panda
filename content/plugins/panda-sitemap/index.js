@@ -1,16 +1,18 @@
 (function () {
     "use strict";
 
-    var when        = require('when'),
-        provider    = require('../../../core/server/providers').postsProvider;
+    var provider = require('../../../core/server/providers').postsProvider;
 
     module.exports = {
         request: function (req, res) {
-            return when.try(function () {
-                if (req.url === '/foobar.xml') {
-                    res.send('Ale fajnie .....');
-                }
-            });
+            if (req.url === '/sitemap.xml') {
+                return provider
+                    .findAll({live: true})
+                    .then(function (posts) {
+                        res.locals.posts = posts;
+                        res.type('xml').render(__dirname + '/sitemap');
+                    });
+            }
         }
     };
 
