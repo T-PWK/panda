@@ -6,6 +6,16 @@
         job;
 
     module.exports = {
+        code: "disqus-comments-synchronizer",
+
+        name: "Disqus Comments Synchronizer",
+
+        description: "<p>Synchronizes Disqus comments.</p>",
+
+        author: {
+            name: "Panda Team",
+            url: "https://github.com/T-PWK/panda"
+        },
 
         start: function () {
             return when

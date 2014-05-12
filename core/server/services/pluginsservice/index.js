@@ -142,8 +142,18 @@
         }
     };
 
-    PluginService.prototype.request = function (req, res) {
-        return execute(this.active, 'request',  req, res);
+    PluginService.prototype.request = function (req, res, next) {
+        return execute(this.active, 'request',  req, res).then(function () {
+            next();
+        });
+    };
+
+    PluginService.prototype.post = function (req, res) {
+        return execute(this.active, 'post',  req, res);
+    };
+
+    PluginService.prototype.posts = function (req, res) {
+        return execute(this.active, 'posts',  req, res);
     };
 
     PluginService.prototype.pageHooks = function (name, req, res) {

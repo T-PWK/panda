@@ -6,9 +6,9 @@
         ips         = require('../middleware/ips'),
         poweredBy   = require('../middleware/poweredBy'),
         nocache     = require('../middleware/nocache'),
-        mobile      = require('../middleware/mobile'),
         frontend    = require('../controllers/frontend'),
-        redirects   = require('../controllers/redirects');
+        redirects   = require('../controllers/redirects'),
+        plugins     = require('../providers').pluginsService;
 
     module.exports = function (app) {
 
@@ -18,8 +18,7 @@
             .use(ips.siteIpCheck)
             .use(poweredBy)
             .use(nocache)
-            .use(mobile)
-            .use(frontend.middleware)
+            .use(plugins.request.bind(plugins))
             .param('year', frontend.yearParam)
             .param('month', frontend.monthParam)
             .param('day', frontend.dayParam)

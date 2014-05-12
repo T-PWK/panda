@@ -13,10 +13,6 @@
         dayRegExp        = /^0|1|2|3\d$/,
         pageNumberRegExp = /^\d+$/;
 
-    module.exports.middleware = function (req, res, next) {
-        plugins.request(req, res).finally(next);
-    };
-
     module.exports.index = function(req, res) {
         var limit = cfg.get('app:postsPerPage'),
             page = req.params.page || 1,
@@ -24,7 +20,8 @@
 
         when.join(
                 provider.findAll({ live:true, page:false, limit:limit, skip:skip, sortBy:'-publishedAt' }),
-                provider.count({ page:false, live: true })
+                provider.count({ page:false, live: true }),
+                plugins.posts(req, res)
             )
             .spread(function (posts, count) {
                 res.locals.posts = posts;
@@ -45,7 +42,8 @@
         when.join(
                 provider.findByDate({
                     live: true, page: false, year: year, skip: skip, limit: limit, sortBy: '-publishedAt' }),
-                provider.count({ year: year, page: false, live: true })
+                provider.count({ year: year, page: false, live: true }),
+                plugins.posts(req, res)
             )
             .then(function (results) {
                 res.locals.posts = results[0];
@@ -68,7 +66,8 @@
                     live: true, page: false,
                     month: month, year: year,
                     skip: skip, limit: limit, sortBy: '-publishedAt' }),
-                provider.count({ month: month, year: year, page: false, live: true })
+                provider.count({ month: month, year: year, page: false, live: true }),
+                plugins.posts(req, res)
             )
             .spread(function (posts, count) {
                 res.locals.posts = posts;
@@ -96,7 +95,8 @@
                     skip: skip, limit: limit,
                     sortBy: '-publishedAt'
                 }),
-                provider.count({ day: day, month: month, year: year, page: false, live: true })
+                provider.count({ day: day, month: month, year: year, page: false, live: true }),
+                plugins.posts(req, res)
             )
             .then(function (results) {
                 res.locals.posts = results[0];
@@ -112,7 +112,8 @@
 
     module.exports.post = function (req, res, next) {
         when.resolve(
-                provider.findBySlug(req.params.slug, { live: true })
+                provider.findBySlug(req.params.slug, { live: true }),
+                plugins.post(req, res)
             )
             .then(function (post) {
 
@@ -140,7 +141,8 @@
                     live: true, page: false,
                     label: req.params.label,
                     skip: skip, limit: limit, sortBy: '-publishedAt' }),
-                provider.count({ label: req.params.label, page: false, live: true })
+                provider.count({ label: req.params.label, page: false, live: true }),
+                plugins.posts(req, res)
             )
             .spread(function (posts, count) {
                 res.locals.posts = posts;

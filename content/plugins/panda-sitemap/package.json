@@ -1,0 +1,11 @@
+{
+    "code": "panda-sitemap",
+    "name": "Sitemap Plugin",
+    "version": "0.0.2",
+    "description": "Sitemap Plugin",
+    "main": "index.js",
+    "author": {
+        "name": "Panda Team",
+        "url": "https://github.com/T-PWK/panda"
+    }
+}

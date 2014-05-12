@@ -16,12 +16,20 @@
             url: "https://github.com/T-PWK/panda"
         },
 
-        request: function (req, res) {
-            return provider.labelsInfo({ live: true }).then(function (labels) {
-                res.locals.labels = labels;
-            });
+        post: function (req, res) {
+            return labelsInfo(req, res);
+        },
+
+        posts: function (req, res) {
+            return labelsInfo(req, res);
         }
     };
+
+    function labelsInfo(req, res) {
+        return provider.labelsInfo({ live: true }).then(function (labels) {
+            res.locals.labels = labels;
+        });
+    }
 
     require('pkginfo')(module, 'version');
 
