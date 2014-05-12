@@ -17,7 +17,7 @@ mixin list(id, msg, btnLabel, btnClass, action, actSpinId)
                     strong {{plugin.name}}
 
                 td
-                    | {{plugin.teaser|limitTo:40}}...
+                    span(ng-bind-html="plugin.teaser|unsafe")
                     strong(ng-if="!plugin.description") n/a
 
                 td.text-center
