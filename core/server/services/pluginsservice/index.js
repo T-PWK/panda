@@ -144,7 +144,9 @@
 
     PluginService.prototype.request = function (req, res, next) {
         return execute(this.active, 'request',  req, res).then(function () {
-            next();
+            if (!res.finished) {
+                next();
+            }
         });
     };
 
