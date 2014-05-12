@@ -7,9 +7,10 @@
     module.exports = {
         code: 'panda-archives-list',
 
-        name: "Archive List Plugin",
+        name: "Archive List for Panda",
 
-        description: "<p>Generates archives list from the live posts and assigns it to the <code>archive</code> template variable.</p>",
+        description: "<p>This plugin generates an archives list of your Panda blog. " +
+            "The list is assigned to the <code>archive</code> template variable and can be used in your blog theme.</p>",
 
         author: {
             name: "Panda Team",

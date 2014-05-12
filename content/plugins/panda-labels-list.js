@@ -7,9 +7,10 @@
     module.exports = {
         code: 'panda-labels-list',
 
-        name: "Labels List Plugin",
+        name: "Labels List for Panda",
 
-        description: "<p>Generates labels list from the live posts and assigns it to the <code>labels</code> template variable.</p>",
+        description: "<p>This plugin generates a labels list of your Panda blog." +
+            "The list is assigned to the <code>labels</code> template variable and can be used in your blog theme.</p>",
 
         author: {
             name: "Panda Team",

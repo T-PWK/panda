@@ -19,7 +19,7 @@
     module.exports = {
         code: 'panda-google-analytics',
 
-        name: "Google Analytics Plugin",
+        name: "Google Analytics for Panda",
 
         description: "<p>Generates Google Analytics web tracking code in a page.</p>" +
             "<p>The plugin requires following properties under <code>theme:custom:ga</code> configuration key:" +
