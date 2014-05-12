@@ -10,7 +10,15 @@
         },
         view: {
             pretty: false,  // true for pretty HTML formatting
-            debug: false   // true for view engine console debug
+            debug: false    // true for view engine console debug
+        },
+        plugins: {
+            enabled: [],
+            teaser: {
+                enable: true,       // true for automated teaser generation
+                characters: 40,     // teaser length in characters
+                append: "..."       // text to append to trimmed teaser
+            }
         },
         app: {
             httpCompression: true,
