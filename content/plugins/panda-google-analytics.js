@@ -41,10 +41,10 @@
                         {msg: "Plugin could not start up properly due to missing configuration."}
                     ];
 
-                    return when.resolve();
+                    return;
                 }
 
-                return when.try(function () { tpl = _.template(source); });
+                tpl = _.template(source);
         },
 
         stop: function () {

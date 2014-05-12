@@ -1,16 +1,13 @@
 (function () {
     "use strict";
 
-    var when = require('when'),
-        _ = require('lodash');
+    var _ = require('lodash');
 
     module.exports = function () {
         _.mixin({ 'startsWith': startsWith }, { chain: false });
         _.mixin({ 'endsWith': endsWith }, { chain: false });
         _.mixin({ 'isEmpty': isEmpty }, { chain: false });
         _.mixin({ 'isBlank': isBlank }, { chain: false });
-
-        return when.resolve();
     };
 
     function startsWith(string, prefix, position) {

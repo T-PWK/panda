@@ -18,7 +18,6 @@
 
     PostProvider.prototype.init = function () {
         debug('initializing');
-        return when.resolve();
     };
 
     function addQueryOptions(query, options) {

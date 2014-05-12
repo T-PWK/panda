@@ -10,8 +10,6 @@
 
     RedirectsProvider.prototype.init = function () {
         debug('initialization');
-
-        return when.resolve();
     };
 
     RedirectsProvider.prototype.findAllRedirects = function (properties) {

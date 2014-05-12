@@ -50,13 +50,11 @@
                     {msg: "Plugin could not start up properly due to missing configuration."}
                 ];
 
-                return when.resolve();
+                return;
             }
 
-            return when.try(function () {
-                threadTpl = _.template(threadSrc);
-                countTpl = _.template(countSrc);
-            });
+            threadTpl = _.template(threadSrc);
+            countTpl = _.template(countSrc);
         },
 
         stop: function () {

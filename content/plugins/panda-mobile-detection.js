@@ -18,11 +18,11 @@
         },
 
         post: function (req, res) {
-            return when.try(updateLocals.bind(null, req, res));
+            updateLocals(req, res);
         },
 
         posts: function (req, res) {
-            return when.try(updateLocals.bind(null, req, res));
+            updateLocals(req, res);
         }
     };
 

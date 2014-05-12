@@ -16,13 +16,9 @@
             url: "https://github.com/T-PWK/panda"
         },
 
-        post: function (req, res) {
-            return labelsInfo(req, res);
-        },
+        post: labelsInfo,
 
-        posts: function (req, res) {
-            return labelsInfo(req, res);
-        }
+        posts: labelsInfo
     };
 
     function labelsInfo(req, res) {

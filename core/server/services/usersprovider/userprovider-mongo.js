@@ -14,8 +14,6 @@
 
     UserProvider.prototype.init = function () {
         debug('initialization');
-
-        return when.resolve();
     };
 
     UserProvider.prototype.findLeadUser = function () {
