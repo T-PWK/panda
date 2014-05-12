@@ -4,6 +4,7 @@
     var when            = require('when'),
         node            = require('when/node'),
         parallel        = require('when/parallel'),
+        downsize        = require('downsize'),
         path            = require('path'),
         fs              = require('fs'),
         cfg             = require('nconf'),
@@ -164,10 +165,8 @@
 
         if (!instance.code) { instance.code = code; }
         if (!instance.name) { instance.name = codeToName(code); }
-        if (!instance.teaser) {
-            var cleanDescription = str.clean(str.stripTags(instance.description || ''));
-            instance.teaser = cleanDescription.substr(0, 50);
-            instance.teaser += cleanDescription.length > 50 ? '...' : '';
+        if (!instance.teaser && cfg.get('plugins:teaser:enable')) {
+            instance.teaser = downsize(instance.description || '', cfg.get('plugins:teaser'));
         }
 
         return instance;
