@@ -8,13 +8,14 @@
         | {{plugin.name}}
 .modal-body
 
-    .row
-        .col-sm-12(ng-bind-html="plugin.description | unsafe")
-
-    .row(ng-if="plugin.messages.length")
-        .col-sm-12
-            hr
-            alert(ng-repeat="message in plugin.messages") {{message.msg}}
+    tabset
+        tab(heading="Description")
+            div.top-buffer(ng-bind-html="plugin.description | unsafe")
+        tab(heading="Configuration", disabled="!plugin.configuration")
+            div.top-buffer(ng-bind-html="plugin.configuration | unsafe")
+        tab(heading="Messages", disabled="!plugin.messages.length")
+            div.top-buffer
+                alert(ng-repeat="message in plugin.messages") {{message.msg}}
 
 .modal-footer
     span(ng-if="plugin.version") v{{plugin.version}}
