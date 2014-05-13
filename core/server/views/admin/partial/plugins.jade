@@ -11,17 +11,16 @@ mixin list(id, msg, btnLabel, btnClass, action, actSpinId)
                 th.col-sm-1 Version
                 th.col-sm-1 Actions
         tbody
-            tr(ng-repeat="plugin in info.#{id} | orderBy:'name'")
+            tr(ng-repeat="plugin in info.#{id} | filter:search | orderBy:'name'")
                 td
                     i.fa.fa-fw.fa-info-circle.btn-link(ng-click="showInfo(plugin)")
                     strong {{plugin.name}}
 
-                td
-                    span(ng-bind-html="plugin.teaser|unsafe")
-                    strong(ng-if="!plugin.description") n/a
+                td(ng-bind-html="plugin.teaser|unsafe", ng-if="plugin.description")
+                td(ng-if="!plugin.description"): strong n/a
 
                 td.text-center
-                    i.fa.fa-stop.text-danger(ng-show="!plugin.status || plugin.status == 'I'")
+                    i.fa.fa-stop.text-danger(ng-show="plugin.status == 'I'")
                     i.fa.fa-play.text-success(ng-show="plugin.status=='A'")
                     i.fa.fa-exclamation-triangle.text-danger(ng-show="plugin.status=='E'")
                     i.fa.fa-exclamation-triangle.text-warning(ng-show="plugin.status=='W'")
@@ -43,6 +42,40 @@ mixin list(id, msg, btnLabel, btnClass, action, actSpinId)
 
         .page-header
             h1 Plugins
+
+        .row
+            .col-sm-4
+                .form-group
+                    a.btn.btn-default.btn-sm(ng-click="loadPlugins()", ng-disabled="isLoading")
+                        i.fa.fa-fw.fa-refresh
+                        | Refresh
+            .col-sm-6.col-sm-offset-2
+                .form-group
+                    .input-group.input-group-sm
+                        span.input-group-btn
+                            .btn-group
+                                button.btn.btn-sm.btn-default(dropdown-toggle, data-toggle="dropdown", type="button")
+                                    i.fa.fa-info-circle.fa-fw
+                                    span.caret
+                                ul.dropdown-menu
+                                    li: a(href="", ng-click="search.status='A'")
+                                        i.fa.fa-fw.fa-play.text-success
+                                        | Active
+                                    li: a(href="", ng-click="search.status='I'")
+                                        i.fa.fa-fw.fa-stop.text-danger
+                                        | Inactive
+                                    li: a(href="", ng-click="search.status='W'")
+                                        i.fa.fa-fw.fa-exclamation-triangle.text-warning
+                                        | Warning
+                                    li: a(href="", ng-click="search.status='E'")
+                                        i.fa.fa-fw.fa-exclamation-triangle.text-danger
+                                        | Error
+                        input.form-control(placeholder="Filter by name", ng-model="search.name")
+                        span.input-group-btn
+                            button.btn-default.btn(type="button", ng-click="search={}"): i.fa.fa-times-circle
+
+
+
 
         .page-header
             h3 Active
