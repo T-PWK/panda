@@ -73,6 +73,10 @@ p.btn-group {
     margin-top: 0;
 }
 
-.pagination a, .accordion-toggle {
+.pagination a, .accordion-toggle, .nav, .carousel, .panel-title a {
     cursor: pointer;
+}
+
+.top-buffer {
+    margin-top:20px;
 }
