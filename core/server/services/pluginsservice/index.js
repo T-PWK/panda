@@ -138,7 +138,8 @@
         };
 
         function properties(plugin) {
-            return _.pick(plugin, 'code', 'name', 'description', 'version', 'author', 'teaser', 'status', 'messages');
+            return _.pick(plugin,
+                'code', 'name', 'description', 'version', 'author', 'teaser', 'status', 'messages', 'configuration');
         }
     };
 
@@ -177,6 +178,7 @@
 
         if (!instance.code) { instance.code = code; }
         if (!instance.name) { instance.name = codeToName(code); }
+        if (!instance.status) { instance.status = 'I'; }
         if (!instance.teaser && cfg.get('plugins:teaser:enable')) {
             instance.teaser = downsize(instance.description || '', cfg.get('plugins:teaser'));
         }
