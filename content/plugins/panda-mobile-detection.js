@@ -7,10 +7,12 @@
     module.exports = {
         code: 'panda-mobile-detection',
 
-        name: "Mobile Detection Plugin",
+        name: "Mobile Detection for Panda",
 
-        description: "<p>Instantiates mobile detection object and assigns it to the <code>md</code> template variable.</p>" +
-            "<p>Mobile detection uses <a href=\"https://www.npmjs.org/package/mobile-detect\" target=\"_blank\">mobile-detect</a> npm module.</p>",
+        description: "<p>The Mobile Detection for Panda plugin automatically detects if the visitor is using a standard mobile phone or a smart phone.</p>" +
+            "<p>It allows Panda themes to present different content based on the device or manufacturer type.</p>" +
+            "<hr><p>This plugin instantiates mobile detection object and assigns it to the <code>md</code> template variable. Mobile detection instance can be used in a theme to present different content based on the detected device type.</p>" +
+            "<p>The Mobile Detection for Panda plugin uses <a href=\"https://www.npmjs.org/package/mobile-detect\" target=\"_blank\">mobile-detect</a> npm module.</p>",
 
         author: {
             name: "Panda Team",

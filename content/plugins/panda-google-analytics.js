@@ -21,12 +21,13 @@
 
         name: "Google Analytics for Panda",
 
-        description: "<p>Generates Google Analytics web tracking code in a page.</p>" +
-            "<p>The plugin requires following properties under <code>theme:custom:ga</code> configuration key:" +
-            "<ul><li><strong>ua</strong> - Google Analytics user account number (format: UA-XXXXXXXX-Y)</li>" +
-            "<li><strong>domain</strong> - website domain name e.g. mydomain.com</li></ul></p>" +
-            "<p>More information on setting up Google Analytics web tracking code can be found " +
+        description: "<p>The Google Analytics for Panda plugin generates Google Analytics web tracking code in a page.</p>" +
+            "<p>More information about Google Analytics web tracking code are how to embed it in a page can be found " +
             "<a href=\"https://support.google.com/analytics/answer/1008080\" target=\"_blank\">here</a>.</p>",
+
+        configuration: "<p>This plugin requires the following properties under <code>theme:custom:ga</code> configuration key:</p>" +
+            "<ul><li><strong>ua</strong> - Google Analytics user account number (format: UA-XXXXXXXX-Y)</li>" +
+            "<li><strong>domain</strong> - website domain name e.g. <em>mydomain.com</em></li></ul>",
 
         author: {
             name: "Panda Team",

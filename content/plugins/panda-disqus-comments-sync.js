@@ -8,9 +8,9 @@
     module.exports = {
         code: "disqus-comments-synchronizer",
 
-        name: "Disqus Comments Synchronizer",
+        name: "Disqus Comments for Panda",
 
-        description: "<p>Synchronizes Disqus comments.</p>",
+        description: "<p>The Disqus Comments for Panda plugin seamlessly integrates using the Disqus API and by syncing with Panda comments.</p>",
 
         author: {
             name: "Panda Team",

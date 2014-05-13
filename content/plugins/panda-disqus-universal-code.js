@@ -31,12 +31,13 @@
     module.exports = {
         code: 'panda-disqus-universal',
 
-        name: "Disqus Universal Code Plugin",
+        name: "Disqus Universal Code for Panda",
 
-        description: "<p>This plugin embeds JavaScript code which loads and displays Disqus as well as number of comments on your site.</p>" +
-            "<p>The plugin requires following properties under <code>theme:custom:disqus</code> configuration key:" +
-            "<ul><li><strong>shortname</strong> - forum short name</li></ul></p>"+
+        description: "<p>The Disqus Universal Code for Panda plugin embeds JavaScript code which loads Disqus forum as well as number of comments on your site.</p>" +
             "<p>More on Universal Embed Code can be found <a href=\"http://help.disqus.com/customer/portal/articles/472097-universal-embed-code\", target=\"_blank\">here</a>.</p>",
+
+        configuration: "<p>This plugin requires the following properties under <code>theme:custom:disqus</code> configuration key:" +
+            "<ul><li><strong>shortname</strong> - forum short name</li></ul></p>",
 
         author: {
             name: "Panda Team",

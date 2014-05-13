@@ -16,6 +16,6 @@
         }
     };
 
-    require('pkginfo')(module, 'code', 'name', 'description', 'version', 'author');
+    require('pkginfo')(module, 'code', 'name', 'description', 'configuration', 'version', 'author');
 
 }());
