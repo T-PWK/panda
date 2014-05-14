@@ -3,7 +3,7 @@
 
     var when            = require('when'),
         node            = require('when/node'),
-        parallel        = require('when/parallel'),
+        sequence        = require('when/sequence'),
         downsize        = require('downsize'),
         path            = require('path'),
         fs              = require('fs'),
@@ -193,26 +193,18 @@
     }
 
     function execute(plugins, operation, req, res) {
-        console.info('executing plugins ... operation:%s', operation)
-
-
-
-        when
+        return when
             .resolve(_.filter(plugins, function (plugin) {
                 return _.isFunction(plugin[operation]);
             }))
             .then(function (plugins) {
-                console.info(plugins)
                 return plugins.map(function (plugin) {
                     return plugin[operation].bind(plugin);
                 });
             })
             .then(function (tasks) {
-                console.info(tasks)
-//                return parallel(tasks, req, res);
+                return sequence(tasks, req, res);
             });
-
-        return when.resolve();
     }
 
     module.exports = new PluginService();
