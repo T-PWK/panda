@@ -25,9 +25,9 @@
             "<p>More information about Google Analytics web tracking code are how to embed it in a page can be found " +
             "<a href=\"https://support.google.com/analytics/answer/1008080\" target=\"_blank\">here</a>.</p>",
 
-        configuration: "<p>This plugin requires the following properties under <code>theme:custom:ga</code> configuration key:</p>" +
-            "<ul><li><strong>ua</strong> - Google Analytics user account number (format: UA-XXXXXXXX-Y)</li>" +
-            "<li><strong>domain</strong> - website domain name e.g. <em>mydomain.com</em></li></ul>",
+        configuration: "<p>This plugin requires the following properties under <code>theme:custom:ga</code> configuration element:</p>" +
+            "<ul><li><code>ua</code> - Google Analytics user account number (format: UA-XXXXXXXX-Y)</li>" +
+            "<li><code>domain</code> - website domain name e.g. <em>mydomain.com</em></li></ul>",
 
         author: {
             name: "Panda Team",

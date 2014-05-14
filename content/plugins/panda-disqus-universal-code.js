@@ -36,8 +36,8 @@
         description: "<p>The Disqus Universal Code for Panda plugin embeds JavaScript code which loads Disqus forum as well as number of comments on your site.</p>" +
             "<p>More on Universal Embed Code can be found <a href=\"http://help.disqus.com/customer/portal/articles/472097-universal-embed-code\", target=\"_blank\">here</a>.</p>",
 
-        configuration: "<p>This plugin requires the following properties under <code>theme:custom:disqus</code> configuration key:" +
-            "<ul><li><strong>shortname</strong> - forum short name</li></ul></p>",
+        configuration: "<p>This plugin requires the following properties under <code>theme:custom:disqus</code> configuration element:" +
+            "<ul><li><code>shortname</code> - forum short name</li></ul></p>",
 
         author: {
             name: "Panda Team",
