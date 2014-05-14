@@ -252,6 +252,17 @@
         );
     };
 
+    PostProvider.prototype.updateProperties = function (id, properties) {
+        return Post.findById(id).exec()
+            .then(function (item) {
+                if (!item) return when.reject();
+
+                _.extend(item, properties);
+
+                return lift(item.save.bind(item))();
+            });
+    };
+
     PostProvider.prototype.update = function (id, properties, options) {
         debug('updating post %j : %j', id, properties);
 
