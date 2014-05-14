@@ -1,0 +1,11 @@
+{
+    "code": "panda-rss-feed",
+    "name": "RSS Feed for Panda",
+    "version": "0.0.2",
+    "description": "<p>This plugin generates a <a href=\"http://www.sitemaps.org/\", target=\"_blank\">XML-Sitemap</a> compliant sitemap of your Panda blog. This format is supported by Ask.com, Google, YAHOO and MSN Search.</p><p>More information about what <em>XML-Sitemaps</em> are and how they can help you to get indexed by the major search engines can be found at <a href=\"http://www.sitemaps.org/\">Sitemaps.org</a>.</p><p>Note: The XML-Sitemap format was introduced in 2005 by Google and adopted in 2006 by YAHOO, Live and Ask.com so that’s why it’s often called \"Google Sitemaps\".</p>",
+    "main": "index.js",
+    "author": {
+        "name": "Panda Team",
+        "url": "https://github.com/T-PWK/panda"
+    }
+}

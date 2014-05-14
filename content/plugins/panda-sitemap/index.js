@@ -5,14 +5,16 @@
 
     module.exports = {
         request: function (req, res) {
-            if (req.url === '/sitemap.xml') {
-                return provider
-                    .findAll({live: true})
-                    .then(function (posts) {
-                        res.locals.posts = posts;
-                        res.type('xml').render(__dirname + '/sitemap');
-                    });
+            if (req.url !== '/sitemap.xml') {
+                return;
             }
+
+            return provider
+                .findAll({live: true})
+                .then(function (posts) {
+                    res.locals.posts = posts;
+                    res.type('xml').render(__dirname + '/sitemap');
+                });
         }
     };
 

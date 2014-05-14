@@ -9,8 +9,8 @@
 
         name: "Archive List for Panda",
 
-        description: "<p>This plugin generates an archives in a year-based list of your published posts. " +
-            "The list is assigned to the <code>archive</code> template variable and it can be used in your blog theme.</p>",
+        description: "<p>The Archive List for Panda plugin generates an archives in a year-based list of your published posts.</p>" +
+            "<p>The archives list is assigned to the <code>archive</code> template variable and it can be used in your blog theme.</p>",
 
         author: {
             name: "Panda Team",

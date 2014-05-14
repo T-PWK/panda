@@ -12,6 +12,11 @@
 
         description: "<p>The Disqus Comments for Panda plugin seamlessly integrates using the Disqus API and by syncing with Panda comments.</p>",
 
+        configuration: "<p>The Disqus Comments for Panda plugin uses following configuration properties</p>" +
+            "<ul>" +
+            "<li><code>plugin:disqus:cron</code></li>" +
+            "</ul>",
+
         author: {
             name: "Panda Team",
             url: "https://github.com/T-PWK/panda"
