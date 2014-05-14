@@ -19,13 +19,9 @@
             url: "https://github.com/T-PWK/panda"
         },
 
-        post: function (req, res) {
-            updateLocals(req, res);
-        },
+        post: updateLocals,
 
-        posts: function (req, res) {
-            updateLocals(req, res);
-        }
+        posts: updateLocals
     };
 
     function updateLocals (req, res) {
