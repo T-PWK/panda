@@ -11,7 +11,7 @@
 
     module.exports = {
         request: function (req, res) {
-            if (req.url !== '/rss.xml') {
+            if (req.url !== '/rss') {
                 return;
             }
 

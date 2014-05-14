@@ -5,8 +5,9 @@ feed(xmlns="http://www.w3.org/2005/Atom",
 
     id #{url}/
     updated= $date(updated, 'iso')
-    each label in labels
-        category(term=label.label)/
+    if labels
+        each label in labels
+            category(term=label.label)/
 
     title= title
     subtitle(type='html')= description
