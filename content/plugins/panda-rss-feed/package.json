@@ -2,7 +2,7 @@
     "code": "panda-rss-feed",
     "name": "RSS Feed for Panda",
     "version": "0.0.2",
-    "description": "<p>This plugin generates a <a href=\"http://en.wikipedia.org/wiki/RSS\", target=\"_blank\">RSS</a> (Rich Site Summary) feed of your Panda blog at <code>http://yourblog_url/rss</code> URL.</p><p>More information about what <em>RSS feed</em> is can be found at <a href=\"http://en.wikipedia.org/wiki/RSS\">RSS</a> Wikipedia page.</p>",
+    "description": "<p>This plugin generates a <a href=\"http://en.wikipedia.org/wiki/RSS\", target=\"_blank\">RSS</a> (Rich Site Summary) feed of your Panda blog</p><p>The RSS feed is accessible at <code>http://your_blog_host/rss</code> URL.</p><p>More information about what <em>RSS feed</em> is can be found at <a href=\"http://en.wikipedia.org/wiki/RSS\">RSS</a> Wikipedia page.</p>",
     "main": "index.js",
     "author": {
         "name": "Panda Team",

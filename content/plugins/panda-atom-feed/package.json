@@ -2,7 +2,7 @@
     "code": "panda-atom-feed",
     "name": "Atom Feed for Panda",
     "version": "0.0.2",
-    "description": "<p>This plugin generates a <a href=\"http://tools.ietf.org/html/rfc4287/\", target=\"_blank\">Atom 1.0</a> compliant feed of your Panda blog at <code>http://yourblog_url/atom</code> path.</p><p>More information about what <em>Atom feed</em> is can be found at <a href=\"http://en.wikipedia.org/wiki/Atom_(standard)\">Atom (standard)</a> Wikipedia page.</p>",
+    "description": "<p>This plugin generates a <a href=\"http://tools.ietf.org/html/rfc4287/\", target=\"_blank\">Atom 1.0</a> compliant feed of your Panda blog.</p><p>The Atom feed is accessible at <code>http://your_blog_host/atom</code> URL.</p><p>More information about what <em>Atom feed</em> is can be found at <a href=\"http://en.wikipedia.org/wiki/Atom_(standard)\">Atom (standard)</a> Wikipedia page.</p>",
     "main": "index.js",
     "author": {
         "name": "Panda Team",
