@@ -285,6 +285,7 @@
 
     module.exports = appLocals;
     module.exports.requestLocals = reqLocals;
+    module.exports.postUrl = postUrl;
 
     require('pkginfo')(module, 'version');
 
