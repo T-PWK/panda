@@ -52,7 +52,7 @@
             tpl = null;
         },
 
-        footerHook: function () {
+        pageFooter: function () {
             var data = cfg.get('theme:custom:ga');
             return (!data || !data.ua || !data.domain) ? '' : tpl(data);
         }

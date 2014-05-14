@@ -62,7 +62,7 @@
             threadTpl = countTpl = null;
         },
 
-        footerHook: function (req, res) {
+        pageFooter: function (req, res) {
             var name = cfg.get('theme:custom:disqus:shortname'),
                 data = {shortname: name},
                 code = [];
