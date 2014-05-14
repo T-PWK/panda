@@ -144,8 +144,8 @@
     };
 
     PluginService.prototype.request = function (req, res, next) {
-        return execute(this.active, 'request',  req, res).then(function () {
-            if (!res.finished) {
+        return execute(this.active, 'request',  req, res).done(function (results) {
+            if (!_.any(results)) {
                 next();
             }
         });
@@ -159,13 +159,13 @@
         return execute(this.active, 'posts',  req, res);
     };
 
-    PluginService.prototype.pageHooks = function (name, req, res) {
-        var hookName = name + 'Hook';
+    PluginService.prototype.pageAction = function (name, req, res) {
+        var actionName = 'page' + _.titleize(name);
         return _.chain(this.active)
             .filter(function (plugin) {
-                return _.isFunction(plugin[hookName]);
+                return _.isFunction(plugin[actionName]);
             })
-            .invoke(hookName, req, res)
+            .invoke(actionName, req, res)
             .value();
     };
 
