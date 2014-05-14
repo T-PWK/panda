@@ -1,13 +1,19 @@
 (function () {
     "use strict";
 
-    var cfg     = require('nconf'),
-        when    = require('when'),
-        moment  = require('moment'),
-        _       = require('lodash'),
-        format  = require('util').format,
-        CronJob = require('cron').CronJob,
-        job;
+    var cfg         = require('nconf'),
+        when        = require('when'),
+        node        = require('when/node'),
+        moment      = require('moment'),
+        _           = require('lodash'),
+        request     = require('request'),
+        url         = require('url'),
+        format      = require('util').format,
+        CronJob     = require('cron').CronJob,
+        get         = node.lift(request),
+        helper      = require('../../core/server/helpers/templatehelper'),
+        provider    = require('../../core/server/providers').postsProvider,
+        job, apiKey, forum;
 
     module.exports = {
         code: "disqus-comments-synch",
@@ -20,8 +26,9 @@
             "<code>plugins:disqus-comments-synch</code> configuration element:</p><ul>" +
             "<li><code>cron</code> - the time to fire off your job. " +
             "The time needs to be in the form of <a href=\"http://crontab.org/\" target=\"_blank\">cron syntax</a>.</li>" +
-            "<li><code>accessToken</code> - Disqus API access token. " +
-            "The token can be teken from Disqus <a href=\"https://disqus.com/api/applications/\" target=\"_blank\">applications</a>.</li>" +
+            "<li><code>forum</code> - Disqus forum name (aka short name).</li>" +
+            "<li><code>apiKey</code> - Disqus API key. " +
+            "The key can be teken from Disqus <a href=\"https://disqus.com/api/applications/\" target=\"_blank\">applications</a>.</li>" +
             "</ul>",
 
         author: {
@@ -30,14 +37,17 @@
         },
 
         start: function () {
-            var cron = cfg.get('plugins:disqus-comments-synch:cron');
-            if (!cron) {
+            var config = cfg.get('plugins:disqus-comments-synch');
+            console.info(config)
+            if (!config || !config.cron || !config.forum || !config.apiKey) {
                 this.status = 'W';
                 this.messages = [
                     {msg: "Plugin could not start up properly due to missing configuration."}
                 ];
             } else {
-                job = new CronJob(cron, synchronize.bind(this, this), null, true);
+                forum = config.forum;
+                apiKey = config.apiKey;
+                job = new CronJob(config.cron, synchronize.bind(this, this), null, true);
             }
         },
 
@@ -51,23 +61,58 @@
     require('pkginfo')(module, 'version');
 
     function synchronize(plugin) {
+        var info = {
+            start: process.hrtime(),
+            timeSpan: null,
+            posts: 0,
+            updates: 0
+        };
+
         var time = process.hrtime();
 
-        when.try(function () {
-            console.log('Performing synchronization ...');
-        }).delay(5000).then(function () {
-            time = process.hrtime(time);
+        when
+            .resolve(provider.findAll({ live: true }))
+            .tap(function (posts) {
+                info.posts = posts.length;
+            })
+            .then(function (posts) {
+
+                return when.map(posts, function (post) {
+                    return get({
+                        uri: "https://disqus.com/api/3.0/threads/details.json",
+                        qs: { api_key: apiKey, forum: forum, "thread:link": helper.postUrl(null, post, true).replace('127.0.0.1:3000', 'blog.tompawlak.org') }
+                    }).spread(function (res, body) {
+                        return JSON.parse(body);
+                    }).then(function (obj) {
+                        if (obj.code === 0) {
+                            info.updates++;
+                            return provider.updateProperties(post.id, {commentsCount: obj.response.posts || 0});
+                        }
+                    });
+                });
+
+            })
+            .then(updateMessages)
+            .otherwise(function (err) {
+                console.error(" error ", err)
+            });
+
+        function updateMessages () {
+            info.timeSpan = process.hrtime(time);
 
             (plugin.messages || (plugin.messages = [])).push({
                 type: 'success',
-                msg: format("Synchronization completed at %s. It took %d.%ds",
-                    moment().format('llll'), time[0], Math.ceil(time[1]/1000000))
+                msg: format(
+                    "Synchronization detail: <dl class=\"dl-horizontal\">" +
+                        "<dt>competion time</dt><dd>%s</dd>" +
+                        "<dt>time span</dt><dd>%d.%ds</dd>" +
+                        "<dt>processed posts</dt><dd>%d</dd>" +
+                        "<dt>updated posts</dt><dd>%d</dd></dl>",
+                    moment().format('llll'), info.timeSpan[0], Math.ceil(info.timeSpan[1]/1000000), info.posts, info.updates
+                )
             });
             plugin.messages = _.last(plugin.messages, 5);
-
-        }).otherwise(function (e) {
-            console.error(e)
-        });
+        }
     }
 
 }());
