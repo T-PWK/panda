@@ -8,7 +8,18 @@
         _.mixin({ 'endsWith': endsWith }, { chain: false });
         _.mixin({ 'isEmpty': isEmpty }, { chain: false });
         _.mixin({ 'isBlank': isBlank }, { chain: false });
+        _.mixin({ 'titleize': titleize }, { chain: false });
+
     };
+
+    function titleize(str) {
+        if (str == null) {
+            return '';
+        }
+        return str.toLowerCase().replace(/(?:^|\s|-)\S/g, function (c) {
+            return c.toUpperCase();
+        });
+    }
 
     function startsWith(string, prefix, position) {
         position = position || 0;
