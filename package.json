@@ -63,7 +63,8 @@
     "mobile-detect": "^0.1.0",
     "azure": "~0.9.6",
     "mime": "~1.2.11",
-    "cron": "^1.0.4"
+    "cron": "^1.0.4",
+    "request": "^2.34.0"
   },
   "engines": {
     "node": "0.10.x"
