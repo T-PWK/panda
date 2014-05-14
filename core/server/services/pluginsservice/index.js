@@ -56,10 +56,12 @@
         } else {
             this.inactive.push(plugin);
         }
+        this.inactive = _.sortBy(this.inactive, 'priority');
     };
 
     PluginService.prototype.instantiatePlugin = function (code) {
         this.inactive.push(instantiatePlugin(code));
+        this.inactive = _.sortBy(this.inactive, 'priority');
     };
 
     PluginService.prototype.stopAndPersist = function (code) {
@@ -127,6 +129,7 @@
             })
             .tap(function (plugin) {
                 self.active.push(plugin);
+                self.active = _.sortBy(self.active, 'priority');
                 _.remove(self.inactive, {code: plugin.code});
             });
     };
@@ -139,7 +142,8 @@
 
         function properties(plugin) {
             return _.pick(plugin,
-                'code', 'name', 'description', 'version', 'author', 'teaser', 'status', 'messages', 'configuration');
+                'code', 'name', 'description', 'version', 'author',
+                'teaser', 'status', 'messages', 'configuration', 'priority');
         }
     };
 
@@ -179,6 +183,8 @@
         if (!instance.code) { instance.code = code; }
         if (!instance.name) { instance.name = codeToName(code); }
         if (!instance.status) { instance.status = 'I'; }
+        if (!instance.priority) { instance.priority = 100; }
+
         if (!instance.teaser && cfg.get('plugins:teaser:enable')) {
             instance.teaser = downsize(instance.description || '', cfg.get('plugins:teaser'));
         }
@@ -187,18 +193,26 @@
     }
 
     function execute(plugins, operation, req, res) {
-        return when
+        console.info('executing plugins ... operation:%s', operation)
+
+
+
+        when
             .resolve(_.filter(plugins, function (plugin) {
                 return _.isFunction(plugin[operation]);
             }))
             .then(function (plugins) {
+                console.info(plugins)
                 return plugins.map(function (plugin) {
                     return plugin[operation].bind(plugin);
                 });
             })
             .then(function (tasks) {
-                return parallel(tasks, req, res);
+                console.info(tasks)
+//                return parallel(tasks, req, res);
             });
+
+        return when.resolve();
     }
 
     module.exports = new PluginService();
