@@ -11,14 +11,12 @@
 
             .form-group(ng-if="items.length")
                 .row
-                    .col-sm-5
-                        button.btn.btn-sm.btn-danger(type="button", ng-click="remove()", ng-disabled="deleting.isEmpty()") Delete
-                        button.btn.btn-sm.btn-default(type="button", ng-click="deleting.empty()", ng-disabled="deleting.isEmpty()") Reset
-                        button.btn.btn-sm.btn-default(type="button", ng-click="verify()", ng-disabled="items.length<2") Verify
-                    .col-sm-4.col-sm-offset-3
+                    .col-sm-3
+                        button.btn.btn-default.btn-sm(type="button", ng-click="verify()", ng-disabled="items.length<2") Verify
+                    .col-sm-6.col-sm-offset-3
                         .input-group.input-group-sm
                             input.form-control(type="text", ng-model="url.$", ng-key-action="{27:'onEsc'}", on-esc="clrSearch()")
-                            span.input-group-btn
+                            span.input-group-btn.input-group-sm
                                 button.btn.btn-default(type="button", ng-disabled="hasSearch()", ng-click="clrSearch()"): i.fa.fa-times-circle
 
             .text-center(ng-if="!items.length && isLoading")
@@ -51,9 +49,7 @@
             table.table.table-striped(ng-if="items.length")
                 thead
                     tr
-                        th.col-sm-1: a(href="", ng-click="deleting.empty()", ng-hide="deleting.isEmpty()")
-                            i.fa.fa-fw.fa-times-circle
-                            | ({{deleting.howMany()|number}})
+                        th.col-sm-1
                         th.col-sm-5
                             | From&nbsp;
                             a(href="", ng-click="order.by('from')")
@@ -68,7 +64,7 @@
                                 i.fa(ng-class="order.icon('type')")
                 tbody
                     tr(ng-repeat="item in items | filter:url | orderBy:order.option:order.desc | startFrom:pg.firstItem | limitTo:pg.pageSize")
-                        td: i.btn-link.fa.fa-fw(ng-class="{'fa-square-o':!deleting.has(item.id),'fa-check-square-o':deleting.has(item.id)}", ng-click="deleting.toggle(item.id)")
+                        td.text-center: i.fa.fa-trash-o.fa-fw.btn-link(ng-click="remove(item)")
                         td: a(href="", ng-click="$emit('edit', item)") {{item.from}}
                         td {{item.to}}
                         td
@@ -104,7 +100,7 @@
             .form-group(ng-class="{'has-error':!form.from.$valid && !form.from.$pristine}")
                 label.col-sm-2.control-label(for="from") From
                 .col-sm-7
-                    .input-group
+                    .input-group.input-group-sm
                         input.form-control#from(type="text", placeholder="From", 
                             ng-model="item.from", name="from", required, ng-trim="false",
                             ng-pattern="path")
@@ -117,7 +113,7 @@
             .form-group(ng-class="{'has-error':!form.toinput.$valid && !form.toinput.$pristine}")
                 label.col-sm-2.control-label(for="toinput") To
                 .col-sm-7
-                    .input-group
+                    .input-group.input-group-sm
                         input.form-control#toinput(type="text", placeholder="To", 
                             ng-model="item.to", required, ng-trim="true", name="toinput",
                             ng-pattern="path")
@@ -141,6 +137,6 @@
 
             .form-group
                 .col-sm-offset-2.col-sm-10
-                    button.btn.btn-primary(type="button", ng-if="isEdit", ng-disabled="form.$invalid || form.$pristine", ng-click="update()") Update
-                    button.btn.btn-primary(type="button", ng-if="!isEdit", ng-disabled="form.$invalid || form.$pristine", ng-click="create()") Create
-                    button.btn.btn-default(type="button", ng-click="reset()") Reset
+                    button.btn.btn-primary.btn-sm(type="button", ng-if="isEdit", ng-disabled="form.$invalid || form.$pristine", ng-click="update()") Update
+                    button.btn.btn-primary.btn-sm(type="button", ng-if="!isEdit", ng-disabled="form.$invalid || form.$pristine", ng-click="create()") Create
+                    button.btn.btn-default.btn-sm(type="button", ng-click="reset()") Reset
