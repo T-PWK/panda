@@ -80,7 +80,11 @@
                 return when.map(posts, function (post) {
                     return get({
                         uri: "https://disqus.com/api/3.0/threads/details.json",
-                        qs: { api_key: apiKey, forum: forum, "thread:link": helper.postUrl(null, post, true).replace('127.0.0.1:3000', 'blog.tompawlak.org') }
+                        qs: {
+                            api_key: apiKey,
+                            forum: forum,
+                            "thread:link": helper.postUrl(null, post, true)
+                        }
                     }).spread(function (res, body) {
                         return JSON.parse(body);
                     }).then(function (obj) {
