@@ -39,21 +39,11 @@
         }
     };
 
-    ImageProvider.prototype.createFromStream = function(name, size, part){
+    ImageProvider.prototype.createFromFile = function (file) {
+        var createBlockBlobFromFile = node.lift(this.blob.createBlockBlobFromFile.bind(this.blob)),
+            options = { contentType: mime.lookup(file.originalFilename) };
 
-        var options = {
-            contentTypeHeader: mime.lookup(name)
-        };
-
-        console.info('name', name, options);
-
-        this.blob.createBlockBlobFromStream(this.options.container, name, part, size, options, function(error) {
-            if (error) {
-                console.info('error', error);
-            } else {
-                console.info('File %s uploaded to Azure Blob successfully', name);
-            }
-        });
+        return createBlockBlobFromFile(this.options.container, file.originalFilename, file.path, options);
     };
 
     module.exports = ImageProvider;

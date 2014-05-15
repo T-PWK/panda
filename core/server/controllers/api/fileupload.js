@@ -1,33 +1,21 @@
 (function () {
     "use strict";
 
-    var multiparty  = require('multiparty'),
+    var when        = require('when'),
+        node        = require('when/node'),
+        _           = require('lodash'),
+        multiparty  = require('multiparty'),
         provider    = require('../../providers').imageProvider;
 
     module.exports = function (req, res) {
-        console.info('file upload request ...');
+        var form = new multiparty.Form(), parse = node.lift(form.parse.bind(form));
 
-        var form = new multiparty.Form();
-
-        form.on('part', function(part){
-            if (!part.filename) return;
-
-            var size = part.byteCount - part.byteOffset,
-                name = part.filename;
-
-            console.info('Uploading file to azure blob : ', name, size);
-
-            provider.createFromStream(name, size, part);
-        });
-
-
-        form.parse(req);
-        res.send('File uploaded successfully');
-//
-//        form.parse(req, function (err, fields, files) {
-//            console.info(require('util').inspect({fields: fields, files: files}, {depth: 5}));
-//            res.send(200);
-//        });
+        parse(req)
+            .spread(function (fields, files) {
+                return _.map(files.file, provider.createFromFile.bind(provider));
+            })
+            .then(when.all)
+            .done(res.send.bind(res, 200), res.send.bind(res, 500));
     };
 
 }());
