@@ -14,6 +14,7 @@
 
         var route = express.Router();
 
+        //noinspection JSCheckFunctionSignatures
         route
             .use(ips.siteIpCheck)
             .use(poweredBy)

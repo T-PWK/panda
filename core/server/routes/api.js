@@ -40,6 +40,7 @@
             .get('/:type', api.ips.index)
             .put('/:type', api.ips.create);
 
+        //noinspection JSCheckFunctionSignatures
         themes
             .get('/site', api.themes.index)
             .put('/site/:id', api.themes.update)

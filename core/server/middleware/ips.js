@@ -12,6 +12,7 @@
             return fn();
         }
 
+        //noinspection JSCheckFunctionSignatures
         if (_.indexOf(ips, ip, true) === -1) {
             res.send(403);
         } else {

@@ -280,6 +280,7 @@
         });
 
         // Initialize reqest / response specific variables
+        //noinspection JSCheckFunctionSignatures
         app.use(reqLocals);
     }
 

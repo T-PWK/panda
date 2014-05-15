@@ -45,7 +45,7 @@
             contentTypeHeader: mime.lookup(name)
         };
 
-        console.info('name', name, options)
+        console.info('name', name, options);
 
         this.blob.createBlockBlobFromStream(this.options.container, name, part, size, options, function(error) {
             if (error) {

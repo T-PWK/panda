@@ -16,6 +16,7 @@
             adminRoute  = express.Router(),
             logoutRoute = express.Router();
 
+        //noinspection JSCheckFunctionSignatures
         logoutRoute
             .use(session({
 //                maxage: cfg.get('admin:sessionCookieMaxAge'),

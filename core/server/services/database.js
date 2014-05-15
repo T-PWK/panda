@@ -6,7 +6,7 @@
         mongoose    = require('mongoose');
 
     module.exports.init = function () {
-        var promise = (function () {
+        return (function () {
             switch (cfg.get('database:type')) {
                 case 'mongo':
                     return when.resolve(initMongoDB());
@@ -17,8 +17,6 @@
                     return when.resolve();
             }
         }());
-
-        return promise;
     };
 
     function initMongoDB() {

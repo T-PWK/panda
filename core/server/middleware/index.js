@@ -31,6 +31,7 @@
         ));
 
         // Set the requests logger
+        //noinspection JSCheckFunctionSignatures
         app.use(logger(cfg.get('development') ? 'dev' : undefined));
 
         if (cfg.get('app:httpCompression')) {

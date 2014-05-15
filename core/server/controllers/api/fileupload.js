@@ -5,7 +5,7 @@
         provider    = require('../../providers').imageProvider;
 
     module.exports = function (req, res) {
-        console.info('file upload request ...')
+        console.info('file upload request ...');
 
         var form = new multiparty.Form();
 
