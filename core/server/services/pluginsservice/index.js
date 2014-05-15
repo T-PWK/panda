@@ -56,7 +56,6 @@
         } else {
             this.inactive.push(plugin);
         }
-        this.inactive = _.sortBy(this.inactive, 'priority');
     };
 
     PluginService.prototype.instantiatePlugin = function (code) {
@@ -94,16 +93,35 @@
             return when.reject({code: code, msg: 'No active plugin'});
         }
 
-        return when.resolve(plugin)
-            .tap(function (plugin) {
-                plugin.status = 'I';
+        return when()
+            .then(function () {
+
+                // Reset plugins status and messages
+                plugin.status = undefined;
+                plugin.messages = [];
             })
-            .tap(function (plugin) {
+            .then(function () {
+
+                // Stop plugin if is has 'stop' function
                 if (_.isFunction(plugin.stop)) {
                     return plugin.stop();
                 }
             })
-            .tap(function (plugin) {
+            .catch(function () {
+
+                // If plugin does not set its own status, set status to error and add error message
+                if (!plugin.status) {
+                    plugin.status = 'E';
+                    (plugin.messages || (plugin.messages = [])).push({
+                        type: 'danger', msg: 'Unknown error occurred while stopping the plugin.'
+                    });
+                }
+            })
+            .finally(function () {
+                // Move plugin to inactive pool despite error or successful stop and reset its status if not set
+                if(!plugin.status) {
+                    plugin.status = 'I';
+                }
                 self.addInactive(_.remove(self.active, {code: plugin.code}));
             });
     };
@@ -120,7 +138,7 @@
 
         return when.resolve(plugin)
             .tap(function (plugin) {
-                plugin.status = 'A';
+                plugin.status = undefined;
             })
             .tap(function (plugin) {
                 if (_.isFunction(plugin.start)) {
@@ -128,6 +146,10 @@
                 }
             })
             .tap(function (plugin) {
+                if (!plugin.status) {
+                    plugin.status = 'A';
+                }
+
                 self.active.push(plugin);
                 self.active = _.sortBy(self.active, 'priority');
                 _.remove(self.inactive, {code: plugin.code});
@@ -184,6 +206,7 @@
         if (!instance.name) { instance.name = codeToName(code); }
         if (!instance.status) { instance.status = 'I'; }
         if (!instance.priority) { instance.priority = 100; }
+        if (!instance.messages) { instance.messages = []; }
 
         if (!instance.teaser && cfg.get('plugins:teaser:enable')) {
             instance.teaser = downsize(instance.description || '', cfg.get('plugins:teaser'));
