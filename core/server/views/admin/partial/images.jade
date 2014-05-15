@@ -8,10 +8,19 @@
             h1 Images
 
         .row
-            .col-sm-12
-                input(type="file", ng-file-select, multiple)
+            .col-sm-4
+                .form-group
+                    label(for="filesInput") Files input
+                    input#filesInput(type="file", ng-file-select, multiple)
+                    p.help-block Select multiple files
+
+            .col-sm-8
+                .panel.panel-default.text-center
+                    .panel-body(ng-file-drop, ng-file-over="bg-primary") Drop Files
+
         .row
             .col-sm-12
+                hr
                 h3 Upload queue
                 p Queue length: {{ uploader.queue.length }}
         .row
@@ -44,7 +53,7 @@
                                     | Remove
         .row
             .col-sm-2 Queue progress:
-            .col-sm-8: progressbar(value="uploader.progress")
+            .col-sm-10: progressbar(value="uploader.progress")
         .row
             .col-sm-12
                 button.btn.btn-success.btn-sm(type="button", ng-click="uploader.uploadAll()", ng-disabled="!uploader.getNotUploadedItems().length")
