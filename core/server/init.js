@@ -13,7 +13,7 @@
     };
 
     function titleize(str) {
-        if (str == null) {
+        if (str === null) {
             return '';
         }
         return str.toLowerCase().replace(/(?:^|\s|-)\S/g, function (c) {
