@@ -140,6 +140,7 @@
         return when.resolve(plugin)
             .tap(function (plugin) {
                 plugin.status = undefined;
+                plugin.messages = [];
             })
             .tap(function (plugin) {
                 if (_.isFunction(plugin.start)) {
