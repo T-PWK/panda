@@ -929,26 +929,26 @@
             $scope.start = function (plugin) {
                 $scope.setLoading(true);
                 plugin.starting = true;
-                Plugins.start({id: plugin.code}, bind($scope, $scope.loadPlugins));
+                Plugins.start({id: plugin.code}, $scope.loadPlugins, $scope.loadPlugins);
             };
 
             $scope.stop = function (plugin) {
                 $scope.setLoading(true);
                 plugin.stopping = true;
-                Plugins.stop({id: plugin.code}, bind($scope, $scope.loadPlugins));
+                Plugins.stop({id: plugin.code}, $scope.loadPlugins, $scope.loadPlugins);
             };
-
-            $scope.loadPlugins();
 
             $scope.showInfo = function (plugin) {
                 $scope.plugin = plugin;
 
-                var modalInstance = $modal.open({
+                $modal.open({
                     templateUrl: 'plugininfo',
                     controller: 'PluginInfoCtrl',
                     scope: $scope
                 });
             };
+
+            $scope.loadPlugins();
         }
     ]);
 
