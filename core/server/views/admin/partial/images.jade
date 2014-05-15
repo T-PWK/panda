@@ -29,9 +29,9 @@
                             td(nowrap) {{ item.file.size/1024/1024|number:2 }} MB
                             td: progressbar(value="item.progress")
                             td.text-center
-                                i.fa.fa-check-circle-o(ng-show="item.isSuccess")
-                                i.fa.fa-ban(ng-show="item.isCancel")
-                                i.fa.fa-times-circle-o(ng-show="item.isError")
+                                i.fa.fa-check-circle-o.text-success(ng-show="item.isSuccess")
+                                i.fa.fa-ban.text-warning(ng-show="item.isCancel")
+                                i.fa.fa-times-circle-o.text-danger(ng-show="item.isError")
                             td(nowrap)
                                 button.btn.btn-success.btn-xs(ng-click="item.upload()", ng-disabled="item.isReady || item.isUploading || item.isSuccess")
                                     i.fa.fa-fw.fa-upload
