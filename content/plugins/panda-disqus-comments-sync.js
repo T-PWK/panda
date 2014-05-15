@@ -38,7 +38,7 @@
 
         start: function () {
             var config = cfg.get('plugins:disqus-comments-synch');
-            console.info(config)
+
             if (!config || !config.cron || !config.forum || !config.apiKey) {
                 this.status = 'W';
                 this.messages = [
