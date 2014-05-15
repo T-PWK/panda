@@ -15,7 +15,7 @@
             div.top-buffer(ng-bind-html="plugin.configuration | unsafe")
         tab(heading="Messages", disabled="!plugin.messages.length")
             div.top-buffer
-                alert(ng-repeat="message in plugin.messages | limitTo:10", type="message.type", ng-bind-html="message.msg | unsafe")
+                alert(ng-repeat="message in plugin.messages | tail:3", type="message.type", ng-bind-html="message.msg | unsafe")
 
 .modal-footer
     span(ng-if="plugin.version") v{{plugin.version}}

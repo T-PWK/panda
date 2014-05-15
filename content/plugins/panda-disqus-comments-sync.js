@@ -107,8 +107,8 @@
             (plugin.messages || (plugin.messages = [])).push({
                 type: 'success',
                 msg: format(
-                    "Synchronization detail: <dl class=\"dl-horizontal\">" +
-                        "<dt>competion time</dt><dd>%s</dd>" +
+                    "<h5>Synchronization detail</h5><dl class=\"dl-horizontal\">" +
+                        "<dt>completion time</dt><dd>%s</dd>" +
                         "<dt>time span</dt><dd>%d.%ds</dd>" +
                         "<dt>processed posts</dt><dd>%d</dd>" +
                         "<dt>updated posts</dt><dd>%d</dd></dl>",
