@@ -6,7 +6,6 @@
             overview:   'Overview',
             posts:      'Posts',
             pages:      'Pages',
-            comments:   'Comments',
             settings:   'Settings',
             all:        'All',
             scheduled:  'Scheduled',
@@ -38,7 +37,6 @@
                 .when('/pages', { redirectTo: '/pages/all' })
                 .when('/pages/:type?', { templateUrl: 'posts', controller: 'PagesCtrl' })
                 .when('/posts/:id/edit', { templateUrl: 'editpost', controller: 'PostEditCtrl' })
-                .when('/comments', { templateUrl: 'comments', controller: 'CommentsCtrl' })
                 .when('/settings', { redirectTo: '/settings/basic' })
                 .when('/settings/basic', { templateUrl: 'settings', controller: 'SettingsCtrl' })
                 .when('/settings/ips', { templateUrl: 'ips', controller: 'IpsCtrl' })

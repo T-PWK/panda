@@ -547,12 +547,6 @@
         }
     ]);
 
-    controllers.controller('CommentsCtrl', ['$scope',
-        function ($scope) {
-            $scope.setCrumb('comments');
-        }
-    ]);
-
     controllers.controller('UsersCtrl', ['$scope', '$timeout', 'Users',
         function ($scope, $timeout, Users) {
             $scope.setCrumb('users');
@@ -678,9 +672,8 @@
             }
     }]);
 
-    controllers.controller('RedirectsListCtrl', ['$scope', '$rootScope', '$q', 'Redirects', 'Utils',
-        function ($scope, $rootScope, $q, Redirects, Utils) {
-            $scope.deleting = Utils.selection();
+    controllers.controller('RedirectsListCtrl', ['$scope', '$rootScope', 'Redirects', 'Utils',
+        function ($scope, $rootScope, Redirects, Utils) {
             $scope.pg = Utils.pagination();
             $scope.order = Utils.ordering({
                 classes: {none: 'fa-sort', up: 'fa-caret-up', down: 'fa-caret-down'}
@@ -718,22 +711,10 @@
                 return !$scope.url.$.length;
             };
 
-            $scope.remove = function () {
+            $scope.remove = function (item) {
                 $scope.setLoading('Deleting');
-                if ($scope.deleting.isEmpty()) {
-                    return;
-                }
 
-                var deletePromise = [];
-
-                forEach($scope.items, function (item) {
-                    if ($scope.deleting.has(item.id)) {
-
-                        deletePromise.push(item.$remove());
-                    }
-                });
-
-                $q.all(deletePromise)
+                item.$remove()
                     .then(loadRedirects)
                     .then(bind($scope, $scope.$emit, 'delete'))
                     .catch(bind($scope, $scope.$emit, 'api:error'));
@@ -764,7 +745,6 @@
                     .then(function(items){
                         $scope.items = items;
                         $scope.setLoading(false);
-                        $scope.deleting.empty();
                     })
                     .catch(bind($scope, $scope.$emit, 'api:error'));
             }

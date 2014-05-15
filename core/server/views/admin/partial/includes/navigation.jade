@@ -36,10 +36,6 @@ ul.nav.nav-list
             mixin post('live', 'Published', true)
             mixin post('scheduled', 'Scheduled', true)
 
-    li: a(href="#/comments", ng-class="{'text-bold':crumb[0].id=='comments'}")
-        i.fa.fa-comments.fa-fw
-        |  Comments
-
     li.nav-header
 
         a(href="#/images/upload")
