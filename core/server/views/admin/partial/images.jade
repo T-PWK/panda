@@ -65,20 +65,3 @@
                 button.btn.btn-danger.btn-sm(type="button", ng-click="uploader.clearQueue()", ng-disabled="!uploader.queue.length")
                     i.fa.fa-fw.fa-trash-o
                     | Remove all
-
-        //.row
-        //    .col-sm-12
-        //        div(ng-repeat="file in selectedFiles")
-        //            | {{$index+1}}: {{file.name}} - size: {{file.size}} - type: {{file.type}}
-        //            img(ng-show="dataUrls[$index]", ng-src="{{dataUrls[$index]}}", alt="{{file.name}}", style="max-height:50px;max-width:100px;")
-        //
-        //.row(ng-if="!images.length && isLoading")
-        //    .col-sm-12
-        //        .text-center
-        //            i.fa.fa-fw.fa-spinner.fa-spin
-        //            | Loading images
-        //
-        //.row
-        //    .col-lg-3.col-sm-4.col-xs-6(ng-repeat="img in images")
-        //        a.thumbnail(href="", ng-click="open($index)")
-        //            img.img-responsive.img-rounded(ng-src="{{img.url}}", alt="{{img.name}}", title="{{img.name}}", tooltip="{{img.name}}")
