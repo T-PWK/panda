@@ -7,7 +7,6 @@ block templates
     script(type="text/ng-template", id="themes"): include partial/themes
     script(type="text/ng-template", id="posts"): include partial/posts
     script(type="text/ng-template", id="editpost"): include partial/editpost
-    script(type="text/ng-template", id="comments"): include partial/comments
     script(type="text/ng-template", id="settings"): include partial/settings
     script(type="text/ng-template", id="redirects"): include partial/redirects
     script(type="text/ng-template", id="users"): include partial/users
@@ -19,7 +18,6 @@ block templates
     script(type="text/ng-template", id="plugininfo"): include partial/plugininfo
 
 block content
-
     nav.navbar.navbar-default.navbar-static-top(role="navigation", ng-controller="NavRootCtrl")
         .container
 
@@ -44,6 +42,7 @@ block content
                     li: a(href=url, ng-href="{{url}}", target="_blank")
                         i.fa.fa-eye.fa-fw
                         |  View Blog
+
                 ul.nav.navbar-nav.navbar-right
                     li.active: a(href="/logout") Sign Out
 
@@ -68,12 +67,9 @@ block content
             p.navbar-text Panda v.#{version}
 
 block js
-    script(src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js")
-    script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.2/angular.min.js")
-    script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.2/angular-route.min.js")
-    script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.2/angular-resource.min.js")
-    script(src="/client/js/vendors.min.js")
-    script(src="/client/js/panda.min.js")
+    - var scripts = ['//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js', '//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.2/angular.min.js', '//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.2/angular-route.min.js', '//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.2/angular-resource.min.js', '/client/js/vendors.min.js', '/client/js/panda.min.js']
+    each src in scripts
+        script(src=src)
     script.
         angular.element(document).ready(function(){
             angular.module('panda.config', []).value('Config', {adminTheme:'#{adminTheme}'});
