@@ -56,6 +56,7 @@
         } else {
             this.inactive.push(plugin);
         }
+        this.inactive = _.sortBy(this.inactive, 'priority');
     };
 
     PluginService.prototype.instantiatePlugin = function (code) {
