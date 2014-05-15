@@ -41,14 +41,16 @@
 
             if (!config || !config.cron || !config.forum || !config.apiKey) {
                 this.status = 'W';
-                this.messages = [
-                    {msg: "Plugin could not start up properly due to missing configuration."}
-                ];
-            } else {
-                forum = config.forum;
-                apiKey = config.apiKey;
-                job = new CronJob(config.cron, synchronize.bind(this, this), null, true);
+                this.messages.push({msg: "Plugin could not start up properly due to missing configuration."});
+
+                return when.reject();
             }
+
+            // Startup synchronization job
+
+            forum = config.forum;
+            apiKey = config.apiKey;
+            job = new CronJob(config.cron, synchronize.bind(this, this), null, true);
         },
 
         stop: function () {
@@ -77,44 +79,47 @@
             })
             .then(function (posts) {
 
-                return when.map(posts, function (post) {
-                    return get({
-                        uri: "https://disqus.com/api/3.0/threads/details.json",
-                        qs: {
-                            api_key: apiKey,
-                            forum: forum,
-                            "thread:link": helper.postUrl(null, post, true)
-                        }
-                    }).spread(function (res, body) {
-                        return JSON.parse(body);
-                    }).then(function (obj) {
-                        if (obj.code === 0) {
-                            info.updates++;
-                            return provider.updateProperties(post.id, {commentsCount: obj.response.posts || 0});
-                        }
+                return when
+                    .map(posts, function (post) {
+                        return get({
+                            uri: "https://disqus.com/api/3.0/threads/details.json",
+                            qs: {
+                                api_key: apiKey,
+                                forum: forum,
+                                "thread:link": helper.postUrl(null, post, true)
+                            }
+                        }).spread(function (res, body) {
+                            return JSON.parse(body);
+                        }).then(function (obj) {
+                            if (obj.code === 0) {
+                                info.updates++;
+                                return provider.updateProperties(post.id, {commentsCount: obj.response.posts || 0});
+                            }
+                        });
                     });
-                });
 
             })
-            .then(updateMessages)
-            .otherwise(function (err) {
-                console.error(" error ", err)
-            });
+            .then(updatesMessage);
 
-        function updateMessages () {
+        function updatesMessage () {
             info.timeSpan = process.hrtime(time);
 
-            (plugin.messages || (plugin.messages = [])).push({
+            plugin.messages.push({
                 type: 'success',
                 msg: format(
-                    "<h5>Synchronization detail</h5><dl class=\"dl-horizontal\">" +
-                        "<dt>completion time</dt><dd>%s</dd>" +
-                        "<dt>time span</dt><dd>%d.%ds</dd>" +
-                        "<dt>processed posts</dt><dd>%d</dd>" +
-                        "<dt>updated posts</dt><dd>%d</dd></dl>",
-                    moment().format('llll'), info.timeSpan[0], Math.ceil(info.timeSpan[1]/1000000), info.posts, info.updates
+                    "<h5>Synchronization details</h5><dl class=\"dl-horizontal\">" +
+                        "<dt>Completion time</dt><dd>%s</dd>" +
+                        "<dt>Time span</dt><dd>%d.%ds</dd>" +
+                        "<dt>Processed posts</dt><dd>%d</dd>" +
+                        "<dt>Updated posts</dt><dd>%d</dd></dl>",
+                    moment().format('llll'),
+                    info.timeSpan[0],
+                    Math.ceil(info.timeSpan[1]/1000000),
+                    info.posts,
+                    info.updates
                 )
             });
+
             plugin.messages = _.last(plugin.messages, 5);
         }
     }

@@ -47,11 +47,9 @@
         start: function () {
             if (!cfg.get('theme:custom:disqus:shortname')) {
                 this.status = "W";
-                this.messages = [
-                    {msg: "Plugin could not start up properly due to missing configuration."}
-                ];
+                this.messages.push({msg: "Plugin could not start up properly due to missing configuration."});
 
-                return;
+                return when.reject();
             }
 
             threadTpl = _.template(threadSrc);
