@@ -156,6 +156,14 @@
                 return $sce.trustAsHtml(val);
             };
         }])
+        .filter('tail', [function () {
+            return function (value, len) {
+                if (angular.isDefined(value) && (angular.isArray(value) || angular.isString(value))) {
+                    return value.slice(-len);
+                }
+                return value;
+            };
+        }])
         .directive('ngEnter', function() {
             return function(scope, element, attrs) {
                 element.bind("keydown keypress", function(event) {
