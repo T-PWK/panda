@@ -6,13 +6,13 @@
         node        = require('when/node'),
         readFile    = node.lift(fs.readFile),
         _           = require('lodash'),
-        tpl, source;
+        tpl;
 
     module.exports = {
 
         start: function () {
 
-            var data = cfg.get('theme:custom:ga');
+            var data = cfg.get('plugins:panda-google-analytics');
 
             if (!data || !data.ua || !data.domain) {
                 this.status = 'W';
@@ -32,8 +32,7 @@
         },
 
         pageFooter: function () {
-            var data = cfg.get('theme:custom:ga');
-            return (!data || !data.ua || !data.domain) ? '' : tpl(data);
+            return tpl(cfg.get('plugins:panda-google-analytics'));
         }
     };
 

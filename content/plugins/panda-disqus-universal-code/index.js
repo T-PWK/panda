@@ -13,7 +13,7 @@
 
         start: function () {
 
-            if (!cfg.get('theme:custom:disqus:shortname')) {
+            if (!cfg.get('plugins:panda-disqus-universal')) {
                 this.status = "W";
                 this.messages.push({msg: "Plugin could not start up properly due to missing configuration."});
 
@@ -35,16 +35,15 @@
         },
 
         pageFooter: function (req, res) {
-            var name = cfg.get('theme:custom:disqus:shortname'),
-                data = { shortname: name },
-                code = [];
+            var data    = cfg.get('plugins:panda-disqus-universal'),
+                output  = [];
 
-            if (!name) { return; }
+            if (res.locals.post) {
+                output.push(embedTpl(data));
+            }
+            output.push(countTpl(data));
 
-            if (res.locals.post) { code.push(embedTpl(data)); }
-            code.push(countTpl(data));
-
-            return code.join('');
+            return output.join('');
         }
     };
 
