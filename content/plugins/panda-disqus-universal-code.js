@@ -36,7 +36,7 @@
         description: "<p>The Disqus Universal Code for Panda plugin embeds JavaScript code which loads Disqus forum as well as number of comments on your site.</p>" +
             "<p>More on Universal Embed Code can be found <a href=\"http://help.disqus.com/customer/portal/articles/472097-universal-embed-code\", target=\"_blank\">here</a>.</p>",
 
-        configuration: "<p>This plugin requires the following properties under <code>plugins:panda-disqus-universal</code> configuration element:" +
+        configuration: "<p>This plugin requires the following properties under <code>theme:custom:disqus</code> configuration element:" +
             "<ul><li><code>shortname</code> - forum short name</li></ul></p>",
 
         author: {
@@ -45,12 +45,13 @@
         },
 
         start: function () {
-
-            if (!cfg.get('plugins:panda-disqus-universal:shortname')) {
+            if (!cfg.get('theme:custom:disqus:shortname')) {
                 this.status = "W";
-                this.messages.push({msg: "Plugin could not start up properly due to missing configuration."});
+                this.messages = [
+                    {msg: "Plugin could not start up properly due to missing configuration."}
+                ];
 
-                return when.reject();
+                return;
             }
 
             threadTpl = _.template(threadSrc);
@@ -62,13 +63,16 @@
         },
 
         pageFooter: function (req, res) {
-            var data    = cfg.get('plugins:panda-disqus-universal'),
-                output  = [];
+            var name = cfg.get('theme:custom:disqus:shortname'),
+                data = {shortname: name},
+                code = [];
 
-            if (res.locals.post) { output.push(threadTpl(data)); }
-            output.push(countTpl(data));
+            if (!name) { return; }
 
-            return output.join('');
+            if (res.locals.post) { code.push(threadTpl(data)); }
+            code.push(countTpl(data));
+
+            return code.join('');
         }
     };
 
