@@ -16,11 +16,9 @@
 
             if (!data || !data.ua || !data.domain) {
                 this.status = 'W';
-                this.messages = [
-                    { msg: "Plugin could not start up properly due to missing configuration." }
-                ];
+                this.messages.push({ msg: "Plugin could not start up properly due to missing configuration." });
 
-                return;
+                return when.reject();
             }
 
             return readFile(__dirname + '/code.txt')
