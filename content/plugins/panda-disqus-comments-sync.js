@@ -16,14 +16,14 @@
         job, apiKey, forum;
 
     module.exports = {
-        code: "disqus-comments-synch",
+        code: "panda-disqus-comments-synch",
 
         name: "Disqus Comments for Panda",
 
         description: "<p>The Disqus Comments for Panda plugin seamlessly integrates using the Disqus API and by syncing with Panda comments.</p>",
 
         configuration: "<p>The Disqus Comments for Panda plugin uses following configuration properties under " +
-            "<code>plugins:disqus-comments-synch</code> configuration element:</p><ul>" +
+            "<code>plugins:panda-disqus-comments-synch</code> configuration element:</p><ul>" +
             "<li><code>cron</code> - the time to fire off your job. " +
             "The time needs to be in the form of <a href=\"http://crontab.org/\" target=\"_blank\">cron syntax</a>.</li>" +
             "<li><code>forum</code> - Disqus forum name (aka short name).</li>" +
@@ -37,7 +37,7 @@
         },
 
         start: function () {
-            var config = cfg.get('plugins:disqus-comments-synch');
+            var config = cfg.get('plugins:panda-disqus-comments-synch');
 
             if (!config || !config.cron || !config.forum || !config.apiKey) {
                 this.status = 'W';
