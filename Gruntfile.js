@@ -187,7 +187,7 @@ function gruntConfig (grunt) {
                 },
                 files: {
                     src: [
-                        'core/server/**/*.js', 'core/index.js', 'core/server.js'
+                        'core/server/**/*.js', 'core/index.js', 'core/server.js', 'content/plugins/**/*.js'
                     ]
                 }
             },
