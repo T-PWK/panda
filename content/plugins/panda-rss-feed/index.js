@@ -31,6 +31,7 @@
                     res.locals.postsPerPage = rssPostPerPage;
 
                     res.type('rss').render(__dirname + '/rss');
+
                     return true;
                 }
             ).otherwise(

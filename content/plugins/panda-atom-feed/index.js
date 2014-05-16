@@ -30,6 +30,7 @@
                 res.locals.postsPerPage = atomPostPerPage;
 
                 res.type('rss').render(__dirname + '/atom');
+
                 return true;
             }).otherwise(function (err) {
                 res.send(500);

@@ -14,6 +14,8 @@
                 .then(function (posts) {
                     res.locals.posts = posts;
                     res.type('xml').render(__dirname + '/sitemap');
+
+                    return true;
                 });
         }
     };
