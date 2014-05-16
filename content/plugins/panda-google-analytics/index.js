@@ -2,6 +2,7 @@
     "use strict";
 
     var cfg         = require('nconf'),
+        when        = require('when'),
         fs          = require('fs'),
         node        = require('when/node'),
         readFile    = node.lift(fs.readFile),
