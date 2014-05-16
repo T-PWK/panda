@@ -1,0 +1,11 @@
+{
+    "code": "panda-robots",
+    "name": "Robots.txt for Panda",
+    "version": "0.0.2",
+    "description": "<p>Robots.txt for Panda plugin handles requests for robots.txt file in the top-level directory of the host - <code>:url/robots.txt</code>.</p><p>Note: the URL for the robots.txt file is - like other URLs - case-sensitive.</p><p>More about Robots.txt can be found at <a href=\"https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt\" target=\"_blank\">Robots.txt Specifications</a>.</p>",
+    "main": "index.js",
+    "author": {
+        "name": "Panda Team",
+        "url": "https://github.com/T-PWK/panda"
+    }
+}
