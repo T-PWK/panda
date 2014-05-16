@@ -24,7 +24,11 @@
                 i.fa.fa-fw.fa-exclamation-circle
                 | Messages
             div.top-buffer
-                alert(ng-repeat="message in plugin.messages | tail:3", type="message.type", ng-bind-html="message.msg | unsafe")
+                alert(ng-repeat="message in plugin.messages | tail:3", type="message.type")
+                    p(ng-bind-html="message.msg | unsafe", ng-if="message.msg")
+                    dl.dl-horizontal(ng-if="message.properties")
+                        dt(ng-repeat-start="prop in message.properties") {{prop.name}}
+                        dd(ng-repeat-end) {{prop.value}}
 
 .modal-footer
     span(ng-if="plugin.version") v{{plugin.version}}
