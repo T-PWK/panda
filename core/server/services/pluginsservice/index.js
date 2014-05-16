@@ -44,9 +44,9 @@
             })
             .then(function (codes) {
                 // Convert list of codes into a list of plugin startup promises
-                return when.all(_.map(codes, function (code) {
-                    return self.start(code);
-                }));
+                return when
+                    .all(_.map(codes, function (code) { return self.start(code); }))
+                    .else();    // Do not disrupt Panda startup process if one of plugins fails during start-up
             });
     };
 
