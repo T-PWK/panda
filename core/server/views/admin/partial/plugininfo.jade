@@ -9,11 +9,20 @@
 .modal-body
 
     tabset
-        tab(heading="Description")
+        tab
+            tab-heading
+                i.fa.fa-fw.fa-info-circle
+                | Description
             div.top-buffer(ng-bind-html="plugin.description | unsafe")
-        tab(heading="Configuration", disabled="!plugin.configuration")
+        tab(disabled="!plugin.configuration")
+            tab-heading
+                i.fa.fa-fw.fa-cogs
+                | Configuration
             div.top-buffer(ng-bind-html="plugin.configuration | unsafe")
-        tab(heading="Messages", disabled="!plugin.messages.length")
+        tab(disabled="!plugin.messages.length")
+            tab-heading
+                i.fa.fa-fw.fa-exclamation-circle
+                | Messages
             div.top-buffer
                 alert(ng-repeat="message in plugin.messages | tail:3", type="message.type", ng-bind-html="message.msg | unsafe")
 
