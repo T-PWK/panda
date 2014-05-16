@@ -218,10 +218,6 @@
             instance.description = instance.description.replace(':url', cfg.get('url'));
         }
 
-        if(instance.description && ~instance.description.indexOf(':url')) {
-            instance.description = instance.description.replace(':url', cfg.get('url'));
-        }
-
         return instance;
     }
 
