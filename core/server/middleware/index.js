@@ -10,8 +10,6 @@
         compress        = require('compression'),
         passport        = require('passport'),
         errorHandler    = require('errorhandler'),
-        cookieSession   = require('cookie-session'),
-        sessionFlush    = require('connect-flash'),
         responseTime    = require('response-time'),
         favicon         = require('./favicon'),
         staticHandler   = require('./static'),
@@ -42,14 +40,16 @@
 
         // Set theme static files
         app.use('/assets', staticHandler);
+        app.use('/assets', notFound);
+
         app.use('/shared', serveStatic(cfg.get('paths:sharedStatic'), { maxAge: cfg.get('app:staticCacheAge') }));
+        app.use('/shared', notFound);
+
         app.use('/client', serveStatic(cfg.get('paths:clientStatic'), { maxAge: cfg.get('app:staticCacheAge') }));
+        app.use('/client', notFound);
 
         // Set the template helper component
         tplHelper(app);
-
-        // Set the routes
-        routes.feeds(app);      // Set up RSS routes
 
         if (cfg.get('admin:enable')) {
             routes.admin(app);  // Set up admin routes
@@ -64,6 +64,10 @@
         }
 
         return app;
+    }
+
+    function notFound (req, res) {
+        res.send(404);
     }
 
     module.exports = setup;
