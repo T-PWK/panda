@@ -22,6 +22,12 @@
         return User.findOne({ lead: true }).exec();
     };
 
+    UserProvider.prototype.findAllUsers = function () {
+        debug('finding all user');
+
+        return User.find().exec();
+    };
+
     UserProvider.prototype.findByEmail = function (email) {
         debug('finding user by email %j', email);
 
