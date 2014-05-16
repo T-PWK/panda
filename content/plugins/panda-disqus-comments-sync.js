@@ -106,20 +106,14 @@
 
             plugin.messages.push({
                 type: 'success',
-                msg: format(
-                    "<h5>Synchronization details</h5><dl class=\"dl-horizontal\">" +
-                        "<dt>Completion time</dt><dd>%s</dd>" +
-                        "<dt>Time span</dt><dd>%d.%ds</dd>" +
-                        "<dt>Processed posts</dt><dd>%d</dd>" +
-                        "<dt>Updated posts</dt><dd>%d</dd></dl>",
-                    moment().format('llll'),
-                    info.timeSpan[0],
-                    Math.ceil(info.timeSpan[1]/1000000),
-                    info.posts,
-                    info.updates
-                )
+                msg: "Synchronization details",
+                properties: [
+                    { name: "Completion time", value: moment().format('llll') },
+                    { name: "Time span", value: format('%d.%ds', info.timeSpan[0], Math.ceil(info.timeSpan[1] / 1000000)) },
+                    { name: "Processed posts", value: info.posts },
+                    { name: "Updated posts", value: info.updates }
+                ]
             });
-
             plugin.messages = _.last(plugin.messages, 5);
         }
     }
