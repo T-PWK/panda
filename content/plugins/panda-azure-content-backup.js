@@ -7,6 +7,7 @@
         node            = require('when/node'),
         sequence        = require('when/sequence'),
         moment          = require('moment'),
+        debug           = require('debug')('panda:plugins:panda-azure-content-backup'),
         stringify       = when.lift(JSON.stringify),
         format          = require('util').format,
         _               = require('lodash'),
@@ -36,11 +37,15 @@
         },
 
         start: function () {
+            debug('starting');
+
             var config = cfg.get('plugins:panda-azure-content-backup');
 
             if (!config || !config.cron || !config.account || !config.key || !config.container) {
                 this.status = 'W';
                 this.messages.push({msg: "Plugin could not start up properly due to missing configuration."});
+
+                debug('start-up failed due to missing configuration');
 
                 return when.reject();
             }
@@ -53,6 +58,8 @@
         },
 
         stop: function () {
+            debug('stopping');
+
             if (job) {
                 job.stop();
             }
@@ -85,6 +92,8 @@
     }
 
     function backup(plugin) {
+        debug('starting backup');
+
         var time    = process.hrtime(),
             dir     = moment().format('YYYY-MM-DDTHH-mm-ss'),
             stats   = {
@@ -99,21 +108,25 @@
             .resolve(providers.postsProvider.findAll())                                     // fetch all posts
             .then(convertToTask)
             .then(function (tasks) {
+                debug('saving posts');
                 return sequence(tasks, dir, 'posts', stats.posts);                          // Store all posts
             })
             .then(providers.configProvider.findAllConfigs.bind(providers.configProvider))
             .then(convertToTask)
             .then(function (tasks) {
+                debug('saving configs');
                 return sequence(tasks, dir, 'configs', stats.configs);                      // Store all configurations
             })
             .then(providers.redirectsProvider.findAllRedirects.bind(providers.redirectsProvider))
             .then(convertToTask)
             .then(function (tasks) {
+                debug('saving redirects');
                 return sequence(tasks, dir, 'redirects', stats.redirects);                  // Store all redirects
             })
             .then(providers.usersProvider.findAllUsers.bind(providers.usersProvider))
             .then(convertToTask)
             .then(function (tasks) {
+                debug('saving users');
                 return sequence(tasks, dir, 'users', stats.users);                          // Store all users
             })
             .done(success, failure);

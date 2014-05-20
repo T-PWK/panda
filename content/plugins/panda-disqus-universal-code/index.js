@@ -5,6 +5,7 @@
         when        = require('when'),
         node        = require('when/node'),
         fs          = require('fs'),
+        debug       = require('debug')('panda:panda-disqus-universal'),
         readFile    = node.lift(fs.readFile),
         _           = require('lodash'),
         embedTpl, countTpl;
@@ -13,9 +14,13 @@
 
         start: function () {
 
+            debug('starting');
+
             if (!cfg.get('plugins:panda-disqus-universal')) {
                 this.status = "W";
                 this.messages.push({msg: "Plugin could not start up properly due to missing configuration."});
+
+                debug('start-up failed due to missing configuration');
 
                 return when.reject();
             }
@@ -31,6 +36,7 @@
         },
 
         stop: function () {
+            debug('stopping');
             embedTpl = countTpl = null;
         },
 

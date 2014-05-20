@@ -8,6 +8,7 @@
         _           = require('lodash'),
         request     = require('request'),
         url         = require('url'),
+        debug       = require('debug')('panda:plugins:panda-disqus-comments-synch'),
         format      = require('util').format,
         CronJob     = require('cron').CronJob,
         get         = node.lift(request),
@@ -37,11 +38,15 @@
         },
 
         start: function () {
+            debug('starting');
+
             var config = cfg.get('plugins:panda-disqus-comments-synch');
 
             if (!config || !config.cron || !config.forum || !config.apiKey) {
                 this.status = 'W';
                 this.messages.push({msg: "Plugin could not start up properly due to missing configuration."});
+
+                debug('start-up failed due to missing configuration');
 
                 return when.reject();
             }
@@ -54,6 +59,7 @@
         },
 
         stop: function () {
+            debug('stopping');
             if (job) {
                 job.stop();
             }
@@ -63,6 +69,7 @@
     require('pkginfo')(module, 'version');
 
     function synchronize(plugin) {
+        debug('synchronization started');
         var info = {
             start: process.hrtime(),
             timeSpan: null,
@@ -91,6 +98,7 @@
                         }).spread(function (res, body) {
                             return JSON.parse(body);
                         }).then(function (obj) {
+                            debug('synchronizing post %s', post.id);
                             if (obj.code === 0) {
                                 info.updates++;
                                 return provider.updateProperties(post.id, {commentsCount: obj.response.posts || 0});
