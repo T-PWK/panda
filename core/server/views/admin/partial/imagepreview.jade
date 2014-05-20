@@ -2,7 +2,10 @@
     button.close(ng-click="close()") &times;
     h4.modal-title Image Preview
 .modal-body
-    img.img-responsive.center-block(ng-src="{{image.url}}", alt="{{image.name}}")
+    img(ng-if="isImage").img-responsive.center-block(ng-src="{{image.url}}", alt="{{image.name}}")
+    .alert.alert-info.text-center(ng-if="!isImage")
+        i.fa.fa-fw.fa-info-circle
+        | Not an image
 .modal-footer
     .pull-left
         dl.dl-horizontal.text-left

@@ -27,7 +27,8 @@
             .post('/:id', api.plugins.update);
 
         images
-            .get('/', api.images.index);
+            .get('/', api.images.index)
+            .delete('/:id', api.images.remove);
 
         settings
             .param('id', api.settings.load)

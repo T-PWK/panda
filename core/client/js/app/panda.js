@@ -44,8 +44,8 @@
                 .when('/users', { templateUrl: 'users', controller: 'UsersCtrl' })
                 .when('/plugins', { templateUrl: 'plugins', controller: 'PluginsCtrl' })
                 .when('/themes', { templateUrl: 'themes', controller: 'ThemesCtrl' })
-                .when('/images/upload', { templateUrl: 'upload-images', controller: 'ImgCtrl' })
-                .when('/images/browse', { templateUrl: 'browse-images', controller: 'ImgCtrl' })
+                .when('/images/upload', { templateUrl: 'upload-images', controller: 'ImgUploadCtrl' })
+                .when('/images/browse', { templateUrl: 'browse-images', controller: 'ImgBrowseCtrl' })
                 .otherwise({ redirectTo: '/' });
 
             NProgress.configure({ speed: 200, trickleRate: 0.05, trickleSpeed: 250  });
@@ -83,7 +83,7 @@
             return $resource('/api/v1/labels');
         }])
         .factory('Images', ['$resource', function ($resource) {
-            return $resource('/api/v1/images');
+            return $resource('/api/v1/images/:id', { id: '@name' });
         }])
         .factory('Plugins', ['$resource', function ($resource) {
             return $resource('/api/v1/plugins/:id',

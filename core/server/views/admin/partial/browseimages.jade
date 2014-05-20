@@ -1,0 +1,46 @@
+.row(ng-file-drop)
+    .col-md-3
+        ng-include(src="'navigation'")
+    .col-md-9
+        ng-include(src="'breadcrumb'")
+
+        .page-header
+            h1 Images
+
+
+        .form-group(ng-if="images.length")
+            .row
+                .col-sm-4
+                    a.btn.btn-default.btn-sm(ng-click="loadImages()", ng-disabled="isLoading")
+                        i.fa.fa-fw.fa-refresh
+                        | &nbsp;Reload
+                .col-sm-6.col-sm-offset-2
+                    .input-group.input-group-sm
+                        input.form-control(type="text", ng-model="filter.name", ng-key-action="{27:'onEsc'}",
+                            on-esc="filter.name=''", placeholder="Filter by name")
+                        span.input-group-btn.input-group-sm
+                            button.btn.btn-default(type="button", ng-disabled="!filter.name", ng-click="filter.name=''")
+                                i.fa.fa-times-circle
+
+        .row
+            .col-sm-12
+                table.table.table-striped(ng-if="images.length")
+                    thead
+                        tr
+                            th.col-sm-1
+                            th.col-sm-9
+                                | Name
+                                a(href="", ng-click="order.by('name')")
+                                    i.fa.fa-fw(ng-class="order.icon('name')")
+                            th.col-sm-2
+                                | Size
+                                a(href="", ng-click="order.by('size')")
+                                    i.fa.fa-fw(ng-class="order.icon('size')")
+                    tbody
+                        tr(ng-repeat="img in images | filter:filter | orderBy:order.option:order.desc")
+                            td.text-center
+                                i.fa.fa-trash-o.fa-fw.btn-link(ng-click="remove(img)")
+                            td
+                                a(href="", ng-click="open(img)") {{img.name}}
+                            td {{img.size/1024|number:1}} KB
+

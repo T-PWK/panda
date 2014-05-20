@@ -899,6 +899,7 @@
     controllers.controller('ImagePreviewCtrl', ['$scope', '$modalInstance', 'image',
         function($scope, $modalInstance, image) {
             $scope.image = image;
+            $scope.isImage = image.contentType.indexOf('image') >= 0;
 
             $scope.close = function(){
                 $modalInstance.close();
@@ -952,11 +953,10 @@
         }
     ]);
 
-    controllers.controller('ImgCtrl', ['$scope', '$fileUploader', '$timeout', '$modal', 'Images',
+    controllers.controller('ImgUploadCtrl', ['$scope', '$fileUploader', '$timeout', '$modal', 'Images',
         function ($scope, $fileUploader, $timeout, $modal) {
 
             $scope.setCrumb('images', 'upload');
-//            $scope.setLoading(true);
 
             var uploader = $scope.uploader = $fileUploader.create({
                 scope: $scope, // to automatically update the html. Default: $rootScope
@@ -966,84 +966,55 @@
                 ],
                 filters: [
                     function (item) { // first user filter
-                        console.info('filter1');
                         return true;
                     }
                 ]
             });
+        }
+    ]);
 
-            // Temporarily commented out
-//            $scope.images = Images.query(function () {
-//                $scope.setLoading(false);
-//            });
+    controllers.controller('ImgBrowseCtrl', ['$scope', '$modal', 'Images', 'Utils',
+        function ($scope, $modal, Images, Utils) {
+            $scope.setCrumb('images', 'browse');
+            $scope.pg = Utils.pagination();
+            $scope.order = Utils.ordering({
+                classes: {none: 'fa-sort', up: 'fa-caret-up', down: 'fa-caret-down'}
+            });
+            $scope.filter = {};
 
-            $scope.open = function (index) {
+            $scope.remove = function (image) {
+                $scope.setLoading('Removing');
+                image.$remove().then(
+                    function () {
+                        _.remove($scope.images, 'deleted');
+                        $scope.loadImages();
+                    },
+                    bind($scope, $scope.loadImages)
+                );
+            };
+
+            $scope.loadImages = function () {
+                $scope.setLoading(true);
+                Images.query(function (images) {
+                    $scope.images = images;
+                    $scope.setLoading(false);
+                });
+            };
+
+            $scope.open = function (image) {
                 $modal.open({
                     templateUrl: 'imagepreview',
                     controller: 'ImagePreviewCtrl',
                     size: 'lg',
                     resolve: {
                         image: function() {
-                            return $scope.images[index];
+                            return image;
                         }
                     }
                 });
             };
 
-            $scope.onFileSelect = function ($files) {
-                $scope.selectedFiles = $files;
-                $scope.progress = [];
-                $scope.upload = [];
-                $scope.uploadResult = [];
-//                $scope.dataUrls = [];
-
-//                forEach($files, function ($file, idx) {
-//                    if (window.FileReader && $file.type.indexOf('image') > -1) {
-//                        var fileReader = new FileReader();
-//                        fileReader.readAsDataURL($file);
-//                        setPreview(fileReader, idx);
-//                    }
-//                });
-
-                $timeout(function(){
-                    forEach($files, function($file, index){
-                        $scope.start(index);
-                    });
-                }, 2000);
-            };
-
-            $scope.abort = function(index) {
-                $scope.upload[index].abort();
-                $scope.upload[index] = null;
-            };
-
-            $scope.start = function (index) {
-                $scope.progress[index] = 0;
-
-//                $scope.upload[index] = $upload
-//                    .upload({
-//                        url: '/api/v1/upload',
-//                        file: $scope.selectedFiles[index]
-//                    })
-//                    .then(completion, null, progress);
-
-                function completion() {
-                    $scope.progress[index] = 100;
-                }
-
-                function progress(evt) {
-                    $scope.progress[index] = parseInt(100.0 * evt.loaded / evt.total);
-                }
-            };
-
-//            function setPreview(reader, index) {
-//                reader.onload = function (e) {
-//                    $timeout(function () {
-//                        $scope.dataUrls[index] = e.target.result;
-//                    });
-//                };
-//            }
-
+            $scope.loadImages();
         }
     ]);
 
