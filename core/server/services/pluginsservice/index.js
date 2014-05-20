@@ -214,7 +214,7 @@
             instance.teaser = downsize(instance.description || '', cfg.get('plugins:teaser'));
         }
 
-        if (!instance.description && ~instance.description.indexOf(':url')) {
+        if (instance.description && ~instance.description.indexOf(':url')) {
             instance.description = instance.description.replace(':url', cfg.get('url'));
         }
 
