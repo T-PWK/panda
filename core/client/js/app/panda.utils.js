@@ -73,7 +73,7 @@
     };
 
     Ordering.prototype.by = function (opt, desc) {
-        this.desc = angular.isUndefined(desc) ? (this.option === opt) ? !this.desc : false : desc;
+        this.desc = angular.isUndefined(desc) ? (this.option === opt) ? !this.desc : true : desc;
         this.option = opt;
         this.orderBy = (this.desc ? '-' : '') + this.option;
     };
