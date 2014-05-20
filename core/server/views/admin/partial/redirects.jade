@@ -15,7 +15,8 @@
                         button.btn.btn-default.btn-sm(type="button", ng-click="verify()", ng-disabled="items.length<2") Verify
                     .col-sm-6.col-sm-offset-3
                         .input-group.input-group-sm
-                            input.form-control(type="text", ng-model="url.$", ng-key-action="{27:'onEsc'}", on-esc="clrSearch()")
+                            input.form-control(type="text", ng-model="url.$", ng-key-action="{27:'onEsc'}",
+                                on-esc="clrSearch()", placeholder="Filter by URL")
                             span.input-group-btn.input-group-sm
                                 button.btn.btn-default(type="button", ng-disabled="hasSearch()", ng-click="clrSearch()"): i.fa.fa-times-circle
 
