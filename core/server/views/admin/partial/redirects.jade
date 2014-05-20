@@ -87,7 +87,8 @@
 
                 .btn-group
                     pagination.pagination-sm(page="pg.current", total-items="pg.items", items-per-page="pg.pageSize",
-                        previous-text="«", next-text="»", rotate="true", max-size="5")
+                        previous-text="‹", next-text="›", rotate="true", max-size="5", boundary-links="true",
+                        first-text="«", last-text="»")
 
             .text-center(ng-if="!items.length && !isLoading") No redirects have been configured. You can create one in the form below.
 
