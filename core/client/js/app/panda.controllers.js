@@ -974,14 +974,17 @@
         }
     ]);
 
-    controllers.controller('ImgBrowseCtrl', ['$scope', '$modal', 'Images', 'Utils',
-        function ($scope, $modal, Images, Utils) {
+    controllers.controller('ImgBrowseCtrl', ['$scope', '$modal', 'filterFilter', 'Images', 'Utils',
+        function ($scope, $modal, filter, Images, Utils) {
             $scope.setCrumb('images', 'browse');
             $scope.pg = Utils.pagination();
             $scope.order = Utils.ordering({
                 classes: {none: 'fa-sort', up: 'fa-caret-up', down: 'fa-caret-down'}
             });
             $scope.filter = {};
+            $scope.$watch('filter.name', updatePagination);
+            $scope.$watch(function () { return ($scope.images && $scope.images.length) || 0; }, updatePagination);
+            $scope.$watch('order.orderBy', function (value) { $scope.pg.current = 1; });
 
             $scope.remove = function (image) {
                 $scope.setLoading('Removing');
@@ -999,7 +1002,7 @@
                 $scope.setLoading(true);
                 Images.query(function (images) {
                     $scope.images = images;
-                    $scope.pg.items = images;
+                    $scope.pg.items = filter($scope.images, $scope.filter);
                     $scope.setLoading(false);
                 });
             };
@@ -1018,6 +1021,10 @@
             };
 
             $scope.loadImages();
+
+            function updatePagination() {
+                $scope.pg.items = filter($scope.images, $scope.filter);
+            }
         }
     ]);
 

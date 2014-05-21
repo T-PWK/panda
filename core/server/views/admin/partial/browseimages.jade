@@ -41,17 +41,17 @@
                                 a(href="", ng-click="order.by('size')")
                                     i.fa.fa-fw(ng-class="order.icon('size')")
                     tbody
-                        tr(ng-repeat="img in images | filter:filter | range:pg.firstItem:pg.pageSize | orderBy:order.option:order.desc")
+                        tr(ng-repeat="img in images | filter:filter | orderBy:order.option:order.desc | range:pg.firstItem:pg.pageSize")
                             td.text-center
-                                i.fa.fa-trash-o.fa-fw.btn-link(ng-if="!img.deleting", ng-click="remove(img)")
-                                i.fa.fa-spinner.fa-spin.fa-fw(ng-if="img.deleting", ng-click="remove(img)")
+                                i.fa.fa-trash-o.fa-fw.btn-link(ng-if="!img.deleting", ng-click="remove(img)", ng-disabled="isLoading")
+                                i.fa.fa-spinner.fa-spin.fa-fw(ng-if="img.deleting")
                             td
                                 a(href="", ng-click="open(img)") {{img.name}}
                             td {{img.size/1024|number:1}} KB
 
         .row
             .col-sm-12
-                .btn-toolbar.pull-right(ng-if="images.length")
+                .btn-toolbar.pull-right(ng-if="images.length && pg.items")
                     p.btn-group Show rows:
 
                      //- Rows per screen selection
