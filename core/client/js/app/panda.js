@@ -127,6 +127,11 @@
                 return input ? input.slice(+start) : input;
             };
         }])
+        .filter('range', [function () {
+            return function (input, start, ln) {
+                return input ? input.slice(+start, +start + +ln) : input;
+            };
+        }])
         .filter('status', [function () {
             return function (post) {
                 if (!post.published) return 'D';
