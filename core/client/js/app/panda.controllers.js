@@ -907,10 +907,36 @@
         }
     ]);
 
-    controllers.controller('PluginInfoCtrl', ['$scope', '$modalInstance',
-        function ($scope, $instance) {
+    controllers.controller('PluginInfoCtrl', ['$scope', '$modalInstance', 'Plugins',
+        function ($scope, $instance, Plugins) {
+
+            $scope.master = angular.copy($scope.plugin);
+
             $scope.close = function(){
                 $instance.close();
+            };
+
+            $scope.save = function () {
+                var data = {};
+                forEach($scope.plugin.configuration, prepareData);
+
+                function prepareData(cfg, index) {
+                    if (cfg.value !== $scope.master.configuration[index].value) {
+                        data[cfg.id] = cfg.value;
+                    }
+                }
+
+                if (!_.isEmpty(data)) {
+                    Plugins
+                        .setup({ id: $scope.plugin.code }, data)
+                        .$promise
+                        .then(function () {
+                        });
+                }
+            };
+
+            $scope.reset = function () {
+                $scope.plugin = angular.copy($scope.master);
             };
         }
     ]);

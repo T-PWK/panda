@@ -12,6 +12,7 @@
         str             = require('underscore.string'),
         debug           = require('debug')('panda:pluginsService'),
         pluginDir       = cfg.get('paths:plugins'),
+        properties      = ['author', 'code', 'configuration', 'description', 'messages', 'name', 'priority' , 'status', 'teaser', 'version'],
         configProvider;
 
     function PluginService() {
@@ -71,6 +72,38 @@
                 cfg.set('plugins:enabled', plugins);
 
                 return configProvider.saveConfig('plugins:enabled', plugins);
+            });
+    };
+
+    PluginService.prototype.findByCode = function (code) {
+        var plugin = _.chain([])
+            .push(_.find(this.active, { code: code }))
+            .push(_.find(this.inactive, { code: code }))
+            .compact()
+            .first()
+            .value();
+
+        return plugin ? when.resolve(plugin) : when.reject();
+    };
+
+    PluginService.prototype.setup = function (code, data) {
+        console.info(data)
+        return this
+            .findByCode(code)
+            .tap(function (plugin) {
+                // Reject if there is no configuration
+                if (!plugin.configuration) { return when.reject(); }
+            })
+            .tap(function (plugin) {
+                var configs = _.isFunction(plugin.configuration) ? plugin.configuration() : plugin.configuration;
+
+                var mapping = _.map(configs, function (config) {
+                    if (_.has(config.id, data)) {
+                        return { id: config.id, value: data[config.id], key: 'plugins:' + plugin.code + ':' + config.key }
+                    }
+                });
+
+                console.info(mapping)
             });
     };
 
@@ -160,14 +193,16 @@
 
     PluginService.prototype.info = function () {
         return {
-            active: _.map(this.active, properties),
-            inactive: _.map(this.inactive, properties)
+            active: _.map(this.active, fetchProperties),
+            inactive: _.map(this.inactive, fetchProperties)
         };
 
-        function properties(plugin) {
-            return _.pick(plugin,
-                'code', 'name', 'description', 'version', 'author',
-                'teaser', 'status', 'messages', 'configuration', 'priority');
+        function fetchProperties(plugin) {
+            return _.transform(plugin, function (accumulator, value, key) {
+                if (!_.contains(properties, key)) { return; }
+
+                accumulator[key] = _.isFunction(value) ? value() : value;
+            }, {});
         }
     };
 

@@ -7,27 +7,16 @@
         res.json(plugins.info());
     };
 
-    module.exports.update = function (req, res) {
-        var action,
-            operation = (req.query.op || '').toLowerCase();
+    module.exports.stop = function (req, res) {
+        plugins.stopAndPersist(req.params.id).done(res.send.bind(res, 200, ''), res.send.bind(res, 400));
+    };
 
-        switch (operation) {
-            case 'start':
-                action = plugins.startAndPersist.bind(plugins);
-                break;
-            case 'stop':
-                action = plugins.stopAndPersist.bind(plugins);
-                break;
-        }
+    module.exports.start = function (req, res) {
+        plugins.startAndPersist(req.params.id).done(res.send.bind(res, 200, ''), res.send.bind(res, 400));
+    };
 
-        if (action) {
-            action(req.params.id).done(
-                res.send.bind(res, 200, ''),
-                res.send.bind(res, 400)
-            );
-        } else {
-            res.send(400);
-        }
+    module.exports.setup = function (req, res) {
+        plugins.setup(req.params.id, req.body).done(res.send.bind(res, 200, ''), res.send.bind(res, 400));
     };
 
 }());

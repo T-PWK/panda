@@ -24,7 +24,9 @@
 
         plugins
             .get('/', api.plugins.index)
-            .post('/:id', api.plugins.update);
+            .post('/start/:id', api.plugins.start)
+            .post('/stop/:id', api.plugins.stop)
+            .post('/setup/:id', api.plugins.setup);
 
         images
             .get('/', api.images.index)

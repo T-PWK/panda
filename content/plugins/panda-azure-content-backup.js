@@ -22,7 +22,7 @@
 
         description: "<p>The Content Backup to Azure for Panda plugin will back up your database content to Windows Azure Blob on a schedule that suits you.</p>",
 
-        configuration: "<p>The Disqus Comments for Panda plugin uses following configuration properties under " +
+        configuration2: "<p>The Disqus Comments for Panda plugin uses following configuration properties under " +
             "<code>plugins:panda-azure-content-backup</code> configuration element:</p><ul>" +
             "<li><code>cron</code> - the time to fire off your job. " +
             "The time needs to be in the form of <a href=\"http://crontab.org/\" target=\"_blank\">cron syntax</a>.</li>" +
@@ -34,6 +34,17 @@
         author: {
             name: "Panda Team",
             url: "https://github.com/T-PWK/panda"
+        },
+
+        configuration: function () {
+            var config = cfg.get('plugins:panda-azure-content-backup') || {};
+
+            return [
+                { id:"cron", name: "Cron", type:"text", value:config.cron, key:'cron' },
+                { id:"account", name: "Account", type:"text", help:"Windows Azure Blob account name", value:config.account, key:'account' },
+                { id:"key", name: "Key", type:"text", help:"Windows Azure Blob account access key", value:config.key },
+                { id:"container", name: "Container", type:"text", help:"Windows Azure Blob container name where backup files will be stored", value:config.container }
+            ];
         },
 
         start: function () {

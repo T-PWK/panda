@@ -86,11 +86,12 @@
             return $resource('/api/v1/images/:id', { id: '@name' });
         }])
         .factory('Plugins', ['$resource', function ($resource) {
-            return $resource('/api/v1/plugins/:id',
+            return $resource('/api/v1/plugins/:action/:id',
                 {id: '@id'},
                 {
-                    start: { method: 'POST', params: { op: 'start' } },
-                    stop: { method: 'POST', params: { op: 'stop' } }
+                    start: { method: 'POST', params: { action: 'start' } },
+                    stop: { method: 'POST', params: { action: 'stop' } },
+                    setup: { method: 'POST', params: { action: 'setup' } }
                 }
             );
         }])

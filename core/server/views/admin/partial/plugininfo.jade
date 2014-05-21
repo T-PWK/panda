@@ -1,5 +1,5 @@
 .modal-header
-    button.close(ng-click="close()") &times;
+    button.close(ng-click="close()"): i.fa.fa-times
     h4.modal-title
         i.fa.fa-fw.fa-stop.text-danger(ng-show="!plugin.status || plugin.status == 'I'")
         i.fa.fa-fw.fa-play.text-success(ng-show="plugin.status=='A'")
@@ -9,23 +9,55 @@
 .modal-body
 
     tabset
+
         tab
             tab-heading
                 i.fa.fa-fw.fa-info-circle
                 | Description
             div.top-buffer(ng-bind-html="plugin.description | unsafe")
+
         tab(disabled="!plugin.configuration")
             tab-heading
                 i.fa.fa-fw.fa-cogs
-                | Configuration
-            div.top-buffer(ng-bind-html="plugin.configuration | unsafe")
+                | Setup
+
+            form.top-buffer.form-horizontal(name="setupForm")
+                .form-group(ng-repeat="cfg in plugin.configuration")
+
+                    label.col-sm-3.control-label(for="{{cfg.id}}") {{cfg.name}}
+
+                    .col-sm-8(ng-switch="cfg.type")
+
+                        //- Input for type other than 'textarea'
+                        input.form-control(id="{{cfg.id}}", ng-switch-default, type="{{cfg.type}}",
+                            placeholder="{{cfg.placeholder}}", ng-model="cfg.value", ng-required="{{cfg.required||false}}")
+
+                        //- Input for 'textarea' type
+                        textarea.form-control(id="{{cfg.id}}", ng-switch-when="textarea", rows="3", ng-model="cfg.value")
+
+                        p.help-block(ng-show="cfg.help")
+                            i.fa.fa-fw.fa-info-circle
+                            | {{cfg.help}}
+
+            .row
+                .col-sm-6.col-sm-offset-3
+                    .btn-group
+                        button.btn.btn-primary(type="button", ng-click="save()") Save
+                        button.btn.btn-default(type="button", ng-click="reset()") Reset
+
+
         tab(disabled="!plugin.messages.length")
             tab-heading
                 i.fa.fa-fw.fa-exclamation-circle
                 | Messages
+
             div.top-buffer
                 alert(ng-repeat="message in plugin.messages | tail:3", type="message.type")
+
+                    //- Alert message
                     p(ng-bind-html="message.msg | unsafe", ng-if="message.msg")
+
+                    //- Alert message data
                     dl.dl-horizontal(ng-if="message.properties")
                         dt(ng-repeat-start="prop in message.properties") {{prop.name}}
                         dd(ng-repeat-end) {{prop.value}}
