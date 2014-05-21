@@ -76,7 +76,7 @@
                 p.btn-group Show rows:
 
                 //- Rows per screen selection
-                .btn-group.dropup.space-r
+                .btn-group.dropup.space-r(dropdown)
                     button.btn.btn-default.btn-sm.dropdown-toggle(type="button", data-toggle="dropdown")
                         | {{pg.pageSize}}&nbsp;
                         span.caret
@@ -87,7 +87,7 @@
                 p.btn-group {{pg.from|number}}-{{pg.to|number}} of {{pg.items|number}}
 
                 .btn-group
-                    pagination.pagination-sm(page="pg.current", total-items="pg.items", items-per-page="pg.pageSize",
+                    pagination.pagination-sm(ng-model="pg.current", total-items="pg.items", items-per-page="pg.pageSize",
                         previous-text="‹", next-text="›", rotate="true", max-size="5", boundary-links="true",
                         first-text="«", last-text="»")
 
