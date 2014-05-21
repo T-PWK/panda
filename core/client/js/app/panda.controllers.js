@@ -945,7 +945,8 @@
                 $modal.open({
                     templateUrl: 'plugininfo',
                     controller: 'PluginInfoCtrl',
-                    scope: $scope
+                    scope: $scope,
+                    size: 'lg'
                 });
             };
 
@@ -984,6 +985,7 @@
 
             $scope.remove = function (image) {
                 $scope.setLoading('Removing');
+                image.deleting = true;
                 image.$remove().then(
                     function () {
                         _.remove($scope.images, 'deleted');
@@ -997,6 +999,7 @@
                 $scope.setLoading(true);
                 Images.query(function (images) {
                     $scope.images = images;
+                    $scope.pg.items = images;
                     $scope.setLoading(false);
                 });
             };

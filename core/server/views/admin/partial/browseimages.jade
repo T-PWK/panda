@@ -7,12 +7,16 @@
         .page-header
             h1 Images
 
+        .text-center(ng-if="isLoading && !images.length")
+            i.fa.fa-spinner.fa-spin.fa-fw
+            | Loading images
 
         .form-group(ng-if="images.length")
             .row
                 .col-sm-4
                     a.btn.btn-default.btn-sm(ng-click="loadImages()", ng-disabled="isLoading")
-                        i.fa.fa-fw.fa-refresh
+                        i.fa.fa-fw.fa-refresh(ng-hide="isLoading")
+                        i.fa.fa-fw.fa-spin.fa-spinner(ng-show="isLoading")
                         | &nbsp;Reload
                 .col-sm-6.col-sm-offset-2
                     .input-group.input-group-sm
@@ -37,10 +41,31 @@
                                 a(href="", ng-click="order.by('size')")
                                     i.fa.fa-fw(ng-class="order.icon('size')")
                     tbody
-                        tr(ng-repeat="img in images | filter:filter | orderBy:order.option:order.desc")
+                        tr(ng-repeat="img in images | filter:filter | range:pg.firstItem:pg.pageSize | orderBy:order.option:order.desc")
                             td.text-center
-                                i.fa.fa-trash-o.fa-fw.btn-link(ng-click="remove(img)")
+                                i.fa.fa-trash-o.fa-fw.btn-link(ng-if="!img.deleting", ng-click="remove(img)")
+                                i.fa.fa-spinner.fa-spin.fa-fw(ng-if="img.deleting", ng-click="remove(img)")
                             td
                                 a(href="", ng-click="open(img)") {{img.name}}
                             td {{img.size/1024|number:1}} KB
 
+        .row
+            .col-sm-12
+                .btn-toolbar.pull-right(ng-if="images.length")
+                    p.btn-group Show rows:
+
+                     //- Rows per screen selection
+                    .btn-group.dropup.space-r(dropdown)
+                        button.btn.btn-default.btn-sm.dropdown-toggle(type="button", data-toggle="dropdown")
+                            | {{pg.pageSize}}&nbsp;
+                            span.caret
+                        ul.dropdown-menu
+                            li(ng-class="{active:pg.pageSize==s}", ng-repeat="s in [10,25,50,100,500]")
+                                a(href="", ng-click="pg.pageSize=s") {{s}}
+
+                    p.btn-group {{pg.from|number}}-{{pg.to|number}} of {{pg.items|number}}
+
+                    .btn-group
+                        pagination.pagination-sm(total-items="pg.items", ng-model="pg.current",
+                            items-per-page="pg.pageSize", previous-text="‹", next-text="›", rotate="true", max-size="5",
+                            boundary-links="true", first-text="«", last-text="»")
